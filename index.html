@@ -180,6 +180,38 @@
 
     }
 
+    #hero-stencil-svg {
+
+      isolation: isolate;
+
+      backface-visibility: hidden;
+
+      transform-style: preserve-3d;
+
+      -webkit-font-smoothing: antialiased;
+
+      pointer-events: none;
+
+      width: 100%;
+
+      height: 100%;
+
+      transform-origin: 50% 50%;
+
+      will-change: transform;
+
+    }
+
+    #hero-runway .sticky {
+
+      isolation: isolate;
+
+      backface-visibility: hidden;
+
+      transform-style: preserve-3d;
+
+    }
+
 
 
     /* ==========================================
@@ -208,13 +240,31 @@
 
 
 
-    /* Hardware 3D Scrub Stage */
+    /* Hardware Concept A: 3D Curved Theater Arc */
 
     .hardware-stage-perspective {
 
-      perspective: 1000px;
+      perspective: 1400px;
 
       perspective-origin: 50% 50%;
+
+    }
+
+    #hw-deck {
+
+      transform-style: preserve-3d;
+
+    }
+
+    .hw-card {
+
+      will-change: transform, opacity;
+
+      transform-style: preserve-3d;
+
+      backface-visibility: hidden;
+
+      transform-origin: center center;
 
     }
 
@@ -302,6 +352,9 @@
 
     }
 
+
+
+
   </style>
 
 </head>
@@ -318,9 +371,7 @@
 
       <a href="#" id="nav-logo" class="flex items-center gap-2 text-white font-bold text-base tracking-tight hover:opacity-80 transition-opacity">
 
-        <span class="w-2.5 h-2.5 rounded-full bg-[#FF5A5F] shadow-[0_0_12px_#FF5A5F]"></span>
-
-        <span id="nav-logo-text">Red Thread</span>
+        <img id="nav-logo-img" src="logo-white.png" alt="Red Thread Logo" class="h-5 w-auto transition-all duration-300" />
 
       </a>
 
@@ -328,11 +379,11 @@
 
       <div id="nav-links" class="hidden md:flex items-center gap-8 text-[11px] font-medium uppercase tracking-wider text-neutral-400">
 
-        <a href="#process" class="hover:text-white transition-colors">How It Works</a>
+        <a href="#how-it-works" class="hover:text-white transition-colors">How It Works</a>
 
         <a href="#work" class="hover:text-white transition-colors">Our Work</a>
 
-        <a href="#tech" class="hover:text-white transition-colors">Our Tech</a>
+        <a href="#tech-bento" class="hover:text-white transition-colors">Our Tech</a>
 
       </div>
 
@@ -356,21 +407,7 @@
 
   <header id="hero-runway" data-theme="dark" class="relative w-full h-[180vh] bg-black">
 
-    <div class="sticky top-0 left-0 w-full h-screen overflow-hidden flex items-center justify-center z-10">
-
-      
-
-      <div id="hero-eyebrow" class="absolute top-20 sm:top-24 left-1/2 -translate-x-1/2 z-20 transition-opacity duration-300 pointer-events-none text-center">
-
-        <span class="text-xs sm:text-sm font-medium tracking-widest text-neutral-300">
-
-          Global influencer marketing agency.
-
-        </span>
-
-      </div>
-
-
+    <div class="sticky top-0 left-0 w-full h-screen overflow-hidden flex items-center justify-center z-10" style="isolation: isolate; backface-visibility: hidden; transform-style: preserve-3d; -webkit-font-smoothing: antialiased;">
 
       <video id="hero-video" autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
 
@@ -380,21 +417,21 @@
 
 
 
-      <svg id="hero-stencil-svg" class="absolute inset-0 w-full h-full portal-zoom-target z-10 pointer-events-none transition-opacity duration-75" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid slice">
+      <svg id="hero-stencil-svg" class="absolute inset-0 w-full h-full portal-zoom-target z-10 pointer-events-none transition-opacity duration-75" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid slice" style="isolation: isolate; backface-visibility: hidden; transform-style: preserve-3d; -webkit-font-smoothing: antialiased; will-change: transform; transform-origin: 50% 50%;">
 
         <defs>
 
-          <mask id="portal-mask">
+          <mask id="portal-mask" maskUnits="userSpaceOnUse">
 
             <rect width="1000" height="500" fill="white" />
 
-            <text x="500" y="210" text-anchor="middle" fill="black" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro', sans-serif" font-weight="900" font-size="70" letter-spacing="-3">
+            <text x="500" y="197.5" text-anchor="middle" fill="black" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro', sans-serif" font-weight="900" font-size="70" letter-spacing="-3">
 
               Creator-powered
 
             </text>
 
-            <text x="500" y="315" text-anchor="middle" fill="black" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro', sans-serif" font-weight="900" font-size="70" letter-spacing="-3">
+            <text x="500" y="302.5" text-anchor="middle" fill="black" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro', sans-serif" font-weight="900" font-size="70" letter-spacing="-3">
 
               commercial impact.
 
@@ -464,312 +501,189 @@
 
 
 
-  <!-- 03. HARDWARE GALLERY WITH CATEGORY FILTERS -->
+  <!-- 03. HARDWARE GALLERY (Concept A: 3D Curved Theater Arc) -->
 
-  <section id="hardware" data-theme="dark" class="w-full bg-black text-white pt-10 pb-0 px-4 sm:px-6 lg:px-8 relative overflow-hidden z-10 hardware-stage-perspective">
+  <section id="hardware" data-theme="dark" class="relative w-full h-[260vh] bg-black text-white z-0">
 
-    <div class="max-w-7xl mx-auto space-y-10">
+    <div id="hw-sticky-stage" class="sticky top-0 left-0 w-full h-screen overflow-hidden flex items-center justify-center hardware-stage-perspective z-0">
 
+      <div id="hw-deck" class="relative w-full max-w-7xl mx-auto h-[550px] flex items-center justify-center">
 
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.55),0_0_24px_rgba(255,255,255,0.06)] overflow-hidden" style="z-index:10;">
 
-      <!-- Category Filter Pills -->
+            <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
 
-      <div class="flex items-center justify-center gap-2 overflow-x-auto no-scrollbar py-2">
+            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative border border-white/15">
 
-        <button onclick="filterHardware('all')" id="hw-filter-all" class="spring-pill px-4 py-2 rounded-full text-xs font-semibold bg-white text-black shadow-md">
+              <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
 
-          All
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-girl-in-neon-sign-lighting-1230-large.mp4" type="video/mp4">
 
-        </button>
-
-        <button onclick="filterHardware('beauty')" id="hw-filter-beauty" class="spring-pill px-4 py-2 rounded-full text-xs font-semibold bg-white/10 text-neutral-300 hover:text-white">
-
-          Beauty &amp; Fashion
-
-        </button>
-
-        <button onclick="filterHardware('fintech')" id="hw-filter-fintech" class="spring-pill px-4 py-2 rounded-full text-xs font-semibold bg-white/10 text-neutral-300 hover:text-white">
-
-          FinTech
-
-        </button>
-
-        <button onclick="filterHardware('consumer')" id="hw-filter-consumer" class="spring-pill px-4 py-2 rounded-full text-xs font-semibold bg-white/10 text-neutral-300 hover:text-white">
-
-          Consumer Tech
-
-        </button>
-
-        <button onclick="filterHardware('gaming')" id="hw-filter-gaming" class="spring-pill px-4 py-2 rounded-full text-xs font-semibold bg-white/10 text-neutral-300 hover:text-white">
-
-          Gaming
-
-        </button>
-
-        <button onclick="filterHardware('entertainment')" id="hw-filter-entertainment" class="spring-pill px-4 py-2 rounded-full text-xs font-semibold bg-white/10 text-neutral-300 hover:text-white">
-
-          Entertainment
-
-        </button>
-
-        <button onclick="filterHardware('sports')" id="hw-filter-sports" class="spring-pill px-4 py-2 rounded-full text-xs font-semibold bg-white/10 text-neutral-300 hover:text-white">
-
-          Sports &amp; Lifestyle
-
-        </button>
-
-      </div>
-
-
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 translate-y-[10%] relative z-10">
-
-        
-
-        <div id="phone-outer-left" data-category="beauty" class="phone-stagger-outer phone-scrub hw-card w-full max-w-[320px] sm:max-w-[360px] aspect-[9/18] bg-[#1D1D1F] rounded-[3rem] p-3 shadow-2xl relative overflow-hidden mx-auto transition-all duration-500">
-
-          <div class="absolute top-3.5 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
-
-          <div class="w-full h-full bg-neutral-950 rounded-[2.4rem] overflow-hidden relative flex flex-col justify-between p-5 pt-12">
-
-            <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 opacity-80 pointer-events-none">
-
-              <source src="https://assets.mixkit.co/videos/preview/mixkit-girl-in-neon-sign-lighting-1230-large.mp4" type="video/mp4">
-
-            </video>
-
-            <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/90 z-10"></div>
-
-            <div class="relative z-20 flex justify-between items-center text-xs font-semibold text-neutral-300">
-
-              <span class="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md">TikTok Feed</span>
-
-              <span class="px-2.5 py-1 rounded-full bg-[#FF5A5F] text-white font-bold">4.5x ROAS</span>
-
-            </div>
-
-            <div class="relative z-20 space-y-1">
-
-              <div class="text-xs text-neutral-300 font-medium">Beauty &amp; Fashion</div>
-
-              <div class="font-bold text-lg text-white">4.5x ROAS</div>
+              </video>
 
             </div>
 
           </div>
 
-        </div>
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.55),0_0_24px_rgba(255,255,255,0.06)] overflow-hidden" style="z-index:20;">
 
+            <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
 
-        <div data-category="fintech" class="phone-scrub hw-card w-full max-w-[320px] sm:max-w-[360px] aspect-[9/18] bg-[#1D1D1F] rounded-[3rem] p-3 shadow-2xl relative overflow-hidden mx-auto transition-all duration-500">
+            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative border border-white/15">
 
-          <div class="absolute top-3.5 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
+              <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
 
-          <div class="w-full h-full bg-neutral-950 rounded-[2.4rem] overflow-hidden relative flex flex-col justify-between p-5 pt-12">
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-young-man-skateboarding-in-a-parking-lot-34533-large.mp4" type="video/mp4">
 
-            <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 opacity-80 pointer-events-none">
-
-              <source src="https://assets.mixkit.co/videos/preview/mixkit-young-man-skateboarding-in-a-parking-lot-34533-large.mp4" type="video/mp4">
-
-            </video>
-
-            <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/90 z-10"></div>
-
-            <div class="relative z-20 flex justify-between items-center text-xs font-semibold text-neutral-300">
-
-              <span class="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md">Reels Feed</span>
-
-              <span class="px-2.5 py-1 rounded-full bg-emerald-500/80 text-white font-bold">24% CTR</span>
-
-            </div>
-
-            <div class="relative z-20 space-y-1">
-
-              <div class="text-xs text-neutral-300 font-medium">FinTech</div>
-
-              <div class="font-bold text-lg text-white">24% CTR</div>
+              </video>
 
             </div>
 
           </div>
 
-        </div>
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.55),0_0_24px_rgba(255,255,255,0.06)] overflow-hidden" style="z-index:30;">
 
+            <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
 
-        <div data-category="consumer" class="phone-scrub hw-card w-full max-w-[320px] sm:max-w-[360px] aspect-[9/18] bg-[#1D1D1F] rounded-[3rem] p-3 shadow-2xl relative overflow-hidden mx-auto transition-all duration-500">
+            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative border border-white/15">
 
-          <div class="absolute top-3.5 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
+              <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
 
-          <div class="w-full h-full bg-neutral-950 rounded-[2.4rem] overflow-hidden relative flex flex-col justify-between p-5 pt-12">
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-hands-holding-a-smartphone-with-a-green-screen-41528-large.mp4" type="video/mp4">
 
-            <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 opacity-80 pointer-events-none">
-
-              <source src="https://assets.mixkit.co/videos/preview/mixkit-hands-holding-a-smartphone-with-a-green-screen-41528-large.mp4" type="video/mp4">
-
-            </video>
-
-            <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/90 z-10"></div>
-
-            <div class="relative z-20 flex justify-between items-center text-xs font-semibold text-neutral-300">
-
-              <span class="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md">YouTube</span>
-
-              <span class="px-2.5 py-1 rounded-full bg-[#E040FB]/80 text-white font-bold">84% Retention</span>
-
-            </div>
-
-            <div class="relative z-20 space-y-1">
-
-              <div class="text-xs text-neutral-300 font-medium">Consumer Tech</div>
-
-              <div class="font-bold text-lg text-white">84% Retention</div>
+              </video>
 
             </div>
 
           </div>
 
-        </div>
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.55),0_0_24px_rgba(255,255,255,0.06)] overflow-hidden" style="z-index:40;">
 
+            <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
 
-        <div id="phone-outer-right" data-category="gaming" class="phone-stagger-outer phone-scrub hw-card w-full max-w-[320px] sm:max-w-[360px] aspect-[9/18] bg-[#1D1D1F] rounded-[3rem] p-3 shadow-2xl relative overflow-hidden mx-auto transition-all duration-500">
+            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative border border-white/15">
 
-          <div class="absolute top-3.5 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
+              <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
 
-          <div class="w-full h-full bg-neutral-950 rounded-[2.4rem] overflow-hidden relative flex flex-col justify-between p-5 pt-12">
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-woman-running-above-the-camera-on-a-running-track-32807-large.mp4" type="video/mp4">
 
-            <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 opacity-80 pointer-events-none">
-
-              <source src="https://assets.mixkit.co/videos/preview/mixkit-game-developer-working-on-his-computer-42898-large.mp4" type="video/mp4">
-
-            </video>
-
-            <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/90 z-10"></div>
-
-            <div class="relative z-20 flex justify-between items-center text-xs font-semibold text-neutral-300">
-
-              <span class="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md">Twitch Stream</span>
-
-              <span class="px-2.5 py-1 rounded-full bg-blue-500/80 text-white font-bold">98% Sentiment</span>
-
-            </div>
-
-            <div class="relative z-20 space-y-1">
-
-              <div class="text-xs text-neutral-300 font-medium">Gaming &amp; Culture</div>
-
-              <div class="font-bold text-lg text-white">98% positive sentiment</div>
+              </video>
 
             </div>
 
           </div>
 
-        </div>
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.55),0_0_24px_rgba(255,255,255,0.06)] overflow-hidden" style="z-index:50;">
 
+            <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
 
-        <div data-category="sports" class="phone-scrub hw-card w-full max-w-[320px] sm:max-w-[360px] aspect-[9/18] bg-[#1D1D1F] rounded-[3rem] p-3 shadow-2xl relative overflow-hidden mx-auto transition-all duration-500">
+            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative border border-white/15">
 
-          <div class="absolute top-3.5 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
+              <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
 
-          <div class="w-full h-full bg-neutral-950 rounded-[2.4rem] overflow-hidden relative flex flex-col justify-between p-5 pt-12">
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-man-dancing-under-changing-lights-1240-large.mp4" type="video/mp4">
 
-            <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 opacity-80 pointer-events-none">
-
-              <source src="https://assets.mixkit.co/videos/preview/mixkit-woman-running-above-the-camera-on-a-running-track-32807-large.mp4" type="video/mp4">
-
-            </video>
-
-            <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/90 z-10"></div>
-
-            <div class="relative z-20 flex justify-between items-center text-xs font-semibold text-neutral-300">
-
-              <span class="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md">YouTube Shorts</span>
-
-              <span class="px-2.5 py-1 rounded-full bg-[#FF5A5F]/80 text-white font-bold">14.2M</span>
-
-            </div>
-
-            <div class="relative z-20 space-y-1">
-
-              <div class="text-xs text-neutral-300 font-medium">Sports &amp; Lifestyle</div>
-
-              <div class="font-bold text-lg text-white">14.2M Impressions</div>
+              </video>
 
             </div>
 
           </div>
 
-        </div>
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.55),0_0_24px_rgba(255,255,255,0.06)] overflow-hidden" style="z-index:60;">
 
+            <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
 
-        <div data-category="entertainment" class="phone-scrub hw-card w-full max-w-[320px] sm:max-w-[360px] aspect-[9/18] bg-[#1D1D1F] rounded-[3rem] p-3 shadow-2xl relative overflow-hidden mx-auto transition-all duration-500">
+            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative border border-white/15">
 
-          <div class="absolute top-3.5 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
+              <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
 
-          <div class="w-full h-full bg-neutral-950 rounded-[2.4rem] overflow-hidden relative flex flex-col justify-between p-5 pt-12">
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-game-developer-working-on-his-computer-42898-large.mp4" type="video/mp4">
 
-            <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 opacity-80 pointer-events-none">
-
-              <source src="https://assets.mixkit.co/videos/preview/mixkit-man-dancing-under-changing-lights-1240-large.mp4" type="video/mp4">
-
-            </video>
-
-            <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/90 z-10"></div>
-
-            <div class="relative z-20 flex justify-between items-center text-xs font-semibold text-neutral-300">
-
-              <span class="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md">Podcast Video</span>
-
-              <span class="px-2.5 py-1 rounded-full bg-[#E040FB]/80 text-white font-bold">+112% Lift</span>
-
-            </div>
-
-            <div class="relative z-20 space-y-1">
-
-              <div class="text-xs text-neutral-300 font-medium">Entertainment</div>
-
-              <div class="font-bold text-lg text-white">+112% Brand Lift</div>
+              </video>
 
             </div>
 
           </div>
 
-        </div>
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.55),0_0_24px_rgba(255,255,255,0.06)] overflow-hidden" style="z-index:50;">
 
+            <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
 
-        <div data-category="travel" class="phone-scrub hw-card w-full max-w-[320px] sm:max-w-[360px] aspect-[9/18] bg-[#1D1D1F] rounded-[3rem] p-3 shadow-2xl relative overflow-hidden mx-auto transition-all duration-500">
+            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative border border-white/15">
 
-          <div class="absolute top-3.5 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
+              <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
 
-          <div class="w-full h-full bg-neutral-950 rounded-[2.4rem] overflow-hidden relative flex flex-col justify-between p-5 pt-12">
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-going-down-a-curve-highway-down-the-mountains-41748-large.mp4" type="video/mp4">
 
-            <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 opacity-80 pointer-events-none">
-
-              <source src="https://assets.mixkit.co/videos/preview/mixkit-going-down-a-curve-highway-down-the-mountains-41748-large.mp4" type="video/mp4">
-
-            </video>
-
-            <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/90 z-10"></div>
-
-            <div class="relative z-20 flex justify-between items-center text-xs font-semibold text-neutral-300">
-
-              <span class="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md">IG Carousel</span>
-
-              <span class="px-2.5 py-1 rounded-full bg-amber-500/80 text-white font-bold">Sell-Out</span>
-
-            </div>
-
-            <div class="relative z-20 space-y-1">
-
-              <div class="text-xs text-neutral-300 font-medium">Travel &amp; Luxury</div>
-
-              <div class="font-bold text-lg text-white">100% Sell-Out Speed</div>
+              </video>
 
             </div>
 
           </div>
 
-        </div>
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.55),0_0_24px_rgba(255,255,255,0.06)] overflow-hidden" style="z-index:40;">
 
+            <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
 
+            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative border border-white/15">
+
+              <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
+
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-woman-pouring-a-glass-of-wine-42798-large.mp4" type="video/mp4">
+
+              </video>
+
+            </div>
+
+          </div>
+
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.55),0_0_24px_rgba(255,255,255,0.06)] overflow-hidden" style="z-index:30;">
+
+            <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
+
+            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative border border-white/15">
+
+              <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
+
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-top-aerial-shot-of-seashore-with-rocks-1564-large.mp4" type="video/mp4">
+
+              </video>
+
+            </div>
+
+          </div>
+
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.55),0_0_24px_rgba(255,255,255,0.06)] overflow-hidden" style="z-index:20;">
+
+            <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
+
+            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative border border-white/15">
+
+              <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
+
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-tree-with-yellow-flowers-1173-large.mp4" type="video/mp4">
+
+              </video>
+
+            </div>
+
+          </div>
+
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.55),0_0_24px_rgba(255,255,255,0.06)] overflow-hidden" style="z-index:10;">
+
+            <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
+
+            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative border border-white/15">
+
+              <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
+
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-portrait-of-a-fashion-woman-with-silver-makeup-39875-large.mp4" type="video/mp4">
+
+              </video>
+
+            </div>
+
+          </div>
 
       </div>
 
@@ -781,71 +695,185 @@
 
   <!-- 04. BRAND PROOF -->
 
-  <section data-theme="light" class="w-full bg-[#F5F5F7] text-black pt-36 pb-28 relative z-20 overflow-hidden selection:bg-neutral-800 selection:text-white">
+  <section id="brand-proof" data-theme="light" class="relative z-10 bg-white py-24 -mt-[100vh] selection:bg-neutral-800 selection:text-white">
 
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+      
 
-        
+      <!-- Left Column: Copy -->
 
-        <div class="lg:col-span-4 space-y-2">
+      <div class="lg:col-span-5">
 
-          <h2 class="text-2xl sm:text-4xl font-semibold tracking-tight text-neutral-900 leading-[1.1] text-balance-custom">
+        <h2 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-neutral-900 leading-[1.1]">
 
-            The company we keep.
+          The&nbsp;company we&nbsp;keep.
 
-          </h2>
+        </h2>
 
-        </div>
+        <p class="text-xl text-neutral-600 leading-relaxed max-w-md mt-4">
 
+          Powering growth for world-class brands<br />and the voices shaping modern&nbsp;culture.
 
-
-        <div class="lg:col-span-8 grid grid-cols-4 sm:grid-cols-5 gap-y-10 gap-x-8 items-center justify-items-center opacity-85">
-
-          <span class="font-black tracking-tight text-lg text-neutral-800">Spotify</span>
-
-          <span class="font-black tracking-widest text-lg uppercase text-neutral-800">Nike</span>
-
-          <span class="font-black tracking-widest text-lg font-serif text-neutral-800">LVMH</span>
-
-          <span class="font-black tracking-widest text-xl font-serif text-neutral-800">SONY</span>
-
-          <span class="font-black tracking-tight text-base text-neutral-800">HYPERICE</span>
-
-          <span class="font-bold text-lg tracking-tight text-neutral-800">TikTok</span>
-
-          <span class="font-black text-lg uppercase tracking-widest text-neutral-800">SAMSUNG</span>
-
-          <span class="font-serif italic font-semibold text-lg text-neutral-800">Glossier.</span>
-
-          <span class="font-extrabold text-base tracking-widest uppercase text-neutral-800">SEPHORA</span>
-
-          <span class="font-black text-base uppercase tracking-tight text-neutral-800">Red Bull</span>
-
-          <span class="font-black text-xl lowercase tracking-tighter text-neutral-800">adidas</span>
-
-          <span class="font-extrabold text-xs tracking-[0.2em] uppercase text-neutral-800">PORSCHE</span>
-
-          <span class="font-serif font-black text-lg uppercase tracking-widest text-neutral-800">PRADA</span>
-
-          <span class="font-black text-base tracking-tight text-neutral-800">Beats</span>
-
-          <span class="font-black text-lg tracking-tight text-neutral-800">Meta</span>
-
-          <span class="font-black text-lg uppercase tracking-wider text-neutral-800">NETFLIX</span>
-
-          <span class="font-extrabold text-sm tracking-widest uppercase text-neutral-800">RIMOWA</span>
-
-          <span class="font-bold text-lg text-neutral-800">airbnb</span>
-
-          <span class="font-bold text-xs tracking-wider uppercase text-neutral-800">B&amp;O</span>
-
-        </div>
-
-
+        </p>
 
       </div>
+
+
+
+      <!-- Right Column: Optical-Weighted Logo Grid -->
+
+      <div class="lg:col-span-7">
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-y-12 gap-x-10 items-center justify-items-center">
+
+          
+
+          <!-- Row 1 -->
+
+          <div class="w-full h-20 flex items-center justify-center p-1">
+
+            <img src="Content/Brand Logos/bbc.png" alt="BBC" style="height: 40px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+
+          </div>
+
+          <div class="w-full h-20 flex items-center justify-center p-1">
+
+            <img src="Content/Brand Logos/brit-awards.svg" alt="Brit Awards" style="height: 48px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+
+          </div>
+
+          <div class="w-full h-20 flex items-center justify-center p-1">
+
+            <img src="Content/Brand Logos/disney.png" alt="Disney" style="height: 32px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+
+          </div>
+
+          <div class="w-full h-20 flex items-center justify-center p-1">
+
+            <img src="Content/Brand Logos/dr-pepper.png" alt="Dr Pepper" style="height: 44px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+
+          </div>
+
+
+
+          <!-- Row 2 -->
+
+          <div class="w-full h-20 flex items-center justify-center p-1">
+
+            <img src="Content/Brand Logos/gamma.webp" alt="Gamma" style="height: 26px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+
+          </div>
+
+          <div class="w-full h-20 flex items-center justify-center p-1">
+
+            <img src="Content/Brand Logos/google.png" alt="Google" style="height: 38px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+
+          </div>
+
+          <div class="w-full h-20 flex items-center justify-center p-1">
+
+            <img src="Content/Brand Logos/lego.png" alt="Lego" style="height: 42px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+
+          </div>
+
+          <div class="w-full h-20 flex items-center justify-center p-1">
+
+            <img src="Content/Brand Logos/lexus.png" alt="Lexus" style="height: 72px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+
+          </div>
+
+
+
+          <!-- Row 3 -->
+
+          <div class="w-full h-20 flex items-center justify-center p-1">
+
+            <img src="Content/Brand Logos/lynx.svg" alt="Lynx" style="height: 19px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+
+          </div>
+
+          <div class="w-full h-20 flex items-center justify-center p-1">
+
+            <img src="Content/Brand Logos/major-league-baseball.png" alt="MLB" style="height: 74px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+
+          </div>
+
+          <div class="w-full h-20 flex items-center justify-center p-1">
+
+            <img src="Content/Brand Logos/mcdonalds.png" alt="McDonalds" style="height: 60px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+
+          </div>
+
+          <div class="w-full h-20 flex items-center justify-center p-1">
+
+            <img src="Content/Brand Logos/movember.png" alt="Movember" style="height: 54px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+
+          </div>
+
+
+
+          <!-- Row 4 -->
+
+          <div class="w-full h-20 flex items-center justify-center p-1">
+
+            <img src="Content/Brand Logos/O2.png" alt="O2" style="height: 50px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+
+          </div>
+
+          <div class="w-full h-20 flex items-center justify-center p-1">
+
+            <img src="Content/Brand Logos/oracle_red_bull_racing.jpg" alt="Oracle Red Bull Racing" style="height: 42px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+
+          </div>
+
+          <div class="w-full h-20 flex items-center justify-center p-1">
+
+            <img src="Content/Brand Logos/paramount.svg" alt="Paramount" style="height: 52px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+
+          </div>
+
+          <div class="w-full h-20 flex items-center justify-center p-1">
+
+            <img src="Content/Brand Logos/Pfizer.svg" alt="Pfizer" style="height: 44px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+
+          </div>
+
+
+
+          <!-- Row 5 -->
+
+          <div class="w-full h-20 flex items-center justify-center p-1">
+
+            <img src="Content/Brand Logos/porsche.png" alt="Porsche" style="height: 58px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+
+          </div>
+
+          <div class="w-full h-20 flex items-center justify-center p-1">
+
+            <img src="Content/Brand Logos/tourism-ireland.webp" alt="Tourism Ireland" style="height: 76px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+
+          </div>
+
+          <div class="w-full h-20 flex items-center justify-center p-1">
+
+            <img src="Content/Brand Logos/Uefa.jpg" alt="UEFA" style="height: 40px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+
+          </div>
+
+          <div class="w-full h-20 flex items-center justify-center p-1">
+
+            <img src="Content/Brand Logos/Universal_Pictures_logo.svg" alt="Universal Pictures" style="height: 48px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+
+          </div>
+
+
+
+        </div>
+
+      </div>
+
+
 
     </div>
 
@@ -855,359 +883,31 @@
 
   <!-- 05. CAPABILITIES BENTO WITH INTERACTIVE MICRO-WIDGETS & SCRIMS -->
 
-  <section data-theme="dark" class="w-full bg-[#111113] text-white pt-28 pb-20 px-6 lg:px-8 relative z-20 selection:bg-neutral-800 selection:text-white">
+  <section id="tech-bento" data-theme="dark" class="w-full bg-[#111113] text-white pt-36 pb-24 relative z-20 selection:bg-neutral-800 selection:text-white">
 
-    <div class="max-w-7xl mx-auto space-y-16">
+    <h2 class="text-4xl sm:text-5xl font-bold tracking-tight text-white text-center mb-16 px-6">Culture, meet commerce.</h2>
 
-      
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto px-6">
 
-      <div class="text-center max-w-3xl mx-auto">
+      <!-- Hero: ThreadOS™ & Fred AI -->
 
-        <h2 class="text-3xl sm:text-5xl font-semibold tracking-tight text-white">Culture, meet commerce. 🤝</h2>
+      <div class="md:col-span-2 relative bg-neutral-900 border border-white/10 rounded-3xl overflow-hidden p-8 sm:p-10 min-h-[300px] flex flex-col justify-center group hover:border-white/20 transition-all duration-300">
 
-      </div>
+        <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover object-right scale-125 opacity-50 z-0 pointer-events-none transition-transform duration-700 group-hover:scale-[1.3]">
 
+          <source src="Content/Tech-bento1.mp4" type="video/mp4">
 
+        </video>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="absolute inset-0 bg-gradient-to-r from-neutral-950 via-neutral-950/85 to-transparent z-0 pointer-events-none"></div>
 
-        
+        <div class="relative z-10 max-w-md space-y-4">
 
-        <!-- Bento Tile 1 -->
+          <h3 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">ThreadOS™ &amp; Fred AI</h3>
 
-        <div class="bg-[#1D1D1F] border-0 rounded-[2.5rem] p-8 sm:p-10 flex flex-col justify-between min-h-[360px] relative overflow-hidden shadow-xl">
+          <p class="text-sm sm:text-base text-neutral-300 leading-relaxed [text-wrap:pretty]">
 
-          <div>
-
-            <div class="flex justify-between items-start">
-
-              <h3 class="text-xl sm:text-2xl font-semibold mb-2 tracking-tight text-white">Precision creator matchmaking</h3>
-
-              <button onclick="openModal('modal-bento-1')" aria-label="Open Matchmaking Modal" class="spring-pill w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center justify-center">
-
-                +
-
-              </button>
-
-            </div>
-
-            <p class="text-neutral-400 text-sm leading-relaxed">
-
-              The right voice. The right audience. Real cultural authority, matched.
-
-            </p>
-
-          </div>
-
-          <div class="mt-6 flex items-center justify-center -space-x-4">
-
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" alt="Avatar 1" class="w-16 h-16 rounded-full object-cover border-2 border-[#1D1D1F] shadow-md z-30" />
-
-            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80" alt="Avatar 2" class="w-16 h-16 rounded-full object-cover border-2 border-[#1D1D1F] shadow-md z-20" />
-
-            <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=300&q=80" alt="Avatar 3" class="w-16 h-16 rounded-full object-cover border-2 border-[#1D1D1F] shadow-md z-10" />
-
-            <div class="w-16 h-16 rounded-full bg-gradient-to-r from-[#FF5A5F] to-[#E040FB] text-white font-bold text-xs flex items-center justify-center border-2 border-[#1D1D1F] shadow-md z-0">
-
-              100%
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-
-        <!-- Bento Tile 2 (Interactive Time Toggle Widget) -->
-
-        <div class="bg-[#1D1D1F] border-0 rounded-[2.5rem] p-8 sm:p-10 flex flex-col justify-between min-h-[360px] shadow-xl">
-
-          <div>
-
-            <div class="flex justify-between items-start">
-
-              <h3 class="text-xl sm:text-2xl font-semibold mb-2 tracking-tight text-white">Our ThreadOS™.</h3>
-
-              <button onclick="openModal('modal-bento-2')" aria-label="Open Automation Modal" class="spring-pill w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center justify-center">
-
-                +
-
-              </button>
-
-            </div>
-
-            <p class="text-neutral-400 text-sm leading-relaxed">
-
-              We rebuilt campaign management from the ground up. Zero-friction contracts, real-time approvals, and live reporting. Pure clarity for brands and creators.
-
-            </p>
-
-          </div>
-
-
-
-          <!-- Micro-Widget: Time Toggle -->
-
-          <div class="mt-6 pt-4 border-t border-white/5 space-y-3">
-
-            <div class="flex items-center justify-between">
-
-              <div id="bento-velocity-val" class="text-4xl font-black text-[#FF5A5F] tracking-tight">&lt; 24h</div>
-
-              <div class="flex gap-1 bg-black/40 p-1 rounded-full text-[10px] font-mono">
-
-                <button onclick="updateBentoVelocity('24h')" id="vbtn-24h" class="px-2 py-0.5 rounded-full bg-[#FF5A5F] text-white font-bold">24h</button>
-
-                <button onclick="updateBentoVelocity('7d')" id="vbtn-7d" class="px-2 py-0.5 rounded-full text-neutral-400 hover:text-white">7d</button>
-
-                <button onclick="updateBentoVelocity('30d')" id="vbtn-30d" class="px-2 py-0.5 rounded-full text-neutral-400 hover:text-white">30d</button>
-
-              </div>
-
-            </div>
-
-            <div id="bento-velocity-label" class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Average execution turnaround saved per campaign</div>
-
-            <div class="w-full bg-white/10 h-2 rounded-full overflow-hidden">
-
-              <div id="bento-velocity-bar" class="bg-gradient-to-r from-[#FF5A5F] to-[#E040FB] h-full w-[90%] rounded-full transition-all duration-500"></div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-
-        <!-- Bento Tile 3 (Interactive Bar Chart Widget) -->
-
-        <div class="bg-[#1D1D1F] border-0 rounded-[2.5rem] p-8 sm:p-10 flex flex-col justify-between min-h-[360px] shadow-xl">
-
-          <div>
-
-            <div class="flex justify-between items-start">
-
-              <h3 class="text-xl sm:text-2xl font-semibold mb-2 tracking-tight text-white">Meet Fred AI.</h3>
-
-              <button onclick="openModal('modal-bento-3')" aria-label="Open Fred AI Modal" class="spring-pill w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center justify-center">
-
-                +
-
-              </button>
-
-            </div>
-
-            <p class="text-neutral-400 text-sm leading-relaxed">
-
-              Your campaign’s intuition, automated. Fred AI monitors performance in real-time to keep your brand at the speed of culture.
-
-            </p>
-
-          </div>
-
-
-
-          <!-- Micro-Widget: Interactive Bar Chart -->
-
-          <div class="mt-6 space-y-2">
-
-            <div class="flex justify-between text-xs font-mono text-neutral-400">
-
-              <span>Target Index</span>
-
-              <span id="fred-chart-readout" class="text-emerald-400 font-bold">99.2% Match</span>
-
-            </div>
-
-            <div class="flex items-end justify-between h-20 gap-2 px-2">
-
-              <div onclick="hoverFredChart('35%', '64.2% Match')" class="w-1/5 bg-white/10 hover:bg-[#FF5A5F]/60 h-[35%] rounded-t-lg cursor-pointer transition-all"></div>
-
-              <div onclick="hoverFredChart('55%', '82.1% Match')" class="w-1/5 bg-white/20 hover:bg-[#FF5A5F]/60 h-[55%] rounded-t-lg cursor-pointer transition-all"></div>
-
-              <div onclick="hoverFredChart('45%', '71.8% Match')" class="w-1/5 bg-white/30 hover:bg-[#FF5A5F]/60 h-[45%] rounded-t-lg cursor-pointer transition-all"></div>
-
-              <div onclick="hoverFredChart('75%', '91.4% Match')" class="w-1/5 bg-[#FF5A5F]/60 hover:bg-[#FF5A5F] h-[75%] rounded-t-lg cursor-pointer transition-all"></div>
-
-              <div onclick="hoverFredChart('100%', '99.2% Match')" class="w-1/5 bg-gradient-to-t from-[#FF5A5F] to-[#E040FB] h-[100%] rounded-t-lg shadow-[0_0_12px_#FF5A5F] cursor-pointer transition-all"></div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-
-        <!-- Bento Tile 4 -->
-
-        <div class="bg-[#1D1D1F] border-0 rounded-[2.5rem] p-8 sm:p-10 flex flex-col justify-between min-h-[360px] shadow-xl">
-
-          <div>
-
-            <div class="flex justify-between items-start">
-
-              <h3 class="text-xl sm:text-2xl font-semibold mb-2 tracking-tight text-white">Paid whitelisting &amp; scaling</h3>
-
-              <button onclick="openModal('modal-bento-4')" aria-label="Open Whitelisting Modal" class="spring-pill w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center justify-center">
-
-                +
-
-              </button>
-
-            </div>
-
-            <p class="text-neutral-400 text-sm leading-relaxed">
-
-              Turn viral moments into direct revenue. We scale top-performing organic assets into high-velocity paid campaigns.
-
-            </p>
-
-          </div>
-
-          <div class="mt-6 h-16 w-full flex items-center">
-
-            <svg class="w-full h-full text-[#FF5A5F]" viewBox="0 0 200 60" fill="none" stroke="currentColor" stroke-width="4">
-
-              <path d="M0 50 Q 60 48, 120 25 T 200 8" stroke-linecap="round"/>
-
-            </svg>
-
-          </div>
-
-        </div>
-
-
-
-        <!-- Bento Tile 5 (Interactive Metric Toggle Widget) -->
-
-        <div class="bg-[#1D1D1F] border-0 rounded-[2.5rem] p-8 sm:p-10 flex flex-col justify-between min-h-[360px] shadow-xl">
-
-          <div>
-
-            <div class="flex justify-between items-start">
-
-              <h3 class="text-xl sm:text-2xl font-semibold mb-2 tracking-tight text-white">Attention Engine™</h3>
-
-              <button onclick="openModal('modal-bento-5')" aria-label="Open Attention Engine Modal" class="spring-pill w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center justify-center">
-
-                +
-
-              </button>
-
-            </div>
-
-            <p class="text-neutral-400 text-sm leading-relaxed">
-
-              Precision predictive modeling. Take the guesswork out of influencer marketing.
-
-            </p>
-
-          </div>
-
-
-
-          <!-- Micro-Widget: Metric Toggle -->
-
-          <div class="mt-6 space-y-2">
-
-            <div class="flex gap-1 bg-black/40 p-1 rounded-full text-[10px] font-mono w-fit">
-
-              <button onclick="updateYieldMetric('ROAS')" id="ym-roas" class="px-2.5 py-1 rounded-full bg-[#FF5A5F] text-white font-bold">ROAS</button>
-
-              <button onclick="updateYieldMetric('CAC')" id="ym-cac" class="px-2.5 py-1 rounded-full text-neutral-400 hover:text-white">CAC</button>
-
-              <button onclick="updateYieldMetric('RET')" id="ym-ret" class="px-2.5 py-1 rounded-full text-neutral-400 hover:text-white">Retention</button>
-
-            </div>
-
-            <div class="flex items-center justify-between">
-
-              <span id="yield-val" class="text-4xl font-extrabold text-white">9.4x</span>
-
-              <span id="yield-badge" class="px-3.5 py-1.5 bg-[#FF5A5F]/20 text-[#FF5A5F] font-semibold text-xs rounded-full">Predictive ROAS score</span>
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-
-        <!-- Bento Tile 6 -->
-
-        <div class="bg-[#1D1D1F] border-0 rounded-[2.5rem] p-8 sm:p-10 flex flex-col justify-between min-h-[360px] shadow-xl">
-
-          <div>
-
-            <div class="flex justify-between items-start">
-
-              <h3 class="text-xl sm:text-2xl font-semibold mb-2 tracking-tight text-white">Global usage &amp; licensing</h3>
-
-              <button onclick="openModal('modal-bento-6')" aria-label="Open Licensing Modal" class="spring-pill w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center justify-center">
-
-                +
-
-              </button>
-
-            </div>
-
-            <p class="text-neutral-400 text-sm leading-relaxed">
-
-              Rights, secured.
-
-            </p>
-
-          </div>
-
-          <div class="mt-6 flex justify-end">
-
-            <svg class="w-12 h-12 text-[#E040FB]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.31-2.555-.866-3.656A11.959 11.959 0 0112 2.714z"/>
-
-            </svg>
-
-          </div>
-
-        </div>
-
-
-
-      </div>
-
-
-
-    </div>
-
-  </section>
-
-
-
-  <!-- 05.1 HOW IT WORKS (Apple Retail Cards with Scrim Modals) -->
-
-  <section id="process" data-theme="light" class="w-full bg-[#F5F5F7] text-black py-32 px-6 lg:px-8 relative z-20 selection:bg-neutral-800 selection:text-white">
-
-    <div class="max-w-7xl mx-auto space-y-10">
-
-      
-
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
-
-        <div class="space-y-2">
-
-          <h2 class="text-3xl sm:text-5xl font-semibold tracking-tight text-neutral-900">
-
-            How it works.
-
-          </h2>
-
-          <p class="text-neutral-500 text-base sm:text-lg font-normal">
-
-            Beautifully simple. Proven results.
+            We didn’t just build software—we built a system that understands the heartbeat of culture. ThreadOS™ and Fred AI turn the chaos of the feed into measurable, undeniable&nbsp;impact.
 
           </p>
 
@@ -1217,265 +917,35 @@
 
 
 
-      <!-- Horizontal Apple Card Deck -->
+      <!-- Precision Creator Matchmaking -->
 
-      <div class="relative">
+      <div class="md:col-span-1 relative bg-neutral-900/90 border border-white/10 rounded-3xl p-8 sm:p-10 flex flex-col justify-between overflow-hidden group hover:border-white/20 transition-all duration-300 min-h-[340px]">
 
-        <div id="process-deck" class="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-8 pt-2 no-scrollbar scroll-smooth">
+        <div>
 
-          
+          <h3 class="text-xl sm:text-2xl font-semibold tracking-tight text-white">Precision Creator Matchmaking</h3>
 
-          <!-- Card 1 -->
+          <p class="mt-3 text-xs sm:text-sm text-neutral-400 leading-relaxed [text-wrap:pretty]">
 
-          <div class="w-[320px] sm:w-[380px] h-[500px] shrink-0 snap-start bg-white rounded-[2.5rem] p-8 sm:p-10 flex flex-col justify-between shadow-lg border-0 group relative overflow-hidden">
+            We map authenticity scores, historical engagement, and brand fit—filtering out vanity metrics to lock in tastemakers with true cultural&nbsp;authority.
 
-            <div class="space-y-3">
+          </p>
 
-              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">01 / Strategy</span>
+        </div>
 
-              <h3 class="text-2xl font-bold text-neutral-900 tracking-tight leading-tight">Creative strategy</h3>
+        <div class="mt-8 flex items-center justify-center -space-x-3">
 
-              <p class="text-sm text-neutral-600 leading-relaxed font-normal">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" alt="" class="w-14 h-14 rounded-full object-cover border-2 border-neutral-900 shadow-md z-30" />
 
-                We blend human intuition with machine precision. We blend audience tools with Fred AI™ to find the people who care about your story, and we craft the concepts they can’t ignore.
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80" alt="" class="w-14 h-14 rounded-full object-cover border-2 border-neutral-900 shadow-md z-20" />
 
-              </p>
+          <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=300&q=80" alt="" class="w-14 h-14 rounded-full object-cover border-2 border-neutral-900 shadow-md z-10" />
 
-            </div>
+          <div class="relative z-40 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 border border-white/15 backdrop-blur-md font-sans text-xs font-medium tracking-wider uppercase text-white/90 shadow-xl">
 
-            
-
-            <div class="my-auto bg-[#1D1D1F] text-white p-5 rounded-2xl space-y-3 shadow-md">
-
-              <div class="flex justify-between items-center text-xs text-neutral-400">
-
-                <span>ThreadOS™ Intent Index</span>
-
-                <span class="text-emerald-400 font-bold">99.2%</span>
-
-              </div>
-
-              <div class="text-2xl font-black text-white">8.4M Micro-Pockets</div>
-
-              <div class="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
-
-                <div class="bg-gradient-to-r from-[#FF5A5F] to-[#E040FB] h-full w-[85%] rounded-full"></div>
-
-              </div>
-
-            </div>
-
-
-
-            <div class="flex justify-end pt-2">
-
-              <button onclick="openModal('modal-strategy')" aria-label="Learn more about Creative Strategy" class="spring-pill w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold text-sm shadow-md">
-
-                +
-
-              </button>
-
-            </div>
+            <span class="w-2 h-2 rounded-full bg-red-500"></span> 100% MATCH
 
           </div>
-
-
-
-          <!-- Card 2 -->
-
-          <div class="w-[320px] sm:w-[380px] h-[500px] shrink-0 snap-start bg-white rounded-[2.5rem] p-8 sm:p-10 flex flex-col justify-between shadow-lg border-0 group relative overflow-hidden">
-
-            <div class="space-y-3">
-
-              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">02 / Activation</span>
-
-              <h3 class="text-2xl font-bold text-neutral-900 tracking-tight leading-tight">Creator activation</h3>
-
-              <p class="text-sm text-neutral-600 leading-relaxed font-normal">
-
-                We handle everything. Vetting, contracts, rights, and tracking—all in one place. You get a finished campaign; we do the heavy lifting.
-
-              </p>
-
-            </div>
-
-
-
-            <div class="my-auto bg-[#1D1D1F] text-white p-5 rounded-2xl space-y-3 shadow-md">
-
-              <div class="flex items-center justify-between text-xs">
-
-                <span class="text-neutral-400">Efficiency, from the ground up.</span>
-
-                <span class="text-[#FF5A5F] font-bold">&lt; 24 Hours</span>
-
-              </div>
-
-              <div class="flex -space-x-3 items-center">
-
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="Creator 1" class="w-10 h-10 rounded-full border-2 border-[#1D1D1F] object-cover" />
-
-                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80" alt="Creator 2" class="w-10 h-10 rounded-full border-2 border-[#1D1D1F] object-cover" />
-
-                <div class="w-10 h-10 rounded-full bg-emerald-500 text-white font-bold text-[10px] flex items-center justify-center border-2 border-[#1D1D1F]">100%</div>
-
-              </div>
-
-            </div>
-
-
-
-            <div class="flex justify-end pt-2">
-
-              <button onclick="openModal('modal-activation')" aria-label="Learn more about Creator Activation" class="spring-pill w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold text-sm shadow-md">
-
-                +
-
-              </button>
-
-            </div>
-
-          </div>
-
-
-
-          <!-- Card 3 -->
-
-          <div class="w-[320px] sm:w-[380px] h-[500px] shrink-0 snap-start bg-white rounded-[2.5rem] p-8 sm:p-10 flex flex-col justify-between shadow-lg border-0 group relative overflow-hidden">
-
-            <div class="space-y-3">
-
-              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">03 / Whitelisting</span>
-
-              <h3 class="text-2xl font-bold text-neutral-900 tracking-tight leading-tight">Creator paid ads</h3>
-
-              <p class="text-sm text-neutral-600 leading-relaxed font-normal">
-
-                Turn the spark into a flame. We take your best creator content and amplify it, turning viral moments into direct, measurable revenue.
-
-              </p>
-
-            </div>
-
-
-
-            <div class="my-auto bg-[#1D1D1F] text-white p-5 rounded-2xl space-y-3 shadow-md">
-
-              <div class="text-xs text-neutral-400">CPM Efficiency Gains</div>
-
-              <div class="text-3xl font-black text-emerald-400">+140%</div>
-
-              <div class="text-[11px] text-neutral-400">Direct Paid Whitelisting Scale</div>
-
-            </div>
-
-
-
-            <div class="flex justify-end pt-2">
-
-              <button onclick="openModal('modal-whitelisting')" aria-label="Learn more about Creator Paid Ads" class="spring-pill w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold text-sm shadow-md">
-
-                +
-
-              </button>
-
-            </div>
-
-          </div>
-
-
-
-          <!-- Card 4 -->
-
-          <div class="w-[320px] sm:w-[380px] h-[500px] shrink-0 snap-start bg-white rounded-[2.5rem] p-8 sm:p-10 flex flex-col justify-between shadow-lg border-0 group relative overflow-hidden">
-
-            <div class="space-y-3">
-
-              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">04 / Intelligence</span>
-
-              <h3 class="text-2xl font-bold text-neutral-900 tracking-tight leading-tight">Measurement &amp; analytics</h3>
-
-              <p class="text-sm text-neutral-600 leading-relaxed font-normal">
-
-                See clearly. Our Attention Engine™ tracks every view and every dollar, giving you real-time insight into what’s driving your growth.
-
-              </p>
-
-            </div>
-
-
-
-            <div class="my-auto bg-[#1D1D1F] text-white p-5 rounded-2xl space-y-3 shadow-md">
-
-              <div class="text-xs text-neutral-400">Attention Engine™</div>
-
-              <div class="text-3xl font-black text-sky-400">Live dashboard</div>
-
-              <div class="text-[11px] text-neutral-400">Real-time measurement view</div>
-
-            </div>
-
-
-
-            <div class="flex justify-end pt-2">
-
-              <button onclick="openModal('modal-analytics')" aria-label="Learn more about Measurement" class="spring-pill w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold text-sm shadow-md">
-
-                +
-
-              </button>
-
-            </div>
-
-          </div>
-
-
-
-          <!-- Card 5 -->
-
-          <div class="w-[320px] sm:w-[380px] h-[500px] shrink-0 snap-start bg-white rounded-[2.5rem] p-8 sm:p-10 flex flex-col justify-between shadow-lg border-0 group relative overflow-hidden">
-
-            <div class="space-y-3">
-
-              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">05 / Optimisation</span>
-
-              <h3 class="text-2xl font-bold text-neutral-900 tracking-tight leading-tight">Conversion yield</h3>
-
-              <p class="text-sm text-neutral-600 leading-relaxed font-normal">
-
-                From feed to sale. We remove the friction between a creator's post and your brand, making the journey from discovery to traffic or purchase seamless.
-
-              </p>
-
-            </div>
-
-
-
-            <div class="my-auto bg-[#1D1D1F] text-white p-5 rounded-2xl space-y-3 shadow-md">
-
-              <div class="text-xs text-neutral-400">Attributed Sales Volume</div>
-
-              <div class="text-3xl font-black text-rose-400">$3.8M</div>
-
-              <div class="text-[11px] text-neutral-400">Live Checkout Tracking</div>
-
-            </div>
-
-
-
-            <div class="flex justify-end pt-2">
-
-              <button onclick="openModal('modal-conversion')" aria-label="Learn more about Conversion" class="spring-pill w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold text-sm shadow-md">
-
-                +
-
-              </button>
-
-            </div>
-
-          </div>
-
-
 
         </div>
 
@@ -1483,25 +953,123 @@
 
 
 
-      <!-- Controls -->
+      <!-- Attention Engine™ -->
 
-      <div class="flex items-center justify-end gap-3 pt-2">
+      <div class="md:col-span-1 relative bg-neutral-900/90 border border-white/10 rounded-3xl p-8 sm:p-10 flex flex-col justify-between overflow-hidden group hover:border-white/20 transition-all duration-300 min-h-[340px]">
 
-        <button onclick="document.getElementById('process-deck').scrollBy({left: -400, behavior: 'smooth'})" aria-label="Previous" class="spring-pill w-10 h-10 rounded-full bg-neutral-200 hover:bg-neutral-300 text-neutral-800 flex items-center justify-center text-lg font-bold">
+        <div>
 
-          ‹
+          <h3 class="text-xl sm:text-2xl font-semibold tracking-tight text-white">Attention Engine™</h3>
 
-        </button>
+          <p class="mt-3 text-xs sm:text-sm text-neutral-400 leading-relaxed [text-wrap:pretty]">
 
-        <button onclick="document.getElementById('process-deck').scrollBy({left: 400, behavior: 'smooth'})" aria-label="Next" class="spring-pill w-10 h-10 rounded-full bg-neutral-200 hover:bg-neutral-300 text-neutral-800 flex items-center justify-center text-lg font-bold">
+            Stop guessing. Our engine models every hook and drop-off curve, ensuring your budget goes exclusively where predictable results&nbsp;live.
 
-          ›
+          </p>
 
-        </button>
+        </div>
+
+        <div class="mt-8 space-y-2">
+
+          <div class="text-4xl font-extrabold text-white tracking-tight">9.4x</div>
+
+          <span class="font-sans text-xs font-medium tracking-wider uppercase text-neutral-400">PREDICTIVE ROAS SCORE</span>
+
+        </div>
 
       </div>
 
 
+
+      <!-- Paid Whitelisting & Scaling -->
+
+      <div class="md:col-span-1 relative bg-neutral-900/90 border border-white/10 rounded-3xl p-8 sm:p-10 flex flex-col justify-between overflow-hidden group hover:border-white/20 transition-all duration-300 min-h-[340px]">
+
+        <div>
+
+          <h3 class="text-xl sm:text-2xl font-semibold tracking-tight text-white">Paid Whitelisting &amp; Scaling</h3>
+
+          <p class="mt-3 text-xs sm:text-sm text-neutral-400 leading-relaxed [text-wrap:pretty]">
+
+            Secure native access to creator accounts, transforming authentic organic moments into high-performance media with lower&nbsp;CAC.
+
+          </p>
+
+        </div>
+
+        <div class="mt-8">
+
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 border border-white/15 backdrop-blur-md font-sans text-xs font-medium tracking-wider uppercase text-white/90 mb-4">
+
+            <span class="w-2 h-2 rounded-full bg-red-500"></span> -38% CAC REDUCTION
+
+          </div>
+
+          <div class="h-20 w-full">
+
+            <svg class="w-full h-full overflow-visible" viewBox="0 0 200 60" fill="none" aria-hidden="true">
+
+              <path d="M0 50 Q 50 48, 90 32 T 170 12" stroke="#FF5A5F" stroke-width="3" stroke-linecap="round" class="opacity-90"/>
+
+              <circle cx="170" cy="12" r="5" fill="#FF5A5F" class="drop-shadow-[0_0_10px_rgba(255,90,95,0.9)]"/>
+
+              <circle cx="170" cy="12" r="9" stroke="#FF5A5F" stroke-width="1.5" class="opacity-40"/>
+
+            </svg>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- Global Usage & Licensing -->
+
+      <div class="md:col-span-1 relative bg-neutral-950 border border-white/10 rounded-3xl overflow-hidden p-8 flex flex-col justify-between min-h-[360px] group hover:border-white/20 transition-all duration-300">
+
+        <div class="absolute bottom-0 left-0 right-0 w-full h-[60%] overflow-hidden pointer-events-none z-0">
+
+          <img
+
+            src="Content/usage-bento.jpg"
+
+            alt="Global Usage"
+
+            class="w-full h-full object-cover object-bottom scale-125 translate-y-3 opacity-80 filter grayscale-[20%] contrast-[120%] brightness-[0.8]"
+
+          />
+
+          <div class="absolute inset-0 bg-gradient-to-b from-neutral-950 via-neutral-950/40 to-transparent"></div>
+
+        </div>
+
+        <div class="relative z-10 space-y-3 max-w-xs">
+
+          <h3 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Global Usage &amp; Licensing</h3>
+
+          <p class="text-xs sm:text-sm text-neutral-300 leading-relaxed [text-wrap:pretty]">
+
+            Never lose the content you love. We lock in usage, multi-platform rights, and ownership—ensuring your best assets stay&nbsp;yours.
+
+          </p>
+
+        </div>
+
+        <div class="relative z-10 self-center mt-auto pt-10">
+
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/80 border border-white/15 backdrop-blur-md font-sans text-xs font-medium tracking-wider uppercase text-white/90 shadow-2xl">
+
+            <span class="w-2 h-2 rounded-full bg-red-500"></span>
+
+            <span class="tracking-wider">RIGHTS SECURED</span>
+
+          </div>
+
+        </div>
+
+      </div>
 
     </div>
 
@@ -1509,49 +1077,177 @@
 
 
 
+  <!-- 05.1 HOW IT WORKS (Apple Full-Bleed Horizontal Gallery) -->
+
+  <section id="how-it-works" data-theme="light" class="py-20 bg-[#fafafa] w-full overflow-x-hidden relative z-20 selection:bg-neutral-800 selection:text-white">
+
+    <!-- Header Container -->
+
+    <div class="max-w-7xl mx-auto px-6 sm:px-8 mb-10">
+
+      <h2 id="process-title" class="text-4xl sm:text-5xl font-bold tracking-tight text-neutral-900">How it works.</h2>
+
+      <p class="text-lg text-neutral-500 mt-3">Beautifully simple. Proven results.</p>
+
+    </div>
+
+    <!-- Slider Track (Zero Padding Walls) -->
+
+    <div
+      id="process-slider"
+      class="w-full flex gap-6 overflow-x-auto scroll-smooth no-scrollbar pt-2 pb-8 pr-12"
+    >
+
+      <!-- Flex Spacer (Expands dynamically on load to position Card 01) -->
+
+      <div id="slider-spacer" class="shrink-0 pointer-events-none"></div>
+
+<!-- Card 01 / Strategy -->
+
+      <div class="w-[360px] sm:w-[440px] md:w-[480px] shrink-0 bg-[#f4f4f6] rounded-[24px] p-8 sm:p-9 flex flex-col justify-between min-h-[320px] sm:min-h-[340px]">
+
+        <div>
+
+          <span class="text-xs font-semibold tracking-widest uppercase text-neutral-400">01 / Strategy</span>
+
+          <h3 class="text-2xl font-bold text-neutral-900 tracking-tight mt-2">Creative strategy</h3>
+
+          <p class="text-sm text-neutral-600 leading-relaxed mt-3 [text-wrap:pretty]">We map social data and cultural listening to see where attention lives. We blend human intuition with precision machine vetting to craft concepts that can’t be&nbsp;ignored.</p>
+
+        </div>
+
+        <div class="mt-auto pt-6"><svg class="w-8 h-8" fill="none" viewBox="0 0 24 24"><defs><linearGradient id="red-thread-gradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff2a5f"/><stop offset="100%" stop-color="#e000ff"/></linearGradient></defs><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg></div>
+
+      </div>
+
+<!-- Card 02 / Activation -->
+
+      <div class="w-[360px] sm:w-[440px] md:w-[480px] shrink-0 bg-[#f4f4f6] rounded-[24px] p-8 sm:p-9 flex flex-col justify-between min-h-[320px] sm:min-h-[340px]">
+
+        <div>
+
+          <span class="text-xs font-semibold tracking-widest uppercase text-neutral-400">02 / Activation</span>
+
+          <h3 class="text-2xl font-bold text-neutral-900 tracking-tight mt-2">Creator activation</h3>
+
+          <p class="text-sm text-neutral-600 leading-relaxed mt-3 [text-wrap:pretty]">End-to-end campaign execution with our in-house operating system, ThreadOS™. We handle vetting, contracts, rights, and tracking—all in one frictionless&nbsp;place.</p>
+
+        </div>
+
+        <div class="mt-auto pt-6"><svg class="w-8 h-8" fill="none" viewBox="0 0 24 24"><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+
+      </div>
+
+<!-- Card 03 / Whitelisting -->
+
+      <div class="w-[360px] sm:w-[440px] md:w-[480px] shrink-0 bg-[#f4f4f6] rounded-[24px] p-8 sm:p-9 flex flex-col justify-between min-h-[320px] sm:min-h-[340px]">
+
+        <div>
+
+          <span class="text-xs font-semibold tracking-widest uppercase text-neutral-400">03 / Whitelisting</span>
+
+          <h3 class="text-2xl font-bold text-neutral-900 tracking-tight mt-2">Creator paid ads</h3>
+
+          <p class="text-sm text-neutral-600 leading-relaxed mt-3 [text-wrap:pretty]">Turn the spark into a flame. We secure native access to creator accounts, amplifying viral organic content into high-performance, direct-response&nbsp;media.</p>
+
+        </div>
+
+        <div class="mt-auto pt-6"><svg class="w-8 h-8" fill="none" viewBox="0 0 24 24"><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="m3 11 18-5v12L3 13v-2zm0 0h-1a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1m8 2v4a2 2 0 0 1-2 2H8a1 1 0 0 1-1-1v-5"/></svg></div>
+
+      </div>
+
+<!-- Card 04 / Intelligence -->
+
+      <div class="w-[360px] sm:w-[440px] md:w-[480px] shrink-0 bg-[#f4f4f6] rounded-[24px] p-8 sm:p-9 flex flex-col justify-between min-h-[320px] sm:min-h-[340px]">
+
+        <div>
+
+          <span class="text-xs font-semibold tracking-widest uppercase text-neutral-400">04 / Intelligence</span>
+
+          <h3 class="text-2xl font-bold text-neutral-900 tracking-tight mt-2">Measurement &amp; analytics</h3>
+
+          <p class="text-sm text-neutral-600 leading-relaxed mt-3 [text-wrap:pretty]">Track real-time viewer retention, conversion velocity, and brand sentiment through Attention Engine™. See clearly where every single dollar is driving&nbsp;growth.</p>
+
+        </div>
+
+        <div class="mt-auto pt-6"><svg class="w-8 h-8" fill="none" viewBox="0 0 24 24"><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+
+      </div>
+
+<!-- Card 05 / Optimization -->
+
+      <div class="w-[360px] sm:w-[440px] md:w-[480px] shrink-0 bg-[#f4f4f6] rounded-[24px] p-8 sm:p-9 flex flex-col justify-between min-h-[320px] sm:min-h-[340px]">
+
+        <div>
+
+          <span class="text-xs font-semibold tracking-widest uppercase text-neutral-400">05 / Optimization</span>
+
+          <h3 class="text-2xl font-bold text-neutral-900 tracking-tight mt-2">Conversion yield</h3>
+
+          <p class="text-sm text-neutral-600 leading-relaxed mt-3 [text-wrap:pretty]">Bridge culture and checkout. We remove friction between a creator's post and your brand, optimizing user journeys from social feeds directly to point-of-sale.</p>
+
+        </div>
+
+        <div class="mt-auto pt-6"><svg class="w-8 h-8" fill="none" viewBox="0 0 24 24"><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12z"/><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg></div>
+
+      </div>
+
+    </div>
+
+    <!-- Controls -->
+
+    <div class="max-w-7xl mx-auto px-6 sm:px-8 flex justify-end gap-3 mt-4">
+
+      <button id="prev-btn" aria-label="Previous" class="w-11 h-11 rounded-full bg-neutral-200/80 hover:bg-neutral-300 text-neutral-800 flex items-center justify-center transition-all cursor-pointer">&larr;</button>
+
+      <button id="next-btn" aria-label="Next" class="w-11 h-11 rounded-full bg-neutral-200/80 hover:bg-neutral-300 text-neutral-800 flex items-center justify-center transition-all cursor-pointer">&rarr;</button>
+
+    </div>
+
+  </section>
+
+
   <!-- 05.2 GLOBAL REACH (Clean Crisp Map) -->
 
-  <section id="global" data-theme="dark" class="w-full bg-[#111113] text-white py-32 px-6 lg:px-8 relative overflow-hidden z-20 selection:bg-neutral-800 selection:text-white">
+  <section id="global-section" data-theme="dark" class="py-28 sm:py-36 bg-neutral-950 text-white relative overflow-hidden z-20 selection:bg-neutral-800 selection:text-white">
 
-    <div class="max-w-4xl mx-auto space-y-6 text-center relative z-10">
+    <div class="max-w-4xl mx-auto text-center relative z-10 px-6">
 
-      <h2 class="text-3xl sm:text-5xl md:text-6xl font-semibold tracking-tight text-prism-gradient leading-[1.1] text-balance-custom">
+      <h2 class="text-4xl sm:text-6xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[#ff2a5f] to-[#e000ff] pb-2 inline-block">Global strategy, local soul.</h2>
 
-        Global strategy, local soul.
+      <p class="text-base sm:text-lg text-neutral-400 max-w-2xl mx-auto text-center leading-relaxed mt-4 [text-wrap:pretty]">We pair worldwide perspective with deep cultural fluency—so the right content reaches the right audience at the perfect&nbsp;moment.</p>
 
-      </h2>
+    </div>
 
-      <p class="text-neutral-400 text-lg sm:text-2xl md:text-3xl font-normal leading-relaxed text-balance-custom">
+    <!-- Balanced typographic stats row -->
 
-        We pair worldwide perspective with deep cultural fluency—so the right content reaches the right audience at the perfect moment.
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-0 max-w-4xl mx-auto my-14 relative z-10 w-full px-6">
 
-      </p>
+      <div class="flex-1 flex flex-col items-center justify-center text-center px-4">
 
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 pt-8 max-w-3xl mx-auto">
+        <span class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">80+</span>
 
-        <div class="bg-[#1D1D1F] rounded-[2rem] px-6 py-8 text-center">
+        <span class="text-xs font-semibold text-neutral-400 mt-2 tracking-widest uppercase">Countries</span>
 
-          <div class="text-4xl sm:text-5xl font-bold tracking-tight text-white">80+</div>
+      </div>
 
-          <div class="mt-2 text-sm text-neutral-400 font-medium">Countries</div>
+      <div class="hidden sm:block h-10 w-[1px] bg-white/10 self-center"></div>
 
-        </div>
+      <div class="flex-1 flex flex-col items-center justify-center text-center px-4">
 
-        <div class="bg-[#1D1D1F] rounded-[2rem] px-6 py-8 text-center">
+        <span class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">2</span>
 
-          <div class="text-4xl sm:text-5xl font-bold tracking-tight text-white">2</div>
+        <span class="text-xs font-semibold text-neutral-400 mt-2 tracking-widest uppercase">Offices</span>
 
-          <div class="mt-2 text-sm text-neutral-400 font-medium">Offices</div>
+      </div>
 
-        </div>
+      <div class="hidden sm:block h-10 w-[1px] bg-white/10 self-center"></div>
 
-        <div class="bg-[#1D1D1F] rounded-[2rem] px-6 py-8 text-center">
+      <div class="flex-1 flex flex-col items-center justify-center text-center px-4">
 
-          <div class="text-4xl sm:text-5xl font-bold tracking-tight text-white">5</div>
+        <span class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">5</span>
 
-          <div class="mt-2 text-sm text-neutral-400 font-medium">Core language regions</div>
-
-        </div>
+        <span class="text-xs font-semibold text-neutral-400 mt-2 tracking-widest uppercase">Language Regions</span>
 
       </div>
 
@@ -1559,59 +1255,79 @@
 
 
 
-    <!-- Clean Vector Map -->
+    <!-- LED Dot-Matrix Map + City Badges -->
 
-    <div class="relative w-full max-w-7xl mx-auto pt-10 scale-105">
+    <div class="relative max-w-6xl mx-auto mt-12 mb-8 px-6 min-h-[380px] sm:min-h-[460px] flex items-center justify-center">
 
-      <img id="global-map-img" src="https://upload.wikimedia.org/wikipedia/commons/a/ad/BlankMap-World_gray.svg" alt="Global Footprint Vector Map" class="w-full h-auto opacity-30 filter invert" />
+      <!-- LED Dot Matrix Map Image / SVG -->
 
-      
+      <img
+        src="assets/world-dot-matrix.svg"
+        alt="World Dot Matrix Map"
+        class="w-full h-auto max-h-[500px] object-contain opacity-35 brightness-150"
+      />
 
-      <div class="absolute top-[32%] left-[48%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+      <!-- London / UK -->
 
-        <span class="animate-radar-ping absolute inline-flex h-8 w-8 rounded-full bg-[#FF5A5F] opacity-75"></span>
+      <div class="absolute top-[25%] left-[47.5%] -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 bg-neutral-900/90 border border-white/15 backdrop-blur-md px-3 py-1.5 rounded-full shadow-2xl z-20">
 
-        <span class="relative inline-flex rounded-full h-3 w-3 bg-[#FF5A5F]"></span>
+        <span class="relative flex h-2 w-2">
 
-      </div>
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
 
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-[#ff2a5f]"></span>
 
+        </span>
 
-      <div class="absolute top-[38%] left-[28%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
-
-        <span class="animate-radar-ping absolute inline-flex h-8 w-8 rounded-full bg-[#FF5A5F] opacity-75"></span>
-
-        <span class="relative inline-flex rounded-full h-3 w-3 bg-[#FF5A5F]"></span>
-
-      </div>
-
-
-
-      <div class="absolute top-[42%] left-[85%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
-
-        <span class="animate-radar-ping absolute inline-flex h-8 w-8 rounded-full bg-[#E040FB] opacity-75"></span>
-
-        <span class="relative inline-flex rounded-full h-3 w-3 bg-[#E040FB]"></span>
+        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase">London</span>
 
       </div>
 
+      <!-- New York / US East -->
 
+      <div class="absolute top-[32%] left-[24.5%] -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 bg-neutral-900/90 border border-white/15 backdrop-blur-md px-3 py-1.5 rounded-full shadow-2xl z-20">
 
-      <div class="absolute top-[30%] left-[52%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+        <span class="relative flex h-2 w-2">
 
-        <span class="animate-radar-ping absolute inline-flex h-8 w-8 rounded-full bg-[#E040FB] opacity-75"></span>
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
 
-        <span class="relative inline-flex rounded-full h-3 w-3 bg-[#E040FB]"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-[#ff2a5f]"></span>
+
+        </span>
+
+        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase">New York</span>
 
       </div>
 
+      <!-- Los Angeles / US West -->
 
+      <div class="absolute top-[35%] left-[15.5%] -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 bg-neutral-900/90 border border-white/15 backdrop-blur-md px-3 py-1.5 rounded-full shadow-2xl z-20">
 
-      <div class="absolute top-[62%] left-[78%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+        <span class="relative flex h-2 w-2">
 
-        <span class="animate-radar-ping absolute inline-flex h-8 w-8 rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
 
-        <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-400"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-[#ff2a5f]"></span>
+
+        </span>
+
+        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase">Los Angeles</span>
+
+      </div>
+
+      <!-- Singapore / APAC -->
+
+      <div class="absolute top-[56%] left-[76.5%] -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 bg-neutral-900/90 border border-white/15 backdrop-blur-md px-3 py-1.5 rounded-full shadow-2xl z-20">
+
+        <span class="relative flex h-2 w-2">
+
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-[#ff2a5f]"></span>
+
+        </span>
+
+        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase">Singapore</span>
 
       </div>
 
@@ -1786,56 +1502,6 @@
         </div>
 
 
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-
-  <!-- 06. TECH TEASER -->
-
-  <section id="tech" data-theme="light" class="w-full bg-[#F5F5F7] text-black py-24 px-6 lg:px-8 relative z-20 selection:bg-neutral-800 selection:text-white">
-
-    <div class="max-w-7xl mx-auto">
-
-      <div class="bg-[#1D1D1F] text-white rounded-[2.5rem] p-8 sm:p-14 border-0 shadow-2xl relative overflow-hidden">
-
-        <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none z-0">
-
-          <source src="https://www.pexels.com/download/video/38117215/" type="video/mp4">
-
-        </video>
-
-        <div class="relative z-10 max-w-2xl space-y-6">
-
-          <span class="text-xs font-semibold uppercase tracking-widest text-neutral-400">Built by us.</span>
-
-          <h2 class="text-3xl sm:text-5xl font-semibold tracking-tight text-white">
-
-            The architecture of influence.
-
-          </h2>
-
-          <p class="text-neutral-400 text-base sm:text-lg leading-relaxed">
-
-            We didn’t just build software. We built a system that understands the heartbeat of culture. ThreadOS™, Fred AI, and our Attention Engine™ turn the chaos of the feed into measurable, undeniable impact.
-
-          </p>
-
-          <div class="pt-4 flex flex-wrap gap-3 text-xs font-medium">
-
-            <span class="px-3.5 py-2 rounded-full bg-white/10 border-0 backdrop-blur-md">ThreadOS™</span>
-
-            <span class="px-3.5 py-2 rounded-full bg-white/10 border-0 backdrop-blur-md">Fred AI</span>
-
-            <span class="px-3.5 py-2 rounded-full bg-white/10 border-0 backdrop-blur-md">Attention Engine™</span>
-
-          </div>
-
-        </div>
 
       </div>
 
@@ -2301,318 +1967,6 @@
 
   <!-- UNIVERSAL APPLE SCRIM MODAL DIALOGS -->
 
-  <!-- Bento Modals -->
-
-  <div id="modal-bento-1" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
-
-    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
-
-      <button onclick="closeModal('modal-bento-1')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
-
-      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">Capability Spotlight</span>
-
-      <h3 class="text-3xl font-bold">Precision creator matchmaking</h3>
-
-      <p class="text-neutral-300 text-base leading-relaxed">
-
-        We don’t manage any creators. Instead, we use our vetting system to map creator audience authenticity scores, historical engagement, and brand fit. We filter out vanity metrics to lock in tastemakers with true cultural weight speaking to your exact target customers.
-
-      </p>
-
-      <div class="pt-4 flex justify-end">
-
-        <button onclick="closeModal('modal-bento-1')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-
-  <div id="modal-bento-2" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
-
-    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
-
-      <button onclick="closeModal('modal-bento-2')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
-
-      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">ThreadOS™</span>
-
-      <h3 class="text-3xl font-bold">AI-enabled campaign execution.</h3>
-
-      <p class="text-neutral-300 text-base leading-relaxed">
-
-        Built with control, trust, transparency and designed for scale. We manage every aspect of the campaigns in one place. Goodbye rogue email chains.
-
-      </p>
-
-      <div class="pt-4 flex justify-end">
-
-        <button onclick="closeModal('modal-bento-2')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-
-  <div id="modal-bento-3" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
-
-    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
-
-      <button onclick="closeModal('modal-bento-3')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
-
-      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">Algorithmic Engine</span>
-
-      <h3 class="text-3xl font-bold">Intent, targeted.</h3>
-
-      <p class="text-neutral-300 text-base leading-relaxed">
-
-        Intelligence that never sleeps. Fred monitors performance in real-time, optimizing your campaign for better results before you even know you need them.
-
-      </p>
-
-      <div class="pt-4 flex justify-end">
-
-        <button onclick="closeModal('modal-bento-3')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-
-  <div id="modal-bento-4" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
-
-    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
-
-      <button onclick="closeModal('modal-bento-4')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
-
-      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">Performance Media</span>
-
-      <h3 class="text-3xl font-bold">Scale at the speed of feed.</h3>
-
-      <p class="text-neutral-300 text-base leading-relaxed">
-
-        We secure native access to creator accounts, transforming their most authentic organic moments into high-performance media. Lower costs, higher conversion, pure impact.
-
-      </p>
-
-      <div class="pt-4 flex justify-end">
-
-        <button onclick="closeModal('modal-bento-4')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-
-  <div id="modal-bento-5" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
-
-    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
-
-      <button onclick="closeModal('modal-bento-5')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
-
-      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">Predictive Yield</span>
-
-      <h3 class="text-3xl font-bold">See the outcome, before you launch.</h3>
-
-      <p class="text-neutral-300 text-base leading-relaxed">
-
-        Stop guessing. Our engine models every hook and drop-off, ensuring your budget goes exactly where the results are.
-
-      </p>
-
-      <div class="pt-4 flex justify-end">
-
-        <button onclick="closeModal('modal-bento-5')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-
-  <div id="modal-bento-6" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
-
-    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
-
-      <button onclick="closeModal('modal-bento-6')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
-
-      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">Rights Management</span>
-
-      <h3 class="text-3xl font-bold">Navigating fair usage.</h3>
-
-      <p class="text-neutral-300 text-base leading-relaxed">
-
-        Never lose the content you love. We lock in usage, multi-platform rights, and ownership—so your best work stays yours, for a fair deal for all parties.
-
-      </p>
-
-      <div class="pt-4 flex justify-end">
-
-        <button onclick="closeModal('modal-bento-6')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-
-  <!-- How It Works Modals -->
-
-  <div id="modal-strategy" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
-
-    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
-
-      <button onclick="closeModal('modal-strategy')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
-
-      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">Step 01</span>
-
-      <h3 class="text-3xl font-bold">Creative Strategy Architecture</h3>
-
-      <p class="text-neutral-300 text-base leading-relaxed">
-
-        We map social data and cultural listening to see where attention actually lives. Then, our creative team crafts scroll-stopping campaigns that turn relevance into high-intent engagement.
-
-      </p>
-
-      <div class="pt-4 flex justify-end">
-
-        <button onclick="closeModal('modal-strategy')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-
-  <div id="modal-activation" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
-
-    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
-
-      <button onclick="closeModal('modal-activation')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
-
-      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">Step 02</span>
-
-      <h3 class="text-3xl font-bold">Creator Activation</h3>
-
-      <p class="text-neutral-300 text-base leading-relaxed">
-
-        End-to-end campaign execution with our in-house operating system, ThreadOS™, built to support our teams and clients deliver creator marketing at scale.
-
-      </p>
-
-      <div class="pt-4 flex justify-end">
-
-        <button onclick="closeModal('modal-activation')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-
-  <div id="modal-whitelisting" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
-
-    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
-
-      <button onclick="closeModal('modal-whitelisting')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
-
-      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">Step 03</span>
-
-      <h3 class="text-3xl font-bold">Creator Paid Ads</h3>
-
-      <p class="text-neutral-300 text-base leading-relaxed">
-
-        Turn viral organic moments into direct conversion engines. We secure whitelisting rights and scale top-performing creator assets across paid social feeds.
-
-      </p>
-
-      <div class="pt-4 flex justify-end">
-
-        <button onclick="closeModal('modal-whitelisting')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-
-  <div id="modal-analytics" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
-
-    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
-
-      <button onclick="closeModal('modal-analytics')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
-
-      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">Step 04</span>
-
-      <h3 class="text-3xl font-bold">Measurement &amp; Analytics</h3>
-
-      <p class="text-neutral-300 text-base leading-relaxed">
-
-        Track real-time viewer retention, conversion velocity, and brand sentiment through Attention Engine™. A unified approach to robust measurement. Finally.
-
-      </p>
-
-      <div class="pt-4 flex justify-end">
-
-        <button onclick="closeModal('modal-analytics')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-
-  <div id="modal-conversion" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
-
-    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
-
-      <button onclick="closeModal('modal-conversion')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
-
-      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">Step 05</span>
-
-      <h3 class="text-3xl font-bold">Conversion Yield</h3>
-
-      <p class="text-neutral-300 text-base leading-relaxed">
-
-        Bridge culture and checkout. We optimise user journeys from social feeds directly to point-of-sale, ensuring your creator marketing converts.
-
-      </p>
-
-      <div class="pt-4 flex justify-end">
-
-        <button onclick="closeModal('modal-conversion')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-
   <!-- Case Study Modals -->
 
   <div id="modal-case-1" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
@@ -2749,6 +2103,75 @@
 
 
 
+    document.querySelectorAll('.apple-modal').forEach((modal) => {
+
+      modal.addEventListener('click', (e) => {
+
+        if (e.target === modal) closeModal(modal.id);
+
+      });
+
+    });
+
+
+
+    document.addEventListener('keydown', (e) => {
+
+      if (e.key !== 'Escape') return;
+
+      document.querySelectorAll('.apple-modal.active').forEach((modal) => closeModal(modal.id));
+
+    });
+
+
+
+
+
+    // Process slider chevrons
+
+    (function () {
+
+      const slider = document.getElementById('process-slider');
+
+      const prevBtn = document.getElementById('prev-btn');
+
+      const nextBtn = document.getElementById('next-btn');
+
+      if (!slider || !prevBtn || !nextBtn) return;
+
+      const getScrollDistance = () => {
+
+        // Target the first actual card (skipping the #slider-spacer)
+
+        const card = slider.children[1];
+
+        return card ? card.offsetWidth + 24 : 440; // card width + 24px gap
+
+      };
+
+      function updatePrevState() {
+
+        prevBtn.disabled = slider.scrollLeft <= 4;
+
+      }
+
+      nextBtn.onclick = () => slider.scrollBy({ left: getScrollDistance(), behavior: 'smooth' });
+
+      prevBtn.onclick = () => slider.scrollBy({ left: -getScrollDistance(), behavior: 'smooth' });
+
+      slider.addEventListener('scroll', updatePrevState, { passive: true });
+
+      updatePrevState();
+
+    })();
+
+
+
+
+
+
+
+
     // 2. Interactive Bento Micro-Widget Controllers
 
     function updateBentoVelocity(range) {
@@ -2864,64 +2287,6 @@
     }
 
 
-
-    // 3. Filterable Hardware Stage Controller
-
-    function filterHardware(category) {
-
-      const cards = document.querySelectorAll('.hw-card');
-
-      const filterBtns = ['all', 'beauty', 'fintech', 'consumer', 'gaming', 'entertainment', 'sports'];
-
-
-
-      filterBtns.forEach(btn => {
-
-        const el = document.getElementById(`hw-filter-${btn}`);
-
-        if (el) {
-
-          if (btn === category) {
-
-            el.className = "spring-pill px-4 py-2 rounded-full text-xs font-semibold bg-white text-black shadow-md";
-
-          } else {
-
-            el.className = "spring-pill px-4 py-2 rounded-full text-xs font-semibold bg-white/10 text-neutral-300 hover:text-white";
-
-          }
-
-        }
-
-      });
-
-
-
-      cards.forEach(card => {
-
-        const cat = card.getAttribute('data-category');
-
-        if (category === 'all' || cat === category) {
-
-          card.style.opacity = '1';
-
-          card.style.transform = 'scale(1)';
-
-          card.style.filter = 'none';
-
-        } else {
-
-          card.style.opacity = '0.25';
-
-          card.style.transform = 'scale(0.92)';
-
-          card.style.filter = 'grayscale(100%)';
-
-        }
-
-      });
-
-    }
 
 
 
@@ -3051,9 +2416,185 @@
 
 
 
-    // 6. MAIN HIGH-PERFORMANCE SCROLL LOOP (Nav Theme, Video Binding, Hardware Scrub, Stacking Cards)
+    // 6. MAIN HIGH-PERFORMANCE SCROLL LOOP (Nav Theme, Video Binding, Stacking Cards)
 
     let isTicking = false;
+
+
+
+    // C. Hero Zoom Engine (One-Way Open)
+
+    let heroFullyOpened = false;
+
+
+
+    window.addEventListener('scroll', () => {
+
+      const runway = document.getElementById('hero-runway');
+
+      const stencil = document.getElementById('hero-stencil-svg');
+
+      const scrollHint = document.getElementById('hero-scroll-hint');
+
+      if (!runway || !stencil) return;
+
+
+
+      const currentY = window.scrollY || window.pageYOffset;
+
+
+
+      // 1. If user is at the very top of the page, enforce clean default state
+
+      if (currentY <= 5) {
+
+        heroFullyOpened = false;
+
+        stencil.style.display = 'block';
+
+        stencil.style.transform = 'translate3d(0, 0, 0) scale(1)';
+
+        stencil.style.opacity = '1';
+
+        if (scrollHint) scrollHint.style.opacity = '1';
+
+        return;
+
+      }
+
+
+
+      // 2. Compute normal scroll expansion
+
+      const rect = runway.getBoundingClientRect();
+
+      const scrollableDistance = runway.offsetHeight - window.innerHeight;
+
+      if (scrollableDistance <= 0) return;
+
+
+
+      const currentScroll = Math.max(0, Math.min(scrollableDistance, -rect.top));
+
+      const progress = Math.max(0, Math.min(1, currentScroll / scrollableDistance));
+
+
+
+      // 3. Mark as fully opened once expanded past 80%
+
+      if (progress >= 0.8) {
+
+        heroFullyOpened = true;
+
+      }
+
+
+
+      // 4. If scrolling back UP after opening, keep SVG mask hidden to avoid recalculating transforms
+
+      if (heroFullyOpened && progress > 0.1) {
+
+        stencil.style.opacity = '0';
+
+        stencil.style.pointerEvents = 'none';
+
+        if (scrollHint) scrollHint.style.opacity = '0';
+
+        return;
+
+      }
+
+
+
+      // Standard smooth zoom forward
+
+      const scale = 1 + Math.pow(progress, 1.8) * 14;
+
+      let opacity = 1;
+
+      if (progress > 0.3) {
+
+        opacity = Math.max(0, 1 - ((progress - 0.3) / 0.35));
+
+      }
+
+
+
+      stencil.style.display = 'block';
+
+      stencil.style.pointerEvents = 'none';
+
+      stencil.style.transform = `translate3d(0, 0, 0) scale(${scale.toFixed(3)})`;
+
+      stencil.style.opacity = opacity.toFixed(3);
+
+      if (scrollHint) {
+
+        scrollHint.style.opacity = Math.max(0, 1 - progress * 4).toFixed(3);
+
+      }
+
+    });
+
+
+
+    // D. Hardware Curtain Sweep Engine
+
+    const hwSection = document.getElementById('hardware');
+
+    const hwCards = document.querySelectorAll('.hw-card');
+
+
+
+    if (hwSection && hwCards.length > 0) {
+
+      window.addEventListener('scroll', () => {
+
+        const rect = hwSection.getBoundingClientRect();
+
+        const currentScroll = Math.max(0, -rect.top);
+
+        
+
+        // Unfold completes rapidly in first 500px of section scroll
+
+        const progress = Math.min(1, currentScroll / 500);
+
+        const totalCards = hwCards.length;
+
+        const centerIdx = Math.floor(totalCards / 2); // Center card is index 5 for 11 cards
+
+
+
+        hwCards.forEach((card, i) => {
+
+          const idx = i - centerIdx; // Generates indices from -5 to +5
+
+          
+
+          // Increase horizontal spacing factor to ensure outer cards spill past the viewport edges
+
+          const translateX = idx * (230 * progress);
+
+          const rotateY = -idx * (14 * progress);
+
+          const translateZ = -Math.abs(idx) * (40 * progress);
+
+          const scale = 1 - Math.abs(idx) * (0.025 * progress);
+
+
+
+          card.style.transform = `translate(-50%, -50%) translateX(${translateX}px) translateZ(${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`;
+
+          card.style.opacity = '1';
+
+        });
+
+      });
+
+    }
+
+
 
     window.addEventListener('scroll', () => {
 
@@ -3071,7 +2612,7 @@
 
           const mainNav = document.getElementById('main-nav');
 
-          const navLogoText = document.getElementById('nav-logo-text');
+          const navLogoImg = document.getElementById('nav-logo-img');
 
           const navLinks = document.getElementById('nav-links');
 
@@ -3113,7 +2654,7 @@
 
                 mainNav.classList.remove('glass-dark');
 
-                if (navLogoText) navLogoText.className = "text-black";
+                if (navLogoImg) navLogoImg.src = 'logo-black.png';
 
                 if (navLinks) navLinks.className = "hidden md:flex items-center gap-8 text-[11px] font-medium uppercase tracking-wider text-neutral-600";
 
@@ -3125,7 +2666,7 @@
 
                 mainNav.classList.remove('glass-light');
 
-                if (navLogoText) navLogoText.className = "text-white";
+                if (navLogoImg) navLogoImg.src = 'logo-white.png';
 
                 if (navLinks) navLinks.className = "hidden md:flex items-center gap-8 text-[11px] font-medium uppercase tracking-wider text-neutral-400";
 
@@ -3169,113 +2710,7 @@
 
 
 
-          // C. Hero Zoom Engine
-
-          const runway = document.getElementById('hero-runway');
-
-          const stencil = document.getElementById('hero-stencil-svg');
-
-          const eyebrow = document.getElementById('hero-eyebrow');
-
-          const scrollHint = document.getElementById('hero-scroll-hint');
-
-          
-
-          if (runway && stencil) {
-
-            const rect = runway.getBoundingClientRect();
-
-            const scrollableDistance = runway.offsetHeight - viewHeight;
-
-            const currentScroll = -rect.top;
-
-
-
-            let progress = currentScroll / scrollableDistance;
-
-            progress = Math.max(0, Math.min(1, progress));
-
-
-
-            const scale = 1 + Math.pow(progress, 1.5) * 14;
-
-            stencil.style.transform = `scale(${scale})`;
-
-
-
-            let stencilOpacity = 1;
-
-            if (progress > 0.2) {
-
-              stencilOpacity = 1 - ((progress - 0.2) / 0.35);
-
-              stencilOpacity = Math.max(0, Math.min(1, stencilOpacity));
-
-            }
-
-            stencil.style.opacity = stencilOpacity;
-
-
-
-            const fadeOpacity = Math.max(0, 1 - progress * 4);
-
-            if (eyebrow) eyebrow.style.opacity = fadeOpacity;
-
-            if (scrollHint) scrollHint.style.opacity = fadeOpacity;
-
-          }
-
-
-
-          // D. Hardware 3D Scrub Engine
-
-          const hardwareSection = document.getElementById('hardware');
-
-          const phoneOuterLeft = document.getElementById('phone-outer-left');
-
-          const phoneOuterRight = document.getElementById('phone-outer-right');
-
-          const phoneScrubs = document.querySelectorAll('.phone-scrub');
-
-
-
-          if (hardwareSection) {
-
-            const rect = hardwareSection.getBoundingClientRect();
-
-            if (rect.top < viewHeight && rect.bottom > 0) {
-
-              const progress = Math.max(0, Math.min(1, (viewHeight - rect.top) / (viewHeight + rect.height)));
-
-              const rotateY = (1 - progress) * 35;
-
-              const rotateX = (1 - progress) * 15;
-
-
-
-              phoneScrubs.forEach((phone, idx) => {
-
-                const dir = idx % 2 === 0 ? 1 : -1;
-
-                phone.style.transform = `rotateY(${rotateY * dir}deg) rotateX(${rotateX}deg)`;
-
-              });
-
-
-
-              if (phoneOuterLeft && phoneOuterRight) {
-
-                const lagY = (rect.top - viewHeight) * -0.06;
-
-                phoneOuterLeft.style.transform = `rotateY(${rotateY}deg) rotateX(${rotateX}deg) translateY(${lagY}px)`;
-
-                phoneOuterRight.style.transform = `rotateY(${-rotateY}deg) rotateX(${rotateX}deg) translateY(${lagY}px)`;
-
-              }
-
-            }
-
-          }
+          // C. Hero Zoom handled by one-way listener below
 
 
 
@@ -3379,7 +2814,27 @@
 
   </script>
 
+  <script>
+    function alignSliderWithSpacer() {
+      const title = document.getElementById('process-title');
+      const spacer = document.getElementById('slider-spacer');
+      const slider = document.getElementById('process-slider');
 
+      if (title && spacer && slider) {
+        // Measure exact left coordinate of the "H" in "How it works."
+        const titleLeft = title.getBoundingClientRect().left;
+        // Subtract flex gap so Card 01 (not the gap after the spacer) lands on the "H"
+        const gap = parseFloat(getComputedStyle(slider).columnGap || getComputedStyle(slider).gap) || 0;
+
+        // Set spacer width so Card 01 starts exactly under the "H"
+        spacer.style.width = Math.max(0, titleLeft - gap) + 'px';
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', alignSliderWithSpacer);
+    window.addEventListener('load', alignSliderWithSpacer);
+    window.addEventListener('resize', alignSliderWithSpacer);
+  </script>
 
 </body>
 
