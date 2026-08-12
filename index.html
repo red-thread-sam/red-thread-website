@@ -1,0 +1,3257 @@
+<!DOCTYPE html>
+
+<html lang="en" class="scroll-smooth bg-black">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Red Thread | Global Influencer Marketing Agency</title>
+
+  <!-- Tailwind CSS CDN -->
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+
+    tailwind.config = {
+
+      theme: {
+
+        extend: {
+
+          colors: {
+
+            appleWhite: '#F5F5F7',
+
+            terminalDark: '#1D1D1F',
+
+            appleGraphite: '#111113',
+
+            bentoDark: '#1D1D1F',
+
+            coralRed: '#FF5A5F',
+
+            magentaPink: '#E040FB',
+
+          },
+
+          fontFamily: {
+
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', '"SF Pro"', '"SF Compact"', 'Helvetica Neue', 'sans-serif'],
+
+            mono: ['"SF Mono"', 'ui-monospace', 'monospace'],
+
+          },
+
+          animation: {
+
+            'imax-scroll': 'imaxScroll 7s linear infinite',
+
+            'radar-ping': 'radarPing 2s cubic-bezier(0, 0, 0.2, 1) infinite',
+
+          },
+
+          keyframes: {
+
+            imaxScroll: {
+
+              '0%': { transform: 'translateX(0)' },
+
+              '100%': { transform: 'translateX(-50%)' },
+
+            },
+
+            radarPing: {
+
+              '75%, 100%': { transform: 'scale(2.4)', opacity: '0' },
+
+            }
+
+          }
+
+        }
+
+      }
+
+    }
+
+  </script>
+
+  <style>
+
+    /* ==========================================
+
+       1. PAGE CANVAS & BASE SYSTEM (Apple HIG)
+
+       ========================================== */
+
+    body, .page-root {
+
+      background-color: #000000;
+
+      margin: 0;
+
+      padding: 0;
+
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "SF Pro", "SF Compact", "Helvetica Neue", sans-serif;
+
+      -webkit-font-smoothing: antialiased;
+
+    }
+
+
+
+    /* Red Thread Coral Red to Magenta Signature Gradient */
+
+    .text-grain-iridescent, .text-prism-gradient {
+
+      background: linear-gradient(90deg, #FF5A5F 0%, #FF2E93 50%, #E040FB 100%);
+
+      -webkit-background-clip: text;
+
+      -webkit-text-fill-color: transparent;
+
+      background-clip: text;
+
+      color: transparent;
+
+    }
+
+
+
+    .glass-dark {
+
+      background: rgba(17, 17, 19, 0.85);
+
+      backdrop-filter: blur(24px);
+
+      -webkit-backdrop-filter: blur(24px);
+
+    }
+
+
+
+    .glass-light {
+
+      background: rgba(245, 245, 247, 0.85);
+
+      backdrop-filter: blur(24px);
+
+      -webkit-backdrop-filter: blur(24px);
+
+    }
+
+
+
+    .no-scrollbar::-webkit-scrollbar {
+
+      display: none;
+
+    }
+
+    .no-scrollbar {
+
+      -ms-overflow-style: none;
+
+      scrollbar-width: none;
+
+    }
+
+
+
+    .text-balance-custom {
+
+      text-wrap: balance;
+
+    }
+
+
+
+    /* Hero Stencil Zoom Anchor */
+
+    .portal-zoom-target {
+
+      transform-origin: 50% 50%;
+
+      will-change: transform, opacity;
+
+    }
+
+
+
+    /* ==========================================
+
+       2. APPLE DYNAMIC SPRING PHYSICS
+
+       ========================================== */
+
+    .spring-pill {
+
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.3s ease, color 0.3s ease, opacity 0.3s ease;
+
+    }
+
+    .spring-pill:hover {
+
+      transform: scale(1.05);
+
+    }
+
+    .spring-pill:active {
+
+      transform: scale(0.94);
+
+    }
+
+
+
+    /* Hardware 3D Scrub Stage */
+
+    .hardware-stage-perspective {
+
+      perspective: 1000px;
+
+      perspective-origin: 50% 50%;
+
+    }
+
+
+
+    /* IMAX Concave Perspective */
+
+    .imax-stage-perspective {
+
+      perspective: 700px;
+
+      perspective-origin: 50% 50%;
+
+    }
+
+
+
+    .imax-card {
+
+      will-change: transform;
+
+      transform-style: preserve-3d;
+
+      backface-visibility: hidden;
+
+    }
+
+
+
+    /* Sticky Z-Space Stacking Cards Transition */
+
+    .stacking-card {
+
+      will-change: transform, opacity, filter;
+
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, filter 0.3s ease;
+
+    }
+
+
+
+    details summary::-webkit-details-marker {
+
+      display: none;
+
+    }
+
+
+
+    .vignette-overlay {
+
+      background: radial-gradient(ellipse at center, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.65) 60%, rgba(0,0,0,0.98) 100%);
+
+    }
+
+
+
+    .phone-stagger-outer {
+
+      will-change: transform;
+
+      transition: transform 0.1s linear;
+
+    }
+
+
+
+    /* Apple-Style Glass Scrim Modal Overlay */
+
+    .apple-modal {
+
+      opacity: 0;
+
+      pointer-events: none;
+
+      transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+
+    }
+
+    .apple-modal.active {
+
+      opacity: 1;
+
+      pointer-events: auto;
+
+    }
+
+  </style>
+
+</head>
+
+<body class="bg-black text-white font-sans antialiased selection:bg-neutral-800 selection:text-white overflow-x-hidden">
+
+
+
+  <!-- HIG DYNAMIC THEME-AWARE NAV (100% Transparent on Load) -->
+
+  <nav id="main-nav" class="fixed top-0 left-0 w-full z-50 opacity-0 pointer-events-none bg-transparent border-b border-transparent transition-all duration-500">
+
+    <div class="max-w-7xl mx-auto px-6 h-12 flex items-center justify-between">
+
+      <a href="#" id="nav-logo" class="flex items-center gap-2 text-white font-bold text-base tracking-tight hover:opacity-80 transition-opacity">
+
+        <span class="w-2.5 h-2.5 rounded-full bg-[#FF5A5F] shadow-[0_0_12px_#FF5A5F]"></span>
+
+        <span id="nav-logo-text">Red Thread</span>
+
+      </a>
+
+      
+
+      <div id="nav-links" class="hidden md:flex items-center gap-8 text-[11px] font-medium uppercase tracking-wider text-neutral-400">
+
+        <a href="#process" class="hover:text-white transition-colors">How It Works</a>
+
+        <a href="#work" class="hover:text-white transition-colors">Our Work</a>
+
+        <a href="#tech" class="hover:text-white transition-colors">Our Tech</a>
+
+      </div>
+
+
+
+      <!-- Spring Physics Button: "Let's chat." -->
+
+      <a id="nav-cta" href="#terminal" class="spring-pill px-4 py-1.5 rounded-full bg-white text-black text-xs font-semibold shadow-md">
+
+        Let's chat.
+
+      </a>
+
+    </div>
+
+  </nav>
+
+
+
+  <!-- 01. HERO THEATRE (Pure OLED Black #000000) -->
+
+  <header id="hero-runway" data-theme="dark" class="relative w-full h-[180vh] bg-black">
+
+    <div class="sticky top-0 left-0 w-full h-screen overflow-hidden flex items-center justify-center z-10">
+
+      
+
+      <div id="hero-eyebrow" class="absolute top-20 sm:top-24 left-1/2 -translate-x-1/2 z-20 transition-opacity duration-300 pointer-events-none text-center">
+
+        <span class="text-xs sm:text-sm font-medium tracking-widest text-neutral-300">
+
+          Global influencer marketing agency.
+
+        </span>
+
+      </div>
+
+
+
+      <video id="hero-video" autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
+
+        <source src="https://testcs.co.uk/redthread/wp-content/uploads/2026/07/Showreel-v3-1.mp4" type="video/mp4">
+
+      </video>
+
+
+
+      <svg id="hero-stencil-svg" class="absolute inset-0 w-full h-full portal-zoom-target z-10 pointer-events-none transition-opacity duration-75" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid slice">
+
+        <defs>
+
+          <mask id="portal-mask">
+
+            <rect width="1000" height="500" fill="white" />
+
+            <text x="500" y="210" text-anchor="middle" fill="black" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro', sans-serif" font-weight="900" font-size="70" letter-spacing="-3">
+
+              Creator-powered
+
+            </text>
+
+            <text x="500" y="315" text-anchor="middle" fill="black" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro', sans-serif" font-weight="900" font-size="70" letter-spacing="-3">
+
+              commercial impact.
+
+            </text>
+
+          </mask>
+
+        </defs>
+
+        
+
+        <rect width="1000" height="500" fill="black" mask="url(#portal-mask)" />
+
+      </svg>
+
+
+
+      <div id="hero-scroll-hint" class="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 transition-opacity duration-300">
+
+        <div class="w-8 h-12 rounded-full border border-white/20 flex items-center justify-center">
+
+          <div class="w-1 h-2.5 bg-white/60 rounded-full animate-bounce"></div>
+
+        </div>
+
+      </div>
+
+
+
+    </div>
+
+  </header>
+
+
+
+  <!-- 02. AGENCY INTRO (Restored Editorial Statement) -->
+
+  <section id="intro" data-theme="light" class="w-full bg-[#F5F5F7] text-black py-36 px-6 lg:px-8 selection:bg-neutral-800 selection:text-white relative z-20">
+
+    <div class="max-w-5xl mx-auto text-center space-y-8">
+
+      
+
+      <!-- Headline with Coral Red to Magenta Accents -->
+
+      <h2 class="text-3xl sm:text-5xl md:text-6xl font-semibold tracking-tight text-neutral-900 leading-[1.08] text-balance-custom">
+
+        We bring <span class="text-prism-gradient">real human feeling</span> and <span class="text-prism-gradient">creator instinct</span> to the places people actually spend their lives today.
+
+      </h2>
+
+
+
+      <!-- Subcopy Contrast -->
+
+      <p class="text-neutral-600 font-normal text-xl sm:text-2xl md:text-3xl leading-relaxed max-w-4xl mx-auto text-balance-custom">
+
+        Backed by custom technology, we strip out the usual agency noise so your brand moves with genuine soul and hard commercial proof.
+
+      </p>
+
+
+
+    </div>
+
+  </section>
+
+
+
+  <!-- 03. HARDWARE GALLERY WITH CATEGORY FILTERS -->
+
+  <section id="hardware" data-theme="dark" class="w-full bg-black text-white pt-10 pb-0 px-4 sm:px-6 lg:px-8 relative overflow-hidden z-10 hardware-stage-perspective">
+
+    <div class="max-w-7xl mx-auto space-y-10">
+
+
+
+      <!-- Category Filter Pills -->
+
+      <div class="flex items-center justify-center gap-2 overflow-x-auto no-scrollbar py-2">
+
+        <button onclick="filterHardware('all')" id="hw-filter-all" class="spring-pill px-4 py-2 rounded-full text-xs font-semibold bg-white text-black shadow-md">
+
+          All
+
+        </button>
+
+        <button onclick="filterHardware('beauty')" id="hw-filter-beauty" class="spring-pill px-4 py-2 rounded-full text-xs font-semibold bg-white/10 text-neutral-300 hover:text-white">
+
+          Beauty &amp; Fashion
+
+        </button>
+
+        <button onclick="filterHardware('fintech')" id="hw-filter-fintech" class="spring-pill px-4 py-2 rounded-full text-xs font-semibold bg-white/10 text-neutral-300 hover:text-white">
+
+          FinTech
+
+        </button>
+
+        <button onclick="filterHardware('hardware')" id="hw-filter-hardware" class="spring-pill px-4 py-2 rounded-full text-xs font-semibold bg-white/10 text-neutral-300 hover:text-white">
+
+          Hardware
+
+        </button>
+
+        <button onclick="filterHardware('gaming')" id="hw-filter-gaming" class="spring-pill px-4 py-2 rounded-full text-xs font-semibold bg-white/10 text-neutral-300 hover:text-white">
+
+          Gaming
+
+        </button>
+
+      </div>
+
+
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 translate-y-[10%] relative z-10">
+
+        
+
+        <!-- Phone 1 (Beauty) -->
+
+        <div id="phone-outer-left" data-category="beauty" class="phone-stagger-outer phone-scrub hw-card w-full max-w-[320px] sm:max-w-[360px] aspect-[9/18] bg-[#1D1D1F] rounded-[3rem] p-3 shadow-2xl relative overflow-hidden mx-auto transition-all duration-500">
+
+          <div class="absolute top-3.5 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
+
+          <div class="w-full h-full bg-neutral-950 rounded-[2.4rem] overflow-hidden relative flex flex-col justify-between p-5 pt-12">
+
+            <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 opacity-80 pointer-events-none">
+
+              <source src="https://assets.mixkit.co/videos/preview/mixkit-girl-in-neon-sign-lighting-1230-large.mp4" type="video/mp4">
+
+            </video>
+
+            <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/90 z-10"></div>
+
+            <div class="relative z-20 flex justify-between items-center text-xs font-semibold text-neutral-300">
+
+              <span class="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md">TikTok Feed</span>
+
+              <span class="px-2.5 py-1 rounded-full bg-[#FF5A5F] text-white font-bold">9.4x ROAS</span>
+
+            </div>
+
+            <div class="relative z-20 space-y-1">
+
+              <div class="text-xs text-neutral-300 font-medium">Beauty &amp; Fashion</div>
+
+              <div class="font-bold text-lg text-white">14.2M Impressions</div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- Phone 2 (FinTech) -->
+
+        <div data-category="fintech" class="phone-scrub hw-card w-full max-w-[320px] sm:max-w-[360px] aspect-[9/18] bg-[#1D1D1F] rounded-[3rem] p-3 shadow-2xl relative overflow-hidden mx-auto transition-all duration-500">
+
+          <div class="absolute top-3.5 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
+
+          <div class="w-full h-full bg-neutral-950 rounded-[2.4rem] overflow-hidden relative flex flex-col justify-between p-5 pt-12">
+
+            <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 opacity-80 pointer-events-none">
+
+              <source src="https://assets.mixkit.co/videos/preview/mixkit-young-man-skateboarding-in-a-parking-lot-34533-large.mp4" type="video/mp4">
+
+            </video>
+
+            <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/90 z-10"></div>
+
+            <div class="relative z-20 flex justify-between items-center text-xs font-semibold text-neutral-300">
+
+              <span class="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md">Reels Feed</span>
+
+              <span class="px-2.5 py-1 rounded-full bg-emerald-500/80 text-white font-bold">Verified</span>
+
+            </div>
+
+            <div class="relative z-20 space-y-1">
+
+              <div class="text-xs text-neutral-300 font-medium">FinTech &amp; Lifestyle</div>
+
+              <div class="font-bold text-lg text-white">$2.4M Direct Sales</div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- Phone 3 (Hardware) -->
+
+        <div data-category="hardware" class="phone-scrub hw-card w-full max-w-[320px] sm:max-w-[360px] aspect-[9/18] bg-[#1D1D1F] rounded-[3rem] p-3 shadow-2xl relative overflow-hidden mx-auto transition-all duration-500">
+
+          <div class="absolute top-3.5 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
+
+          <div class="w-full h-full bg-neutral-950 rounded-[2.4rem] overflow-hidden relative flex flex-col justify-between p-5 pt-12">
+
+            <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 opacity-80 pointer-events-none">
+
+              <source src="https://assets.mixkit.co/videos/preview/mixkit-hands-holding-a-smartphone-with-a-green-screen-41528-large.mp4" type="video/mp4">
+
+            </video>
+
+            <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/90 z-10"></div>
+
+            <div class="relative z-20 flex justify-between items-center text-xs font-semibold text-neutral-300">
+
+              <span class="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md">Shorts Feed</span>
+
+              <span class="px-2.5 py-1 rounded-full bg-[#E040FB]/80 text-white font-bold">84% Retention</span>
+
+            </div>
+
+            <div class="relative z-20 space-y-1">
+
+              <div class="text-xs text-neutral-300 font-medium">Consumer Hardware</div>
+
+              <div class="font-bold text-lg text-white">Attention Engine™</div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- Phone 4 (Gaming) -->
+
+        <div id="phone-outer-right" data-category="gaming" class="phone-stagger-outer phone-scrub hw-card w-full max-w-[320px] sm:max-w-[360px] aspect-[9/18] bg-[#1D1D1F] rounded-[3rem] p-3 shadow-2xl relative overflow-hidden mx-auto transition-all duration-500">
+
+          <div class="absolute top-3.5 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
+
+          <div class="w-full h-full bg-neutral-950 rounded-[2.4rem] overflow-hidden relative flex flex-col justify-between p-5 pt-12">
+
+            <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 opacity-80 pointer-events-none">
+
+              <source src="https://assets.mixkit.co/videos/preview/mixkit-game-developer-working-on-his-computer-42898-large.mp4" type="video/mp4">
+
+            </video>
+
+            <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/90 z-10"></div>
+
+            <div class="relative z-20 flex justify-between items-center text-xs font-semibold text-neutral-300">
+
+              <span class="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md">Live Stream</span>
+
+              <span class="px-2.5 py-1 rounded-full bg-blue-500/80 text-white font-bold">ThreadOS™</span>
+
+            </div>
+
+            <div class="relative z-20 space-y-1">
+
+              <div class="text-xs text-neutral-300 font-medium">Gaming &amp; Culture</div>
+
+              <div class="font-bold text-lg text-white">120k Concurrent</div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+      </div>
+
+
+
+    </div>
+
+  </section>
+
+
+
+  <!-- 04. BRAND PROOF -->
+
+  <section data-theme="light" class="w-full bg-[#F5F5F7] text-black pt-36 pb-28 relative z-20 overflow-hidden selection:bg-neutral-800 selection:text-white">
+
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+
+        
+
+        <div class="lg:col-span-4 space-y-2">
+
+          <h2 class="text-2xl sm:text-4xl font-semibold tracking-tight text-neutral-900 leading-[1.1] text-balance-custom">
+
+            Cultural weight.<br />
+
+            <span class="text-neutral-400 font-normal">Commercial scale.</span>
+
+          </h2>
+
+        </div>
+
+
+
+        <div class="lg:col-span-8 grid grid-cols-4 sm:grid-cols-5 gap-y-10 gap-x-8 items-center justify-items-center opacity-85">
+
+          <svg class="h-8 w-auto text-neutral-800" viewBox="0 0 256 256" fill="currentColor"><path d="M128 0C57.308 0 0 57.309 0 128c0 70.696 57.309 128 128 128 70.697 0 128-57.304 128-128C256 57.314 198.697.007 127.998.007Zm58.699 184.614c-2.293 3.76-7.215 4.952-10.975 2.644-30.053-18.357-67.885-22.515-112.44-12.335a7.981 7.981 0 0 1-9.552-6.007 7.968 7.968 0 0 1 6-9.553c48.76-11.14 90.583-6.344 124.323 14.276 3.76 2.308 4.952 7.215 2.644 10.975Zm15.667-34.853c-2.89 4.695-9.034 6.178-13.726 3.289-34.406-21.148-86.853-27.273-127.548-14.92-5.278 1.594-10.852-1.38-12.454-6.649-1.59-5.278 1.386-10.842 6.655-12.446 46.485-14.106 104.275-7.273 143.787 17.007 4.692 2.89 6.175 9.034 3.286 13.72v-.001Zm1.345-36.293C162.457 88.964 94.394 86.71 55.007 98.666c-6.325 1.918-13.014-1.653-14.93-7.978-1.917-6.328 1.65-13.012 7.98-14.935C93.27 62.027 168.434 64.68 215.929 92.876c5.702 3.376 7.566 10.724 4.188 16.405-3.362 5.69-10.73 7.565-16.4 4.187h-.006Z"/></svg>
+
+          <svg class="h-7 w-auto text-neutral-800" viewBox="0 0 1000 356" fill="currentColor"><path d="M245.8 717.6c-29.8-1.2-54.2-9.3-73.2-24.5-3.6-2.9-12.3-11.6-15.2-15.2-7.7-9.7-13-19.2-16.5-29.7-10.8-32.3-5.2-74.7 15.9-121.2 18.1-39.8 46-79.3 94.6-134.1 7.2-8.1 28.5-31.6 28.7-31.6.1 0-1.1 2-2.6 4.5-12.7 21.2-23.5 46.2-29.4 67.8-9.5 34.7-8.3 64.4 3.3 87.5 8.1 15.9 21.9 29.7 37.4 37.3 27.2 13.3 67 14.4 115.6 3.2 3.3-.8 169.2-44.8 368.6-97.8 199.4-53 362.5-96.4 362.5-96.4" transform="matrix(.8 0 0 .8 -100 -270)"/></svg>
+
+          <span class="font-black tracking-widest text-lg text-neutral-800 font-serif">LVMH</span>
+
+          <svg class="h-8 w-auto text-neutral-800" viewBox="0 0 170 170" fill="currentColor"><path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-5.02.24-9.88-1.83-14.58-6.22-3.1-2.75-6.97-7.37-11.61-13.88-5.83-8.18-10.38-17.65-13.67-28.42-3.29-10.77-4.93-21.2-4.93-31.3 0-14.82 3.73-27.18 11.2-37.08 7.46-9.9 16.92-14.93 28.37-15.09 4.71 0 9.77 1.13 15.18 3.39 5.41 2.26 9.38 3.39 11.9 3.39 2.27 0 6.27-1.18 12-3.55 5.73-2.37 10.71-3.48 14.94-3.32 11.33.56 20.48 4.88 27.46 12.96-10.02 6.07-14.9 14.65-14.64 25.75.26 8.65 3.61 15.89 10.05 21.72 6.44 5.83 14.07 9.17 22.9 10.02-2.3 6.84-5.32 13.62-9.06 20.34zm-29.28-108.81c0 6.24-2.3 12.22-6.9 17.94-4.6 5.72-10.12 9.22-16.56 10.5-1.05-8.24 1.25-15.93 6.9-23.07 5.65-7.14 12.01-11.08 19.08-11.82.16 1.05.25 2.11.25 3.18z"/></svg>
+
+          <span class="font-black tracking-widest text-xl text-neutral-800 font-serif">SONY</span>
+
+          <span class="font-black tracking-tight text-base text-neutral-800">HYPERICE</span>
+
+          <span class="font-bold text-lg text-neutral-800 tracking-tight">TikTok</span>
+
+          <span class="font-black text-lg text-neutral-800 uppercase tracking-widest">SAMSUNG</span>
+
+          <span class="font-serif italic font-semibold text-lg text-neutral-800">Glossier.</span>
+
+          <span class="font-extrabold text-base tracking-widest text-neutral-800 uppercase">SEPHORA</span>
+
+          <span class="font-black text-base text-neutral-800 uppercase tracking-tight">Red Bull</span>
+
+          <span class="font-black text-xl text-neutral-800 lowercase tracking-tighter">adidas</span>
+
+          <span class="font-extrabold text-xs tracking-[0.2em] text-neutral-800 uppercase">PORSCHE</span>
+
+          <span class="font-serif font-black text-lg text-neutral-800 uppercase tracking-widest">PRADA</span>
+
+          <span class="font-black text-base text-neutral-800 tracking-tight">b beats</span>
+
+          <span class="font-black text-lg text-neutral-800 tracking-tight">∞ Meta</span>
+
+          <span class="font-black text-lg text-neutral-800 uppercase tracking-wider">NETFLIX</span>
+
+          <span class="font-extrabold text-sm tracking-widest text-neutral-800 uppercase">RIMOWA</span>
+
+          <span class="font-bold text-lg text-neutral-800">airbnb</span>
+
+          <span class="font-bold text-xs tracking-wider text-neutral-800 uppercase">B&amp;O</span>
+
+        </div>
+
+
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- 05. CAPABILITIES BENTO WITH INTERACTIVE MICRO-WIDGETS & SCRIMS -->
+
+  <section data-theme="dark" class="w-full bg-[#111113] text-white pt-28 pb-20 px-6 lg:px-8 relative z-20 selection:bg-neutral-800 selection:text-white">
+
+    <div class="max-w-7xl mx-auto space-y-16">
+
+      
+
+      <div class="text-center max-w-3xl mx-auto">
+
+        <h2 class="text-3xl sm:text-5xl font-semibold tracking-tight text-white">Culture, meet commerce. 🤝</h2>
+
+      </div>
+
+
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        
+
+        <!-- Bento Tile 1 -->
+
+        <div class="bg-[#1D1D1F] border-0 rounded-[2.5rem] p-8 sm:p-10 flex flex-col justify-between min-h-[360px] relative overflow-hidden shadow-xl">
+
+          <div>
+
+            <div class="flex justify-between items-start">
+
+              <h3 class="text-xl sm:text-2xl font-semibold mb-2 tracking-tight text-white">Precision creator matchmaking</h3>
+
+              <button onclick="openModal('modal-bento-1')" aria-label="Open Matchmaking Modal" class="spring-pill w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center justify-center">
+
+                +
+
+              </button>
+
+            </div>
+
+            <p class="text-neutral-400 text-sm leading-relaxed">
+
+              We pair your brand with creators who possess genuine cultural authority and built-in audience trust.
+
+            </p>
+
+          </div>
+
+          <div class="mt-6 flex items-center justify-center -space-x-4">
+
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" alt="Avatar 1" class="w-16 h-16 rounded-full object-cover border-2 border-[#1D1D1F] shadow-md z-30" />
+
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80" alt="Avatar 2" class="w-16 h-16 rounded-full object-cover border-2 border-[#1D1D1F] shadow-md z-20" />
+
+            <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=300&q=80" alt="Avatar 3" class="w-16 h-16 rounded-full object-cover border-2 border-[#1D1D1F] shadow-md z-10" />
+
+            <div class="w-16 h-16 rounded-full bg-gradient-to-r from-[#FF5A5F] to-[#E040FB] text-white font-bold text-xs flex items-center justify-center border-2 border-[#1D1D1F] shadow-md z-0">
+
+              100%
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- Bento Tile 2 (Interactive Time Toggle Widget) -->
+
+        <div class="bg-[#1D1D1F] border-0 rounded-[2.5rem] p-8 sm:p-10 flex flex-col justify-between min-h-[360px] shadow-xl">
+
+          <div>
+
+            <div class="flex justify-between items-start">
+
+              <h3 class="text-xl sm:text-2xl font-semibold mb-2 tracking-tight text-white">ThreadOS™ automation</h3>
+
+              <button onclick="openModal('modal-bento-2')" aria-label="Open Automation Modal" class="spring-pill w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center justify-center">
+
+                +
+
+              </button>
+
+            </div>
+
+            <p class="text-neutral-400 text-sm leading-relaxed">
+
+              Automated contracts, creator rights clearance, asset shipping, and real-time campaign reporting.
+
+            </p>
+
+          </div>
+
+
+
+          <!-- Micro-Widget: Time Toggle -->
+
+          <div class="mt-6 pt-4 border-t border-white/5 space-y-3">
+
+            <div class="flex items-center justify-between">
+
+              <div id="bento-velocity-val" class="text-4xl font-black text-[#FF5A5F] tracking-tight">&lt; 24h</div>
+
+              <div class="flex gap-1 bg-black/40 p-1 rounded-full text-[10px] font-mono">
+
+                <button onclick="updateBentoVelocity('24h')" id="vbtn-24h" class="px-2 py-0.5 rounded-full bg-[#FF5A5F] text-white font-bold">24h</button>
+
+                <button onclick="updateBentoVelocity('7d')" id="vbtn-7d" class="px-2 py-0.5 rounded-full text-neutral-400 hover:text-white">7d</button>
+
+                <button onclick="updateBentoVelocity('30d')" id="vbtn-30d" class="px-2 py-0.5 rounded-full text-neutral-400 hover:text-white">30d</button>
+
+              </div>
+
+            </div>
+
+            <div id="bento-velocity-label" class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Average execution turnaround</div>
+
+            <div class="w-full bg-white/10 h-2 rounded-full overflow-hidden">
+
+              <div id="bento-velocity-bar" class="bg-gradient-to-r from-[#FF5A5F] to-[#E040FB] h-full w-[90%] rounded-full transition-all duration-500"></div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- Bento Tile 3 (Interactive Bar Chart Widget) -->
+
+        <div class="bg-[#1D1D1F] border-0 rounded-[2.5rem] p-8 sm:p-10 flex flex-col justify-between min-h-[360px] shadow-xl">
+
+          <div>
+
+            <div class="flex justify-between items-start">
+
+              <h3 class="text-xl sm:text-2xl font-semibold mb-2 tracking-tight text-white">Fred AI engine</h3>
+
+              <button onclick="openModal('modal-bento-3')" aria-label="Open Fred AI Modal" class="spring-pill w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center justify-center">
+
+                +
+
+              </button>
+
+            </div>
+
+            <p class="text-neutral-400 text-sm leading-relaxed">
+
+              Real-time algorithmic targeting that identifies high-intent consumer micro-pockets across channels.
+
+            </p>
+
+          </div>
+
+
+
+          <!-- Micro-Widget: Interactive Bar Chart -->
+
+          <div class="mt-6 space-y-2">
+
+            <div class="flex justify-between text-xs font-mono text-neutral-400">
+
+              <span>Target Index</span>
+
+              <span id="fred-chart-readout" class="text-emerald-400 font-bold">99.2% Match</span>
+
+            </div>
+
+            <div class="flex items-end justify-between h-20 gap-2 px-2">
+
+              <div onclick="hoverFredChart('35%', '64.2% Match')" class="w-1/5 bg-white/10 hover:bg-[#FF5A5F]/60 h-[35%] rounded-t-lg cursor-pointer transition-all"></div>
+
+              <div onclick="hoverFredChart('55%', '82.1% Match')" class="w-1/5 bg-white/20 hover:bg-[#FF5A5F]/60 h-[55%] rounded-t-lg cursor-pointer transition-all"></div>
+
+              <div onclick="hoverFredChart('45%', '71.8% Match')" class="w-1/5 bg-white/30 hover:bg-[#FF5A5F]/60 h-[45%] rounded-t-lg cursor-pointer transition-all"></div>
+
+              <div onclick="hoverFredChart('75%', '91.4% Match')" class="w-1/5 bg-[#FF5A5F]/60 hover:bg-[#FF5A5F] h-[75%] rounded-t-lg cursor-pointer transition-all"></div>
+
+              <div onclick="hoverFredChart('100%', '99.2% Match')" class="w-1/5 bg-gradient-to-t from-[#FF5A5F] to-[#E040FB] h-[100%] rounded-t-lg shadow-[0_0_12px_#FF5A5F] cursor-pointer transition-all"></div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- Bento Tile 4 -->
+
+        <div class="bg-[#1D1D1F] border-0 rounded-[2.5rem] p-8 sm:p-10 flex flex-col justify-between min-h-[360px] shadow-xl">
+
+          <div>
+
+            <div class="flex justify-between items-start">
+
+              <h3 class="text-xl sm:text-2xl font-semibold mb-2 tracking-tight text-white">Paid whitelisting &amp; scaling</h3>
+
+              <button onclick="openModal('modal-bento-4')" aria-label="Open Whitelisting Modal" class="spring-pill w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center justify-center">
+
+                +
+
+              </button>
+
+            </div>
+
+            <p class="text-neutral-400 text-sm leading-relaxed">
+
+              Transform high-performing organic creator assets into direct-conversion paid media campaigns.
+
+            </p>
+
+          </div>
+
+          <div class="mt-6 h-16 w-full flex items-center">
+
+            <svg class="w-full h-full text-[#FF5A5F]" viewBox="0 0 200 60" fill="none" stroke="currentColor" stroke-width="4">
+
+              <path d="M0 50 Q 60 48, 120 25 T 200 8" stroke-linecap="round"/>
+
+            </svg>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- Bento Tile 5 (Interactive Metric Toggle Widget) -->
+
+        <div class="bg-[#1D1D1F] border-0 rounded-[2.5rem] p-8 sm:p-10 flex flex-col justify-between min-h-[360px] shadow-xl">
+
+          <div>
+
+            <div class="flex justify-between items-start">
+
+              <h3 class="text-xl sm:text-2xl font-semibold mb-2 tracking-tight text-white">Attention Engine™</h3>
+
+              <button onclick="openModal('modal-bento-5')" aria-label="Open Attention Engine Modal" class="spring-pill w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center justify-center">
+
+                +
+
+              </button>
+
+            </div>
+
+            <p class="text-neutral-400 text-sm leading-relaxed">
+
+              Predictive modeling that forecasts viewer retention, conversion velocity, and commercial yield.
+
+            </p>
+
+          </div>
+
+
+
+          <!-- Micro-Widget: Metric Toggle -->
+
+          <div class="mt-6 space-y-2">
+
+            <div class="flex gap-1 bg-black/40 p-1 rounded-full text-[10px] font-mono w-fit">
+
+              <button onclick="updateYieldMetric('ROAS')" id="ym-roas" class="px-2.5 py-1 rounded-full bg-[#FF5A5F] text-white font-bold">ROAS</button>
+
+              <button onclick="updateYieldMetric('CAC')" id="ym-cac" class="px-2.5 py-1 rounded-full text-neutral-400 hover:text-white">CAC</button>
+
+              <button onclick="updateYieldMetric('RET')" id="ym-ret" class="px-2.5 py-1 rounded-full text-neutral-400 hover:text-white">Retention</button>
+
+            </div>
+
+            <div class="flex items-center justify-between">
+
+              <span id="yield-val" class="text-4xl font-extrabold text-white">9.4x</span>
+
+              <span id="yield-badge" class="px-3.5 py-1.5 bg-[#FF5A5F]/20 text-[#FF5A5F] font-semibold text-xs rounded-full">Predictive ROAS score</span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- Bento Tile 6 -->
+
+        <div class="bg-[#1D1D1F] border-0 rounded-[2.5rem] p-8 sm:p-10 flex flex-col justify-between min-h-[360px] shadow-xl">
+
+          <div>
+
+            <div class="flex justify-between items-start">
+
+              <h3 class="text-xl sm:text-2xl font-semibold mb-2 tracking-tight text-white">Global usage &amp; licensing</h3>
+
+              <button onclick="openModal('modal-bento-6')" aria-label="Open Licensing Modal" class="spring-pill w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center justify-center">
+
+                +
+
+              </button>
+
+            </div>
+
+            <p class="text-neutral-400 text-sm leading-relaxed">
+
+              Friction-free legal clearance, multi-market creator licensing, and perpetual asset vaulting.
+
+            </p>
+
+          </div>
+
+          <div class="mt-6 flex justify-end">
+
+            <svg class="w-12 h-12 text-[#E040FB]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.31-2.555-.866-3.656A11.959 11.959 0 0112 2.714z"/>
+
+            </svg>
+
+          </div>
+
+        </div>
+
+
+
+      </div>
+
+
+
+    </div>
+
+  </section>
+
+
+
+  <!-- 05.1 HOW IT WORKS (Apple Retail Cards with Scrim Modals) -->
+
+  <section id="process" data-theme="light" class="w-full bg-[#F5F5F7] text-black py-32 px-6 lg:px-8 relative z-20 selection:bg-neutral-800 selection:text-white">
+
+    <div class="max-w-7xl mx-auto space-y-10">
+
+      
+
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+
+        <div class="space-y-2">
+
+          <h2 class="text-3xl sm:text-5xl font-semibold tracking-tight text-neutral-900">
+
+            How it works.
+
+          </h2>
+
+          <p class="text-neutral-500 text-base sm:text-lg font-normal">
+
+            From creative spark to verified commercial yield.
+
+          </p>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- Horizontal Apple Card Deck -->
+
+      <div class="relative">
+
+        <div id="process-deck" class="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-8 pt-2 no-scrollbar scroll-smooth">
+
+          
+
+          <!-- Card 1 -->
+
+          <div class="w-[320px] sm:w-[380px] h-[500px] shrink-0 snap-start bg-white rounded-[2.5rem] p-8 sm:p-10 flex flex-col justify-between shadow-lg border-0 group relative overflow-hidden">
+
+            <div class="space-y-3">
+
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">01 / Strategy</span>
+
+              <h3 class="text-2xl font-bold text-neutral-900 tracking-tight leading-tight">Creative strategy</h3>
+
+              <p class="text-sm text-neutral-600 leading-relaxed font-normal">
+
+                We build campaigns on human feeling and algorithmic insight. Fred AI™ maps high-intent micro-pockets while our creative team crafts scroll-stopping concepts.
+
+              </p>
+
+            </div>
+
+            
+
+            <div class="my-auto bg-[#1D1D1F] text-white p-5 rounded-2xl space-y-3 shadow-md">
+
+              <div class="flex justify-between items-center text-xs text-neutral-400">
+
+                <span>ThreadOS™ Intent Index</span>
+
+                <span class="text-emerald-400 font-bold">99.2%</span>
+
+              </div>
+
+              <div class="text-2xl font-black text-white">8.4M Micro-Pockets</div>
+
+              <div class="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+
+                <div class="bg-gradient-to-r from-[#FF5A5F] to-[#E040FB] h-full w-[85%] rounded-full"></div>
+
+              </div>
+
+            </div>
+
+
+
+            <div class="flex justify-end pt-2">
+
+              <button onclick="openModal('modal-strategy')" aria-label="Learn more about Creative Strategy" class="spring-pill w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold text-sm shadow-md">
+
+                +
+
+              </button>
+
+            </div>
+
+          </div>
+
+
+
+          <!-- Card 2 -->
+
+          <div class="w-[320px] sm:w-[380px] h-[500px] shrink-0 snap-start bg-white rounded-[2.5rem] p-8 sm:p-10 flex flex-col justify-between shadow-lg border-0 group relative overflow-hidden">
+
+            <div class="space-y-3">
+
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">02 / Activation</span>
+
+              <h3 class="text-2xl font-bold text-neutral-900 tracking-tight leading-tight">Creator activation</h3>
+
+              <p class="text-sm text-neutral-600 leading-relaxed font-normal">
+
+                End-to-end campaign execution with taste-verified tastemakers. We handle vetting, contracts, rights clearance, and shipping in one workspace.
+
+              </p>
+
+            </div>
+
+
+
+            <div class="my-auto bg-[#1D1D1F] text-white p-5 rounded-2xl space-y-3 shadow-md">
+
+              <div class="flex items-center justify-between text-xs">
+
+                <span class="text-neutral-400">Execution Velocity</span>
+
+                <span class="text-[#FF5A5F] font-bold">&lt; 24 Hours</span>
+
+              </div>
+
+              <div class="flex -space-x-3 items-center">
+
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="Creator 1" class="w-10 h-10 rounded-full border-2 border-[#1D1D1F] object-cover" />
+
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80" alt="Creator 2" class="w-10 h-10 rounded-full border-2 border-[#1D1D1F] object-cover" />
+
+                <div class="w-10 h-10 rounded-full bg-emerald-500 text-white font-bold text-[10px] flex items-center justify-center border-2 border-[#1D1D1F]">100%</div>
+
+              </div>
+
+            </div>
+
+
+
+            <div class="flex justify-end pt-2">
+
+              <button onclick="openModal('modal-activation')" aria-label="Learn more about Creator Activation" class="spring-pill w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold text-sm shadow-md">
+
+                +
+
+              </button>
+
+            </div>
+
+          </div>
+
+
+
+          <!-- Card 3 -->
+
+          <div class="w-[320px] sm:w-[380px] h-[500px] shrink-0 snap-start bg-white rounded-[2.5rem] p-8 sm:p-10 flex flex-col justify-between shadow-lg border-0 group relative overflow-hidden">
+
+            <div class="space-y-3">
+
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">03 / Whitelisting</span>
+
+              <h3 class="text-2xl font-bold text-neutral-900 tracking-tight leading-tight">Creator paid ads</h3>
+
+              <p class="text-sm text-neutral-600 leading-relaxed font-normal">
+
+                Turn viral organic moments into direct conversion engines. We secure whitelisting rights and scale top-performing creator assets across feeds.
+
+              </p>
+
+            </div>
+
+
+
+            <div class="my-auto bg-[#1D1D1F] text-white p-5 rounded-2xl space-y-3 shadow-md">
+
+              <div class="text-xs text-neutral-400">CAC Efficiency Gains</div>
+
+              <div class="text-3xl font-black text-emerald-400">+140%</div>
+
+              <div class="text-[11px] text-neutral-400">Direct Paid Whitelisting Scale</div>
+
+            </div>
+
+
+
+            <div class="flex justify-end pt-2">
+
+              <button onclick="openModal('modal-whitelisting')" aria-label="Learn more about Creator Paid Ads" class="spring-pill w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold text-sm shadow-md">
+
+                +
+
+              </button>
+
+            </div>
+
+          </div>
+
+
+
+          <!-- Card 4 -->
+
+          <div class="w-[320px] sm:w-[380px] h-[500px] shrink-0 snap-start bg-white rounded-[2.5rem] p-8 sm:p-10 flex flex-col justify-between shadow-lg border-0 group relative overflow-hidden">
+
+            <div class="space-y-3">
+
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">04 / Intelligence</span>
+
+              <h3 class="text-2xl font-bold text-neutral-900 tracking-tight leading-tight">Measurement &amp; analytics</h3>
+
+              <p class="text-sm text-neutral-600 leading-relaxed font-normal">
+
+                Real-time visibility via Attention Engine™. Track every key metric from viewer retention and engagement down to commercial yield.
+
+              </p>
+
+            </div>
+
+
+
+            <div class="my-auto bg-[#1D1D1F] text-white p-5 rounded-2xl space-y-3 shadow-md">
+
+              <div class="text-xs text-neutral-400">Attention Engine™ Yield</div>
+
+              <div class="text-3xl font-black text-sky-400">9.4x ROAS</div>
+
+              <div class="text-[11px] text-neutral-400">Verified Predictive Output</div>
+
+            </div>
+
+
+
+            <div class="flex justify-end pt-2">
+
+              <button onclick="openModal('modal-analytics')" aria-label="Learn more about Measurement" class="spring-pill w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold text-sm shadow-md">
+
+                +
+
+              </button>
+
+            </div>
+
+          </div>
+
+
+
+          <!-- Card 5 -->
+
+          <div class="w-[320px] sm:w-[380px] h-[500px] shrink-0 snap-start bg-white rounded-[2.5rem] p-8 sm:p-10 flex flex-col justify-between shadow-lg border-0 group relative overflow-hidden">
+
+            <div class="space-y-3">
+
+              <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">05 / Optimization</span>
+
+              <h3 class="text-2xl font-bold text-neutral-900 tracking-tight leading-tight">Conversion yield</h3>
+
+              <p class="text-sm text-neutral-600 leading-relaxed font-normal">
+
+                Bridging culture and checkout. We optimize user journeys from social feeds directly to point-of-sale, driving revenue velocity.
+
+              </p>
+
+            </div>
+
+
+
+            <div class="my-auto bg-[#1D1D1F] text-white p-5 rounded-2xl space-y-3 shadow-md">
+
+              <div class="text-xs text-neutral-400">Attributed Sales Volume</div>
+
+              <div class="text-3xl font-black text-rose-400">$3.8M</div>
+
+              <div class="text-[11px] text-neutral-400">Live Checkout Tracking</div>
+
+            </div>
+
+
+
+            <div class="flex justify-end pt-2">
+
+              <button onclick="openModal('modal-conversion')" aria-label="Learn more about Conversion" class="spring-pill w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold text-sm shadow-md">
+
+                +
+
+              </button>
+
+            </div>
+
+          </div>
+
+
+
+        </div>
+
+      </div>
+
+
+
+      <!-- Controls -->
+
+      <div class="flex items-center justify-end gap-3 pt-2">
+
+        <button onclick="document.getElementById('process-deck').scrollBy({left: -400, behavior: 'smooth'})" aria-label="Previous" class="spring-pill w-10 h-10 rounded-full bg-neutral-200 hover:bg-neutral-300 text-neutral-800 flex items-center justify-center text-lg font-bold">
+
+          ‹
+
+        </button>
+
+        <button onclick="document.getElementById('process-deck').scrollBy({left: 400, behavior: 'smooth'})" aria-label="Next" class="spring-pill w-10 h-10 rounded-full bg-neutral-200 hover:bg-neutral-300 text-neutral-800 flex items-center justify-center text-lg font-bold">
+
+          ›
+
+        </button>
+
+      </div>
+
+
+
+    </div>
+
+  </section>
+
+
+
+  <!-- 05.2 GLOBAL REACH (Clean Crisp Map) -->
+
+  <section id="global" data-theme="dark" class="w-full bg-[#111113] text-white py-32 px-6 lg:px-8 relative overflow-hidden z-20 selection:bg-neutral-800 selection:text-white">
+
+    <div class="max-w-4xl mx-auto space-y-6 text-center relative z-10">
+
+      <h2 class="text-3xl sm:text-5xl md:text-6xl font-semibold tracking-tight text-prism-gradient leading-[1.1] text-balance-custom">
+
+        Global strategy, local soul.
+
+      </h2>
+
+      <p class="text-neutral-400 text-lg sm:text-2xl md:text-3xl font-normal leading-relaxed text-balance-custom">
+
+        We pair worldwide perspective with deep cultural fluency—so the right content reaches the right audience at the perfect moment.
+
+      </p>
+
+    </div>
+
+
+
+    <!-- Clean Vector Map -->
+
+    <div class="relative w-full max-w-7xl mx-auto pt-10 scale-105">
+
+      <img id="global-map-img" src="https://upload.wikimedia.org/wikipedia/commons/a/ad/BlankMap-World_gray.svg" alt="Global Footprint Vector Map" class="w-full h-auto opacity-30 filter invert" />
+
+      
+
+      <div class="absolute top-[32%] left-[48%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+
+        <span class="animate-radar-ping absolute inline-flex h-8 w-8 rounded-full bg-[#FF5A5F] opacity-75"></span>
+
+        <span class="relative inline-flex rounded-full h-3 w-3 bg-[#FF5A5F]"></span>
+
+      </div>
+
+
+
+      <div class="absolute top-[38%] left-[28%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+
+        <span class="animate-radar-ping absolute inline-flex h-8 w-8 rounded-full bg-[#FF5A5F] opacity-75"></span>
+
+        <span class="relative inline-flex rounded-full h-3 w-3 bg-[#FF5A5F]"></span>
+
+      </div>
+
+
+
+      <div class="absolute top-[42%] left-[85%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+
+        <span class="animate-radar-ping absolute inline-flex h-8 w-8 rounded-full bg-[#E040FB] opacity-75"></span>
+
+        <span class="relative inline-flex rounded-full h-3 w-3 bg-[#E040FB]"></span>
+
+      </div>
+
+
+
+      <div class="absolute top-[30%] left-[52%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+
+        <span class="animate-radar-ping absolute inline-flex h-8 w-8 rounded-full bg-[#E040FB] opacity-75"></span>
+
+        <span class="relative inline-flex rounded-full h-3 w-3 bg-[#E040FB]"></span>
+
+      </div>
+
+
+
+      <div class="absolute top-[62%] left-[78%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+
+        <span class="animate-radar-ping absolute inline-flex h-8 w-8 rounded-full bg-emerald-400 opacity-75"></span>
+
+        <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-400"></span>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- 05.5 CREATOR THEATRE -->
+
+  <section id="creators" data-theme="dark" class="w-full bg-black text-white py-28 relative overflow-hidden z-20 selection:bg-neutral-800 selection:text-white">
+
+    <div class="max-w-6xl mx-auto text-center px-6 mb-16 space-y-4">
+
+      <h2 class="text-2xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-prism-gradient whitespace-nowrap">
+
+        Whoever they are. Wherever they are.
+
+      </h2>
+
+      <p class="text-neutral-400 text-base sm:text-lg leading-relaxed text-balance max-w-3xl mx-auto">
+
+        We don’t represent talent—we discover it. Using an audience-first approach and proprietary vetting, we pair your brand with the trendsetters and cultural tastemakers moving the needle, wherever they are in the world.
+
+      </p>
+
+    </div>
+
+
+
+    <div class="relative w-full overflow-hidden imax-stage-perspective">
+
+      <div class="absolute inset-y-0 left-0 w-24 sm:w-48 bg-gradient-to-r from-black via-black/80 to-transparent z-30 pointer-events-none"></div>
+
+      <div class="absolute inset-y-0 right-0 w-24 sm:w-48 bg-gradient-to-l from-black via-black/80 to-transparent z-30 pointer-events-none"></div>
+
+
+
+      <div id="imax-track" class="flex gap-6 w-max animate-imax-scroll px-12 pointer-events-none">
+
+        
+
+        <div class="w-[280px] sm:w-[320px] h-[440px] shrink-0 bg-[#1D1D1F] rounded-[2.5rem] relative overflow-hidden border-0 imax-card shadow-2xl">
+
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80" alt="Bella Roberts" class="absolute inset-0 w-full h-full object-cover" />
+
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
+
+          <div class="relative z-10 p-6 h-full flex flex-col justify-between text-white">
+
+            <span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-semibold w-fit">@bella_does_editing</span>
+
+            <div>
+
+              <div class="text-xs text-[#FF5A5F] uppercase font-semibold tracking-wider">Film &amp; Tech</div>
+
+              <h3 class="text-xl font-bold mt-1">Bella Roberts</h3>
+
+              <p class="text-xs text-neutral-300 mt-1">528K Audience · London</p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="w-[280px] sm:w-[320px] h-[440px] shrink-0 bg-[#1D1D1F] rounded-[2.5rem] relative overflow-hidden border-0 imax-card shadow-2xl">
+
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=700&q=80" alt="Marcus Chen" class="absolute inset-0 w-full h-full object-cover" />
+
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
+
+          <div class="relative z-10 p-6 h-full flex flex-col justify-between text-white">
+
+            <span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-semibold w-fit">@marcus_design</span>
+
+            <div>
+
+              <div class="text-xs text-[#E040FB] uppercase font-semibold tracking-wider">3D &amp; Hardware</div>
+
+              <h3 class="text-xl font-bold mt-1">Marcus Chen</h3>
+
+              <p class="text-xs text-neutral-300 mt-1">1.2M Audience · New York</p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="w-[280px] sm:w-[320px] h-[440px] shrink-0 bg-[#1D1D1F] rounded-[2.5rem] relative overflow-hidden border-0 imax-card shadow-2xl">
+
+          <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=700&q=80" alt="Shaaba M." class="absolute inset-0 w-full h-full object-cover" />
+
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
+
+          <div class="relative z-10 p-6 h-full flex flex-col justify-between text-white">
+
+            <span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-semibold w-fit">@sherbetlemon007</span>
+
+            <div>
+
+              <div class="text-xs text-sky-400 uppercase font-semibold tracking-wider">Culture &amp; Gaming</div>
+
+              <h3 class="text-xl font-bold mt-1">Shaaba M.</h3>
+
+              <p class="text-xs text-neutral-300 mt-1">808K Audience · Berlin</p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="w-[280px] sm:w-[320px] h-[440px] shrink-0 bg-[#1D1D1F] rounded-[2.5rem] relative overflow-hidden border-0 imax-card shadow-2xl">
+
+          <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=700&q=80" alt="Sarah Cha" class="absolute inset-0 w-full h-full object-cover" />
+
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
+
+          <div class="relative z-10 p-6 h-full flex flex-col justify-between text-white">
+
+            <span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-semibold w-fit">@sarahcha</span>
+
+            <div>
+
+              <div class="text-xs text-[#FF5A5F] uppercase font-semibold tracking-wider">Lifestyle &amp; Beauty</div>
+
+              <h3 class="text-xl font-bold mt-1">Sarah Cha</h3>
+
+              <p class="text-xs text-neutral-300 mt-1">1.0M Audience · Tokyo</p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- DUPLICATES FOR LOOP -->
+
+        <div class="w-[280px] sm:w-[320px] h-[440px] shrink-0 bg-[#1D1D1F] rounded-[2.5rem] relative overflow-hidden border-0 imax-card shadow-2xl">
+
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80" alt="Bella Roberts" class="absolute inset-0 w-full h-full object-cover" />
+
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
+
+          <div class="relative z-10 p-6 h-full flex flex-col justify-between text-white">
+
+            <span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-semibold w-fit">@bella_does_editing</span>
+
+            <div>
+
+              <div class="text-xs text-[#FF5A5F] uppercase font-semibold tracking-wider">Film &amp; Tech</div>
+
+              <h3 class="text-xl font-bold mt-1">Bella Roberts</h3>
+
+              <p class="text-xs text-neutral-300 mt-1">528K Audience · London</p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- 06. TECH TEASER -->
+
+  <section id="tech" data-theme="light" class="w-full bg-[#F5F5F7] text-black py-24 px-6 lg:px-8 relative z-20 selection:bg-neutral-800 selection:text-white">
+
+    <div class="max-w-7xl mx-auto">
+
+      <div class="bg-[#1D1D1F] text-white rounded-[2.5rem] p-8 sm:p-14 border-0 shadow-2xl relative overflow-hidden">
+
+        <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none z-0">
+
+          <source src="https://www.pexels.com/download/video/38117215/" type="video/mp4">
+
+        </video>
+
+        <div class="relative z-10 max-w-2xl space-y-6">
+
+          <span class="text-xs font-semibold uppercase tracking-widest text-neutral-400">Proprietary tech.</span>
+
+          <h2 class="text-3xl sm:text-5xl font-semibold tracking-tight text-white">
+
+            Intuition, meet intelligence.
+
+          </h2>
+
+          <p class="text-neutral-400 text-base sm:text-lg leading-relaxed">
+
+            We built our tech stack to handle the chaos behind high-velocity campaigns. ThreadOS™ manages execution, Fred AI optimizes targeting, and Attention Engine™ models commercial yield.
+
+          </p>
+
+          <div class="pt-4 flex flex-wrap gap-3 text-xs font-medium">
+
+            <span class="px-3.5 py-2 rounded-full bg-white/10 border-0 backdrop-blur-md">ThreadOS™</span>
+
+            <span class="px-3.5 py-2 rounded-full bg-white/10 border-0 backdrop-blur-md">Fred AI</span>
+
+            <span class="px-3.5 py-2 rounded-full bg-white/10 border-0 backdrop-blur-md">Attention Engine™</span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- 07. CASE STUDIES (Sticky Z-Space Stacking Cards Showcase + Scrim Modals) -->
+
+  <section id="work" data-theme="light" class="w-full bg-[#F5F5F7] text-black py-32 px-6 lg:px-8 relative z-20 selection:bg-neutral-800 selection:text-white">
+
+    <div class="max-w-5xl mx-auto space-y-12">
+
+      
+
+      <div class="space-y-2">
+
+        <h2 class="text-3xl sm:text-5xl font-semibold tracking-tight text-neutral-900">
+
+          From award-winning, to scroll stopping.
+
+        </h2>
+
+        <p class="text-neutral-500 text-base sm:text-lg font-normal">
+
+          We'll let our work do the talking.
+
+        </p>
+
+      </div>
+
+
+
+      <!-- Sticky Stacking Cards Container -->
+
+      <div id="stacking-container" class="space-y-20 relative pt-4">
+
+        
+
+        <!-- Stack Card 1 -->
+
+        <div class="stacking-card sticky top-28 sm:top-36 bg-[#F5F5F7] pt-2 pb-6">
+
+          <div class="w-full h-[360px] sm:h-[460px] rounded-[2.5rem] overflow-hidden bg-neutral-900 relative shadow-2xl border-0 group">
+
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=80" alt="Fintech Global Campaign" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+
+            <button onclick="openModal('modal-case-1')" aria-label="Open Case Study Details" class="spring-pill absolute bottom-6 right-6 w-12 h-12 rounded-full bg-white text-black font-bold text-lg flex items-center justify-center shadow-xl">
+
+              +
+
+            </button>
+
+          </div>
+
+          <div class="mt-4 px-2 space-y-1">
+
+            <p class="text-base sm:text-lg leading-relaxed text-neutral-900">
+
+              <span class="font-bold text-black">Scaling creator conversion.</span>
+
+              <span class="text-neutral-600 font-normal">Full-funnel performance takeover resulting in +140% CAC efficiency across 4 primary markets.</span>
+
+            </p>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- Stack Card 2 -->
+
+        <div class="stacking-card sticky top-28 sm:top-36 bg-[#F5F5F7] pt-2 pb-6">
+
+          <div class="w-full h-[360px] sm:h-[460px] rounded-[2.5rem] overflow-hidden bg-neutral-900 relative shadow-2xl border-0 group">
+
+            <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1000&q=80" alt="Luxury Apparel Campaign" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+
+            <button onclick="openModal('modal-case-2')" aria-label="Open Case Study Details" class="spring-pill absolute bottom-6 right-6 w-12 h-12 rounded-full bg-white text-black font-bold text-lg flex items-center justify-center shadow-xl">
+
+              +
+
+            </button>
+
+          </div>
+
+          <div class="mt-4 px-2 space-y-1">
+
+            <p class="text-base sm:text-lg leading-relaxed text-neutral-900">
+
+              <span class="font-bold text-black">Cultural re-positioning.</span>
+
+              <span class="text-neutral-600 font-normal">Elevated creator direction driving 18.4M organic views for seasonal global launch.</span>
+
+            </p>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- Stack Card 3 -->
+
+        <div class="stacking-card sticky top-28 sm:top-36 bg-[#F5F5F7] pt-2 pb-6">
+
+          <div class="w-full h-[360px] sm:h-[460px] rounded-[2.5rem] overflow-hidden bg-neutral-900 relative shadow-2xl border-0 group">
+
+            <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1000&q=80" alt="Consumer Hardware Campaign" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+
+            <button onclick="openModal('modal-case-3')" aria-label="Open Case Study Details" class="spring-pill absolute bottom-6 right-6 w-12 h-12 rounded-full bg-white text-black font-bold text-lg flex items-center justify-center shadow-xl">
+
+              +
+
+            </button>
+
+          </div>
+
+          <div class="mt-4 px-2 space-y-1">
+
+            <p class="text-base sm:text-lg leading-relaxed text-neutral-900">
+
+              <span class="font-bold text-black">ThreadOS™ rollout.</span>
+
+              <span class="text-neutral-600 font-normal">$3.8M in direct attributed revenue generated across TikTok and IG Reels feeds.</span>
+
+            </p>
+
+          </div>
+
+        </div>
+
+
+
+      </div>
+
+
+
+    </div>
+
+  </section>
+
+
+
+  <!-- 07.5 TESTIMONIAL CAROUSEL -->
+
+  <section id="testimonials" data-theme="dark" class="w-full bg-black text-white relative overflow-hidden z-20 py-36 selection:bg-neutral-800 selection:text-white">
+
+    <div id="testimonial-bg" class="absolute inset-0 w-full h-[120%] -top-[10%] z-0 transition-opacity duration-700 bg-cover bg-center will-change-transform" style="background-image: url('https://images.unsplash.com/photo-1589779255718-3c459da9ffeb?q=80&w=3432&auto=format&fit=crop');">
+
+      <div class="absolute inset-0 vignette-overlay"></div>
+
+    </div>
+
+
+
+    <div class="max-w-6xl mx-auto px-6 lg:px-8 relative z-10">
+
+      <div class="min-h-[260px] flex flex-col justify-between">
+
+        <div id="testimonial-quote" class="text-2xl sm:text-4xl md:text-5xl font-semibold tracking-tight leading-[1.2] text-white max-w-4xl text-balance transition-opacity duration-300">
+
+          “Red Thread strip away the usual agency fluff. They paired us with creators who genuinely transformed our organic reach and scaled direct conversions across 4 primary markets.”
+
+        </div>
+
+
+
+        <div class="mt-12 flex flex-col sm:flex-row sm:items-center justify-between gap-6 pt-8 border-t border-white/10">
+
+          <div>
+
+            <div id="testimonial-author" class="text-base sm:text-lg font-bold text-white">Sarah Jenkins</div>
+
+            <div id="testimonial-title" class="text-xs sm:text-sm text-neutral-400 font-medium">VP of Global Marketing, Enterprise Hardware</div>
+
+          </div>
+
+
+
+          <div class="flex items-center gap-3">
+
+            <button onclick="prevTestimonial()" aria-label="Previous testimonial" class="spring-pill w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center text-lg font-bold border-0">
+
+              ‹
+
+            </button>
+
+            <button onclick="nextTestimonial()" aria-label="Next testimonial" class="spring-pill w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center text-lg font-bold border-0">
+
+              ›
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- 08. PHILOSOPHY REVEAL -->
+
+  <section id="philosophy" data-theme="dark" class="w-full bg-black text-white py-36 px-6 lg:px-8 relative overflow-hidden z-20 selection:bg-neutral-800 selection:text-white">
+
+    <div class="max-w-5xl mx-auto text-center space-y-8 relative z-10">
+
+      <h2 id="philosophy-title" class="text-3xl sm:text-5xl md:text-6xl font-semibold tracking-tight leading-tight text-balance">
+
+        Creator instinct, amplified by proprietary tech. <br />
+
+        <span class="text-grain-iridescent">Built on proof, not promises.</span>
+
+      </h2>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- 09. APPLE INTAKE FORM -->
+
+  <section id="terminal" data-theme="light" class="w-full bg-[#F5F5F7] text-neutral-900 pt-28 pb-24 px-6 lg:px-8 relative overflow-hidden z-20 selection:bg-neutral-800 selection:text-white">
+
+    <div class="max-w-6xl mx-auto relative z-10">
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
+
+        
+
+        <div class="lg:col-span-5 space-y-8">
+
+          <div class="space-y-3">
+
+            <h2 class="text-3xl sm:text-5xl font-semibold tracking-tight text-neutral-900 leading-tight">
+
+              Ready when you are.
+
+            </h2>
+
+            <p class="text-neutral-500 text-base sm:text-lg font-normal leading-relaxed">
+
+              Share your campaign goals with us and we’ll take it from there.
+
+            </p>
+
+          </div>
+
+
+
+          <div class="space-y-1.5 pt-2 text-xs font-medium text-neutral-500">
+
+            <div>Direct: <span class="text-neutral-900">hello@redthread.agency</span></div>
+
+            <div>Offices: <span class="text-neutral-900">London · New York</span></div>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="lg:col-span-7 space-y-6">
+
+          <div class="flex flex-wrap gap-2">
+
+            <button type="button" class="spring-pill px-5 py-3 rounded-full bg-gradient-to-r from-[#FF5A5F] to-[#E040FB] text-white text-xs font-semibold shadow-md">
+
+              Launch global campaign
+
+            </button>
+
+            <button type="button" class="spring-pill px-5 py-3 rounded-full bg-white text-neutral-800 text-xs font-medium hover:bg-neutral-100 shadow-sm">
+
+              ThreadOS™ demo
+
+            </button>
+
+            <button type="button" class="spring-pill px-5 py-3 rounded-full bg-white text-neutral-800 text-xs font-medium hover:bg-neutral-100 shadow-sm">
+
+              Performance audit
+
+            </button>
+
+          </div>
+
+
+
+          <div class="space-y-3">
+
+            <input type="text" placeholder="Your name & brand" class="w-full bg-white rounded-2xl px-6 py-4.5 text-sm text-black placeholder-neutral-400 border-0 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FF5A5F]/20 transition-all" />
+
+            <input type="email" placeholder="Work email address" class="w-full bg-white rounded-2xl px-6 py-4.5 text-sm text-black placeholder-neutral-400 border-0 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FF5A5F]/20 transition-all" />
+
+            <textarea rows="3" placeholder="Brief campaign targets or timeline..." class="w-full bg-white rounded-2xl px-6 py-4.5 text-sm text-black placeholder-neutral-400 border-0 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FF5A5F]/20 transition-all resize-none"></textarea>
+
+          </div>
+
+
+
+          <button type="submit" class="spring-pill w-full py-5 rounded-2xl bg-black text-white font-bold text-sm tracking-wide flex items-center justify-center gap-2 group shadow-xl">
+
+            <span>Get started</span>
+
+            <span class="group-hover:translate-x-1 transition-transform">→</span>
+
+          </button>
+
+        </div>
+
+
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- 10. FAQ & FOOTER -->
+
+  <section id="faq" data-theme="dark" class="w-full bg-[#111113] text-white py-20 px-6 lg:px-8 relative z-20 border-0 selection:bg-neutral-800 selection:text-white">
+
+    <div class="max-w-4xl mx-auto space-y-10">
+
+      
+
+      <h2 class="text-2xl sm:text-4xl font-semibold tracking-tight text-white">
+
+        Frequently asked.
+
+      </h2>
+
+
+
+      <div class="divide-y divide-white/10 border-t border-b border-white/10">
+
+        <details class="group py-6 cursor-pointer">
+
+          <summary class="flex justify-between items-center text-lg sm:text-xl font-bold tracking-tight list-none select-none text-white">
+
+            <span>How does Red Thread guarantee brand safety with creators?</span>
+
+            <span class="text-neutral-400 group-open:rotate-45 transition-transform text-2xl font-light">+</span>
+
+          </summary>
+
+          <p class="mt-4 text-neutral-400 text-sm sm:text-base leading-relaxed pr-8">
+
+            Every creator in our activation roster undergoes a 2-tier vetting process: Fred AI algorithmic sentiment analysis covering historic channel data, followed by direct human intuition checks by our culture specialists.
+
+          </p>
+
+        </details>
+
+
+
+        <details class="group py-6 cursor-pointer">
+
+          <summary class="flex justify-between items-center text-lg sm:text-xl font-bold tracking-tight list-none select-none text-white">
+
+            <span>How are creator licensing and global usage rights handled?</span>
+
+            <span class="text-neutral-400 group-open:rotate-45 transition-transform text-2xl font-light">+</span>
+
+          </summary>
+
+          <p class="mt-4 text-neutral-400 text-sm sm:text-base leading-relaxed pr-8">
+
+            ThreadOS™ automatically vaults master licensing agreements directly inside your campaign portal. All perpetual usage, paid whitelisting rights, and multi-market clearances are finalized prior to content deployment.
+
+          </p>
+
+        </details>
+
+
+
+        <details class="group py-6 cursor-pointer">
+
+          <summary class="flex justify-between items-center text-lg sm:text-xl font-bold tracking-tight list-none select-none text-white">
+
+            <span>Can ThreadOS™ integrate directly into our internal analytics stack?</span>
+
+            <span class="text-neutral-400 group-open:rotate-45 transition-transform text-2xl font-light">+</span>
+
+          </summary>
+
+          <p class="mt-4 text-neutral-400 text-sm sm:text-base leading-relaxed pr-8">
+
+            Yes. Attention Engine™ connects seamlessly via API to major attribution platforms (including Adjust, AppsFlyer, Shopify, and Google Analytics) for real-time commercial yield reporting.
+
+          </p>
+
+        </details>
+
+
+
+        <details class="group py-6 cursor-pointer">
+
+          <summary class="flex justify-between items-center text-lg sm:text-xl font-bold tracking-tight list-none select-none text-white">
+
+            <span>What is the typical campaign launch timeline from initial brief?</span>
+
+            <span class="text-neutral-400 group-open:rotate-45 transition-transform text-2xl font-light">+</span>
+
+          </summary>
+
+          <p class="mt-4 text-neutral-400 text-sm sm:text-base leading-relaxed pr-8">
+
+            With ThreadOS™ streamlining contracts and logistics, our average turnaround from brief approval to live content deployment is under 14 days globally.
+
+          </p>
+
+        </details>
+
+      </div>
+
+
+
+      <div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-neutral-500 font-medium">
+
+        <div>© 2026 Red Thread Agency Ltd. All rights reserved.</div>
+
+        <div class="flex items-center gap-6">
+
+          <a href="#" class="hover:text-white transition-colors">Privacy policy</a>
+
+          <a href="#" class="hover:text-white transition-colors">Terms of service</a>
+
+          <a href="#" class="hover:text-white transition-colors">LinkedIn</a>
+
+        </div>
+
+      </div>
+
+
+
+    </div>
+
+  </section>
+
+
+
+  <!-- UNIVERSAL APPLE SCRIM MODAL DIALOGS -->
+
+  <!-- Bento Modals -->
+
+  <div id="modal-bento-1" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
+
+    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
+
+      <button onclick="closeModal('modal-bento-1')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
+
+      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">Capability Spotlight</span>
+
+      <h3 class="text-3xl font-bold">Precision Creator Matchmaking</h3>
+
+      <p class="text-neutral-300 text-base leading-relaxed">
+
+        Our vetting system maps creator audience authenticity score against historical engagement velocity. We filter out vanity reach to lock in tastemakers with true cultural weight in your exact vertical.
+
+      </p>
+
+      <div class="pt-4 flex justify-end">
+
+        <button onclick="closeModal('modal-bento-1')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div id="modal-bento-2" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
+
+    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
+
+      <button onclick="closeModal('modal-bento-2')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
+
+      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">ThreadOS Core</span>
+
+      <h3 class="text-3xl font-bold">Automated Workflow &amp; Legal Vault</h3>
+
+      <p class="text-neutral-300 text-base leading-relaxed">
+
+        Contracting drag is reduced to under 24 hours. ThreadOS generates automated legal agreements, manages multi-market licensing, and vaults master media assets in real time.
+
+      </p>
+
+      <div class="pt-4 flex justify-end">
+
+        <button onclick="closeModal('modal-bento-2')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div id="modal-bento-3" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
+
+    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
+
+      <button onclick="closeModal('modal-bento-3')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
+
+      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">Algorithmic Engine</span>
+
+      <h3 class="text-3xl font-bold">Fred AI Intent Targeting</h3>
+
+      <p class="text-neutral-300 text-base leading-relaxed">
+
+        Fred AI constantly parses commentary, sentiment shift, and search intent across 8.4M micro-pockets to deliver predictive recommendations on content hooks and creator pairings.
+
+      </p>
+
+      <div class="pt-4 flex justify-end">
+
+        <button onclick="closeModal('modal-bento-3')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div id="modal-bento-4" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
+
+    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
+
+      <button onclick="closeModal('modal-bento-4')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
+
+      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">Performance Media</span>
+
+      <h3 class="text-3xl font-bold">Whitelisting &amp; Paid Scale</h3>
+
+      <p class="text-neutral-300 text-base leading-relaxed">
+
+        We secure native creator ad accounts and turn top-performing organic assets into direct paid media campaigns, boosting conversion velocity while suppressing customer acquisition cost.
+
+      </p>
+
+      <div class="pt-4 flex justify-end">
+
+        <button onclick="closeModal('modal-bento-4')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div id="modal-bento-5" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
+
+    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
+
+      <button onclick="closeModal('modal-bento-5')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
+
+      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">Predictive Yield</span>
+
+      <h3 class="text-3xl font-bold">Attention Engine™</h3>
+
+      <p class="text-neutral-300 text-base leading-relaxed">
+
+        Pre-test campaign hooks before deployment. Attention Engine models viewer drop-off curves and conversion probabilities to ensure maximum commercial return per dollar spent.
+
+      </p>
+
+      <div class="pt-4 flex justify-end">
+
+        <button onclick="closeModal('modal-bento-5')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div id="modal-bento-6" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
+
+    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
+
+      <button onclick="closeModal('modal-bento-6')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
+
+      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">Rights Management</span>
+
+      <h3 class="text-3xl font-bold">Perpetual Global Usage</h3>
+
+      <p class="text-neutral-300 text-base leading-relaxed">
+
+        Never lose access to high-performing creator creative. We structure contracts to guarantee worldwide usage, multi-platform ad rights, and perpetual digital asset storage.
+
+      </p>
+
+      <div class="pt-4 flex justify-end">
+
+        <button onclick="closeModal('modal-bento-6')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- How It Works Modals -->
+
+  <div id="modal-strategy" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
+
+    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
+
+      <button onclick="closeModal('modal-strategy')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
+
+      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">Process Step 01</span>
+
+      <h3 class="text-3xl font-bold">Creative Strategy Architecture</h3>
+
+      <p class="text-neutral-300 text-base leading-relaxed">
+
+        Fred AI maps high-intent micro-pockets while our creative team crafts scroll-stopping concepts natively built for feed culture, ensuring every asset aligns with consumer sentiment.
+
+      </p>
+
+      <div class="pt-4 flex justify-end">
+
+        <button onclick="closeModal('modal-strategy')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div id="modal-activation" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
+
+    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
+
+      <button onclick="closeModal('modal-activation')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
+
+      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">Process Step 02</span>
+
+      <h3 class="text-3xl font-bold">Creator Activation</h3>
+
+      <p class="text-neutral-300 text-base leading-relaxed">
+
+        End-to-end campaign execution with taste-verified tastemakers. We manage vetting, contracts, rights clearance, and physical product shipments in one unified workspace.
+
+      </p>
+
+      <div class="pt-4 flex justify-end">
+
+        <button onclick="closeModal('modal-activation')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div id="modal-whitelisting" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
+
+    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
+
+      <button onclick="closeModal('modal-whitelisting')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
+
+      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">Process Step 03</span>
+
+      <h3 class="text-3xl font-bold">Creator Paid Ads</h3>
+
+      <p class="text-neutral-300 text-base leading-relaxed">
+
+        Turn viral organic moments into direct conversion engines. We secure whitelisting rights and scale top-performing creator assets across paid social feeds.
+
+      </p>
+
+      <div class="pt-4 flex justify-end">
+
+        <button onclick="closeModal('modal-whitelisting')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div id="modal-analytics" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
+
+    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
+
+      <button onclick="closeModal('modal-analytics')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
+
+      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">Process Step 04</span>
+
+      <h3 class="text-3xl font-bold">Measurement &amp; Analytics</h3>
+
+      <p class="text-neutral-300 text-base leading-relaxed">
+
+        Track real-time viewer retention, conversion velocity, and brand sentiment through Attention Engine™. Continuous AI attribution mapping connects creator spend to ROAS.
+
+      </p>
+
+      <div class="pt-4 flex justify-end">
+
+        <button onclick="closeModal('modal-analytics')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div id="modal-conversion" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
+
+    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
+
+      <button onclick="closeModal('modal-conversion')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
+
+      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">Process Step 05</span>
+
+      <h3 class="text-3xl font-bold">Conversion Yield</h3>
+
+      <p class="text-neutral-300 text-base leading-relaxed">
+
+        Bridge culture and checkout. We optimize user journeys from social feeds directly to point-of-sale, ensuring zero drop-off between creator engagement and checkout.
+
+      </p>
+
+      <div class="pt-4 flex justify-end">
+
+        <button onclick="closeModal('modal-conversion')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- Case Study Modals -->
+
+  <div id="modal-case-1" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
+
+    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
+
+      <button onclick="closeModal('modal-case-1')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
+
+      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">Case Study Showcase</span>
+
+      <h3 class="text-3xl font-bold">FinTech Global: Scaling Creator Conversion</h3>
+
+      <div class="grid grid-cols-2 gap-4 py-2 text-center">
+
+        <div class="bg-white/5 p-4 rounded-2xl"><span class="block text-2xl font-bold text-emerald-400">+140%</span><span class="text-xs text-neutral-400">CAC Efficiency</span></div>
+
+        <div class="bg-white/5 p-4 rounded-2xl"><span class="block text-2xl font-bold text-white">4</span><span class="text-xs text-neutral-400">Primary Markets</span></div>
+
+      </div>
+
+      <p class="text-neutral-300 text-base leading-relaxed">
+
+        By replacing traditional performance ad creative with creator-whitelisted video assets, Red Thread drove direct app installs across US, UK, DACH, and APAC markets at an unprecedented cost per acquisition.
+
+      </p>
+
+      <div class="pt-4 flex justify-end">
+
+        <button onclick="closeModal('modal-case-1')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div id="modal-case-2" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
+
+    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
+
+      <button onclick="closeModal('modal-case-2')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
+
+      <span class="text-xs font-semibold text-[#E040FB] uppercase tracking-wider">Case Study Showcase</span>
+
+      <h3 class="text-3xl font-bold">Luxury Apparel: Cultural Re-Positioning</h3>
+
+      <div class="grid grid-cols-2 gap-4 py-2 text-center">
+
+        <div class="bg-white/5 p-4 rounded-2xl"><span class="block text-2xl font-bold text-[#E040FB]">18.4M</span><span class="text-xs text-neutral-400">Organic Views</span></div>
+
+        <div class="bg-white/5 p-4 rounded-2xl"><span class="block text-2xl font-bold text-white">100%</span><span class="text-xs text-neutral-400">Sell-Out Speed</span></div>
+
+      </div>
+
+      <p class="text-neutral-300 text-base leading-relaxed">
+
+        An elevated seasonal capsule launch pairing high-fashion aesthetics with authentic street culture influencers, driving complete inventory sell-out within 48 hours of initial feed drop.
+
+      </p>
+
+      <div class="pt-4 flex justify-end">
+
+        <button onclick="closeModal('modal-case-2')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div id="modal-case-3" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
+
+    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
+
+      <button onclick="closeModal('modal-case-3')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
+
+      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">Case Study Showcase</span>
+
+      <h3 class="text-3xl font-bold">Consumer Hardware: ThreadOS™ Rollout</h3>
+
+      <div class="grid grid-cols-2 gap-4 py-2 text-center">
+
+        <div class="bg-white/5 p-4 rounded-2xl"><span class="block text-2xl font-bold text-[#FF5A5F]">$3.8M</span><span class="text-xs text-neutral-400">Direct Sales</span></div>
+
+        <div class="bg-white/5 p-4 rounded-2xl"><span class="block text-2xl font-bold text-white">9.4x</span><span class="text-xs text-neutral-400">Verified ROAS</span></div>
+
+      </div>
+
+      <p class="text-neutral-300 text-base leading-relaxed">
+
+        Full-stack integration of ThreadOS automation allowed for a synchronized 120-creator unboxing wave across TikTok and Instagram Reels, generating $3.8M in attributed direct revenue.
+
+      </p>
+
+      <div class="pt-4 flex justify-end">
+
+        <button onclick="closeModal('modal-case-3')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- INTERACTIVE ENGINE SCRIPTS -->
+
+  <script>
+
+    // 1. Modal Scrim Controller
+
+    function openModal(modalId) {
+
+      const modal = document.getElementById(modalId);
+
+      if (modal) modal.classList.add('active');
+
+    }
+
+
+
+    function closeModal(modalId) {
+
+      const modal = document.getElementById(modalId);
+
+      if (modal) modal.classList.remove('active');
+
+    }
+
+
+
+    // 2. Interactive Bento Micro-Widget Controllers
+
+    function updateBentoVelocity(range) {
+
+      const valEl = document.getElementById('bento-velocity-val');
+
+      const barEl = document.getElementById('bento-velocity-bar');
+
+      const btn24 = document.getElementById('vbtn-24h');
+
+      const btn7 = document.getElementById('vbtn-7d');
+
+      const btn30 = document.getElementById('vbtn-30d');
+
+
+
+      btn24.className = "px-2 py-0.5 rounded-full text-neutral-400 hover:text-white";
+
+      btn7.className = "px-2 py-0.5 rounded-full text-neutral-400 hover:text-white";
+
+      btn30.className = "px-2 py-0.5 rounded-full text-neutral-400 hover:text-white";
+
+
+
+      if (range === '24h') {
+
+        valEl.innerText = "< 24h";
+
+        barEl.style.width = "90%";
+
+        btn24.className = "px-2 py-0.5 rounded-full bg-[#FF5A5F] text-white font-bold";
+
+      } else if (range === '7d') {
+
+        valEl.innerText = "99.8%";
+
+        barEl.style.width = "98%";
+
+        btn7.className = "px-2 py-0.5 rounded-full bg-[#FF5A5F] text-white font-bold";
+
+      } else {
+
+        valEl.innerText = "$4.2M";
+
+        barEl.style.width = "75%";
+
+        btn30.className = "px-2 py-0.5 rounded-full bg-[#FF5A5F] text-white font-bold";
+
+      }
+
+    }
+
+
+
+    function hoverFredChart(heightStr, readoutText) {
+
+      const readout = document.getElementById('fred-chart-readout');
+
+      if (readout) readout.innerText = readoutText;
+
+    }
+
+
+
+    function updateYieldMetric(type) {
+
+      const valEl = document.getElementById('yield-val');
+
+      const badgeEl = document.getElementById('yield-badge');
+
+      const btnRoas = document.getElementById('ym-roas');
+
+      const btnCac = document.getElementById('ym-cac');
+
+      const btnRet = document.getElementById('ym-ret');
+
+
+
+      btnRoas.className = "px-2.5 py-1 rounded-full text-neutral-400 hover:text-white";
+
+      btnCac.className = "px-2.5 py-1 rounded-full text-neutral-400 hover:text-white";
+
+      btnRet.className = "px-2.5 py-1 rounded-full text-neutral-400 hover:text-white";
+
+
+
+      if (type === 'ROAS') {
+
+        valEl.innerText = "9.4x";
+
+        badgeEl.innerText = "Predictive ROAS score";
+
+        btnRoas.className = "px-2.5 py-1 rounded-full bg-[#FF5A5F] text-white font-bold";
+
+      } else if (type === 'CAC') {
+
+        valEl.innerText = "-42%";
+
+        badgeEl.innerText = "Acquisition drag reduction";
+
+        btnCac.className = "px-2.5 py-1 rounded-full bg-[#FF5A5F] text-white font-bold";
+
+      } else {
+
+        valEl.innerText = "84%";
+
+        badgeEl.innerText = "Viewer feed retention";
+
+        btnRet.className = "px-2.5 py-1 rounded-full bg-[#FF5A5F] text-white font-bold";
+
+      }
+
+    }
+
+
+
+    // 3. Filterable Hardware Stage Controller
+
+    function filterHardware(category) {
+
+      const cards = document.querySelectorAll('.hw-card');
+
+      const filterBtns = ['all', 'beauty', 'fintech', 'hardware', 'gaming'];
+
+
+
+      filterBtns.forEach(btn => {
+
+        const el = document.getElementById(`hw-filter-${btn}`);
+
+        if (el) {
+
+          if (btn === category) {
+
+            el.className = "spring-pill px-4 py-2 rounded-full text-xs font-semibold bg-white text-black shadow-md";
+
+          } else {
+
+            el.className = "spring-pill px-4 py-2 rounded-full text-xs font-semibold bg-white/10 text-neutral-300 hover:text-white";
+
+          }
+
+        }
+
+      });
+
+
+
+      cards.forEach(card => {
+
+        const cat = card.getAttribute('data-category');
+
+        if (category === 'all' || cat === category) {
+
+          card.style.opacity = '1';
+
+          card.style.transform = 'scale(1)';
+
+          card.style.filter = 'none';
+
+        } else {
+
+          card.style.opacity = '0.25';
+
+          card.style.transform = 'scale(0.92)';
+
+          card.style.filter = 'grayscale(100%)';
+
+        }
+
+      });
+
+    }
+
+
+
+    // 4. Testimonial Controller
+
+    const testimonials = [
+
+      {
+
+        quote: "“Red Thread strip away the usual agency fluff. They paired us with creators who genuinely transformed our organic reach and scaled direct conversions across 4 primary markets.”",
+
+        author: "Sarah Jenkins",
+
+        title: "VP of Global Marketing, Enterprise Hardware",
+
+        img: "https://images.unsplash.com/photo-1589779255718-3c459da9ffeb?q=80&w=3432&auto=format&fit=crop"
+
+      },
+
+      {
+
+        quote: "“ThreadOS changed how our internal team handles creator campaigns. We launched a 12-market activation in under 10 days with complete compliance and zero legal friction.”",
+
+        author: "Marcus Vance",
+
+        title: "Head of Digital Growth, Global Lifestyle Brand",
+
+        img: "https://images.unsplash.com/photo-1612460862196-72dad730ded2?q=80&w=2670&auto=format&fit=crop"
+
+      },
+
+      {
+
+        quote: "“The yield accuracy of the Attention Engine was startling. Every dollar spent on creator whitelisting was tracked down to exact customer acquisition revenue.”",
+
+        author: "Elena Rostova",
+
+        title: "Chief Marketing Officer, Consumer Tech",
+
+        img: "https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=3432&auto=format&fit=crop"
+
+      }
+
+    ];
+
+
+
+    let currentTestimonialIndex = 0;
+
+
+
+    function updateTestimonialUI() {
+
+      const q = testimonials[currentTestimonialIndex];
+
+      const quoteEl = document.getElementById("testimonial-quote");
+
+      const authorEl = document.getElementById("testimonial-author");
+
+      const titleEl = document.getElementById("testimonial-title");
+
+      const bgEl = document.getElementById("testimonial-bg");
+
+
+
+      quoteEl.style.opacity = 0;
+
+      bgEl.style.opacity = 0.3;
+
+
+
+      setTimeout(() => {
+
+        bgEl.style.backgroundImage = `url('${q.img}')`;
+
+        quoteEl.innerText = q.quote;
+
+        authorEl.innerText = q.author;
+
+        titleEl.innerText = q.title;
+
+        quoteEl.style.opacity = 1;
+
+        bgEl.style.opacity = 1;
+
+      }, 200);
+
+    }
+
+
+
+    function nextTestimonial() {
+
+      currentTestimonialIndex = (currentTestimonialIndex + 1) % testimonials.length;
+
+      updateTestimonialUI();
+
+    }
+
+
+
+    function prevTestimonial() {
+
+      currentTestimonialIndex = (currentTestimonialIndex - 1 + testimonials.length) % testimonials.length;
+
+      updateTestimonialUI();
+
+    }
+
+
+
+    // 5. Continuous 2x IMAX Concave Curve Loop
+
+    function updateIMAX() {
+
+      const imaxCards = document.querySelectorAll('.imax-card');
+
+      const centerX = window.innerWidth / 2;
+
+
+
+      imaxCards.forEach(card => {
+
+        const cardRect = card.getBoundingClientRect();
+
+        const cardCenter = cardRect.left + (cardRect.width / 2);
+
+        const distFromCenter = (cardCenter - centerX) / centerX;
+
+        
+
+        const rotateY = -distFromCenter * 50; 
+
+        const translateZ = -Math.pow(Math.abs(distFromCenter), 1.4) * 280; 
+
+        const scale = 1 - Math.abs(distFromCenter) * 0.12;
+
+
+
+        card.style.transform = `rotateY(${rotateY}deg) translateZ(${translateZ}px) scale(${scale})`;
+
+      });
+
+
+
+      requestAnimationFrame(updateIMAX);
+
+    }
+
+    requestAnimationFrame(updateIMAX);
+
+
+
+    // 6. MAIN HIGH-PERFORMANCE SCROLL LOOP (Nav Theme, Video Binding, Hardware Scrub, Stacking Cards)
+
+    let isTicking = false;
+
+    window.addEventListener('scroll', () => {
+
+      if (!isTicking) {
+
+        window.requestAnimationFrame(() => {
+
+          const scrollY = window.scrollY;
+
+          const viewHeight = window.innerHeight;
+
+
+
+          // A. Nav Theme Switching
+
+          const mainNav = document.getElementById('main-nav');
+
+          const navLogoText = document.getElementById('nav-logo-text');
+
+          const navLinks = document.getElementById('nav-links');
+
+          const navCta = document.getElementById('nav-cta');
+
+          const sections = document.querySelectorAll('section[data-theme], header[data-theme]');
+
+
+
+          if (mainNav) {
+
+            if (scrollY > 30) {
+
+              mainNav.classList.add('opacity-100', 'pointer-events-auto');
+
+              mainNav.classList.remove('opacity-0', 'pointer-events-none');
+
+
+
+              let currentTheme = 'dark';
+
+              sections.forEach(sec => {
+
+                const rect = sec.getBoundingClientRect();
+
+                if (rect.top <= 100 && rect.bottom >= 100) {
+
+                  currentTheme = sec.getAttribute('data-theme') || 'dark';
+
+                }
+
+              });
+
+
+
+              if (currentTheme === 'light') {
+
+                mainNav.classList.add('glass-light');
+
+                mainNav.classList.remove('glass-dark');
+
+                if (navLogoText) navLogoText.className = "text-black";
+
+                if (navLinks) navLinks.className = "hidden md:flex items-center gap-8 text-[11px] font-medium uppercase tracking-wider text-neutral-600";
+
+                if (navCta) navCta.className = "spring-pill px-4 py-1.5 rounded-full bg-black text-white text-xs font-semibold shadow-md";
+
+              } else {
+
+                mainNav.classList.add('glass-dark');
+
+                mainNav.classList.remove('glass-light');
+
+                if (navLogoText) navLogoText.className = "text-white";
+
+                if (navLinks) navLinks.className = "hidden md:flex items-center gap-8 text-[11px] font-medium uppercase tracking-wider text-neutral-400";
+
+                if (navCta) navCta.className = "spring-pill px-4 py-1.5 rounded-full bg-white text-black text-xs font-semibold shadow-md";
+
+              }
+
+
+
+            } else {
+
+              mainNav.classList.add('opacity-0', 'pointer-events-none');
+
+              mainNav.classList.remove('opacity-100', 'pointer-events-auto', 'glass-dark', 'glass-light');
+
+            }
+
+          }
+
+
+
+          // B. Viewport-Bound Video Playback Engine
+
+          const inlineVideos = document.querySelectorAll('video[data-inline-media]');
+
+          inlineVideos.forEach(vid => {
+
+            const rect = vid.getBoundingClientRect();
+
+            if (rect.top < viewHeight && rect.bottom > 0) {
+
+              if (vid.paused) vid.play().catch(() => {});
+
+            } else {
+
+              if (!vid.paused) vid.pause();
+
+            }
+
+          });
+
+
+
+          // C. Hero Zoom Engine
+
+          const runway = document.getElementById('hero-runway');
+
+          const stencil = document.getElementById('hero-stencil-svg');
+
+          const eyebrow = document.getElementById('hero-eyebrow');
+
+          const scrollHint = document.getElementById('hero-scroll-hint');
+
+          
+
+          if (runway && stencil) {
+
+            const rect = runway.getBoundingClientRect();
+
+            const scrollableDistance = runway.offsetHeight - viewHeight;
+
+            const currentScroll = -rect.top;
+
+
+
+            let progress = currentScroll / scrollableDistance;
+
+            progress = Math.max(0, Math.min(1, progress));
+
+
+
+            const scale = 1 + Math.pow(progress, 1.5) * 14;
+
+            stencil.style.transform = `scale(${scale})`;
+
+
+
+            let stencilOpacity = 1;
+
+            if (progress > 0.2) {
+
+              stencilOpacity = 1 - ((progress - 0.2) / 0.35);
+
+              stencilOpacity = Math.max(0, Math.min(1, stencilOpacity));
+
+            }
+
+            stencil.style.opacity = stencilOpacity;
+
+
+
+            const fadeOpacity = Math.max(0, 1 - progress * 4);
+
+            if (eyebrow) eyebrow.style.opacity = fadeOpacity;
+
+            if (scrollHint) scrollHint.style.opacity = fadeOpacity;
+
+          }
+
+
+
+          // D. Hardware 3D Scrub Engine
+
+          const hardwareSection = document.getElementById('hardware');
+
+          const phoneOuterLeft = document.getElementById('phone-outer-left');
+
+          const phoneOuterRight = document.getElementById('phone-outer-right');
+
+          const phoneScrubs = document.querySelectorAll('.phone-scrub');
+
+
+
+          if (hardwareSection) {
+
+            const rect = hardwareSection.getBoundingClientRect();
+
+            if (rect.top < viewHeight && rect.bottom > 0) {
+
+              const progress = Math.max(0, Math.min(1, (viewHeight - rect.top) / (viewHeight + rect.height)));
+
+              const rotateY = (1 - progress) * 35;
+
+              const rotateX = (1 - progress) * 15;
+
+
+
+              phoneScrubs.forEach((phone, idx) => {
+
+                const dir = idx % 2 === 0 ? 1 : -1;
+
+                phone.style.transform = `rotateY(${rotateY * dir}deg) rotateX(${rotateX}deg)`;
+
+              });
+
+
+
+              if (phoneOuterLeft && phoneOuterRight) {
+
+                const lagY = (rect.top - viewHeight) * -0.06;
+
+                phoneOuterLeft.style.transform = `rotateY(${rotateY}deg) rotateX(${rotateX}deg) translateY(${lagY}px)`;
+
+                phoneOuterRight.style.transform = `rotateY(${-rotateY}deg) rotateX(${rotateX}deg) translateY(${lagY}px)`;
+
+              }
+
+            }
+
+          }
+
+
+
+          // E. Sticky Z-Space Stacking Cards Engine
+
+          const stackCards = document.querySelectorAll('.stacking-card');
+
+          stackCards.forEach((card, idx) => {
+
+            const nextCard = stackCards[idx + 1];
+
+            if (nextCard) {
+
+              const nextRect = nextCard.getBoundingClientRect();
+
+              const triggerPoint = window.innerHeight * 0.45;
+
+              if (nextRect.top < triggerPoint) {
+
+                const overlap = Math.max(0, Math.min(1, (triggerPoint - nextRect.top) / 300));
+
+                const scale = 1 - (overlap * 0.08);
+
+                const opacity = 1 - (overlap * 0.6);
+
+                const blur = overlap * 6;
+
+                card.style.transform = `scale(${scale})`;
+
+                card.style.opacity = opacity;
+
+                card.style.filter = `blur(${blur}px)`;
+
+              } else {
+
+                card.style.transform = `scale(1)`;
+
+                card.style.opacity = `1`;
+
+                card.style.filter = `blur(0px)`;
+
+              }
+
+            }
+
+          });
+
+
+
+          // F. Testimonial Parallax
+
+          const testimonialSection = document.getElementById('testimonials');
+
+          const testimonialBg = document.getElementById('testimonial-bg');
+
+          if (testimonialSection && testimonialBg) {
+
+            const rect = testimonialSection.getBoundingClientRect();
+
+            if (rect.top < viewHeight && rect.bottom > 0) {
+
+              const parallaxY = (rect.top - (viewHeight / 2)) * 0.22;
+
+              testimonialBg.style.transform = `translateY(${parallaxY}px)`;
+
+            }
+
+          }
+
+
+
+          isTicking = false;
+
+        });
+
+        isTicking = true;
+
+      }
+
+    });
+
+
+
+    window.dispatchEvent(new Event('scroll'));
+
+  </script>
+
+
+
+</body>
+
+</html>
