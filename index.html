@@ -233,6 +233,12 @@
 
     /* Brand logos: compact mobile sizing only — desktop inline heights untouched */
     @media (max-width: 639px) {
+      /* Pure white canvas so baked-in white logo pads blend away */
+      #brand-proof,
+      #brand-proof #logos-section,
+      #brand-proof #logos-section > div {
+        background-color: #ffffff !important;
+      }
       #brand-proof .brand-logo-img {
         height: auto !important;
         max-height: 1.75rem; /* max-h-7 */
@@ -390,12 +396,10 @@
       /* Soft gradient mask — keep photo visible through the top half */
       #deck-accordion .accordion-card > .case-study-scrim {
         background: linear-gradient(to top, #000 0%, rgba(0,0,0,0.8) 42%, transparent 72%) !important;
-        transition: background 0.5s ease-out, backdrop-filter 0.5s ease-out;
+        transition: background 0.28s ease-out;
       }
       #deck-accordion .accordion-card.is-open > .case-study-scrim {
         background: linear-gradient(to top, #000 0%, rgba(0,0,0,0.9) 45%, rgba(0,0,0,0.3) 100%) !important;
-        backdrop-filter: blur(2px);
-        -webkit-backdrop-filter: blur(2px);
       }
       #deck-accordion .collapsed-content {
         display: none !important;
@@ -410,8 +414,8 @@
         overflow: hidden !important;
       }
       /*
-        Smooth sheet: pin to bottom and animate a FIXED max-height only.
-        Avoid translateY(% of self) + display:none — both thrash height mid-tween.
+        Smooth sheet: pin to bottom, animate max-height.
+        Collapsed: mask + edge fade so copy dissolves into the card edge.
       */
       #deck-accordion .case-mobile-panel {
         position: absolute;
@@ -419,23 +423,63 @@
         right: 0;
         bottom: 0;
         width: 100%;
-        max-height: 8.15rem;
-        padding: 1.15rem 1.25rem 1.35rem;
+        max-height: 8.5rem;
+        padding: 0.85rem 1.25rem 1.5rem;
         display: flex;
         flex-direction: column;
-        gap: 0.65rem;
+        gap: 0.5rem;
         overflow: hidden;
         background: transparent;
         transform: none;
-        transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-                    opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        will-change: max-height, opacity;
+        /* Snappy spring — only max-height (avoid transition: all) */
+        transition: max-height 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: max-height;
+        -webkit-mask-image: linear-gradient(
+          to bottom,
+          #000 0%,
+          #000 42%,
+          rgba(0, 0, 0, 0.55) 68%,
+          transparent 100%
+        );
+        mask-image: linear-gradient(
+          to bottom,
+          #000 0%,
+          #000 42%,
+          rgba(0, 0, 0, 0.55) 68%,
+          transparent 100%
+        );
       }
+      /* Soft fade along the card’s bottom edge (no backdrop-filter — keeps it smooth) */
+      #deck-accordion .case-mobile-panel::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 4.5rem;
+        pointer-events: none;
+        z-index: 6;
+        background: linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 0) 0%,
+          rgba(0, 0, 0, 0.35) 45%,
+          rgba(0, 0, 0, 0.85) 100%
+        );
+        opacity: 1;
+        transition: opacity 0.2s ease-out;
+      }
+      /* Open: full card, crisp text, no inner scroll */
       #deck-accordion .accordion-card.is-open .case-mobile-panel {
-        max-height: 24rem;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior: contain;
+        max-height: 100%;
+        overflow: hidden;
+        padding-top: 1rem;
+        padding-bottom: 1.5rem;
+        -webkit-mask-image: none;
+        mask-image: none;
+      }
+      #deck-accordion .accordion-card.is-open .case-mobile-panel::after {
+        opacity: 0;
+        pointer-events: none;
       }
       #deck-accordion .case-expanded-body {
         display: flex !important;
@@ -466,15 +510,19 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
       }
-      /* Body + metrics stay in layout; fade with spring expand */
+      /* Body + metrics: quick fade-up in sync with the sheet */
       #deck-accordion .expanded-content p.max-w-xl,
       #deck-accordion .case-metrics {
         opacity: 0;
-        transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        transform: translateY(6px);
+        transition:
+          opacity 0.22s ease-out,
+          transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
       }
       #deck-accordion .accordion-card.is-open .expanded-content p.max-w-xl,
       #deck-accordion .accordion-card.is-open .case-metrics {
         opacity: 1;
+        transform: translateY(0);
       }
       #deck-accordion .expanded-content p.max-w-xl {
         display: block !important;
@@ -505,18 +553,35 @@
       #deck-accordion .case-metrics > div > span:first-child {
         font-size: 1.45rem !important;
       }
-      /* Floating glass FAB — pinned top-right, never collides with metrics */
+      /* Caret rides the TOP of the text sheet (inside .case-mobile-panel) */
       #deck-accordion .case-view-more-btn {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        z-index: 20;
+        position: relative;
+        z-index: 7;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        margin: 0;
+        align-self: center;
+        flex-shrink: 0;
+        order: -1;
+        margin: 0 0 0.1rem;
+        padding: 0.2rem 0.85rem 0.35rem;
         pointer-events: auto;
+        border: none;
+        background: transparent;
+        box-shadow: none;
+        color: rgba(212, 212, 212, 0.95);
+        font-size: 1.45rem;
+        font-weight: 500;
+        line-height: 1;
+        letter-spacing: 0;
+        text-transform: none;
+        animation: caseCaretPulse 1.5s ease-in-out infinite;
       }
+    }
+
+    @keyframes caseCaretPulse {
+      0%, 100% { opacity: 0.45; transform: translateY(0); }
+      50% { opacity: 1; transform: translateY(-4px); }
     }
 
     @media (min-width: 768px) {
@@ -921,7 +986,7 @@
 
   <!-- 04. BRAND PROOF -->
 
-  <section id="brand-proof" data-theme="light" class="relative z-10 bg-white py-10 sm:py-24 -mt-[100vh] selection:bg-neutral-800 selection:text-white">
+  <section id="brand-proof" data-theme="light" class="relative z-10 bg-[#ffffff] py-10 sm:py-24 -mt-[100vh] selection:bg-neutral-800 selection:text-white">
 
     <div class="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
 
@@ -1501,9 +1566,9 @@
 
       </div>
 
-      <!-- Lisbon (SW of London) -->
+      <!-- Lisbon (SW of London) — nudged further SW on mobile to clear Basel -->
 
-      <div class="absolute top-[27%] left-[43.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
+      <div class="absolute top-[34%] left-[39%] sm:top-[27%] sm:left-[43.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
 
         <span class="relative flex h-2 w-2">
 
@@ -1533,9 +1598,9 @@
 
       </div>
 
-      <!-- Basel (SE of London) -->
+      <!-- Basel (SE of London) — nudged further SE on mobile to clear Lisbon -->
 
-      <div class="absolute top-[26%] left-[49.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
+      <div class="absolute top-[28%] left-[56%] sm:top-[26%] sm:left-[49.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
 
         <span class="relative flex h-2 w-2">
 
@@ -1729,7 +1794,8 @@
 
           <!-- Expanded Content Canvas -->
           <div class="expanded-content opacity-100 absolute inset-0 w-full h-full pointer-events-auto transition-opacity duration-300 delay-300 ease-in z-20">
-            <div class="case-mobile-panel transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
+            <div class="case-mobile-panel">
+              <button type="button" class="case-view-more-btn" aria-expanded="false" aria-label="View more">^</button>
               <div class="case-expanded-body w-full h-full flex flex-col md:flex-row justify-between items-end p-8 md:p-12 relative z-10">
                 <div class="case-copy max-w-xl md:w-[58%] flex flex-col justify-end">
                   <span class="text-xs tracking-widest uppercase block mb-1 bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent font-extrabold">Case Study Showcase</span>
@@ -1749,7 +1815,6 @@
                 </div>
               </div>
             </div>
-            <button type="button" class="case-view-more-btn bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-semibold tracking-wider uppercase px-4 py-2 rounded-full transition-all duration-300 hover:bg-white/20 active:scale-95" aria-expanded="false">View more</button>
           </div>
         </div>
 
@@ -1769,7 +1834,8 @@
           </div>
 
           <div class="expanded-content opacity-0 pointer-events-none absolute inset-0 w-full h-full transition-opacity duration-150 ease-out z-20">
-            <div class="case-mobile-panel transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
+            <div class="case-mobile-panel">
+              <button type="button" class="case-view-more-btn" aria-expanded="false" aria-label="View more">^</button>
               <div class="case-expanded-body w-full h-full flex flex-col md:flex-row justify-between items-end p-8 md:p-12 relative z-10">
                 <div class="case-copy max-w-xl md:w-[58%] flex flex-col justify-end">
                   <span class="text-xs tracking-widest uppercase block mb-1 bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent font-extrabold">Case Study Showcase</span>
@@ -1789,7 +1855,6 @@
                 </div>
               </div>
             </div>
-            <button type="button" class="case-view-more-btn bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-semibold tracking-wider uppercase px-4 py-2 rounded-full transition-all duration-300 hover:bg-white/20 active:scale-95" aria-expanded="false">View more</button>
           </div>
         </div>
 
@@ -1809,7 +1874,8 @@
           </div>
 
           <div class="expanded-content opacity-0 pointer-events-none absolute inset-0 w-full h-full transition-opacity duration-150 ease-out z-20">
-            <div class="case-mobile-panel transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
+            <div class="case-mobile-panel">
+              <button type="button" class="case-view-more-btn" aria-expanded="false" aria-label="View more">^</button>
               <div class="case-expanded-body w-full h-full flex flex-col md:flex-row justify-between items-end p-8 md:p-12 relative z-10">
                 <div class="case-copy max-w-xl md:w-[58%] flex flex-col justify-end">
                   <span class="text-xs tracking-widest uppercase block mb-1 bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent font-extrabold">Case Study Showcase</span>
@@ -1829,7 +1895,6 @@
                 </div>
               </div>
             </div>
-            <button type="button" class="case-view-more-btn bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-semibold tracking-wider uppercase px-4 py-2 rounded-full transition-all duration-300 hover:bg-white/20 active:scale-95" aria-expanded="false">View more</button>
           </div>
         </div>
 
@@ -2830,32 +2895,48 @@
         });
       });
 
-      // Mobile-only: slide full case copy up into the card
+      // Mobile-only: expand sheet to exact content height (no inner scroll)
+      const PEEK_MAX = '8.5rem';
       cards.forEach((card) => {
         const btn = card.querySelector('.case-view-more-btn');
-        if (!btn) return;
+        const panel = card.querySelector('.case-mobile-panel');
+        if (!btn || !panel) return;
         btn.addEventListener('click', (e) => {
           e.preventDefault();
           e.stopPropagation();
           if (!isMobile()) return;
-          const panel = card.querySelector('.case-mobile-panel');
           const open = !card.classList.contains('is-open');
-          if (panel && !open) panel.scrollTop = 0; // reset before collapse tween
-          card.classList.toggle('is-open', open);
-          btn.textContent = open ? 'View less' : 'View more';
+          if (open) {
+            // Lock peek height, open styles, then spring to content height
+            panel.style.maxHeight = PEEK_MAX;
+            card.classList.add('is-open');
+            const target = Math.min(panel.scrollHeight, card.clientHeight) + 'px';
+            requestAnimationFrame(() => { panel.style.maxHeight = target; });
+          } else {
+            panel.style.maxHeight = panel.offsetHeight + 'px';
+            void panel.offsetHeight;
+            card.classList.remove('is-open');
+            panel.style.maxHeight = PEEK_MAX;
+          }
+          btn.textContent = open ? 'v' : '^';
           btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+          btn.setAttribute('aria-label', open ? 'View less' : 'View more');
         });
       });
 
       function collapseMobileSheets() {
         cards.forEach((card) => {
           const panel = card.querySelector('.case-mobile-panel');
-          if (panel) panel.scrollTop = 0;
+          if (panel) {
+            panel.scrollTop = 0;
+            panel.style.maxHeight = '';
+          }
           card.classList.remove('is-open');
           const btn = card.querySelector('.case-view-more-btn');
           if (btn) {
-            btn.textContent = 'View more';
+            btn.textContent = '^';
             btn.setAttribute('aria-expanded', 'false');
+            btn.setAttribute('aria-label', 'View more');
           }
         });
       }
