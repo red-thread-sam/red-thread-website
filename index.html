@@ -50,6 +50,8 @@
 
             'imax-scroll': 'imaxScroll 7s linear infinite',
 
+            'marquee': 'marquee 40s linear infinite',
+
             'radar-ping': 'radarPing 2s cubic-bezier(0, 0, 0.2, 1) infinite',
 
           },
@@ -57,6 +59,14 @@
           keyframes: {
 
             imaxScroll: {
+
+              '0%': { transform: 'translateX(0)' },
+
+              '100%': { transform: 'translateX(-50%)' },
+
+            },
+
+            marquee: {
 
               '0%': { transform: 'translateX(0)' },
 
@@ -545,8 +555,8 @@
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
-                <source src="Content/Phone%20mockups/screen1.mov" type="video/mp4"/>
-                <source src="Phone%20mockups/screen1.mov" type="video/mp4"/>
+                <source src="Content/Phone%20mockups/Compressed/screen1.mov" type="video/mp4"/>
+                <source src="Phone%20mockups/Compressed/screen1.mov" type="video/mp4"/>
               </video>
             </div>
           </div>
@@ -556,19 +566,19 @@
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
-                <source src="Content/Phone%20mockups/screen2.mov" type="video/mp4"/>
-                <source src="Phone%20mockups/screen2.mov" type="video/mp4"/>
+                <source src="Content/Phone%20mockups/Compressed/screen2.mov" type="video/mp4"/>
+                <source src="Phone%20mockups/Compressed/screen2.mov" type="video/mp4"/>
               </video>
             </div>
           </div>
 
-          <!-- Phone 3: video7.mp4 -->
+          <!-- Phone 3: video7.mov -->
           <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:30;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
-                <source src="Content/Phone%20mockups/video7.mp4" type="video/mp4"/>
-                <source src="Phone%20mockups/video7.mp4" type="video/mp4"/>
+                <source src="Content/Phone%20mockups/Compressed/video7.mov" type="video/mp4"/>
+                <source src="Phone%20mockups/Compressed/video7.mov" type="video/mp4"/>
               </video>
             </div>
           </div>
@@ -578,8 +588,8 @@
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
-                <source src="Content/Phone%20mockups/screen3.mov" type="video/mp4"/>
-                <source src="Phone%20mockups/screen3.mov" type="video/mp4"/>
+                <source src="Content/Phone%20mockups/Compressed/screen3.mov" type="video/mp4"/>
+                <source src="Phone%20mockups/Compressed/screen3.mov" type="video/mp4"/>
               </video>
             </div>
           </div>
@@ -589,8 +599,8 @@
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
-                <source src="Content/Phone%20mockups/video9.mov" type="video/mp4"/>
-                <source src="Phone%20mockups/video9.mov" type="video/mp4"/>
+                <source src="Content/Phone%20mockups/Compressed/video9.mov" type="video/mp4"/>
+                <source src="Phone%20mockups/Compressed/video9.mov" type="video/mp4"/>
               </video>
             </div>
           </div>
@@ -600,10 +610,10 @@
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <img
-                src="Content/Phone%20mockups/pic%208.jpg"
+                src="Content/Phone%20mockups/Compressed/pic%208.jpg"
                 alt="Creator Content"
                 class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"
-                onerror="this.onerror=null; this.src='Phone%20mockups/pic%208.jpg';"
+                onerror="this.onerror=null; this.src='Phone%20mockups/Compressed/pic%208.jpg';"
               />
             </div>
           </div>
@@ -613,8 +623,8 @@
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
-                <source src="Content/Phone%20mockups/Screen4.mov" type="video/mp4"/>
-                <source src="Phone%20mockups/Screen4.mov" type="video/mp4"/>
+                <source src="Content/Phone%20mockups/Compressed/Screen4.mov" type="video/mp4"/>
+                <source src="Phone%20mockups/Compressed/Screen4.mov" type="video/mp4"/>
               </video>
             </div>
           </div>
@@ -624,8 +634,8 @@
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
-                <source src="Content/Phone%20mockups/video10.mov" type="video/mp4"/>
-                <source src="Phone%20mockups/video10.mov" type="video/mp4"/>
+                <source src="Content/Phone%20mockups/Compressed/video10.mov" type="video/mp4"/>
+                <source src="Phone%20mockups/Compressed/video10.mov" type="video/mp4"/>
               </video>
             </div>
           </div>
@@ -635,8 +645,8 @@
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
-                <source src="Content/Phone%20mockups/screen5.mov" type="video/mp4"/>
-                <source src="Phone%20mockups/screen5.mov" type="video/mp4"/>
+                <source src="Content/Phone%20mockups/Compressed/screen5.mov" type="video/mp4"/>
+                <source src="Phone%20mockups/Compressed/screen5.mov" type="video/mp4"/>
               </video>
             </div>
           </div>
@@ -646,8 +656,8 @@
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
-                <source src="Content/Phone%20mockups/video11.mov" type="video/mp4"/>
-                <source src="Phone%20mockups/video11.mov" type="video/mp4"/>
+                <source src="Content/Phone%20mockups/Compressed/video11.mov" type="video/mp4"/>
+                <source src="Phone%20mockups/Compressed/video11.mov" type="video/mp4"/>
               </video>
             </div>
           </div>
@@ -657,8 +667,8 @@
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
-                <source src="Content/Phone%20mockups/video6.mov" type="video/mp4"/>
-                <source src="Phone%20mockups/video6.mov" type="video/mp4"/>
+                <source src="Content/Phone%20mockups/Compressed/video6.mov" type="video/mp4"/>
+                <source src="Phone%20mockups/Compressed/video6.mov" type="video/mp4"/>
               </video>
             </div>
           </div>
@@ -691,7 +701,7 @@
 
         <p class="text-xl text-neutral-600 leading-relaxed max-w-md mt-4">
 
-          Powering growth for world-class brands<br />and the voices shaping modern&nbsp;culture.
+          A few of the stories we’ve helped tell.
 
         </p>
 
@@ -1213,7 +1223,7 @@
 
       <div class="flex-1 flex flex-col items-center justify-center text-center px-4">
 
-        <span class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">2</span>
+        <span class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">3</span>
 
         <span class="text-xs font-semibold text-neutral-400 mt-2 tracking-widest uppercase">Offices</span>
 
@@ -1245,7 +1255,7 @@
 
       <!-- Los Angeles -->
 
-      <div class="absolute top-[37%] left-[14.5%] -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
+      <div class="absolute top-[37%] left-[14.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
 
         <span class="relative flex h-2 w-2">
 
@@ -1261,7 +1271,7 @@
 
       <!-- New York -->
 
-      <div class="absolute top-[27%] left-[26.5%] -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
+      <div class="absolute top-[27%] left-[26.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
 
         <span class="relative flex h-2 w-2">
 
@@ -1275,9 +1285,25 @@
 
       </div>
 
+      <!-- Lisbon (SW of London) -->
+
+      <div class="absolute top-[27%] left-[43.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
+
+        <span class="relative flex h-2 w-2">
+
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-[#ff2a5f]"></span>
+
+        </span>
+
+        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">Lisbon</span>
+
+      </div>
+
       <!-- London -->
 
-      <div class="absolute top-[20%] left-[48%] -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
+      <div class="absolute top-[18.5%] left-[47.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
 
         <span class="relative flex h-2 w-2">
 
@@ -1291,9 +1317,25 @@
 
       </div>
 
+      <!-- Basel (SE of London) -->
+
+      <div class="absolute top-[26%] left-[49.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
+
+        <span class="relative flex h-2 w-2">
+
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-[#ff2a5f]"></span>
+
+        </span>
+
+        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">Basel</span>
+
+      </div>
+
       <!-- Singapore -->
 
-      <div class="absolute top-[58%] left-[78.5%] -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
+      <div class="absolute top-[58%] left-[78.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
 
         <span class="relative flex h-2 w-2">
 
@@ -1315,81 +1357,75 @@
 
   <!-- 05.5 CREATOR THEATRE -->
 
-  <section id="creators" data-theme="light" class="py-28 sm:py-36 bg-[#fafafa] text-neutral-900 relative overflow-hidden z-20 selection:bg-neutral-800 selection:text-white">
+<section id="creators-section" data-theme="light" class="py-24 sm:py-32 bg-[#fafafa] text-neutral-900 relative overflow-hidden z-20 selection:bg-neutral-800 selection:text-white">
+  <div class="max-w-7xl mx-auto px-6 sm:px-8 mb-16 text-center relative z-10">
+    <h2 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-neutral-900 leading-tight">
+      Whoever they are. <span class="bg-gradient-to-r from-[#ff2a5f] to-[#ff758c] bg-clip-text text-transparent">Wherever they are.</span>
+    </h2>
+    <p class="text-base sm:text-xl text-neutral-500 mt-4 max-w-3xl mx-auto leading-relaxed text-balance">
+      We don’t represent talent—we discover it. We find the architects of culture—the voices, trendsetters, and tastemakers shaping the world today—and connect them to your brand.
+    </p>
+  </div>
 
-    <div class="max-w-6xl mx-auto text-center px-6 relative z-10">
+  <div id="imax-stage" class="w-full overflow-hidden py-8" style="perspective: 1200px; perspective-origin: 50% 50%;">
+    <div
+      id="imax-track"
+      class="flex gap-4 sm:gap-6 items-center w-max cursor-grab active:cursor-grabbing select-none will-change-transform"
+      style="transform-style: preserve-3d;"
+    >
 
-      <h2 class="text-4xl sm:text-6xl font-bold tracking-tight text-neutral-900">Whoever they are. <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#ff2a5f] to-[#e000ff] pb-1 inline-block">Wherever they are.</span></h2>
-
-      <p class="text-base sm:text-lg text-neutral-600 max-w-2xl mx-auto text-center leading-relaxed mt-4">We don’t represent talent—we discover it. We find the architects of culture—the voices, trendsetters, and tastemakers shaping the world today—and connect them to your brand. Wherever they are, whatever they’re creating.</p>
-
-    </div>
-
-    <div id="imax-stage" class="w-full mt-16 overflow-hidden py-8" style="perspective: 1200px; perspective-origin: 50% 50%;">
-
-      <div
-        id="imax-track"
-        class="flex gap-6 sm:gap-8 items-center w-max cursor-grab active:cursor-grabbing select-none will-change-transform"
-        style="transform-style: preserve-3d;"
-      >
-
-        <div class="imax-card w-[280px] sm:w-[320px] h-[400px] sm:h-[460px] shrink-0 rounded-[28px] overflow-hidden relative bg-white">
-          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80" alt="Bella Roberts" class="absolute inset-0 w-full h-full object-cover" />
-          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
-          <div class="relative z-10 p-6 h-full flex flex-col justify-between text-white">
-            <span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-semibold w-fit">@bella_does_editing</span>
-            <div>
-              <div class="text-xs text-[#FF5A5F] uppercase font-semibold tracking-wider">Film &amp; Tech</div>
-              <h3 class="text-xl font-bold mt-1">Bella Roberts</h3>
-              <p class="text-xs text-neutral-300 mt-1">528K Audience · London</p>
-            </div>
-          </div>
+      <!-- Card 01: Courtney -->
+      <div class="imax-card relative w-[280px] sm:w-[320px] h-[380px] sm:h-[430px] rounded-[28px] overflow-hidden shrink-0 shadow-sm bg-white">
+        <img src="Content/Creator profiles/courtney.avif" alt="Courtney Daniella Jesse" class="w-full h-full object-cover" onError="this.src='Creator profiles/courtney.avif';"/>
+        <div class="absolute top-5 left-5 z-10">
+          <span class="bg-black/50 backdrop-blur-md border border-white/15 px-4 py-2 rounded-full text-white text-xs sm:text-sm font-semibold tracking-wide shadow-lg">Courtney Daniella Jesse</span>
         </div>
+      </div>
 
-        <div class="imax-card w-[280px] sm:w-[320px] h-[400px] sm:h-[460px] shrink-0 rounded-[28px] overflow-hidden relative bg-white">
-          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=700&q=80" alt="Marcus Chen" class="absolute inset-0 w-full h-full object-cover" />
-          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
-          <div class="relative z-10 p-6 h-full flex flex-col justify-between text-white">
-            <span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-semibold w-fit">@marcus_design</span>
-            <div>
-              <div class="text-xs text-[#E040FB] uppercase font-semibold tracking-wider">3D &amp; Hardware</div>
-              <h3 class="text-xl font-bold mt-1">Marcus Chen</h3>
-              <p class="text-xs text-neutral-300 mt-1">1.2M Audience · New York</p>
-            </div>
-          </div>
+      <!-- Card 02: Josh -->
+      <div class="imax-card relative w-[280px] sm:w-[320px] h-[380px] sm:h-[430px] rounded-[28px] overflow-hidden shrink-0 shadow-sm bg-white">
+        <img src="Content/Creator profiles/josh.jpeg" alt="Josh Oyinsan" class="w-full h-full object-cover" onError="this.src='Creator profiles/josh.jpeg';"/>
+        <div class="absolute top-5 left-5 z-10">
+          <span class="bg-black/50 backdrop-blur-md border border-white/15 px-4 py-2 rounded-full text-white text-xs sm:text-sm font-semibold tracking-wide shadow-lg">Josh Oyinsan</span>
         </div>
+      </div>
 
-        <div class="imax-card w-[280px] sm:w-[320px] h-[400px] sm:h-[460px] shrink-0 rounded-[28px] overflow-hidden relative bg-white">
-          <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=700&q=80" alt="Shaaba M." class="absolute inset-0 w-full h-full object-cover" />
-          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
-          <div class="relative z-10 p-6 h-full flex flex-col justify-between text-white">
-            <span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-semibold w-fit">@sherbetlemon007</span>
-            <div>
-              <div class="text-xs text-sky-400 uppercase font-semibold tracking-wider">Culture &amp; Gaming</div>
-              <h3 class="text-xl font-bold mt-1">Shaaba M.</h3>
-              <p class="text-xs text-neutral-300 mt-1">808K Audience · Berlin</p>
-            </div>
-          </div>
+      <!-- Card 03: Helen -->
+      <div class="imax-card relative w-[280px] sm:w-[320px] h-[380px] sm:h-[430px] rounded-[28px] overflow-hidden shrink-0 shadow-sm bg-white">
+        <img src="Content/Creator profiles/helen.jpeg" alt="Helen Anderson" class="w-full h-full object-cover" onError="this.src='Creator profiles/helen.jpeg';"/>
+        <div class="absolute top-5 left-5 z-10">
+          <span class="bg-black/50 backdrop-blur-md border border-white/15 px-4 py-2 rounded-full text-white text-xs sm:text-sm font-semibold tracking-wide shadow-lg">Helen Anderson</span>
         </div>
+      </div>
 
-        <div class="imax-card w-[280px] sm:w-[320px] h-[400px] sm:h-[460px] shrink-0 rounded-[28px] overflow-hidden relative bg-white">
-          <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=700&q=80" alt="Sarah Cha" class="absolute inset-0 w-full h-full object-cover" />
-          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
-          <div class="relative z-10 p-6 h-full flex flex-col justify-between text-white">
-            <span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-semibold w-fit">@sarahcha</span>
-            <div>
-              <div class="text-xs text-[#FF5A5F] uppercase font-semibold tracking-wider">Lifestyle &amp; Beauty</div>
-              <h3 class="text-xl font-bold mt-1">Sarah Cha</h3>
-              <p class="text-xs text-neutral-300 mt-1">1.0M Audience · Tokyo</p>
-            </div>
-          </div>
+      <!-- Card 04: Fu Izzy -->
+      <div class="imax-card relative w-[280px] sm:w-[320px] h-[380px] sm:h-[430px] rounded-[28px] overflow-hidden shrink-0 shadow-sm bg-white">
+        <img src="Content/Creator profiles/fu-izzy.jpg" alt="Fu Izzy" class="w-full h-full object-cover" onError="this.src='Creator profiles/fu-izzy.jpg';"/>
+        <div class="absolute top-5 left-5 z-10">
+          <span class="bg-black/50 backdrop-blur-md border border-white/15 px-4 py-2 rounded-full text-white text-xs sm:text-sm font-semibold tracking-wide shadow-lg">Fu Izzy</span>
         </div>
+      </div>
 
+      <!-- Card 05: Rose and Rosie -->
+      <div class="imax-card relative w-[280px] sm:w-[320px] h-[380px] sm:h-[430px] rounded-[28px] overflow-hidden shrink-0 shadow-sm bg-white">
+        <img src="Content/Creator profiles/roseandrosie.jpg" alt="Rose and Rosie" class="w-full h-full object-cover" onError="this.src='Creator profiles/roseandrosie.jpg';"/>
+        <div class="absolute top-5 left-5 z-10">
+          <span class="bg-black/50 backdrop-blur-md border border-white/15 px-4 py-2 rounded-full text-white text-xs sm:text-sm font-semibold tracking-wide shadow-lg">Rose and Rosie</span>
+        </div>
+      </div>
+
+      <!-- Card 06: Charlessy -->
+      <div class="imax-card relative w-[280px] sm:w-[320px] h-[380px] sm:h-[430px] rounded-[28px] overflow-hidden shrink-0 shadow-sm bg-white">
+        <img src="Content/Creator profiles/charlessy.jpg" alt="Charlessy" class="w-full h-full object-cover" onError="this.src='Creator profiles/charlessy.jpg';"/>
+        <div class="absolute top-5 left-5 z-10">
+          <span class="bg-black/50 backdrop-blur-md border border-white/15 px-4 py-2 rounded-full text-white text-xs sm:text-sm font-semibold tracking-wide shadow-lg">Charlessy</span>
+        </div>
       </div>
 
     </div>
+  </div>
+</section>
 
-  </section>
 
 
   <!-- 07. CASE STUDIES (Apple Keynote Accordion) -->
@@ -2305,6 +2341,7 @@
     window.addEventListener('load', alignSliderWithSpacer);
     window.addEventListener('resize', alignSliderWithSpacer);
   </script>
+
 
 
   <script>
