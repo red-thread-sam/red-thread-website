@@ -40,7 +40,7 @@
 
           fontFamily: {
 
-            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', '"SF Pro"', '"SF Compact"', 'Helvetica Neue', 'sans-serif'],
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'Inter', 'sans-serif'],
 
             mono: ['"SF Mono"', 'ui-monospace', 'monospace'],
 
@@ -96,7 +96,7 @@
 
       padding: 0;
 
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "SF Pro", "SF Compact", "Helvetica Neue", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", sans-serif;
 
       -webkit-font-smoothing: antialiased;
 
@@ -222,13 +222,7 @@
 
     .spring-pill {
 
-      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.3s ease, color 0.3s ease, opacity 0.3s ease;
-
-    }
-
-    .spring-pill:hover {
-
-      transform: scale(1.05);
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
     }
 
@@ -290,18 +284,37 @@
 
       backface-visibility: hidden;
 
+      transition: none !important;
+
+    }
+
+    #imax-track {
+
+      will-change: transform;
+
+      transition: none !important;
+
     }
 
 
 
-    /* Sticky Z-Space Stacking Cards Transition */
+    .accordion-card {
 
-    .stacking-card {
+      will-change: width, flex, opacity;
 
-      will-change: transform, opacity, filter;
+    }
 
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, filter 0.3s ease;
-
+    /* Lock BG to deck width so object-cover never recalculates during card expand/collapse */
+    .accordion-card > .case-study-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: var(--deck-bg-width, 100%);
+      max-width: none;
+      object-fit: cover;
+      pointer-events: none;
+      transition: none !important;
     }
 
 
@@ -328,6 +341,24 @@
 
       transition: transform 0.1s linear;
 
+    }
+
+    .phone-media {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Landscape QuickTime → fill vertical 9:16 bezel */
+    .rotate-media-90 {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: translate(-50%, -50%) rotate(90deg) scale(1.78);
+      transform-origin: center center;
     }
 
 
@@ -365,11 +396,11 @@
 
   <!-- HIG DYNAMIC THEME-AWARE NAV (100% Transparent on Load) -->
 
-  <nav id="main-nav" class="fixed top-0 left-0 w-full z-50 opacity-0 pointer-events-none bg-transparent border-b border-transparent transition-all duration-500">
+  <nav id="main-nav" class="fixed top-0 left-0 w-full z-50 opacity-0 pointer-events-none bg-transparent transition-all duration-500">
 
     <div class="max-w-7xl mx-auto px-6 h-12 flex items-center justify-between">
 
-      <a href="#" id="nav-logo" class="flex items-center gap-2 text-white font-bold text-base tracking-tight hover:opacity-80 transition-opacity">
+      <a href="#" id="nav-logo" class="flex items-center gap-2 text-white font-bold text-base tracking-tight transition-opacity">
 
         <img id="nav-logo-img" src="logo-white.png" alt="Red Thread Logo" class="h-5 w-auto transition-all duration-300" />
 
@@ -379,11 +410,11 @@
 
       <div id="nav-links" class="hidden md:flex items-center gap-8 text-[11px] font-medium uppercase tracking-wider text-neutral-400">
 
-        <a href="#how-it-works" class="hover:text-white transition-colors">How It Works</a>
+        <a href="#how-it-works" class="transition-colors">How It Works</a>
 
-        <a href="#work" class="hover:text-white transition-colors">Our Work</a>
+        <a href="#case-studies" class="transition-colors">Our Work</a>
 
-        <a href="#tech-bento" class="hover:text-white transition-colors">Our Tech</a>
+        <a href="#tech-bento" class="transition-colors">Our Tech</a>
 
       </div>
 
@@ -391,7 +422,7 @@
 
       <!-- Spring Physics Button: "Let's chat." -->
 
-      <a id="nav-cta" href="#terminal" class="spring-pill px-4 py-1.5 rounded-full bg-white text-black text-xs font-semibold shadow-md">
+      <a id="nav-cta" href="#contact-faq" class="spring-pill px-4 py-1.5 rounded-full bg-white text-black text-xs font-semibold">
 
         Let's chat.
 
@@ -451,7 +482,7 @@
 
       <div id="hero-scroll-hint" class="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 transition-opacity duration-300">
 
-        <div class="w-8 h-12 rounded-full border border-white/20 flex items-center justify-center">
+        <div class="w-8 h-12 rounded-full flex items-center justify-center">
 
           <div class="w-1 h-2.5 bg-white/60 rounded-full animate-bounce"></div>
 
@@ -509,180 +540,127 @@
 
       <div id="hw-deck" class="relative w-full max-w-7xl mx-auto h-[550px] flex items-center justify-center">
 
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.55),0_0_24px_rgba(255,255,255,0.06)] overflow-hidden" style="z-index:10;">
-
+          <!-- Phone 1: screen1.mov -->
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:10;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
-
-            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative border border-white/15">
-
-              <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
-
-                <source src="https://assets.mixkit.co/videos/preview/mixkit-girl-in-neon-sign-lighting-1230-large.mp4" type="video/mp4">
-
+            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
+              <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
+                <source src="Content/Phone%20mockups/screen1.mov" type="video/mp4"/>
+                <source src="Phone%20mockups/screen1.mov" type="video/mp4"/>
               </video>
-
             </div>
-
           </div>
 
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.55),0_0_24px_rgba(255,255,255,0.06)] overflow-hidden" style="z-index:20;">
-
+          <!-- Phone 2: screen2.mov -->
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:20;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
-
-            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative border border-white/15">
-
-              <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
-
-                <source src="https://assets.mixkit.co/videos/preview/mixkit-young-man-skateboarding-in-a-parking-lot-34533-large.mp4" type="video/mp4">
-
+            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
+              <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
+                <source src="Content/Phone%20mockups/screen2.mov" type="video/mp4"/>
+                <source src="Phone%20mockups/screen2.mov" type="video/mp4"/>
               </video>
-
             </div>
-
           </div>
 
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.55),0_0_24px_rgba(255,255,255,0.06)] overflow-hidden" style="z-index:30;">
-
+          <!-- Phone 3: video7.mp4 -->
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:30;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
-
-            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative border border-white/15">
-
-              <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
-
-                <source src="https://assets.mixkit.co/videos/preview/mixkit-hands-holding-a-smartphone-with-a-green-screen-41528-large.mp4" type="video/mp4">
-
+            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
+              <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
+                <source src="Content/Phone%20mockups/video7.mp4" type="video/mp4"/>
+                <source src="Phone%20mockups/video7.mp4" type="video/mp4"/>
               </video>
-
             </div>
-
           </div>
 
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.55),0_0_24px_rgba(255,255,255,0.06)] overflow-hidden" style="z-index:40;">
-
+          <!-- Phone 4: screen3.mov -->
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:40;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
-
-            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative border border-white/15">
-
-              <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
-
-                <source src="https://assets.mixkit.co/videos/preview/mixkit-woman-running-above-the-camera-on-a-running-track-32807-large.mp4" type="video/mp4">
-
+            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
+              <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
+                <source src="Content/Phone%20mockups/screen3.mov" type="video/mp4"/>
+                <source src="Phone%20mockups/screen3.mov" type="video/mp4"/>
               </video>
-
             </div>
-
           </div>
 
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.55),0_0_24px_rgba(255,255,255,0.06)] overflow-hidden" style="z-index:50;">
-
+          <!-- Phone 5: video9.mov -->
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:50;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
-
-            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative border border-white/15">
-
-              <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
-
-                <source src="https://assets.mixkit.co/videos/preview/mixkit-man-dancing-under-changing-lights-1240-large.mp4" type="video/mp4">
-
+            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
+              <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
+                <source src="Content/Phone%20mockups/video9.mov" type="video/mp4"/>
+                <source src="Phone%20mockups/video9.mov" type="video/mp4"/>
               </video>
-
             </div>
-
           </div>
 
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.55),0_0_24px_rgba(255,255,255,0.06)] overflow-hidden" style="z-index:60;">
-
+          <!-- Phone 6 (Center Hero): pic 8.jpg -->
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:60;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
-
-            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative border border-white/15">
-
-              <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
-
-                <source src="https://assets.mixkit.co/videos/preview/mixkit-game-developer-working-on-his-computer-42898-large.mp4" type="video/mp4">
-
-              </video>
-
+            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
+              <img
+                src="Content/Phone%20mockups/pic%208.jpg"
+                alt="Creator Content"
+                class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"
+                onerror="this.onerror=null; this.src='Phone%20mockups/pic%208.jpg';"
+              />
             </div>
-
           </div>
 
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.55),0_0_24px_rgba(255,255,255,0.06)] overflow-hidden" style="z-index:50;">
-
+          <!-- Phone 7: Screen4.mov -->
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:50;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
-
-            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative border border-white/15">
-
-              <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
-
-                <source src="https://assets.mixkit.co/videos/preview/mixkit-going-down-a-curve-highway-down-the-mountains-41748-large.mp4" type="video/mp4">
-
+            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
+              <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
+                <source src="Content/Phone%20mockups/Screen4.mov" type="video/mp4"/>
+                <source src="Phone%20mockups/Screen4.mov" type="video/mp4"/>
               </video>
-
             </div>
-
           </div>
 
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.55),0_0_24px_rgba(255,255,255,0.06)] overflow-hidden" style="z-index:40;">
-
+          <!-- Phone 8: video10.mov -->
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:40;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
-
-            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative border border-white/15">
-
-              <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
-
-                <source src="https://assets.mixkit.co/videos/preview/mixkit-woman-pouring-a-glass-of-wine-42798-large.mp4" type="video/mp4">
-
+            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
+              <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
+                <source src="Content/Phone%20mockups/video10.mov" type="video/mp4"/>
+                <source src="Phone%20mockups/video10.mov" type="video/mp4"/>
               </video>
-
             </div>
-
           </div>
 
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.55),0_0_24px_rgba(255,255,255,0.06)] overflow-hidden" style="z-index:30;">
-
+          <!-- Phone 9: screen5.mov -->
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:30;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
-
-            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative border border-white/15">
-
-              <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
-
-                <source src="https://assets.mixkit.co/videos/preview/mixkit-top-aerial-shot-of-seashore-with-rocks-1564-large.mp4" type="video/mp4">
-
+            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
+              <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
+                <source src="Content/Phone%20mockups/screen5.mov" type="video/mp4"/>
+                <source src="Phone%20mockups/screen5.mov" type="video/mp4"/>
               </video>
-
             </div>
-
           </div>
 
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.55),0_0_24px_rgba(255,255,255,0.06)] overflow-hidden" style="z-index:20;">
-
+          <!-- Phone 10: video11.mov -->
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:20;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
-
-            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative border border-white/15">
-
-              <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
-
-                <source src="https://assets.mixkit.co/videos/preview/mixkit-tree-with-yellow-flowers-1173-large.mp4" type="video/mp4">
-
+            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
+              <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
+                <source src="Content/Phone%20mockups/video11.mov" type="video/mp4"/>
+                <source src="Phone%20mockups/video11.mov" type="video/mp4"/>
               </video>
-
             </div>
-
           </div>
 
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.55),0_0_24px_rgba(255,255,255,0.06)] overflow-hidden" style="z-index:10;">
-
+          <!-- Phone 11: video6.mov -->
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:10;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
-
-            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative border border-white/15">
-
-              <video autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
-
-                <source src="https://assets.mixkit.co/videos/preview/mixkit-portrait-of-a-fashion-woman-with-silver-makeup-39875-large.mp4" type="video/mp4">
-
+            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
+              <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
+                <source src="Content/Phone%20mockups/video6.mov" type="video/mp4"/>
+                <source src="Phone%20mockups/video6.mov" type="video/mp4"/>
               </video>
-
             </div>
-
           </div>
 
       </div>
@@ -733,25 +711,25 @@
 
           <div class="w-full h-20 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/bbc.png" alt="BBC" style="height: 40px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+            <img src="Content/Brand Logos/bbc.png" alt="BBC" style="height: 40px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain transition-all duration-200" />
 
           </div>
 
           <div class="w-full h-20 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/brit-awards.svg" alt="Brit Awards" style="height: 48px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+            <img src="Content/Brand Logos/brit-awards.svg" alt="Brit Awards" style="height: 48px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain transition-all duration-200" />
 
           </div>
 
           <div class="w-full h-20 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/disney.png" alt="Disney" style="height: 32px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+            <img src="Content/Brand Logos/disney.png" alt="Disney" style="height: 32px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" class="w-auto object-contain transition-all duration-200" />
 
           </div>
 
           <div class="w-full h-20 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/dr-pepper.png" alt="Dr Pepper" style="height: 44px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+            <img src="Content/Brand Logos/dr-pepper.png" alt="Dr Pepper" style="height: 44px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain transition-all duration-200" />
 
           </div>
 
@@ -761,25 +739,25 @@
 
           <div class="w-full h-20 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/gamma.webp" alt="Gamma" style="height: 26px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+            <img src="Content/Brand Logos/gamma.webp" alt="Gamma" style="height: 26px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" class="w-auto object-contain transition-all duration-200" />
 
           </div>
 
           <div class="w-full h-20 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/google.png" alt="Google" style="height: 38px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+            <img src="Content/Brand Logos/google.png" alt="Google" style="height: 38px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain transition-all duration-200" />
 
           </div>
 
           <div class="w-full h-20 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/lego.png" alt="Lego" style="height: 42px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+            <img src="Content/Brand Logos/lego.png" alt="Lego" style="height: 42px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain transition-all duration-200" />
 
           </div>
 
           <div class="w-full h-20 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/lexus.png" alt="Lexus" style="height: 72px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+            <img src="Content/Brand Logos/lexus.png" alt="Lexus" style="height: 72px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain transition-all duration-200" />
 
           </div>
 
@@ -789,25 +767,25 @@
 
           <div class="w-full h-20 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/lynx.svg" alt="Lynx" style="height: 19px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+            <img src="Content/Brand Logos/lynx.svg" alt="Lynx" style="height: 19px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain transition-all duration-200" />
 
           </div>
 
           <div class="w-full h-20 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/major-league-baseball.png" alt="MLB" style="height: 74px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+            <img src="Content/Brand Logos/major-league-baseball.png" alt="MLB" style="height: 74px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain transition-all duration-200" />
 
           </div>
 
           <div class="w-full h-20 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/mcdonalds.png" alt="McDonalds" style="height: 60px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+            <img src="Content/Brand Logos/mcdonalds.png" alt="McDonalds" style="height: 60px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain transition-all duration-200" />
 
           </div>
 
           <div class="w-full h-20 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/movember.png" alt="Movember" style="height: 54px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+            <img src="Content/Brand Logos/movember.png" alt="Movember" style="height: 54px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" class="w-auto object-contain transition-all duration-200" />
 
           </div>
 
@@ -817,25 +795,25 @@
 
           <div class="w-full h-20 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/O2.png" alt="O2" style="height: 50px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+            <img src="Content/Brand Logos/O2.png" alt="O2" style="height: 50px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain transition-all duration-200" />
 
           </div>
 
           <div class="w-full h-20 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/oracle_red_bull_racing.jpg" alt="Oracle Red Bull Racing" style="height: 42px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+            <img src="Content/Brand Logos/oracle_red_bull_racing.jpg" alt="Oracle Red Bull Racing" style="height: 42px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" class="w-auto object-contain transition-all duration-200" />
 
           </div>
 
           <div class="w-full h-20 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/paramount.svg" alt="Paramount" style="height: 52px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+            <img src="Content/Brand Logos/paramount.svg" alt="Paramount" style="height: 52px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain transition-all duration-200" />
 
           </div>
 
           <div class="w-full h-20 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/Pfizer.svg" alt="Pfizer" style="height: 44px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+            <img src="Content/Brand Logos/Pfizer.svg" alt="Pfizer" style="height: 44px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain transition-all duration-200" />
 
           </div>
 
@@ -845,25 +823,25 @@
 
           <div class="w-full h-20 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/porsche.png" alt="Porsche" style="height: 58px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+            <img src="Content/Brand Logos/porsche.png" alt="Porsche" style="height: 58px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain transition-all duration-200" />
 
           </div>
 
           <div class="w-full h-20 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/tourism-ireland.webp" alt="Tourism Ireland" style="height: 76px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+            <img src="Content/Brand Logos/tourism-ireland.webp" alt="Tourism Ireland" style="height: 76px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain transition-all duration-200" />
 
           </div>
 
           <div class="w-full h-20 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/Uefa.jpg" alt="UEFA" style="height: 40px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+            <img src="Content/Brand Logos/Uefa.jpg" alt="UEFA" style="height: 40px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" class="w-auto object-contain transition-all duration-200" />
 
           </div>
 
           <div class="w-full h-20 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/Universal_Pictures_logo.svg" alt="Universal Pictures" style="height: 48px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain hover:opacity-100 transition-all duration-200" />
+            <img src="Content/Brand Logos/Universal_Pictures_logo.svg" alt="Universal Pictures" style="height: 48px; filter: brightness(0); opacity: 0.75;" class="w-auto object-contain transition-all duration-200" />
 
           </div>
 
@@ -891,9 +869,9 @@
 
       <!-- Hero: ThreadOS™ & Fred AI -->
 
-      <div class="md:col-span-2 relative bg-neutral-900 border border-white/10 rounded-3xl overflow-hidden p-8 sm:p-10 min-h-[300px] flex flex-col justify-center group hover:border-white/20 transition-all duration-300">
+      <div class="md:col-span-2 relative bg-neutral-900 rounded-3xl overflow-hidden p-8 sm:p-10 min-h-[300px] flex flex-col justify-center transition-all duration-300">
 
-        <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover object-right scale-125 opacity-50 z-0 pointer-events-none transition-transform duration-700 group-hover:scale-[1.3]">
+        <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover object-right scale-125 opacity-50 z-0 pointer-events-none">
 
           <source src="Content/Tech-bento1.mp4" type="video/mp4">
 
@@ -919,7 +897,7 @@
 
       <!-- Precision Creator Matchmaking -->
 
-      <div class="md:col-span-1 relative bg-neutral-900/90 border border-white/10 rounded-3xl p-8 sm:p-10 flex flex-col justify-between overflow-hidden group hover:border-white/20 transition-all duration-300 min-h-[340px]">
+      <div class="md:col-span-1 relative bg-neutral-900/90 rounded-3xl p-8 sm:p-10 flex flex-col justify-between overflow-hidden transition-all duration-300 min-h-[340px]">
 
         <div>
 
@@ -935,13 +913,13 @@
 
         <div class="mt-8 flex items-center justify-center -space-x-3">
 
-          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" alt="" class="w-14 h-14 rounded-full object-cover border-2 border-neutral-900 shadow-md z-30" />
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" alt="" class="w-14 h-14 rounded-full object-cover z-30" />
 
-          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80" alt="" class="w-14 h-14 rounded-full object-cover border-2 border-neutral-900 shadow-md z-20" />
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80" alt="" class="w-14 h-14 rounded-full object-cover z-20" />
 
-          <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=300&q=80" alt="" class="w-14 h-14 rounded-full object-cover border-2 border-neutral-900 shadow-md z-10" />
+          <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=300&q=80" alt="" class="w-14 h-14 rounded-full object-cover z-10" />
 
-          <div class="relative z-40 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 border border-white/15 backdrop-blur-md font-sans text-xs font-medium tracking-wider uppercase text-white/90 shadow-xl">
+          <div class="relative z-40 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md font-sans text-xs font-medium tracking-wider uppercase text-white/90">
 
             <span class="w-2 h-2 rounded-full bg-red-500"></span> 100% MATCH
 
@@ -955,7 +933,7 @@
 
       <!-- Attention Engine™ -->
 
-      <div class="md:col-span-1 relative bg-neutral-900/90 border border-white/10 rounded-3xl p-8 sm:p-10 flex flex-col justify-between overflow-hidden group hover:border-white/20 transition-all duration-300 min-h-[340px]">
+      <div class="md:col-span-1 relative bg-neutral-900/90 rounded-3xl p-8 sm:p-10 flex flex-col justify-between overflow-hidden transition-all duration-300 min-h-[340px]">
 
         <div>
 
@@ -983,7 +961,7 @@
 
       <!-- Paid Whitelisting & Scaling -->
 
-      <div class="md:col-span-1 relative bg-neutral-900/90 border border-white/10 rounded-3xl p-8 sm:p-10 flex flex-col justify-between overflow-hidden group hover:border-white/20 transition-all duration-300 min-h-[340px]">
+      <div class="md:col-span-1 relative bg-neutral-900/90 rounded-3xl p-8 sm:p-10 flex flex-col justify-between overflow-hidden transition-all duration-300 min-h-[340px]">
 
         <div>
 
@@ -999,7 +977,7 @@
 
         <div class="mt-8">
 
-          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 border border-white/15 backdrop-blur-md font-sans text-xs font-medium tracking-wider uppercase text-white/90 mb-4">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md font-sans text-xs font-medium tracking-wider uppercase text-white/90 mb-4">
 
             <span class="w-2 h-2 rounded-full bg-red-500"></span> -38% CAC REDUCTION
 
@@ -1011,7 +989,7 @@
 
               <path d="M0 50 Q 50 48, 90 32 T 170 12" stroke="#FF5A5F" stroke-width="3" stroke-linecap="round" class="opacity-90"/>
 
-              <circle cx="170" cy="12" r="5" fill="#FF5A5F" class="drop-shadow-[0_0_10px_rgba(255,90,95,0.9)]"/>
+              <circle cx="170" cy="12" r="5" fill="#FF5A5F" class=""/>
 
               <circle cx="170" cy="12" r="9" stroke="#FF5A5F" stroke-width="1.5" class="opacity-40"/>
 
@@ -1027,7 +1005,7 @@
 
       <!-- Global Usage & Licensing -->
 
-      <div class="md:col-span-1 relative bg-neutral-950 border border-white/10 rounded-3xl overflow-hidden p-8 flex flex-col justify-between min-h-[360px] group hover:border-white/20 transition-all duration-300">
+      <div class="md:col-span-1 relative bg-neutral-950 rounded-3xl overflow-hidden p-8 flex flex-col justify-between min-h-[360px] transition-all duration-300">
 
         <div class="absolute bottom-0 left-0 right-0 w-full h-[60%] overflow-hidden pointer-events-none z-0">
 
@@ -1059,7 +1037,7 @@
 
         <div class="relative z-10 self-center mt-auto pt-10">
 
-          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/80 border border-white/15 backdrop-blur-md font-sans text-xs font-medium tracking-wider uppercase text-white/90 shadow-2xl">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/80 backdrop-blur-md font-sans text-xs font-medium tracking-wider uppercase text-white/90">
 
             <span class="w-2 h-2 rounded-full bg-red-500"></span>
 
@@ -1198,9 +1176,9 @@
 
     <div class="max-w-7xl mx-auto px-6 sm:px-8 flex justify-end gap-3 mt-4">
 
-      <button id="prev-btn" aria-label="Previous" class="w-11 h-11 rounded-full bg-neutral-200/80 hover:bg-neutral-300 text-neutral-800 flex items-center justify-center transition-all cursor-pointer">&larr;</button>
+      <button id="prev-btn" aria-label="Previous" class="w-11 h-11 rounded-full bg-neutral-200/80 text-neutral-800 flex items-center justify-center transition-all cursor-pointer">&larr;</button>
 
-      <button id="next-btn" aria-label="Next" class="w-11 h-11 rounded-full bg-neutral-200/80 hover:bg-neutral-300 text-neutral-800 flex items-center justify-center transition-all cursor-pointer">&rarr;</button>
+      <button id="next-btn" aria-label="Next" class="w-11 h-11 rounded-full bg-neutral-200/80 text-neutral-800 flex items-center justify-center transition-all cursor-pointer">&rarr;</button>
 
     </div>
 
@@ -1257,19 +1235,17 @@
 
     <!-- LED Dot-Matrix Map + City Badges -->
 
-    <div class="relative max-w-6xl mx-auto mt-12 mb-8 px-6 min-h-[380px] sm:min-h-[460px] flex items-center justify-center">
-
-      <!-- LED Dot Matrix Map Image / SVG -->
+    <div class="relative max-w-[1400px] mx-auto mt-6 mb-16 px-4 sm:px-8 min-h-[480px] sm:min-h-[580px] flex items-center justify-center">
 
       <img
         src="assets/world-dot-matrix.svg"
         alt="World Dot Matrix Map"
-        class="w-full h-auto max-h-[500px] object-contain opacity-35 brightness-150"
+        class="w-full h-auto max-h-[700px] object-contain opacity-50 filter brightness-[1.75]"
       />
 
-      <!-- London / UK -->
+      <!-- Los Angeles -->
 
-      <div class="absolute top-[25%] left-[47.5%] -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 bg-neutral-900/90 border border-white/15 backdrop-blur-md px-3 py-1.5 rounded-full shadow-2xl z-20">
+      <div class="absolute top-[37%] left-[14.5%] -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
 
         <span class="relative flex h-2 w-2">
 
@@ -1279,13 +1255,13 @@
 
         </span>
 
-        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase">London</span>
+        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">Los Angeles</span>
 
       </div>
 
-      <!-- New York / US East -->
+      <!-- New York -->
 
-      <div class="absolute top-[32%] left-[24.5%] -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 bg-neutral-900/90 border border-white/15 backdrop-blur-md px-3 py-1.5 rounded-full shadow-2xl z-20">
+      <div class="absolute top-[27%] left-[26.5%] -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
 
         <span class="relative flex h-2 w-2">
 
@@ -1295,13 +1271,13 @@
 
         </span>
 
-        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase">New York</span>
+        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">New York</span>
 
       </div>
 
-      <!-- Los Angeles / US West -->
+      <!-- London -->
 
-      <div class="absolute top-[35%] left-[15.5%] -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 bg-neutral-900/90 border border-white/15 backdrop-blur-md px-3 py-1.5 rounded-full shadow-2xl z-20">
+      <div class="absolute top-[20%] left-[48%] -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
 
         <span class="relative flex h-2 w-2">
 
@@ -1311,13 +1287,13 @@
 
         </span>
 
-        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase">Los Angeles</span>
+        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">London</span>
 
       </div>
 
-      <!-- Singapore / APAC -->
+      <!-- Singapore -->
 
-      <div class="absolute top-[56%] left-[76.5%] -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 bg-neutral-900/90 border border-white/15 backdrop-blur-md px-3 py-1.5 rounded-full shadow-2xl z-20">
+      <div class="absolute top-[58%] left-[78.5%] -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
 
         <span class="relative flex h-2 w-2">
 
@@ -1327,7 +1303,7 @@
 
         </span>
 
-        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase">Singapore</span>
+        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">Singapore</span>
 
       </div>
 
@@ -1339,790 +1315,360 @@
 
   <!-- 05.5 CREATOR THEATRE -->
 
-  <section id="creators" data-theme="dark" class="w-full bg-black text-white py-28 relative overflow-hidden z-20 selection:bg-neutral-800 selection:text-white">
+  <section id="creators" data-theme="light" class="py-28 sm:py-36 bg-[#fafafa] text-neutral-900 relative overflow-hidden z-20 selection:bg-neutral-800 selection:text-white">
 
-    <div class="max-w-6xl mx-auto text-center px-6 mb-16 space-y-4">
+    <div class="max-w-6xl mx-auto text-center px-6 relative z-10">
 
-      <h2 class="text-2xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-prism-gradient whitespace-nowrap">
+      <h2 class="text-4xl sm:text-6xl font-bold tracking-tight text-neutral-900">Whoever they are. <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#ff2a5f] to-[#e000ff] pb-1 inline-block">Wherever they are.</span></h2>
 
-        Whoever they are. Wherever they are.
-
-      </h2>
-
-      <p class="text-neutral-400 text-base sm:text-lg leading-relaxed text-balance max-w-3xl mx-auto">
-
-        We don’t represent talent—we discover it. We find the architects of culture—the voices, trendsetters, and tastemakers shaping the world today—and connect them to your brand. Wherever they are, whatever they’re creating.
-
-      </p>
+      <p class="text-base sm:text-lg text-neutral-600 max-w-2xl mx-auto text-center leading-relaxed mt-4">We don’t represent talent—we discover it. We find the architects of culture—the voices, trendsetters, and tastemakers shaping the world today—and connect them to your brand. Wherever they are, whatever they’re creating.</p>
 
     </div>
 
+    <div id="imax-stage" class="w-full mt-16 overflow-hidden py-8" style="perspective: 1200px; perspective-origin: 50% 50%;">
 
+      <div
+        id="imax-track"
+        class="flex gap-6 sm:gap-8 items-center w-max cursor-grab active:cursor-grabbing select-none will-change-transform"
+        style="transform-style: preserve-3d;"
+      >
 
-    <div class="relative w-full overflow-hidden imax-stage-perspective">
-
-      <div class="absolute inset-y-0 left-0 w-24 sm:w-48 bg-gradient-to-r from-black via-black/80 to-transparent z-30 pointer-events-none"></div>
-
-      <div class="absolute inset-y-0 right-0 w-24 sm:w-48 bg-gradient-to-l from-black via-black/80 to-transparent z-30 pointer-events-none"></div>
-
-
-
-      <div id="imax-track" class="flex gap-6 w-max animate-imax-scroll px-12 pointer-events-none">
-
-        
-
-        <div class="w-[280px] sm:w-[320px] h-[440px] shrink-0 bg-[#1D1D1F] rounded-[2.5rem] relative overflow-hidden border-0 imax-card shadow-2xl">
-
+        <div class="imax-card w-[280px] sm:w-[320px] h-[400px] sm:h-[460px] shrink-0 rounded-[28px] overflow-hidden relative bg-white">
           <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80" alt="Bella Roberts" class="absolute inset-0 w-full h-full object-cover" />
-
           <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
-
           <div class="relative z-10 p-6 h-full flex flex-col justify-between text-white">
-
             <span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-semibold w-fit">@bella_does_editing</span>
-
             <div>
-
               <div class="text-xs text-[#FF5A5F] uppercase font-semibold tracking-wider">Film &amp; Tech</div>
-
               <h3 class="text-xl font-bold mt-1">Bella Roberts</h3>
-
               <p class="text-xs text-neutral-300 mt-1">528K Audience · London</p>
-
             </div>
-
           </div>
-
         </div>
 
-
-
-        <div class="w-[280px] sm:w-[320px] h-[440px] shrink-0 bg-[#1D1D1F] rounded-[2.5rem] relative overflow-hidden border-0 imax-card shadow-2xl">
-
+        <div class="imax-card w-[280px] sm:w-[320px] h-[400px] sm:h-[460px] shrink-0 rounded-[28px] overflow-hidden relative bg-white">
           <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=700&q=80" alt="Marcus Chen" class="absolute inset-0 w-full h-full object-cover" />
-
           <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
-
           <div class="relative z-10 p-6 h-full flex flex-col justify-between text-white">
-
             <span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-semibold w-fit">@marcus_design</span>
-
             <div>
-
               <div class="text-xs text-[#E040FB] uppercase font-semibold tracking-wider">3D &amp; Hardware</div>
-
               <h3 class="text-xl font-bold mt-1">Marcus Chen</h3>
-
               <p class="text-xs text-neutral-300 mt-1">1.2M Audience · New York</p>
-
             </div>
-
           </div>
-
         </div>
 
-
-
-        <div class="w-[280px] sm:w-[320px] h-[440px] shrink-0 bg-[#1D1D1F] rounded-[2.5rem] relative overflow-hidden border-0 imax-card shadow-2xl">
-
+        <div class="imax-card w-[280px] sm:w-[320px] h-[400px] sm:h-[460px] shrink-0 rounded-[28px] overflow-hidden relative bg-white">
           <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=700&q=80" alt="Shaaba M." class="absolute inset-0 w-full h-full object-cover" />
-
           <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
-
           <div class="relative z-10 p-6 h-full flex flex-col justify-between text-white">
-
             <span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-semibold w-fit">@sherbetlemon007</span>
-
             <div>
-
               <div class="text-xs text-sky-400 uppercase font-semibold tracking-wider">Culture &amp; Gaming</div>
-
               <h3 class="text-xl font-bold mt-1">Shaaba M.</h3>
-
               <p class="text-xs text-neutral-300 mt-1">808K Audience · Berlin</p>
-
             </div>
-
           </div>
-
         </div>
 
-
-
-        <div class="w-[280px] sm:w-[320px] h-[440px] shrink-0 bg-[#1D1D1F] rounded-[2.5rem] relative overflow-hidden border-0 imax-card shadow-2xl">
-
+        <div class="imax-card w-[280px] sm:w-[320px] h-[400px] sm:h-[460px] shrink-0 rounded-[28px] overflow-hidden relative bg-white">
           <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=700&q=80" alt="Sarah Cha" class="absolute inset-0 w-full h-full object-cover" />
-
           <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
-
           <div class="relative z-10 p-6 h-full flex flex-col justify-between text-white">
-
             <span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-semibold w-fit">@sarahcha</span>
-
             <div>
-
               <div class="text-xs text-[#FF5A5F] uppercase font-semibold tracking-wider">Lifestyle &amp; Beauty</div>
-
               <h3 class="text-xl font-bold mt-1">Sarah Cha</h3>
-
               <p class="text-xs text-neutral-300 mt-1">1.0M Audience · Tokyo</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- 07. CASE STUDIES (Apple Keynote Accordion) -->
+
+  <section id="case-studies" data-theme="light" class="py-24 sm:py-32 bg-[#f5f5f7] text-neutral-900 relative overflow-hidden z-20 selection:bg-neutral-800 selection:text-white">
+    <div class="max-w-7xl mx-auto px-6 sm:px-8">
+
+      <!-- Section Header -->
+      <div class="mb-10">
+        <h2 class="text-4xl sm:text-6xl font-bold tracking-tight text-neutral-900">From award-winning, to scroll stopping.</h2>
+        <p class="text-lg text-neutral-500 mt-3">We’ll let our work do the talking.</p>
+      </div>
+
+      <!-- Accordion Canvas Stage -->
+      <div id="deck-accordion" class="flex gap-3 sm:gap-4 h-[620px] sm:h-[680px] w-full overflow-hidden select-none relative">
+
+        <!-- Card 01: Movember -->
+        <div class="accordion-card flex-1 min-w-0 rounded-[32px] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer" data-index="0">
+          <img src="Content/Case Studies/movember.jpg" alt="Movember" class="case-study-bg" style="object-position: center 30%;"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/70 to-transparent z-10"></div>
+
+          <!-- Balanced Logo -->
+          <div class="absolute top-8 left-8 sm:top-10 sm:left-10 z-30 flex items-center h-12">
+            <img src="Content/Brand%20Logos/movember.png" alt="Movember" class="h-9 sm:h-11 w-auto object-contain filter brightness-0 invert" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';"/>
+            <span class="hidden text-xl sm:text-2xl font-black tracking-tighter text-white uppercase italic">MOVEMBER</span>
+          </div>
+
+          <!-- Collapsed Vertical Tab (No Red Dot) -->
+          <div class="collapsed-content opacity-0 pointer-events-none absolute inset-0 p-5 flex flex-col justify-between items-center z-20">
+            <span class="text-xs font-bold text-white/60">01</span>
+            <span class="text-xs font-semibold tracking-widest text-white/90 uppercase [writing-mode:vertical-lr] rotate-180 whitespace-nowrap">Movember</span>
+            <div></div>
+          </div>
+
+          <!-- Expanded Content Canvas -->
+          <div class="expanded-content opacity-100 absolute inset-0 w-[800px] lg:w-[880px] h-full p-8 sm:p-12 flex flex-col justify-end pointer-events-auto transition-opacity duration-300 z-20">
+            <div class="grid grid-cols-12 gap-6 lg:gap-8 items-end w-full pb-8">
+
+              <!-- Left Column: Equal Height Copy Container -->
+              <div class="col-span-7 h-[270px] sm:h-[290px] flex flex-col justify-end">
+                <span class="text-xs font-bold tracking-widest uppercase text-[#ff2a5f] block mb-1">Case Study Showcase</span>
+                <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">Nuts of the Roundtable</h3>
+                <p class="text-base sm:text-lg font-semibold text-neutral-200 mt-2 line-clamp-2">Transforming health stigma into a heroic mission. A pattern-interrupt creative campaign that drove real-world action.</p>
+                <p class="text-xs sm:text-sm text-neutral-300 mt-3 leading-relaxed max-w-xl">We cast creators as "Nuts of the Round Table" at Hedingham Castle, using high-concept production to bypass traditional health-ad filters. By reframing check-ups as a "Knight's Code," we turned a medical chore into a heroic mandate.</p>
+              </div>
+
+              <!-- Right Column: Stats Block -->
+              <div class="col-span-5 flex flex-col items-end justify-end h-[270px] sm:h-[290px] pb-1">
+                <div class="flex flex-col items-end">
+                  <span class="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-none">1.19M</span>
+                  <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Impressions</span>
+                </div>
+                <div class="w-32 h-[1px] bg-white/20 my-3"></div>
+                <div class="flex flex-col items-end">
+                  <span class="text-4xl sm:text-5xl lg:text-6xl font-black text-[#ff2a5f] tracking-tight leading-none">9.51%</span>
+                  <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Peak Engagement</span>
+                </div>
+              </div>
 
             </div>
-
           </div>
-
         </div>
 
+        <!-- Card 02: Tourism Ireland -->
+        <div class="accordion-card w-16 sm:w-20 shrink-0 rounded-[32px] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer" data-index="1">
+          <img src="Content/Case Studies/ireland.jpg" alt="Tourism Ireland" class="case-study-bg" style="object-position: center;"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/70 to-transparent z-10"></div>
 
+          <div class="absolute top-8 left-8 sm:top-10 sm:left-10 z-30 flex items-center h-12">
+            <img src="Content/Brand%20Logos/tourism-ireland.webp" alt="Tourism Ireland" class="h-10 sm:h-12 w-auto object-contain filter brightness-0 invert" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';"/>
+            <span class="hidden text-xl sm:text-2xl font-bold tracking-wider text-white uppercase">Tourism Ireland</span>
+          </div>
 
-        <!-- DUPLICATES FOR LOOP -->
+          <div class="collapsed-content opacity-100 absolute inset-0 p-5 flex flex-col justify-between items-center z-20">
+            <span class="text-xs font-bold text-white/60">02</span>
+            <span class="text-xs font-semibold tracking-widest text-white/90 uppercase [writing-mode:vertical-lr] rotate-180 whitespace-nowrap">Tourism Ireland</span>
+            <div></div>
+          </div>
 
-        <div class="w-[280px] sm:w-[320px] h-[440px] shrink-0 bg-[#1D1D1F] rounded-[2.5rem] relative overflow-hidden border-0 imax-card shadow-2xl">
+          <div class="expanded-content opacity-0 pointer-events-none absolute inset-0 w-[800px] lg:w-[880px] h-full p-8 sm:p-12 flex flex-col justify-end transition-opacity duration-300 z-20">
+            <div class="grid grid-cols-12 gap-6 lg:gap-8 items-end w-full pb-8">
 
-          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80" alt="Bella Roberts" class="absolute inset-0 w-full h-full object-cover" />
+              <div class="col-span-7 h-[270px] sm:h-[290px] flex flex-col justify-end">
+                <span class="text-xs font-bold tracking-widest uppercase text-[#ff2a5f] block mb-1">Case Study Showcase</span>
+                <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">Just Go</h3>
+                <p class="text-base sm:text-lg font-semibold text-neutral-200 mt-2 line-clamp-2">Shifting from simple awareness to genuine travel intent. Ireland defined by feeling, not just place.</p>
+                <p class="text-xs sm:text-sm text-neutral-300 mt-3 leading-relaxed max-w-xl">We partnered with creators to deliver platform-native storytelling tailored to traveller mindsets. By positioning Ireland through lived experience, we transformed tourism marketing into a series of relatable human stories.</p>
+              </div>
 
-          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
-
-          <div class="relative z-10 p-6 h-full flex flex-col justify-between text-white">
-
-            <span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-semibold w-fit">@bella_does_editing</span>
-
-            <div>
-
-              <div class="text-xs text-[#FF5A5F] uppercase font-semibold tracking-wider">Film &amp; Tech</div>
-
-              <h3 class="text-xl font-bold mt-1">Bella Roberts</h3>
-
-              <p class="text-xs text-neutral-300 mt-1">528K Audience · London</p>
+              <div class="col-span-5 flex flex-col items-end justify-end h-[270px] sm:h-[290px] pb-1">
+                <div class="flex flex-col items-end">
+                  <span class="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-none">1.25M</span>
+                  <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Organic Impressions</span>
+                </div>
+                <div class="w-32 h-[1px] bg-white/20 my-3"></div>
+                <div class="flex flex-col items-end">
+                  <span class="text-4xl sm:text-5xl lg:text-6xl font-black text-[#ff2a5f] tracking-tight leading-none">+33%</span>
+                  <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Traffic Uplift</span>
+                </div>
+              </div>
 
             </div>
-
           </div>
-
         </div>
 
+        <!-- Card 03: Volvic -->
+        <div class="accordion-card w-16 sm:w-20 shrink-0 rounded-[32px] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer" data-index="2">
+          <img src="Content/Case Studies/volvic.jpg" alt="Volvic" class="case-study-bg" style="object-position: center;"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/70 to-transparent z-10"></div>
 
+          <div class="absolute top-8 left-8 sm:top-10 sm:left-10 z-30 flex items-center h-12">
+            <img src="Content/Brand%20Logos/volvic.png" alt="Volvic" class="h-7 sm:h-9 w-auto object-contain filter brightness-0 invert" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';"/>
+            <span class="hidden text-2xl sm:text-3xl font-extrabold tracking-tight text-white italic">Volvic</span>
+          </div>
+
+          <div class="collapsed-content opacity-100 absolute inset-0 p-5 flex flex-col justify-between items-center z-20">
+            <span class="text-xs font-bold text-white/60">03</span>
+            <span class="text-xs font-semibold tracking-widest text-white/90 uppercase [writing-mode:vertical-lr] rotate-180 whitespace-nowrap">Volvic</span>
+            <div></div>
+          </div>
+
+          <div class="expanded-content opacity-0 pointer-events-none absolute inset-0 w-[800px] lg:w-[880px] h-full p-8 sm:p-12 flex flex-col justify-end transition-opacity duration-300 z-20">
+            <div class="grid grid-cols-12 gap-6 lg:gap-8 items-end w-full pb-8">
+
+              <div class="col-span-7 h-[270px] sm:h-[290px] flex flex-col justify-end">
+                <span class="text-xs font-bold tracking-widest uppercase text-[#ff2a5f] block mb-1">Case Study Showcase</span>
+                <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">Well, that's refreshing.</h3>
+                <p class="text-base sm:text-lg font-semibold text-neutral-200 mt-2 line-clamp-2">Capturing authentic summer joy. Extending festival energy into a digital, high-volume ecosystem.</p>
+                <p class="text-xs sm:text-sm text-neutral-300 mt-3 leading-relaxed max-w-xl">We commissioned 19 creators to capture authentic summer moments—seaside swims, park picnics—with Volvic Watermelon as the companion. We shifted the focus from flavor to feeling, embedding the product into summer culture.</p>
+              </div>
+
+              <div class="col-span-5 flex flex-col items-end justify-end h-[270px] sm:h-[290px] pb-1">
+                <div class="flex flex-col items-end">
+                  <span class="text-4xl sm:text-5xl lg:text-6xl font-black text-[#ff2a5f] tracking-tight leading-none">5.0%+</span>
+                  <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Avg Engagement</span>
+                </div>
+                <div class="w-32 h-[1px] bg-white/20 my-3"></div>
+                <div class="flex flex-col items-end">
+                  <span class="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-none">605K</span>
+                  <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Impressions</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
 
       </div>
 
-    </div>
+      <!-- External Navigation Controls (Bottom Right) -->
+      <div class="flex justify-end gap-3 mt-6">
+        <button id="deck-prev" aria-label="Previous case study" class="w-11 h-11 rounded-full border border-neutral-300 bg-white hover:bg-neutral-100 flex items-center justify-center transition-all cursor-pointer text-neutral-800 shadow-sm">&larr;</button>
+        <button id="deck-next" aria-label="Next case study" class="w-11 h-11 rounded-full border border-neutral-300 bg-white hover:bg-neutral-100 flex items-center justify-center transition-all cursor-pointer text-neutral-800 shadow-sm">&rarr;</button>
+      </div>
 
+    </div>
   </section>
 
 
-
-  <!-- 07. CASE STUDIES (Sticky Z-Space Stacking Cards Showcase + Scrim Modals) -->
-
-  <section id="work" data-theme="light" class="w-full bg-[#F5F5F7] text-black py-32 px-6 lg:px-8 relative z-20 selection:bg-neutral-800 selection:text-white">
-
-    <div class="max-w-5xl mx-auto space-y-12">
-
-      
-
-      <div class="space-y-2">
-
-        <h2 class="text-3xl sm:text-5xl font-semibold tracking-tight text-neutral-900">
-
-          From award-winning, to scroll stopping.
-
-        </h2>
-
-        <p class="text-neutral-500 text-base sm:text-lg font-normal">
-
-          We'll let our work do the talking.
-
-        </p>
-
-      </div>
-
-
-
-      <!-- Sticky Stacking Cards Container -->
-
-      <div id="stacking-container" class="space-y-20 relative pt-4">
-
-        
-
-        <!-- Stack Card 1 -->
-
-        <div class="stacking-card sticky top-28 sm:top-36 bg-[#F5F5F7] pt-2 pb-6">
-
-          <div class="w-full h-[360px] sm:h-[460px] rounded-[2.5rem] overflow-hidden bg-neutral-900 relative shadow-2xl border-0 group">
-
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=80" alt="Movember Campaign" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-
-            <button onclick="openModal('modal-case-1')" aria-label="Open Case Study Details" class="spring-pill absolute bottom-6 right-6 w-12 h-12 rounded-full bg-white text-black font-bold text-lg flex items-center justify-center shadow-xl">
-
-              +
-
-            </button>
-
-          </div>
-
-          <div class="mt-4 px-2 space-y-1">
-
-            <p class="text-base sm:text-lg leading-relaxed text-neutral-900">
-
-              <span class="font-bold text-black">Movember.</span>
-
-              <span class="text-neutral-600 font-normal">Transforming health stigma into a heroic mission. A pattern-interrupt creative campaign that drove real-world action.</span>
-
-            </p>
-
-          </div>
-
-        </div>
-
-
-
-        <!-- Stack Card 2 -->
-
-        <div class="stacking-card sticky top-28 sm:top-36 bg-[#F5F5F7] pt-2 pb-6">
-
-          <div class="w-full h-[360px] sm:h-[460px] rounded-[2.5rem] overflow-hidden bg-neutral-900 relative shadow-2xl border-0 group">
-
-            <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1000&q=80" alt="Tourism Ireland Campaign" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-
-            <button onclick="openModal('modal-case-2')" aria-label="Open Case Study Details" class="spring-pill absolute bottom-6 right-6 w-12 h-12 rounded-full bg-white text-black font-bold text-lg flex items-center justify-center shadow-xl">
-
-              +
-
-            </button>
-
-          </div>
-
-          <div class="mt-4 px-2 space-y-1">
-
-            <p class="text-base sm:text-lg leading-relaxed text-neutral-900">
-
-              <span class="font-bold text-black">Tourism Ireland.</span>
-
-              <span class="text-neutral-600 font-normal">Shifting from simple awareness to genuine travel intent. Ireland defined by feeling, not just place.</span>
-
-            </p>
-
-          </div>
-
-        </div>
-
-
-
-        <!-- Stack Card 3 -->
-
-        <div class="stacking-card sticky top-28 sm:top-36 bg-[#F5F5F7] pt-2 pb-6">
-
-          <div class="w-full h-[360px] sm:h-[460px] rounded-[2.5rem] overflow-hidden bg-neutral-900 relative shadow-2xl border-0 group">
-
-            <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1000&q=80" alt="Volvic Campaign" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-
-            <button onclick="openModal('modal-case-3')" aria-label="Open Case Study Details" class="spring-pill absolute bottom-6 right-6 w-12 h-12 rounded-full bg-white text-black font-bold text-lg flex items-center justify-center shadow-xl">
-
-              +
-
-            </button>
-
-          </div>
-
-          <div class="mt-4 px-2 space-y-1">
-
-            <p class="text-base sm:text-lg leading-relaxed text-neutral-900">
-
-              <span class="font-bold text-black">Volvic.</span>
-
-              <span class="text-neutral-600 font-normal">Capturing authentic summer joy. Extending festival energy into a digital, high-volume ecosystem.</span>
-
-            </p>
-
-          </div>
-
-        </div>
-
-
-
-      </div>
-
-
-
-    </div>
-
-  </section>
-
-
-
-  <!-- 07.5 TESTIMONIAL CAROUSEL -->
-
-  <section id="testimonials" data-theme="dark" class="w-full bg-black text-white relative overflow-hidden z-20 py-36 selection:bg-neutral-800 selection:text-white">
-
-    <div id="testimonial-bg" class="absolute inset-0 w-full h-[120%] -top-[10%] z-0 transition-opacity duration-700 bg-cover bg-center will-change-transform" style="background-image: url('https://images.unsplash.com/photo-1589779255718-3c459da9ffeb?q=80&w=3432&auto=format&fit=crop');">
-
-      <div class="absolute inset-0 vignette-overlay"></div>
-
-    </div>
-
-
-
-    <div class="max-w-6xl mx-auto px-6 lg:px-8 relative z-10">
-
-      <div class="min-h-[260px] flex flex-col justify-between">
-
-        <div id="testimonial-quote" class="text-2xl sm:text-4xl md:text-5xl font-semibold tracking-tight leading-[1.2] text-white max-w-4xl text-balance transition-opacity duration-300">
-
-          “Working with Red Thread on the 'Nuts of the Round Table' creative for Movember's Testicular Cancer Awareness Month 'Know Thy Nuts' campaign was a fantastic experience. They handled everything from concept and influencer engagement through to the shoot, asset delivery, and assisted with the posting and promotion plan, making the process genuinely seamless on our side. The work landed exactly as we'd hoped, hitting KPIs with our 18-35 male audience while being exactly the kind of fun, engaging content the campaign called for, all delivered on time and to budget.”
-
-        </div>
-
-
-
-        <div class="mt-12 flex flex-col sm:flex-row sm:items-center justify-between gap-6 pt-8 border-t border-white/10">
-
-          <div>
-
-            <div id="testimonial-author" class="text-base sm:text-lg font-bold text-white">Adam Cadman</div>
-
-            <div id="testimonial-title" class="text-xs sm:text-sm text-neutral-400 font-medium">Snr Marketing Manager, Movember UK</div>
-
-          </div>
-
-
-
-          <div class="flex items-center gap-3">
-
-            <button onclick="prevTestimonial()" aria-label="Previous testimonial" class="spring-pill w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center text-lg font-bold border-0">
-
-              ‹
-
-            </button>
-
-            <button onclick="nextTestimonial()" aria-label="Next testimonial" class="spring-pill w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center text-lg font-bold border-0">
-
-              ›
-
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-
-  <!-- 08. PHILOSOPHY REVEAL -->
-
-  <section id="philosophy" data-theme="dark" class="w-full bg-black text-white py-36 px-6 lg:px-8 relative overflow-hidden z-20 selection:bg-neutral-800 selection:text-white">
-
-    <div class="max-w-5xl mx-auto text-center space-y-8 relative z-10">
-
-      <h2 id="philosophy-title" class="text-3xl sm:text-5xl md:text-6xl font-semibold tracking-tight leading-tight text-balance">
-
-        Creator instinct, amplified by proprietary tech. <br />
-
-        <span class="text-grain-iridescent">Built on proof, not promises.</span>
-
+  <!-- Manifesto Banner Section -->
+  <section id="philosophy" data-theme="dark" class="bg-[#0a0a0c] text-white pt-20 relative overflow-hidden z-20 selection:bg-neutral-800 selection:text-white">
+    <div class="max-w-7xl mx-auto px-6 sm:px-8 pb-20 border-b border-white/10 text-center">
+      <h2 id="philosophy-title" class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight text-balance">
+        Creator instinct, amplified by proprietary tech. <br class="hidden sm:inline"/>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#ff2a5f] to-[#e000ff] pb-1 inline-block">Built on proof, not promises.</span>
       </h2>
-
     </div>
-
   </section>
 
+  <!-- Unified Contact, FAQ & Footer Section -->
+  <section id="contact-faq" data-theme="dark" class="bg-[#0a0a0c] text-white pt-20 pb-0 relative overflow-hidden z-20 selection:bg-neutral-800 selection:text-white">
+    <div class="max-w-7xl mx-auto px-6 sm:px-8">
 
+      <!-- CONTACT FORM GRID -->
+      <div id="terminal" class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start pb-20 border-b border-white/10">
 
-  <!-- 09. APPLE INTAKE FORM -->
-
-  <section id="terminal" data-theme="light" class="w-full bg-[#F5F5F7] text-neutral-900 pt-28 pb-24 px-6 lg:px-8 relative overflow-hidden z-20 selection:bg-neutral-800 selection:text-white">
-
-    <div class="max-w-6xl mx-auto relative z-10">
-
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
-
-        
-
-        <div class="lg:col-span-5 space-y-8">
-
-          <div class="space-y-3">
-
-            <h2 class="text-3xl sm:text-5xl font-semibold tracking-tight text-neutral-900 leading-tight">
-
-              Ready when you are.
-
-            </h2>
-
-            <p class="text-neutral-500 text-base sm:text-lg font-normal leading-relaxed">
-
-              Share your campaign goals with us and we’ll take it from there.
-
-            </p>
-
-          </div>
-
-
-
-          <div class="space-y-1.5 pt-2 text-xs font-medium text-neutral-500">
-
-            <div>Direct: <span class="text-neutral-900">hello@redthread.co</span></div>
-
-            <div>Offices: <span class="text-neutral-900">London · New York</span></div>
-
-          </div>
-
+        <!-- Left Column: Title Only -->
+        <div class="lg:col-span-5 flex flex-col justify-start pt-2">
+          <h2 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-[1.05] text-balance">
+            Ready when you are.
+          </h2>
         </div>
 
+        <!-- Right Column: Interactive Form -->
+        <div class="lg:col-span-7 flex flex-col gap-6">
 
-
-        <div id="intake-column" class="lg:col-span-7 space-y-6">
-
-          <div class="flex flex-wrap gap-2">
-
-            <button type="button" class="spring-pill px-5 py-3 rounded-full bg-gradient-to-r from-[#FF5A5F] to-[#E040FB] text-white text-xs font-semibold shadow-md">
-
+          <!-- Full-Width Segmented Control -->
+          <div class="bg-white/5 p-1.5 rounded-2xl border border-white/10 grid grid-cols-3 gap-1.5 w-full">
+            <button type="button" class="type-pill active bg-[#ff2a5f] text-white py-3.5 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer text-center" data-type="campaign">
               Campaign
-
             </button>
-
-            <button type="button" class="spring-pill px-5 py-3 rounded-full bg-white text-neutral-800 text-xs font-medium hover:bg-neutral-100 shadow-sm">
-
+            <button type="button" class="type-pill text-neutral-400 hover:text-white py-3.5 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer text-center" data-type="demo">
               ThreadOS™ demo
-
             </button>
-
-            <button type="button" class="spring-pill px-5 py-3 rounded-full bg-white text-neutral-800 text-xs font-medium hover:bg-neutral-100 shadow-sm">
-
+            <button type="button" class="type-pill text-neutral-400 hover:text-white py-3.5 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer text-center" data-type="audit">
               Performance audit
-
             </button>
-
           </div>
 
-
-
-          <div class="space-y-3">
-
-            <input type="text" placeholder="Your name & brand" class="w-full bg-white rounded-2xl px-6 py-4.5 text-sm text-black placeholder-neutral-400 border-0 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FF5A5F]/20 transition-all" />
-
-            <input type="email" placeholder="Work email address" class="w-full bg-white rounded-2xl px-6 py-4.5 text-sm text-black placeholder-neutral-400 border-0 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FF5A5F]/20 transition-all" />
-
-            <textarea rows="3" placeholder="Brief campaign targets or timeline..." class="w-full bg-white rounded-2xl px-6 py-4.5 text-sm text-black placeholder-neutral-400 border-0 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FF5A5F]/20 transition-all resize-none"></textarea>
-
-          </div>
-
-
-
-          <div id="intake-form">
-
-          <button type="button" id="intake-submit" class="spring-pill w-full py-5 rounded-2xl bg-black text-white font-bold text-sm tracking-wide flex items-center justify-center gap-2 group shadow-xl">
-
-            <span>Get started</span>
-
-            <span class="group-hover:translate-x-1 transition-transform">→</span>
-
-          </button>
-
-          </div>
-
-          <div id="intake-success" class="hidden w-full py-5 rounded-2xl bg-black text-white font-bold text-sm tracking-wide flex items-center justify-center shadow-xl">
-
-            We’ll be in touch soon.
-
-          </div>
+          <!-- Form Fields -->
+          <form class="flex flex-col gap-4 mt-2" onsubmit="event.preventDefault();">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <input type="text" placeholder="First name" autocomplete="given-name" class="bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white text-base placeholder:text-neutral-500 focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all w-full" required/>
+              <input type="text" placeholder="Last name" autocomplete="family-name" class="bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white text-base placeholder:text-neutral-500 focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all w-full" required/>
+            </div>
+            <div>
+              <input type="email" placeholder="Email address" autocomplete="email" class="bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white text-base placeholder:text-neutral-500 focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all w-full" required/>
+            </div>
+            <div>
+              <textarea placeholder="Write a little something here" class="bg-white/5 border border-white/10 rounded-2xl p-5 text-white text-base placeholder:text-neutral-500 focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all w-full min-h-[140px] resize-none"></textarea>
+            </div>
+            <button type="submit" class="bg-white text-neutral-950 font-bold py-4 px-8 rounded-2xl hover:bg-neutral-200 transition-all flex items-center justify-center gap-2 cursor-pointer w-full text-base mt-2">
+              Get started &rarr;
+            </button>
+          </form>
 
         </div>
 
-
-
       </div>
 
-    </div>
+      <!-- SUBDUED COMPACT FAQ SECTION -->
+      <div id="faq" class="pt-16 pb-8">
+        <h3 class="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-300 mb-8">Frequently asked.</h3>
 
-  </section>
+        <div class="space-y-4">
+          <div class="border-b border-white/10 pb-4">
+            <button type="button" class="faq-toggle w-full flex justify-between items-center text-left text-base sm:text-lg font-medium text-neutral-200 hover:text-white transition-colors py-1.5 cursor-pointer">
+              <span>How does Red Thread guarantee brand safety with creators?</span>
+              <span class="text-xl font-light text-neutral-500 ml-4">+</span>
+            </button>
+            <div class="faq-content hidden mt-2 text-neutral-400 text-sm leading-relaxed max-w-3xl">
+              We run every creator partner through proprietary safety screening and human vetting before contract execution, ensuring brand compliance across tone, past content history, and audience authenticity.
+            </div>
+          </div>
 
+          <div class="border-b border-white/10 pb-4">
+            <button type="button" class="faq-toggle w-full flex justify-between items-center text-left text-base sm:text-lg font-medium text-neutral-200 hover:text-white transition-colors py-1.5 cursor-pointer">
+              <span>How are creator licensing and global usage rights handled?</span>
+              <span class="text-xl font-light text-neutral-500 ml-4">+</span>
+            </button>
+            <div class="faq-content hidden mt-2 text-neutral-400 text-sm leading-relaxed max-w-3xl">
+              All usage rights, licensing scopes, and territory expansions are managed centrally through ThreadOS™, giving your legal and brand teams 100% clarity and immediate access to contracts.
+            </div>
+          </div>
 
-
-  <!-- 10. FAQ & FOOTER -->
-
-  <section id="faq" data-theme="dark" class="w-full bg-[#111113] text-white py-20 px-6 lg:px-8 relative z-20 border-0 selection:bg-neutral-800 selection:text-white">
-
-    <div class="max-w-4xl mx-auto space-y-10">
-
-      
-
-      <h2 class="text-2xl sm:text-4xl font-semibold tracking-tight text-white">
-
-        Frequently asked.
-
-      </h2>
-
-
-
-      <div class="divide-y divide-white/10 border-t border-b border-white/10">
-
-        <details class="group py-6 cursor-pointer">
-
-          <summary class="flex justify-between items-center text-lg sm:text-xl font-bold tracking-tight list-none select-none text-white">
-
-            <span>How does Red Thread guarantee brand safety with creators?</span>
-
-            <span class="text-neutral-400 group-open:rotate-45 transition-transform text-2xl font-light">+</span>
-
-          </summary>
-
-          <p class="mt-4 text-neutral-400 text-sm sm:text-base leading-relaxed pr-8">
-
-            Every creator in our activation roster undergoes a 2-tier vetting process: Fred AI sentiment analysis covering historic channel data, followed by direct human intuition checks by our expert humans.
-
-          </p>
-
-        </details>
-
-
-
-        <details class="group py-6 cursor-pointer">
-
-          <summary class="flex justify-between items-center text-lg sm:text-xl font-bold tracking-tight list-none select-none text-white">
-
-            <span>How are creator licensing and global usage rights handled?</span>
-
-            <span class="text-neutral-400 group-open:rotate-45 transition-transform text-2xl font-light">+</span>
-
-          </summary>
-
-          <p class="mt-4 text-neutral-400 text-sm sm:text-base leading-relaxed pr-8">
-
-            ThreadOS™ automatically vaults master licensing agreements directly inside your campaign portal. All usage, paid whitelisting rights, and multi-market clearances are finalised prior to content go-live.
-
-          </p>
-
-        </details>
-
-
-
-        <details class="group py-6 cursor-pointer">
-
-          <summary class="flex justify-between items-center text-lg sm:text-xl font-bold tracking-tight list-none select-none text-white">
-
-            <span>Can ThreadOS™ integrate directly into our internal analytics stack?</span>
-
-            <span class="text-neutral-400 group-open:rotate-45 transition-transform text-2xl font-light">+</span>
-
-          </summary>
-
-          <p class="mt-4 text-neutral-400 text-sm sm:text-base leading-relaxed pr-8">
-
-            We’re working on seamless integration via API to major attribution platforms (including Shopify, and Google Analytics) for real-time reporting.
-
-          </p>
-
-        </details>
-
-
-
-        <details class="group py-6 cursor-pointer">
-
-          <summary class="flex justify-between items-center text-lg sm:text-xl font-bold tracking-tight list-none select-none text-white">
-
-            <span>What is the typical campaign launch timeline from initial brief?</span>
-
-            <span class="text-neutral-400 group-open:rotate-45 transition-transform text-2xl font-light">+</span>
-
-          </summary>
-
-          <p class="mt-4 text-neutral-400 text-sm sm:text-base leading-relaxed pr-8">
-
-            From briefing and response, to ThreadOS™ streamlining contracts and logistics, our average turnaround from brief approval to live content deployment is under 21 days globally.
-
-          </p>
-
-        </details>
-
+          <div class="border-b border-white/10 pb-4">
+            <button type="button" class="faq-toggle w-full flex justify-between items-center text-left text-base sm:text-lg font-medium text-neutral-200 hover:text-white transition-colors py-1.5 cursor-pointer">
+              <span>Can ThreadOS™ integrate directly into our internal analytics stack?</span>
+              <span class="text-xl font-light text-neutral-500 ml-4">+</span>
+            </button>
+            <div class="faq-content hidden mt-2 text-neutral-400 text-sm leading-relaxed max-w-3xl">
+              Yes. ThreadOS™ provides direct API hooks and automated reporting exports into Snowflake, Looker, Google BigQuery, and custom enterprise dashboards.
+            </div>
+          </div>
+        </div>
       </div>
 
+      <!-- PAGE FOOTER (Borderless Top, Flush Left Logo) -->
+      <footer class="pt-8 pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 text-xs text-neutral-500">
+        <div class="flex flex-col items-start gap-3 ml-0 pl-0">
+          <img src="logo-thread-white.png" alt="Red Thread" class="h-8 w-auto object-contain filter brightness-0 invert opacity-90 block ml-0" onerror="this.onerror=null; this.src='logo-white.png';"/>
+          <p class="text-neutral-500">&copy; 2026 Red Thread Agency Ltd. All rights reserved.</p>
+        </div>
 
-
-      <div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-neutral-500 font-medium">
-
-        <div>© 2026 Red Thread Agency Ltd. All rights reserved.</div>
-
-        <div class="flex items-center gap-6">
-
+        <div class="flex gap-6 text-neutral-400 pb-1">
           <a href="#" class="hover:text-white transition-colors">Privacy policy</a>
-
           <a href="#" class="hover:text-white transition-colors">Terms of service</a>
-
           <a href="#" class="hover:text-white transition-colors">LinkedIn</a>
-
         </div>
-
-      </div>
-
-
+      </footer>
 
     </div>
-
   </section>
-
-
-
-  <!-- UNIVERSAL APPLE SCRIM MODAL DIALOGS -->
-
-  <!-- Case Study Modals -->
-
-  <div id="modal-case-1" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
-
-    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
-
-      <button onclick="closeModal('modal-case-1')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
-
-      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">Case Study Showcase</span>
-
-      <h3 class="text-3xl font-bold">Nuts of the Roundtable</h3>
-
-      <div class="grid grid-cols-2 gap-4 py-2 text-center">
-
-        <div class="bg-white/5 p-4 rounded-2xl"><span class="block text-2xl font-bold text-emerald-400">1.19M</span><span class="text-xs text-neutral-400">Impressions</span></div>
-
-        <div class="bg-white/5 p-4 rounded-2xl"><span class="block text-2xl font-bold text-white">9.51%</span><span class="text-xs text-neutral-400">Peak Engagement</span></div>
-
-      </div>
-
-      <p class="text-neutral-300 text-base leading-relaxed">
-
-        We cast creators as "Nuts of the Round Table" at Hedingham Castle, using high-concept production to bypass traditional health-ad filters. By reframing check-ups as a "Knight’s Code," we turned a medical chore into a heroic mandate.
-
-      </p>
-
-      <div class="pt-4 flex justify-end">
-
-        <button onclick="closeModal('modal-case-1')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-
-  <div id="modal-case-2" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
-
-    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
-
-      <button onclick="closeModal('modal-case-2')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
-
-      <span class="text-xs font-semibold text-[#E040FB] uppercase tracking-wider">Case Study Showcase</span>
-
-      <h3 class="text-3xl font-bold">Just Go.</h3>
-
-      <div class="grid grid-cols-2 gap-4 py-2 text-center">
-
-        <div class="bg-white/5 p-4 rounded-2xl"><span class="block text-2xl font-bold text-[#E040FB]">1.25M</span><span class="text-xs text-neutral-400">Organic Impressions</span></div>
-
-        <div class="bg-white/5 p-4 rounded-2xl"><span class="block text-2xl font-bold text-white">33%</span><span class="text-xs text-neutral-400">Uplift in Traffic</span></div>
-
-      </div>
-
-      <p class="text-neutral-300 text-base leading-relaxed">
-
-        We partnered with creators to deliver platform-native storytelling tailored to traveller mindsets. By positioning Ireland through lived experience, we transformed tourism marketing into a series of relatable human stories.
-
-      </p>
-
-      <div class="pt-4 flex justify-end">
-
-        <button onclick="closeModal('modal-case-2')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-
-  <div id="modal-case-3" class="apple-modal fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-2xl">
-
-    <div class="bg-[#1D1D1F] text-white p-8 sm:p-12 rounded-[2.5rem] max-w-2xl w-full relative shadow-2xl border border-white/10 space-y-6">
-
-      <button onclick="closeModal('modal-case-3')" aria-label="Close modal" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-sm font-bold text-neutral-400 hover:text-white">✕</button>
-
-      <span class="text-xs font-semibold text-[#FF5A5F] uppercase tracking-wider">Case Study Showcase</span>
-
-      <h3 class="text-3xl font-bold">Well, that’s refreshing.</h3>
-
-      <div class="grid grid-cols-2 gap-4 py-2 text-center">
-
-        <div class="bg-white/5 p-4 rounded-2xl"><span class="block text-2xl font-bold text-[#FF5A5F]">5.0%+</span><span class="text-xs text-neutral-400">Average Engagement</span></div>
-
-        <div class="bg-white/5 p-4 rounded-2xl"><span class="block text-2xl font-bold text-white">605k</span><span class="text-xs text-neutral-400">Impressions</span></div>
-
-      </div>
-
-      <p class="text-neutral-300 text-base leading-relaxed">
-
-        We commissioned 19 creators to capture authentic summer moments—seaside swims, park picnics—with Volvic Watermelon as the companion. We shifted the focus from flavor to feeling, embedding the product into summer culture.
-
-      </p>
-
-      <div class="pt-4 flex justify-end">
-
-        <button onclick="closeModal('modal-case-3')" class="spring-pill px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs">Done</button>
-
-      </div>
-
-    </div>
-
-  </div>
 
 
 
   <!-- INTERACTIVE ENGINE SCRIPTS -->
 
   <script>
-
-    // 1. Modal Scrim Controller
-
-    function openModal(modalId) {
-
-      const modal = document.getElementById(modalId);
-
-      if (modal) modal.classList.add('active');
-
-    }
-
-
-
-    function closeModal(modalId) {
-
-      const modal = document.getElementById(modalId);
-
-      if (modal) modal.classList.remove('active');
-
-    }
-
-
-
-    document.querySelectorAll('.apple-modal').forEach((modal) => {
-
-      modal.addEventListener('click', (e) => {
-
-        if (e.target === modal) closeModal(modal.id);
-
-      });
-
-    });
-
-
-
-    document.addEventListener('keydown', (e) => {
-
-      if (e.key !== 'Escape') return;
-
-      document.querySelectorAll('.apple-modal.active').forEach((modal) => closeModal(modal.id));
-
-    });
-
 
 
 
@@ -2188,11 +1734,11 @@
 
 
 
-      btn24.className = "px-2 py-0.5 rounded-full text-neutral-400 hover:text-white";
+      btn24.className = "px-2 py-0.5 rounded-full text-neutral-400";
 
-      btn7.className = "px-2 py-0.5 rounded-full text-neutral-400 hover:text-white";
+      btn7.className = "px-2 py-0.5 rounded-full text-neutral-400";
 
-      btn30.className = "px-2 py-0.5 rounded-full text-neutral-400 hover:text-white";
+      btn30.className = "px-2 py-0.5 rounded-full text-neutral-400";
 
 
 
@@ -2250,11 +1796,11 @@
 
 
 
-      btnRoas.className = "px-2.5 py-1 rounded-full text-neutral-400 hover:text-white";
+      btnRoas.className = "px-2.5 py-1 rounded-full text-neutral-400";
 
-      btnCac.className = "px-2.5 py-1 rounded-full text-neutral-400 hover:text-white";
+      btnCac.className = "px-2.5 py-1 rounded-full text-neutral-400";
 
-      btnRet.className = "px-2.5 py-1 rounded-full text-neutral-400 hover:text-white";
+      btnRet.className = "px-2.5 py-1 rounded-full text-neutral-400";
 
 
 
@@ -2371,48 +1917,6 @@
       updateTestimonialUI();
 
     }
-
-
-
-    // 5. Continuous 2x IMAX Concave Curve Loop
-
-    function updateIMAX() {
-
-      const imaxCards = document.querySelectorAll('.imax-card');
-
-      const centerX = window.innerWidth / 2;
-
-
-
-      imaxCards.forEach(card => {
-
-        const cardRect = card.getBoundingClientRect();
-
-        const cardCenter = cardRect.left + (cardRect.width / 2);
-
-        const distFromCenter = (cardCenter - centerX) / centerX;
-
-        
-
-        const rotateY = -distFromCenter * 50; 
-
-        const translateZ = -Math.pow(Math.abs(distFromCenter), 1.4) * 280; 
-
-        const scale = 1 - Math.abs(distFromCenter) * 0.12;
-
-
-
-        card.style.transform = `rotateY(${rotateY}deg) translateZ(${translateZ}px) scale(${scale})`;
-
-      });
-
-
-
-      requestAnimationFrame(updateIMAX);
-
-    }
-
-    requestAnimationFrame(updateIMAX);
 
 
 
@@ -2544,7 +2048,17 @@
 
     const hwCards = document.querySelectorAll('.hw-card');
 
-
+    // Auto-rotate landscape phone media to fill vertical bezels
+    document.querySelectorAll('#hw-deck video.phone-media').forEach((video) => {
+      const applyOrientation = () => {
+        if (video.videoWidth > video.videoHeight) {
+          video.classList.add('rotate-media-90');
+          video.classList.remove('absolute', 'inset-0');
+        }
+      };
+      if (video.readyState >= 1) applyOrientation();
+      else video.addEventListener('loadedmetadata', applyOrientation, { once: true });
+    });
 
     if (hwSection && hwCards.length > 0) {
 
@@ -2658,7 +2172,7 @@
 
                 if (navLinks) navLinks.className = "hidden md:flex items-center gap-8 text-[11px] font-medium uppercase tracking-wider text-neutral-600";
 
-                if (navCta) navCta.className = "spring-pill px-4 py-1.5 rounded-full bg-black text-white text-xs font-semibold shadow-md";
+                if (navCta) navCta.className = "spring-pill px-4 py-1.5 rounded-full bg-black text-white text-xs font-semibold";
 
               } else {
 
@@ -2670,7 +2184,7 @@
 
                 if (navLinks) navLinks.className = "hidden md:flex items-center gap-8 text-[11px] font-medium uppercase tracking-wider text-neutral-400";
 
-                if (navCta) navCta.className = "spring-pill px-4 py-1.5 rounded-full bg-white text-black text-xs font-semibold shadow-md";
+                if (navCta) navCta.className = "spring-pill px-4 py-1.5 rounded-full bg-white text-black text-xs font-semibold";
 
               }
 
@@ -2713,50 +2227,6 @@
           // C. Hero Zoom handled by one-way listener below
 
 
-
-          // E. Sticky Z-Space Stacking Cards Engine
-
-          const stackCards = document.querySelectorAll('.stacking-card');
-
-          stackCards.forEach((card, idx) => {
-
-            const nextCard = stackCards[idx + 1];
-
-            if (nextCard) {
-
-              const nextRect = nextCard.getBoundingClientRect();
-
-              const triggerPoint = window.innerHeight * 0.45;
-
-              if (nextRect.top < triggerPoint) {
-
-                const overlap = Math.max(0, Math.min(1, (triggerPoint - nextRect.top) / 300));
-
-                const scale = 1 - (overlap * 0.08);
-
-                const opacity = 1 - (overlap * 0.6);
-
-                const blur = overlap * 6;
-
-                card.style.transform = `scale(${scale})`;
-
-                card.style.opacity = opacity;
-
-                card.style.filter = `blur(${blur}px)`;
-
-              } else {
-
-                card.style.transform = `scale(1)`;
-
-                card.style.opacity = `1`;
-
-                card.style.filter = `blur(0px)`;
-
-              }
-
-            }
-
-          });
 
 
 
@@ -2834,6 +2304,200 @@
     window.addEventListener('DOMContentLoaded', alignSliderWithSpacer);
     window.addEventListener('load', alignSliderWithSpacer);
     window.addEventListener('resize', alignSliderWithSpacer);
+  </script>
+
+
+  <script>
+    (function initZeroJoltIMAXLoop() {
+      const track = document.getElementById('imax-track');
+      const stage = document.getElementById('imax-stage');
+      if (!track || !stage) return;
+
+      // 1. Triple card items for an infinite render buffer
+      if (!track.dataset.cloned) {
+        const originalCards = Array.from(track.children);
+        originalCards.forEach(card => card.classList.add('imax-card'));
+
+        // Set 2
+        originalCards.forEach(card => track.appendChild(card.cloneNode(true)));
+        // Set 3
+        originalCards.forEach(card => track.appendChild(card.cloneNode(true)));
+
+        track.dataset.cloned = "true";
+      }
+
+      let scrollPos = 0;
+      const speed = 2.7;
+      let cardWidth = 0;
+      let gap = 0;
+      let step = 0;
+      let singleSetWidth = 0;
+      let numOriginalCards = 0;
+
+      function measureGeometry() {
+        const cards = track.querySelectorAll('.imax-card');
+        if (cards.length === 0) return;
+
+        numOriginalCards = cards.length / 3;
+        const firstCard = cards[0];
+        const secondCard = cards[1];
+
+        cardWidth = firstCard.offsetWidth;
+
+        // Calculate exact gap between items
+        if (secondCard) {
+          gap = secondCard.offsetLeft - (firstCard.offsetLeft + cardWidth);
+        } else {
+          gap = 32; // fallback
+        }
+
+        step = cardWidth + gap;
+        singleSetWidth = step * numOriginalCards;
+      }
+
+      measureGeometry();
+      window.addEventListener('resize', measureGeometry);
+      window.addEventListener('load', measureGeometry);
+
+      function animate() {
+        if (singleSetWidth > 0) {
+          scrollPos += speed;
+          if (scrollPos >= singleSetWidth) {
+            scrollPos %= singleSetWidth;
+          }
+
+          // GPU Accelerated Track Translation
+          track.style.transform = `translate3d(-${scrollPos}px, 0, 0)`;
+
+          // PURE MATH 3D CURVE (Zero getBoundingClientRect layout thrashing)
+          const stageWidth = window.innerWidth;
+          const stageCenter = stageWidth / 2;
+          const cards = track.children;
+
+          for (let i = 0; i < cards.length; i++) {
+            const card = cards[i];
+
+            // Calculate card's exact X position relative to viewport center purely with math
+            const cardLeftOnStage = (i * step) - scrollPos;
+            const cardCenterOnStage = cardLeftOnStage + (cardWidth / 2);
+
+            const distFromCenter = (cardCenterOnStage - stageCenter) / (stageWidth / 2);
+            const clampedDist = Math.max(-1.2, Math.min(1.2, distFromCenter));
+
+            const rotateY = clampedDist * -22;
+            const scale = 1 - Math.abs(clampedDist) * 0.12;
+            const translateZ = -Math.abs(clampedDist) * 120;
+            const opacity = 1 - Math.abs(clampedDist) * 0.25;
+
+            card.style.transform = `rotateY(${rotateY}deg) translateZ(${translateZ}px) scale(${scale})`;
+            card.style.opacity = Math.max(0.4, opacity);
+          }
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      requestAnimationFrame(animate);
+    })();
+  </script>
+
+
+  <script>
+    (function initSwagAccordion() {
+      const deck = document.getElementById('deck-accordion');
+      const cards = Array.from(document.querySelectorAll('.accordion-card'));
+      const prevBtn = document.getElementById('deck-prev');
+      const nextBtn = document.getElementById('deck-next');
+      if (!deck || cards.length === 0) return;
+
+      let activeIndex = 0;
+
+      function syncDeckBgWidth() {
+        // Keep every case-study BG at full deck width so expand/collapse only clips, never rescales
+        deck.style.setProperty('--deck-bg-width', deck.clientWidth + 'px');
+      }
+      syncDeckBgWidth();
+      window.addEventListener('resize', syncDeckBgWidth);
+
+      function updateAccordion() {
+        cards.forEach((card, index) => {
+          const collapsed = card.querySelector('.collapsed-content');
+          const expanded = card.querySelector('.expanded-content');
+
+          if (index === activeIndex) {
+            card.className = 'accordion-card flex-1 min-w-0 rounded-[32px] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer';
+            if (collapsed) {
+              collapsed.classList.add('opacity-0', 'pointer-events-none');
+              collapsed.classList.remove('opacity-100');
+            }
+            if (expanded) {
+              expanded.classList.remove('opacity-0', 'pointer-events-none');
+              expanded.classList.add('opacity-100');
+            }
+          } else {
+            card.className = 'accordion-card w-16 sm:w-20 shrink-0 rounded-[32px] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer';
+            if (collapsed) {
+              collapsed.classList.remove('opacity-0', 'pointer-events-none');
+              collapsed.classList.add('opacity-100');
+            }
+            if (expanded) {
+              expanded.classList.add('opacity-0', 'pointer-events-none');
+              expanded.classList.remove('opacity-100');
+            }
+          }
+        });
+      }
+
+      if (nextBtn) nextBtn.onclick = (e) => { e.stopPropagation(); activeIndex = (activeIndex + 1) % cards.length; updateAccordion(); };
+      if (prevBtn) prevBtn.onclick = (e) => { e.stopPropagation(); activeIndex = (activeIndex - 1 + cards.length) % cards.length; updateAccordion(); };
+
+      cards.forEach((card, index) => {
+        card.addEventListener('click', () => {
+          if (activeIndex !== index) {
+            activeIndex = index;
+            updateAccordion();
+          }
+        });
+      });
+
+      updateAccordion();
+    })();
+  </script>
+
+  <script>
+    (function initContactAndFAQ() {
+      const pills = document.querySelectorAll('.type-pill');
+
+      pills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          pills.forEach(p => {
+            p.classList.remove('bg-[#ff2a5f]', 'text-white', 'active');
+            p.classList.add('text-neutral-400');
+          });
+          pill.classList.add('bg-[#ff2a5f]', 'text-white', 'active');
+          pill.classList.remove('text-neutral-400');
+        });
+      });
+
+      const faqToggles = document.querySelectorAll('.faq-toggle');
+      faqToggles.forEach(toggle => {
+        toggle.addEventListener('click', () => {
+          const content = toggle.nextElementSibling;
+          const icon = toggle.querySelector('span:last-child');
+          if (!content || !icon) return;
+
+          const isOpen = !content.classList.contains('hidden');
+
+          document.querySelectorAll('.faq-content').forEach(c => c.classList.add('hidden'));
+          document.querySelectorAll('.faq-toggle span:last-child').forEach(i => { i.textContent = '+'; });
+
+          if (!isOpen) {
+            content.classList.remove('hidden');
+            icon.textContent = '–';
+          }
+        });
+      });
+    })();
   </script>
 
 </body>
