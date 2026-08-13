@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en" class="scroll-smooth bg-black">
+<html lang="en" class="scroll-smooth bg-black overflow-x-hidden max-w-[100vw] relative">
 
 <head>
 
@@ -19,6 +19,15 @@
     tailwind.config = {
 
       theme: {
+
+        screens: {
+          'xs': '390px',
+          'sm': '640px',
+          'md': '768px',
+          'lg': '1024px',
+          'xl': '1280px',
+          '2xl': '1536px',
+        },
 
         extend: {
 
@@ -98,6 +107,12 @@
 
        ========================================== */
 
+    html, body {
+      overflow-x: hidden;
+      max-width: 100vw;
+      position: relative;
+    }
+
     body, .page-root {
 
       background-color: #000000;
@@ -110,6 +125,21 @@
 
       -webkit-font-smoothing: antialiased;
 
+    }
+
+    /* Hero stencil text: prevent mobile blowout */
+    @media (max-width: 639px) {
+      #hero-stencil-svg text {
+        font-size: 42px;
+        letter-spacing: -1.5px;
+      }
+    }
+
+    /* European map pins: desktop positions override mobile inline styles */
+    @media (min-width: 640px) {
+      #global-section .map-pin-lisbon { top: 27% !important; left: 43.5% !important; }
+      #global-section .map-pin-london { top: 18.5% !important; left: 47.5% !important; }
+      #global-section .map-pin-basel { top: 26% !important; left: 49.5% !important; }
     }
 
 
@@ -400,7 +430,7 @@
 
 </head>
 
-<body class="bg-black text-white font-sans antialiased selection:bg-neutral-800 selection:text-white overflow-x-hidden">
+<body class="bg-black text-white font-sans antialiased selection:bg-neutral-800 selection:text-white overflow-x-hidden max-w-[100vw] relative">
 
 
 
@@ -446,11 +476,13 @@
 
   <!-- 01. HERO THEATRE (Pure OLED Black #000000) -->
 
-  <header id="hero-runway" data-theme="dark" class="relative w-full h-[180vh] bg-black">
+  <header id="hero-runway" data-theme="dark" class="relative w-full max-w-full h-[180vh] bg-black overflow-hidden">
 
-    <div class="sticky top-0 left-0 w-full h-screen overflow-hidden flex items-center justify-center z-10" style="isolation: isolate; backface-visibility: hidden; transform-style: preserve-3d; -webkit-font-smoothing: antialiased;">
+    <div class="sticky top-0 left-0 w-full max-w-full h-screen overflow-hidden flex items-center justify-center z-10" style="isolation: isolate; backface-visibility: hidden; transform-style: preserve-3d; -webkit-font-smoothing: antialiased;">
 
-      <video id="hero-video" autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
+      <h1 class="sr-only text-3xl xs:text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] max-w-full text-balance">Creator-powered commercial impact.</h1>
+
+      <video id="hero-video" autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full max-w-full h-full object-cover z-0 pointer-events-none overflow-hidden">
 
         <source src="https://testcs.co.uk/redthread/wp-content/uploads/2026/07/Showreel-v3-1.mp4" type="video/mp4">
 
@@ -548,7 +580,8 @@
 
     <div id="hw-sticky-stage" class="sticky top-0 left-0 w-full h-screen overflow-hidden flex items-center justify-center hardware-stage-perspective z-0">
 
-      <div id="hw-deck" class="relative w-full max-w-7xl mx-auto h-[550px] flex items-center justify-center">
+      <div class="w-full max-w-full overflow-hidden flex justify-center items-center py-4">
+      <div id="hw-deck" class="relative w-full max-w-7xl mx-auto h-[550px] flex items-center justify-center scale-[0.82] sm:scale-100 origin-center">
 
           <!-- Phone 1: screen1.mov -->
           <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:10;">
@@ -674,6 +707,7 @@
           </div>
 
       </div>
+      </div>
 
     </div>
 
@@ -713,33 +747,33 @@
 
       <div class="lg:col-span-7">
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-y-12 gap-x-10 items-center justify-items-center">
+        <div id="logos-section" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-6 sm:gap-10 items-center justify-items-center">
 
           
 
           <!-- Row 1 -->
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-full h-12 sm:h-16 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/bbc.png" alt="BBC" style="height: 40px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
-
-          </div>
-
-          <div class="w-full h-20 flex items-center justify-center p-1">
-
-            <img src="Content/Brand Logos/brit-awards.svg" alt="Brit Awards" style="height: 48px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/bbc.png" alt="BBC" style="filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="max-h-6 sm:max-h-8 mx-auto w-auto object-contain transition-all duration-200" />
 
           </div>
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-full h-12 sm:h-16 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/disney.png" alt="Disney" style="height: 32px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/brit-awards.svg" alt="Brit Awards" style="filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="max-h-6 sm:max-h-8 mx-auto w-auto object-contain transition-all duration-200" />
 
           </div>
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-full h-12 sm:h-16 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/dr-pepper.png" alt="Dr Pepper" style="height: 44px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/disney.png" alt="Disney" style="mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" loading="lazy" decoding="async" class="max-h-6 sm:max-h-8 mx-auto w-auto object-contain transition-all duration-200" />
+
+          </div>
+
+          <div class="w-full h-12 sm:h-16 flex items-center justify-center p-1">
+
+            <img src="Content/Brand Logos/dr-pepper.png" alt="Dr Pepper" style="filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="max-h-6 sm:max-h-8 mx-auto w-auto object-contain transition-all duration-200" />
 
           </div>
 
@@ -747,27 +781,27 @@
 
           <!-- Row 2 -->
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-full h-12 sm:h-16 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/gamma.webp" alt="Gamma" style="height: 26px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
-
-          </div>
-
-          <div class="w-full h-20 flex items-center justify-center p-1">
-
-            <img src="Content/Brand Logos/google.png" alt="Google" style="height: 38px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/gamma.webp" alt="Gamma" style="mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" loading="lazy" decoding="async" class="max-h-6 sm:max-h-8 mx-auto w-auto object-contain transition-all duration-200" />
 
           </div>
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-full h-12 sm:h-16 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/lego.png" alt="Lego" style="height: 42px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/google.png" alt="Google" style="filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="max-h-6 sm:max-h-8 mx-auto w-auto object-contain transition-all duration-200" />
 
           </div>
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-full h-12 sm:h-16 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/lexus.png" alt="Lexus" style="height: 72px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/lego.png" alt="Lego" style="filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="max-h-6 sm:max-h-8 mx-auto w-auto object-contain transition-all duration-200" />
+
+          </div>
+
+          <div class="w-full h-12 sm:h-16 flex items-center justify-center p-1">
+
+            <img src="Content/Brand Logos/lexus.png" alt="Lexus" style="filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="max-h-6 sm:max-h-8 mx-auto w-auto object-contain transition-all duration-200" />
 
           </div>
 
@@ -775,27 +809,27 @@
 
           <!-- Row 3 -->
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-full h-12 sm:h-16 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/lynx.svg" alt="Lynx" style="height: 19px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
-
-          </div>
-
-          <div class="w-full h-20 flex items-center justify-center p-1">
-
-            <img src="Content/Brand Logos/major-league-baseball.png" alt="MLB" style="height: 74px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/lynx.svg" alt="Lynx" style="filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="max-h-6 sm:max-h-8 mx-auto w-auto object-contain transition-all duration-200" />
 
           </div>
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-full h-12 sm:h-16 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/mcdonalds.png" alt="McDonalds" style="height: 60px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/major-league-baseball.png" alt="MLB" style="filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="max-h-6 sm:max-h-8 mx-auto w-auto object-contain transition-all duration-200" />
 
           </div>
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-full h-12 sm:h-16 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/movember.png" alt="Movember" style="height: 54px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/mcdonalds.png" alt="McDonalds" style="filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="max-h-6 sm:max-h-8 mx-auto w-auto object-contain transition-all duration-200" />
+
+          </div>
+
+          <div class="w-full h-12 sm:h-16 flex items-center justify-center p-1">
+
+            <img src="Content/Brand Logos/movember.png" alt="Movember" style="mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" loading="lazy" decoding="async" class="max-h-6 sm:max-h-8 mx-auto w-auto object-contain transition-all duration-200" />
 
           </div>
 
@@ -803,27 +837,27 @@
 
           <!-- Row 4 -->
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-full h-12 sm:h-16 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/O2.png" alt="O2" style="height: 50px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
-
-          </div>
-
-          <div class="w-full h-20 flex items-center justify-center p-1">
-
-            <img src="Content/Brand Logos/oracle_red_bull_racing.jpg" alt="Oracle Red Bull Racing" style="height: 42px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/O2.png" alt="O2" style="filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="max-h-6 sm:max-h-8 mx-auto w-auto object-contain transition-all duration-200" />
 
           </div>
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-full h-12 sm:h-16 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/paramount.svg" alt="Paramount" style="height: 52px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/oracle_red_bull_racing.jpg" alt="Oracle Red Bull Racing" style="mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" loading="lazy" decoding="async" class="max-h-6 sm:max-h-8 mx-auto w-auto object-contain transition-all duration-200" />
 
           </div>
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-full h-12 sm:h-16 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/Pfizer.svg" alt="Pfizer" style="height: 44px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/paramount.svg" alt="Paramount" style="filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="max-h-6 sm:max-h-8 mx-auto w-auto object-contain transition-all duration-200" />
+
+          </div>
+
+          <div class="w-full h-12 sm:h-16 flex items-center justify-center p-1">
+
+            <img src="Content/Brand Logos/Pfizer.svg" alt="Pfizer" style="filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="max-h-6 sm:max-h-8 mx-auto w-auto object-contain transition-all duration-200" />
 
           </div>
 
@@ -831,27 +865,27 @@
 
           <!-- Row 5 -->
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-full h-12 sm:h-16 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/porsche.png" alt="Porsche" style="height: 58px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
-
-          </div>
-
-          <div class="w-full h-20 flex items-center justify-center p-1">
-
-            <img src="Content/Brand Logos/tourism-ireland.webp" alt="Tourism Ireland" style="height: 76px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/porsche.png" alt="Porsche" style="filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="max-h-6 sm:max-h-8 mx-auto w-auto object-contain transition-all duration-200" />
 
           </div>
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-full h-12 sm:h-16 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/Uefa.jpg" alt="UEFA" style="height: 40px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/tourism-ireland.webp" alt="Tourism Ireland" style="filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="max-h-6 sm:max-h-8 mx-auto w-auto object-contain transition-all duration-200" />
 
           </div>
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-full h-12 sm:h-16 flex items-center justify-center p-1">
 
-            <img src="Content/Brand Logos/Universal_Pictures_logo.svg" alt="Universal Pictures" style="height: 48px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/Uefa.jpg" alt="UEFA" style="mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" loading="lazy" decoding="async" class="max-h-6 sm:max-h-8 mx-auto w-auto object-contain transition-all duration-200" />
+
+          </div>
+
+          <div class="w-full h-12 sm:h-16 flex items-center justify-center p-1">
+
+            <img src="Content/Brand Logos/Universal_Pictures_logo.svg" alt="Universal Pictures" style="filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="max-h-6 sm:max-h-8 mx-auto w-auto object-contain transition-all duration-200" />
 
           </div>
 
@@ -1257,7 +1291,7 @@
 
       <!-- Los Angeles -->
 
-      <div class="absolute top-[37%] left-[14.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
+      <div class="absolute top-[37%] left-[14.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-2 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-3 sm:py-1.5 rounded-full z-20 text-[9px] sm:text-xs">
 
         <span class="relative flex h-2 w-2">
 
@@ -1267,13 +1301,13 @@
 
         </span>
 
-        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">Los Angeles</span>
+        <span class="font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">Los Angeles</span>
 
       </div>
 
       <!-- New York -->
 
-      <div class="absolute top-[27%] left-[26.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
+      <div class="absolute top-[27%] left-[26.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-2 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-3 sm:py-1.5 rounded-full z-20 text-[9px] sm:text-xs">
 
         <span class="relative flex h-2 w-2">
 
@@ -1283,13 +1317,13 @@
 
         </span>
 
-        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">New York</span>
+        <span class="font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">New York</span>
 
       </div>
 
       <!-- Lisbon (SW of London) -->
 
-      <div class="absolute top-[27%] left-[43.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
+      <div class="map-pin-lisbon absolute sm:top-[27%] sm:left-[43.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-2 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-3 sm:py-1.5 rounded-full z-20 text-[9px] sm:text-xs" style="top: 45%; left: 42%;">
 
         <span class="relative flex h-2 w-2">
 
@@ -1299,13 +1333,13 @@
 
         </span>
 
-        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">Lisbon</span>
+        <span class="font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">Lisbon</span>
 
       </div>
 
       <!-- London -->
 
-      <div class="absolute top-[18.5%] left-[47.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
+      <div class="map-pin-london absolute sm:top-[18.5%] sm:left-[47.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-2 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-3 sm:py-1.5 rounded-full z-20 text-[9px] sm:text-xs" style="top: 34%; left: 45.5%;">
 
         <span class="relative flex h-2 w-2">
 
@@ -1315,13 +1349,13 @@
 
         </span>
 
-        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">London</span>
+        <span class="font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">London</span>
 
       </div>
 
       <!-- Basel (SE of London) -->
 
-      <div class="absolute top-[26%] left-[49.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
+      <div class="map-pin-basel absolute sm:top-[26%] sm:left-[49.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-2 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-3 sm:py-1.5 rounded-full z-20 text-[9px] sm:text-xs" style="top: 42%; left: 52%;">
 
         <span class="relative flex h-2 w-2">
 
@@ -1331,13 +1365,13 @@
 
         </span>
 
-        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">Basel</span>
+        <span class="font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">Basel</span>
 
       </div>
 
       <!-- Singapore -->
 
-      <div class="absolute top-[58%] left-[78.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
+      <div class="absolute top-[58%] left-[78.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-2 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-3 sm:py-1.5 rounded-full z-20 text-[9px] sm:text-xs">
 
         <span class="relative flex h-2 w-2">
 
@@ -1347,7 +1381,7 @@
 
         </span>
 
-        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">Singapore</span>
+        <span class="font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">Singapore</span>
 
       </div>
 
@@ -1442,10 +1476,10 @@
       </div>
 
       <!-- Accordion Canvas Stage -->
-      <div id="deck-accordion" class="flex gap-3 sm:gap-4 h-[620px] sm:h-[680px] w-full overflow-hidden select-none relative">
+      <div id="deck-accordion" class="flex gap-3 sm:gap-4 h-[460px] sm:h-[540px] lg:h-[680px] w-full max-w-full overflow-hidden select-none relative">
 
         <!-- Card 01: Movember -->
-        <div class="accordion-card flex-1 min-w-0 rounded-[32px] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer" data-index="0">
+        <div class="accordion-card flex-1 min-w-0 w-[84vw] sm:w-[420px] lg:w-auto max-w-full rounded-[32px] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer" data-index="0">
           <img src="Content/Case Studies/movember.jpg" alt="Movember" class="case-study-bg" style="object-position: center 30%;" loading="lazy" decoding="async"/>
           <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/70 to-transparent z-10"></div>
 
@@ -1463,11 +1497,11 @@
           </div>
 
           <!-- Expanded Content Canvas -->
-          <div class="expanded-content opacity-100 absolute inset-0 w-[800px] lg:w-[880px] h-full p-8 sm:p-12 flex flex-col justify-end pointer-events-auto transition-opacity duration-300 z-20">
+          <div class="expanded-content opacity-100 absolute inset-0 w-full max-w-full sm:w-[800px] lg:w-[880px] h-full p-5 sm:p-8 flex flex-col justify-end pointer-events-auto transition-opacity duration-300 z-20">
             <div class="grid grid-cols-12 gap-6 lg:gap-8 items-end w-full pb-8">
 
               <!-- Left Column: Equal Height Copy Container -->
-              <div class="col-span-7 h-[270px] sm:h-[290px] flex flex-col justify-end">
+              <div class="col-span-12 sm:col-span-7 h-auto max-h-[220px] sm:max-h-none sm:h-[290px] flex flex-col justify-end">
                 <span class="text-xs font-bold tracking-widest uppercase text-[#ff2a5f] block mb-1">Case Study Showcase</span>
                 <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">Nuts of the Roundtable</h3>
                 <p class="text-base sm:text-lg font-semibold text-neutral-200 mt-2 line-clamp-2">Transforming health stigma into a heroic mission. A pattern-interrupt creative campaign that drove real-world action.</p>
@@ -1475,7 +1509,7 @@
               </div>
 
               <!-- Right Column: Stats Block -->
-              <div class="col-span-5 flex flex-col items-end justify-end h-[270px] sm:h-[290px] pb-1">
+              <div class="col-span-12 sm:col-span-5 flex flex-row sm:flex-col items-end justify-between sm:justify-end gap-4 sm:gap-0 h-auto sm:h-[290px] pb-1 mt-3 sm:mt-0">
                 <div class="flex flex-col items-end">
                   <span class="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-none">1.19M</span>
                   <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Impressions</span>
@@ -1492,7 +1526,7 @@
         </div>
 
         <!-- Card 02: Tourism Ireland -->
-        <div class="accordion-card w-16 sm:w-20 shrink-0 rounded-[32px] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer" data-index="1">
+        <div class="accordion-card w-10 sm:w-16 md:w-20 shrink-0 rounded-[32px] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer" data-index="1">
           <img src="Content/Case Studies/ireland.jpg" alt="Tourism Ireland" class="case-study-bg" style="object-position: center;" loading="lazy" decoding="async"/>
           <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/70 to-transparent z-10"></div>
 
@@ -1507,17 +1541,17 @@
             <div></div>
           </div>
 
-          <div class="expanded-content opacity-0 pointer-events-none absolute inset-0 w-[800px] lg:w-[880px] h-full p-8 sm:p-12 flex flex-col justify-end transition-opacity duration-300 z-20">
+          <div class="expanded-content opacity-0 pointer-events-none absolute inset-0 w-full max-w-full sm:w-[800px] lg:w-[880px] h-full p-5 sm:p-8 flex flex-col justify-end transition-opacity duration-300 z-20">
             <div class="grid grid-cols-12 gap-6 lg:gap-8 items-end w-full pb-8">
 
-              <div class="col-span-7 h-[270px] sm:h-[290px] flex flex-col justify-end">
+              <div class="col-span-12 sm:col-span-7 h-auto max-h-[220px] sm:max-h-none sm:h-[290px] flex flex-col justify-end">
                 <span class="text-xs font-bold tracking-widest uppercase text-[#ff2a5f] block mb-1">Case Study Showcase</span>
                 <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">Just Go</h3>
                 <p class="text-base sm:text-lg font-semibold text-neutral-200 mt-2 line-clamp-2">Shifting from simple awareness to genuine travel intent. Ireland defined by feeling, not just place.</p>
                 <p class="text-xs sm:text-sm text-neutral-300 mt-3 leading-relaxed max-w-xl">We partnered with creators to deliver platform-native storytelling tailored to traveller mindsets. By positioning Ireland through lived experience, we transformed tourism marketing into a series of relatable human stories.</p>
               </div>
 
-              <div class="col-span-5 flex flex-col items-end justify-end h-[270px] sm:h-[290px] pb-1">
+              <div class="col-span-12 sm:col-span-5 flex flex-row sm:flex-col items-end justify-between sm:justify-end gap-4 sm:gap-0 h-auto sm:h-[290px] pb-1 mt-3 sm:mt-0">
                 <div class="flex flex-col items-end">
                   <span class="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-none">1.25M</span>
                   <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Organic Impressions</span>
@@ -1534,7 +1568,7 @@
         </div>
 
         <!-- Card 03: Volvic -->
-        <div class="accordion-card w-16 sm:w-20 shrink-0 rounded-[32px] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer" data-index="2">
+        <div class="accordion-card w-10 sm:w-16 md:w-20 shrink-0 rounded-[32px] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer" data-index="2">
           <img src="Content/Case Studies/volvic.jpg" alt="Volvic" class="case-study-bg" style="object-position: center;" loading="lazy" decoding="async"/>
           <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/70 to-transparent z-10"></div>
 
@@ -1549,17 +1583,17 @@
             <div></div>
           </div>
 
-          <div class="expanded-content opacity-0 pointer-events-none absolute inset-0 w-[800px] lg:w-[880px] h-full p-8 sm:p-12 flex flex-col justify-end transition-opacity duration-300 z-20">
+          <div class="expanded-content opacity-0 pointer-events-none absolute inset-0 w-full max-w-full sm:w-[800px] lg:w-[880px] h-full p-5 sm:p-8 flex flex-col justify-end transition-opacity duration-300 z-20">
             <div class="grid grid-cols-12 gap-6 lg:gap-8 items-end w-full pb-8">
 
-              <div class="col-span-7 h-[270px] sm:h-[290px] flex flex-col justify-end">
+              <div class="col-span-12 sm:col-span-7 h-auto max-h-[220px] sm:max-h-none sm:h-[290px] flex flex-col justify-end">
                 <span class="text-xs font-bold tracking-widest uppercase text-[#ff2a5f] block mb-1">Case Study Showcase</span>
                 <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">Well, that's refreshing.</h3>
                 <p class="text-base sm:text-lg font-semibold text-neutral-200 mt-2 line-clamp-2">Capturing authentic summer joy. Extending festival energy into a digital, high-volume ecosystem.</p>
                 <p class="text-xs sm:text-sm text-neutral-300 mt-3 leading-relaxed max-w-xl">We commissioned 19 creators to capture authentic summer moments—seaside swims, park picnics—with Volvic Watermelon as the companion. We shifted the focus from flavor to feeling, embedding the product into summer culture.</p>
               </div>
 
-              <div class="col-span-5 flex flex-col items-end justify-end h-[270px] sm:h-[290px] pb-1">
+              <div class="col-span-12 sm:col-span-5 flex flex-row sm:flex-col items-end justify-between sm:justify-end gap-4 sm:gap-0 h-auto sm:h-[290px] pb-1 mt-3 sm:mt-0">
                 <div class="flex flex-col items-end">
                   <span class="text-4xl sm:text-5xl lg:text-6xl font-black text-[#ff2a5f] tracking-tight leading-none">5.0%+</span>
                   <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Avg Engagement</span>
@@ -2464,7 +2498,7 @@
           const expanded = card.querySelector('.expanded-content');
 
           if (index === activeIndex) {
-            card.className = 'accordion-card flex-1 min-w-0 rounded-[32px] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer';
+            card.className = 'accordion-card flex-1 min-w-0 w-[84vw] sm:w-[420px] lg:w-auto max-w-full rounded-[32px] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer';
             if (collapsed) {
               collapsed.classList.add('opacity-0', 'pointer-events-none');
               collapsed.classList.remove('opacity-100');
@@ -2474,7 +2508,7 @@
               expanded.classList.add('opacity-100');
             }
           } else {
-            card.className = 'accordion-card w-16 sm:w-20 shrink-0 rounded-[32px] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer';
+            card.className = 'accordion-card w-10 sm:w-16 md:w-20 shrink-0 rounded-[32px] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer';
             if (collapsed) {
               collapsed.classList.remove('opacity-0', 'pointer-events-none');
               collapsed.classList.add('opacity-100');
