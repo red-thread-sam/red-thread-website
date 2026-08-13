@@ -1201,7 +1201,7 @@
 
     <div class="max-w-4xl mx-auto text-center relative z-10 px-6">
 
-      <h2 class="text-4xl sm:text-6xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[#ff2a5f] to-[#e000ff] pb-2 inline-block">Global strategy, local soul.</h2>
+      <h2 class="text-4xl sm:text-6xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[#ff2a5f] via-[#ff007f] to-[#c800ff] pb-2 inline-block">Global strategy, local soul.</h2>
 
       <p class="text-base sm:text-lg text-neutral-400 max-w-2xl mx-auto text-center leading-relaxed mt-4 [text-wrap:pretty]">We pair worldwide perspective with deep cultural fluency—so the right content reaches the right audience at the perfect&nbsp;moment.</p>
 
@@ -1362,7 +1362,7 @@
 <section id="creators-section" data-theme="light" class="py-24 sm:py-32 bg-[#fafafa] text-neutral-900 relative overflow-hidden z-20 selection:bg-neutral-800 selection:text-white">
   <div class="max-w-7xl mx-auto px-6 sm:px-8 mb-16 text-center relative z-10">
     <h2 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-neutral-900 leading-tight">
-      Whoever they are. <span class="bg-gradient-to-r from-[#ff2a5f] to-[#ff758c] bg-clip-text text-transparent">Wherever they are.</span>
+      Whoever they are. <span class="bg-gradient-to-r from-[#ff2a5f] via-[#ff007f] to-[#c800ff] bg-clip-text text-transparent">Wherever they are.</span>
     </h2>
     <p class="text-base sm:text-xl text-neutral-500 mt-4 max-w-3xl mx-auto leading-relaxed text-balance">
       We don’t represent talent—we discover it. We find the architects of culture—the voices, trendsetters, and tastemakers shaping the world today—and connect them to your brand.
@@ -1616,13 +1616,13 @@
 
           <!-- Full-Width Segmented Control -->
           <div class="bg-white/5 p-1.5 rounded-2xl border border-white/10 grid grid-cols-3 gap-1.5 w-full">
-            <button type="button" class="type-pill active bg-[#ff2a5f] text-white py-3.5 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer text-center" data-type="campaign">
+            <button type="button" class="type-pill active bg-white/20 text-white border border-white/30 shadow-sm font-semibold py-3.5 rounded-xl text-xs sm:text-sm transition-all cursor-pointer text-center" data-type="campaign">
               Campaign
             </button>
-            <button type="button" class="type-pill text-neutral-400 hover:text-white py-3.5 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer text-center" data-type="demo">
+            <button type="button" class="type-pill text-neutral-400 hover:text-white border border-transparent py-3.5 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer text-center" data-type="demo">
               ThreadOS™ demo
             </button>
-            <button type="button" class="type-pill text-neutral-400 hover:text-white py-3.5 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer text-center" data-type="audit">
+            <button type="button" class="type-pill text-neutral-400 hover:text-white border border-transparent py-3.5 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer text-center" data-type="audit">
               Performance audit
             </button>
           </div>
@@ -2510,11 +2510,11 @@
       pills.forEach(pill => {
         pill.addEventListener('click', () => {
           pills.forEach(p => {
-            p.classList.remove('bg-[#ff2a5f]', 'text-white', 'active');
-            p.classList.add('text-neutral-400');
+            p.classList.remove('bg-white/20', 'text-white', 'border-white/30', 'shadow-sm', 'active');
+            p.classList.add('text-neutral-400', 'border-transparent');
           });
-          pill.classList.add('bg-[#ff2a5f]', 'text-white', 'active');
-          pill.classList.remove('text-neutral-400');
+          pill.classList.remove('text-neutral-400', 'border-transparent');
+          pill.classList.add('bg-white/20', 'text-white', 'border-white/30', 'shadow-sm', 'active');
         });
       });
 
