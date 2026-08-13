@@ -20,6 +20,15 @@
 
       theme: {
 
+        screens: {
+          'xs': '390px',
+          'sm': '640px',
+          'md': '768px',
+          'lg': '1024px',
+          'xl': '1280px',
+          '2xl': '1536px',
+        },
+
         extend: {
 
           colors: {
@@ -222,7 +231,15 @@
 
     }
 
-
+    /* Brand logos: compact mobile sizing only — desktop inline heights untouched */
+    @media (max-width: 639px) {
+      #brand-proof .brand-logo-img {
+        height: auto !important;
+        max-height: 1.75rem; /* max-h-7 */
+        width: auto;
+        object-fit: contain;
+      }
+    }
 
     /* ==========================================
 
@@ -248,7 +265,8 @@
 
     .hardware-stage-perspective {
 
-      perspective: 1400px;
+      /* Deeper perspective = less foreshortening so side phones keep true proportions */
+      perspective: 2600px;
 
       perspective-origin: 50% 50%;
 
@@ -257,7 +275,21 @@
     #hw-deck {
 
       transform-style: preserve-3d;
+      transform-origin: center center;
 
+    }
+
+    /* Mobile-only deck scale — never set transform on desktop (breaks 3D / squashes phones) */
+    @media (max-width: 389px) {
+      #hw-deck {
+        transform: scale(0.72);
+      }
+    }
+
+    @media (min-width: 390px) and (max-width: 639px) {
+      #hw-deck {
+        transform: scale(0.8);
+      }
     }
 
     .hw-card {
@@ -269,6 +301,7 @@
       backface-visibility: hidden;
 
       transform-origin: center center;
+      flex-shrink: 0;
 
     }
 
@@ -287,23 +320,16 @@
 
 
     .imax-card {
-
       will-change: transform;
-
       transform-style: preserve-3d;
-
       backface-visibility: hidden;
-
-      transition: none !important;
-
+      /* Instant transforms for the IMAX curve; soft shadow only */
+      transition: box-shadow 0.3s ease !important;
     }
 
     #imax-track {
-
       will-change: transform;
-
       transition: none !important;
-
     }
 
 
@@ -314,17 +340,242 @@
 
     }
 
-    /* Lock BG to deck width so object-cover never recalculates during card expand/collapse */
+    /* Lock BG anchor: full-bleed cover, deck-width on desktop so expand only clips */
     .accordion-card > .case-study-bg {
       position: absolute;
+      inset: 0;
       top: 0;
       left: 0;
+      right: auto;
+      bottom: 0;
       height: 100%;
       width: var(--deck-bg-width, 100%);
       max-width: none;
       object-fit: cover;
+      object-position: center;
       pointer-events: none;
       transition: none !important;
+    }
+    /* Movember: bias crop upward so faces/helmets stay in frame */
+    #deck-accordion .accordion-card[data-index="0"] > .case-study-bg {
+      object-position: center 22%;
+    }
+
+    /* Case studies: mobile snap carousel (desktop accordion unchanged) */
+    @media (max-width: 767px) {
+      #case-studies {
+        overflow: visible !important;
+      }
+      #case-studies > .max-w-7xl {
+        overflow: visible !important;
+      }
+      #deck-accordion {
+        height: auto !important;
+        overflow-x: auto !important;
+        overflow-y: visible !important;
+        -webkit-overflow-scrolling: touch;
+      }
+      #deck-accordion .accordion-card {
+        width: 88vw !important;
+        max-width: 360px !important;
+        min-width: 0 !important;
+        flex: 0 0 auto !important;
+        height: 520px !important;
+        flex-shrink: 0 !important;
+        scroll-snap-align: center;
+      }
+      #deck-accordion .accordion-card > .case-study-bg {
+        width: 100% !important;
+      }
+      /* Soft gradient mask — keep photo visible through the top half */
+      #deck-accordion .accordion-card > .case-study-scrim {
+        background: linear-gradient(to top, #000 0%, rgba(0,0,0,0.8) 42%, transparent 72%) !important;
+        transition: background 0.5s ease-out, backdrop-filter 0.5s ease-out;
+      }
+      #deck-accordion .accordion-card.is-open > .case-study-scrim {
+        background: linear-gradient(to top, #000 0%, rgba(0,0,0,0.9) 45%, rgba(0,0,0,0.3) 100%) !important;
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+      }
+      #deck-accordion .collapsed-content {
+        display: none !important;
+      }
+      #deck-accordion .expanded-content {
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        justify-content: flex-end !important;
+        overflow: hidden !important;
+      }
+      /*
+        Smooth sheet: pin to bottom and animate a FIXED max-height only.
+        Avoid translateY(% of self) + display:none — both thrash height mid-tween.
+      */
+      #deck-accordion .case-mobile-panel {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        max-height: 8.15rem;
+        padding: 1.15rem 1.25rem 1.35rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.65rem;
+        overflow: hidden;
+        background: transparent;
+        transform: none;
+        transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                    opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: max-height, opacity;
+      }
+      #deck-accordion .accordion-card.is-open .case-mobile-panel {
+        max-height: 24rem;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+      }
+      #deck-accordion .case-expanded-body {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: flex-start !important;
+        align-items: stretch !important;
+        gap: 0.65rem !important;
+        height: auto !important;
+        padding: 0 !important;
+      }
+      #deck-accordion .case-copy,
+      #deck-accordion .case-metrics {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        max-height: none !important;
+        align-items: flex-start !important;
+      }
+      #deck-accordion .expanded-content h3 {
+        font-size: 1.45rem !important;
+        line-height: 1.15 !important;
+      }
+      /* Keep teaser clamped on mobile so closed peek height stays stable */
+      #deck-accordion .expanded-content p.line-clamp-2 {
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      /* Body + metrics stay in layout; fade with spring expand */
+      #deck-accordion .expanded-content p.max-w-xl,
+      #deck-accordion .case-metrics {
+        opacity: 0;
+        transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      #deck-accordion .accordion-card.is-open .expanded-content p.max-w-xl,
+      #deck-accordion .accordion-card.is-open .case-metrics {
+        opacity: 1;
+      }
+      #deck-accordion .expanded-content p.max-w-xl {
+        display: block !important;
+        margin-top: 0.65rem;
+      }
+      /* Metrics: 2-column glass tiles on mobile */
+      #deck-accordion .case-metrics {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+        width: 100%;
+        padding-top: 1rem;
+        margin-top: 0.85rem;
+        margin-left: 0 !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      #deck-accordion .case-metrics > div {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        padding: 0.75rem;
+        border-radius: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      #deck-accordion .case-metrics > div > span:first-child {
+        font-size: 1.45rem !important;
+      }
+      /* Floating glass FAB — pinned top-right, never collides with metrics */
+      #deck-accordion .case-view-more-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        z-index: 20;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        pointer-events: auto;
+      }
+    }
+
+    @media (min-width: 768px) {
+      #deck-accordion .case-view-more-btn {
+        display: none !important;
+      }
+      #deck-accordion .case-mobile-panel {
+        display: contents;
+      }
+      #deck-accordion .case-top-fade {
+        display: none;
+      }
+      /* Full-bleed expanded row: copy left, metrics right */
+      #deck-accordion .expanded-content {
+        width: 100%;
+        max-width: none;
+      }
+      #deck-accordion .case-expanded-body {
+        width: 100%;
+        height: 100%;
+      }
+      #deck-accordion .case-copy {
+        max-width: 36rem;
+        width: 58%;
+      }
+      #deck-accordion .case-metrics {
+        margin-left: auto;
+        flex-shrink: 0;
+      }
+      /* Inactive spine: center brand logo on the tab */
+      #deck-accordion .accordion-card.is-inactive .case-brand-logo {
+        left: 50%;
+        right: auto;
+        top: 2rem;
+        transform: translateX(-50%);
+      }
+      /* Animate flex-basis/grow (not width↔flex-1) — width↔auto cannot interpolate and jumps */
+      #deck-accordion .accordion-card {
+        transition-property: flex-grow, flex-basis;
+        transition-duration: 500ms;
+        transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      #deck-accordion .accordion-card.is-active {
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-basis: 0%;
+        min-width: 0;
+      }
+      #deck-accordion .accordion-card.is-inactive {
+        flex-grow: 0;
+        flex-shrink: 0;
+        flex-basis: 4rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      #deck-accordion .accordion-card.is-inactive {
+        flex-basis: 5rem;
+      }
     }
 
 
@@ -359,7 +610,7 @@
       object-fit: cover;
     }
 
-    /* Landscape QuickTime → fill vertical 9:16 bezel */
+    /* Landscape QuickTime → fill vertical 9:19 bezel */
     .rotate-media-90 {
       position: absolute;
       top: 50%;
@@ -420,11 +671,11 @@
 
       <div id="nav-links" class="hidden md:flex items-center gap-8 text-[11px] font-medium uppercase tracking-wider text-neutral-400">
 
+        <a href="#tech-bento" class="transition-colors">Our Tech</a>
+
         <a href="#how-it-works" class="transition-colors">How It Works</a>
 
         <a href="#case-studies" class="transition-colors">Our Work</a>
-
-        <a href="#tech-bento" class="transition-colors">Our Tech</a>
 
       </div>
 
@@ -458,34 +709,19 @@
 
 
 
-      <svg id="hero-stencil-svg" class="absolute inset-0 w-full h-full portal-zoom-target z-10 pointer-events-none transition-opacity duration-75" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid slice" style="isolation: isolate; backface-visibility: hidden; transform-style: preserve-3d; -webkit-font-smoothing: antialiased; will-change: transform; transform-origin: 50% 50%;">
-
+      <!-- Full-viewport black overlay; nested meet SVG keeps type unclipped while mask punches video through the letters -->
+      <svg id="hero-stencil-svg" class="absolute inset-0 w-full h-full portal-zoom-target z-10 pointer-events-none transition-opacity duration-75" style="isolation: isolate; backface-visibility: hidden; transform-style: preserve-3d; -webkit-font-smoothing: antialiased; will-change: transform; transform-origin: 50% 50%;">
         <defs>
-
-          <mask id="portal-mask" maskUnits="userSpaceOnUse">
-
-            <rect width="1000" height="500" fill="white" />
-
-            <text x="500" y="197.5" text-anchor="middle" fill="black" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro', sans-serif" font-weight="900" font-size="70" letter-spacing="-3">
-
-              Creator-powered
-
-            </text>
-
-            <text x="500" y="302.5" text-anchor="middle" fill="black" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro', sans-serif" font-weight="900" font-size="70" letter-spacing="-3">
-
-              commercial impact.
-
-            </text>
-
+          <mask id="portal-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="100%" height="100%">
+            <!-- Opaque white = black overlay; black type = transparent holes to the video -->
+            <rect x="0" y="0" width="100%" height="100%" fill="white" />
+            <svg x="0" y="0" width="100%" height="100%" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet">
+              <text x="500" y="197.5" text-anchor="middle" fill="black" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro', sans-serif" font-weight="900" font-size="70" letter-spacing="-3">Creator-powered</text>
+              <text x="500" y="302.5" text-anchor="middle" fill="black" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro', sans-serif" font-weight="900" font-size="70" letter-spacing="-3">commercial impact.</text>
+            </svg>
           </mask>
-
         </defs>
-
-        
-
-        <rect width="1000" height="500" fill="black" mask="url(#portal-mask)" />
-
+        <rect x="0" y="0" width="100%" height="100%" fill="black" mask="url(#portal-mask)" />
       </svg>
 
 
@@ -548,10 +784,11 @@
 
     <div id="hw-sticky-stage" class="sticky top-0 left-0 w-full h-screen overflow-hidden flex items-center justify-center hardware-stage-perspective z-0">
 
-      <div id="hw-deck" class="relative w-full max-w-7xl mx-auto h-[550px] flex items-center justify-center">
+      <div class="w-full max-w-full overflow-hidden sm:overflow-visible flex justify-center items-center py-6">
+      <div id="hw-deck" class="relative w-full max-w-7xl mx-auto h-[500px] sm:h-[600px] md:h-[650px] lg:h-[700px] flex items-center justify-center">
 
           <!-- Phone 1: screen1.mov -->
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:10;">
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:10;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
@@ -562,7 +799,7 @@
           </div>
 
           <!-- Phone 2: screen2.mov -->
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:20;">
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:20;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
@@ -573,7 +810,7 @@
           </div>
 
           <!-- Phone 3: video7.mov -->
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:30;">
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:30;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
@@ -584,7 +821,7 @@
           </div>
 
           <!-- Phone 4: screen3.mov -->
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:40;">
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:40;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
@@ -595,7 +832,7 @@
           </div>
 
           <!-- Phone 5: video9.mov -->
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:50;">
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:50;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
@@ -606,7 +843,7 @@
           </div>
 
           <!-- Phone 6 (Center Hero): pic 8 resized.jpg -->
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:60;">
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:60;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <img
@@ -619,7 +856,7 @@
           </div>
 
           <!-- Phone 7: Screen4.mov -->
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:50;">
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:50;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
@@ -630,7 +867,7 @@
           </div>
 
           <!-- Phone 8: video10.mov -->
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:40;">
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:40;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
@@ -641,7 +878,7 @@
           </div>
 
           <!-- Phone 9: screen5.mov -->
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:30;">
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:30;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
@@ -652,7 +889,7 @@
           </div>
 
           <!-- Phone 10: video11.mov -->
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:20;">
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:20;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
@@ -663,7 +900,7 @@
           </div>
 
           <!-- Phone 11: video6.mov -->
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] sm:w-[260px] md:w-[280px] lg:w-[300px] aspect-[9/19] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:10;">
+          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:10;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
@@ -674,6 +911,7 @@
           </div>
 
       </div>
+      </div>
 
     </div>
 
@@ -683,7 +921,7 @@
 
   <!-- 04. BRAND PROOF -->
 
-  <section id="brand-proof" data-theme="light" class="relative z-10 bg-white py-24 -mt-[100vh] selection:bg-neutral-800 selection:text-white">
+  <section id="brand-proof" data-theme="light" class="relative z-10 bg-white py-10 sm:py-24 -mt-[100vh] selection:bg-neutral-800 selection:text-white">
 
     <div class="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
 
@@ -713,33 +951,34 @@
 
       <div class="lg:col-span-7">
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-y-12 gap-x-10 items-center justify-items-center">
+        <!-- Mobile: centered flex wrap. sm+: CSS grid -->
+        <div id="logos-section" class="flex flex-wrap justify-center items-center gap-x-4 gap-y-6 sm:grid sm:grid-cols-5 sm:gap-8 md:gap-12">
 
           
 
           <!-- Row 1 -->
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/bbc.png" alt="BBC" style="height: 40px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
-
-          </div>
-
-          <div class="w-full h-20 flex items-center justify-center p-1">
-
-            <img src="Content/Brand Logos/brit-awards.svg" alt="Brit Awards" style="height: 48px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/bbc.png" alt="BBC" style="height: 40px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
 
           </div>
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/disney.png" alt="Disney" style="height: 32px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/brit-awards.svg" alt="Brit Awards" style="height: 48px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
 
           </div>
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/dr-pepper.png" alt="Dr Pepper" style="height: 44px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/disney.png" alt="Disney" style="height: 32px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
+
+          </div>
+
+          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
+
+            <img src="Content/Brand Logos/dr-pepper.png" alt="Dr Pepper" style="height: 44px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
 
           </div>
 
@@ -747,27 +986,27 @@
 
           <!-- Row 2 -->
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/gamma.webp" alt="Gamma" style="height: 26px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
-
-          </div>
-
-          <div class="w-full h-20 flex items-center justify-center p-1">
-
-            <img src="Content/Brand Logos/google.png" alt="Google" style="height: 38px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/gamma.webp" alt="Gamma" style="height: 26px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
 
           </div>
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/lego.png" alt="Lego" style="height: 42px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/google.png" alt="Google" style="height: 38px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
 
           </div>
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/lexus.png" alt="Lexus" style="height: 72px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/lego.png" alt="Lego" style="height: 42px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
+
+          </div>
+
+          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
+
+            <img src="Content/Brand Logos/lexus.png" alt="Lexus" style="height: 72px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
 
           </div>
 
@@ -775,27 +1014,27 @@
 
           <!-- Row 3 -->
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/lynx.svg" alt="Lynx" style="height: 19px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
-
-          </div>
-
-          <div class="w-full h-20 flex items-center justify-center p-1">
-
-            <img src="Content/Brand Logos/major-league-baseball.png" alt="MLB" style="height: 74px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/lynx.svg" alt="Lynx" style="height: 19px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
 
           </div>
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/mcdonalds.png" alt="McDonalds" style="height: 60px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/major-league-baseball.png" alt="MLB" style="height: 74px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
 
           </div>
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/movember.png" alt="Movember" style="height: 54px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/mcdonalds.png" alt="McDonalds" style="height: 60px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
+
+          </div>
+
+          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
+
+            <img src="Content/Brand Logos/movember.png" alt="Movember" style="height: 54px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
 
           </div>
 
@@ -803,27 +1042,27 @@
 
           <!-- Row 4 -->
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/O2.png" alt="O2" style="height: 50px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
-
-          </div>
-
-          <div class="w-full h-20 flex items-center justify-center p-1">
-
-            <img src="Content/Brand Logos/oracle_red_bull_racing.jpg" alt="Oracle Red Bull Racing" style="height: 42px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/O2.png" alt="O2" style="height: 50px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
 
           </div>
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/paramount.svg" alt="Paramount" style="height: 52px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/oracle_red_bull_racing.jpg" alt="Oracle Red Bull Racing" style="height: 42px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
 
           </div>
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/Pfizer.svg" alt="Pfizer" style="height: 44px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/paramount.svg" alt="Paramount" style="height: 52px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
+
+          </div>
+
+          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
+
+            <img src="Content/Brand Logos/Pfizer.svg" alt="Pfizer" style="height: 44px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
 
           </div>
 
@@ -831,27 +1070,27 @@
 
           <!-- Row 5 -->
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/porsche.png" alt="Porsche" style="height: 58px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
-
-          </div>
-
-          <div class="w-full h-20 flex items-center justify-center p-1">
-
-            <img src="Content/Brand Logos/tourism-ireland.webp" alt="Tourism Ireland" style="height: 76px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/porsche.png" alt="Porsche" style="height: 58px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
 
           </div>
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/Uefa.jpg" alt="UEFA" style="height: 40px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/tourism-ireland.webp" alt="Tourism Ireland" style="height: 76px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
 
           </div>
 
-          <div class="w-full h-20 flex items-center justify-center p-1">
+          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/Universal_Pictures_logo.svg" alt="Universal Pictures" style="height: 48px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="w-auto object-contain transition-all duration-200" />
+            <img src="Content/Brand Logos/Uefa.jpg" alt="UEFA" style="height: 40px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
+
+          </div>
+
+          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
+
+            <img src="Content/Brand Logos/Universal_Pictures_logo.svg" alt="Universal Pictures" style="height: 48px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
 
           </div>
 
@@ -873,13 +1112,13 @@
 
   <section id="tech-bento" data-theme="dark" class="w-full bg-[#111113] text-white pt-36 pb-24 relative z-20 selection:bg-neutral-800 selection:text-white">
 
-    <h2 class="text-4xl sm:text-5xl font-bold tracking-tight text-white text-center mb-16 px-6">Culture, meet commerce.</h2>
+    <h2 class="text-4xl sm:text-5xl font-bold tracking-tight text-white text-center mb-8 sm:mb-16 px-6">Culture, meet commerce.</h2>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto px-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 max-w-7xl mx-auto px-6">
 
       <!-- Hero: ThreadOS™ & Fred AI -->
 
-      <div class="md:col-span-2 relative bg-neutral-900 rounded-3xl overflow-hidden p-8 sm:p-10 min-h-[300px] flex flex-col justify-center transition-all duration-300">
+      <div class="md:col-span-2 relative bg-neutral-900 rounded-3xl overflow-hidden p-5 sm:p-8 md:p-10 min-h-[220px] sm:min-h-[300px] flex flex-col justify-center transition-all duration-300">
 
         <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover object-right scale-125 opacity-50 z-0 pointer-events-none">
 
@@ -889,7 +1128,7 @@
 
         <div class="absolute inset-0 bg-gradient-to-r from-neutral-950 via-neutral-950/85 to-transparent z-0 pointer-events-none"></div>
 
-        <div class="relative z-10 max-w-md space-y-4">
+        <div class="relative z-10 max-w-md space-y-2 sm:space-y-4">
 
           <h3 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">ThreadOS™ &amp; Fred AI</h3>
 
@@ -907,13 +1146,13 @@
 
       <!-- Precision Creator Matchmaking -->
 
-      <div class="md:col-span-1 relative bg-neutral-900/90 rounded-3xl p-8 sm:p-10 flex flex-col justify-between overflow-hidden transition-all duration-300 min-h-[340px]">
+      <div class="md:col-span-1 relative bg-neutral-900/90 rounded-3xl p-5 sm:p-8 md:p-10 flex flex-col justify-between overflow-hidden transition-all duration-300 min-h-[260px] sm:min-h-[340px]">
 
         <div>
 
           <h3 class="text-xl sm:text-2xl font-semibold tracking-tight text-white">Precision Creator Matchmaking</h3>
 
-          <p class="mt-3 text-xs sm:text-sm text-neutral-400 leading-relaxed [text-wrap:pretty]">
+          <p class="mt-2 sm:mt-3 text-xs sm:text-sm text-neutral-400 leading-relaxed [text-wrap:pretty]">
 
             We map authenticity scores, historical engagement, and brand fit—filtering out vanity metrics to lock in tastemakers with true cultural&nbsp;authority.
 
@@ -921,7 +1160,7 @@
 
         </div>
 
-        <div class="mt-8 flex items-center justify-center -space-x-3">
+        <div class="mt-4 sm:mt-8 flex items-center justify-center -space-x-3">
 
           <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" alt="" class="w-14 h-14 rounded-full object-cover z-30" />
 
@@ -943,13 +1182,13 @@
 
       <!-- Attention Engine™ -->
 
-      <div class="md:col-span-1 relative bg-neutral-900/90 rounded-3xl p-8 sm:p-10 flex flex-col justify-between overflow-hidden transition-all duration-300 min-h-[340px]">
+      <div class="md:col-span-1 relative bg-neutral-900/90 rounded-3xl p-5 sm:p-8 md:p-10 flex flex-col justify-between overflow-hidden transition-all duration-300 min-h-[260px] sm:min-h-[340px]">
 
         <div>
 
           <h3 class="text-xl sm:text-2xl font-semibold tracking-tight text-white">Attention Engine™</h3>
 
-          <p class="mt-3 text-xs sm:text-sm text-neutral-400 leading-relaxed [text-wrap:pretty]">
+          <p class="mt-2 sm:mt-3 text-xs sm:text-sm text-neutral-400 leading-relaxed [text-wrap:pretty]">
 
             Stop guessing. Our engine models every hook and drop-off curve, ensuring your budget goes exclusively where predictable results&nbsp;live.
 
@@ -957,7 +1196,7 @@
 
         </div>
 
-        <div class="mt-8 space-y-2">
+        <div class="mt-4 sm:mt-8 space-y-2">
 
           <div class="text-4xl font-extrabold text-white tracking-tight">9.4x</div>
 
@@ -971,13 +1210,13 @@
 
       <!-- Paid Whitelisting & Scaling -->
 
-      <div class="md:col-span-1 relative bg-neutral-900/90 rounded-3xl p-8 sm:p-10 flex flex-col justify-between overflow-hidden transition-all duration-300 min-h-[340px]">
+      <div class="md:col-span-1 relative bg-neutral-900/90 rounded-3xl p-5 sm:p-8 md:p-10 flex flex-col justify-between overflow-hidden transition-all duration-300 min-h-[260px] sm:min-h-[340px]">
 
         <div>
 
           <h3 class="text-xl sm:text-2xl font-semibold tracking-tight text-white">Paid Whitelisting &amp; Scaling</h3>
 
-          <p class="mt-3 text-xs sm:text-sm text-neutral-400 leading-relaxed [text-wrap:pretty]">
+          <p class="mt-2 sm:mt-3 text-xs sm:text-sm text-neutral-400 leading-relaxed [text-wrap:pretty]">
 
             Secure native access to creator accounts, transforming authentic organic moments into high-performance media with lower&nbsp;CAC.
 
@@ -985,15 +1224,15 @@
 
         </div>
 
-        <div class="mt-8">
+        <div class="mt-4 sm:mt-8">
 
-          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md font-sans text-xs font-medium tracking-wider uppercase text-white/90 mb-4">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md font-sans text-xs font-medium tracking-wider uppercase text-white/90 mb-2 sm:mb-4">
 
             <span class="w-2 h-2 rounded-full bg-red-500"></span> -38% CAC REDUCTION
 
           </div>
 
-          <div class="h-20 w-full">
+          <div class="h-16 sm:h-20 w-full">
 
             <svg class="w-full h-full overflow-visible" viewBox="0 0 200 60" fill="none" aria-hidden="true">
 
@@ -1013,29 +1252,13 @@
 
 
 
-      <!-- Global Usage & Licensing -->
+      <!-- Global Usage & Licencing -->
 
-      <div class="md:col-span-1 relative bg-neutral-950 rounded-3xl overflow-hidden p-8 flex flex-col justify-between min-h-[360px] transition-all duration-300">
+      <div class="md:col-span-1 relative bg-black rounded-3xl overflow-hidden p-5 sm:p-8 md:p-10 flex flex-col min-h-[280px] sm:min-h-[360px] transition-all duration-300">
 
-        <div class="absolute bottom-0 left-0 right-0 w-full h-[60%] overflow-hidden pointer-events-none z-0">
+        <div class="relative z-10 space-y-2 sm:space-y-3 max-w-xs pb-32 sm:pb-40">
 
-          <img
-
-            src="Content/usage-bento.jpg"
-
-            alt="Global Usage"
-
-            class="w-full h-full object-cover object-bottom scale-125 translate-y-3 opacity-80 filter grayscale-[20%] contrast-[120%] brightness-[0.8]"
-
-          />
-
-          <div class="absolute inset-0 bg-gradient-to-b from-neutral-950 via-neutral-950/40 to-transparent"></div>
-
-        </div>
-
-        <div class="relative z-10 space-y-3 max-w-xs">
-
-          <h3 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Global Usage &amp; Licensing</h3>
+          <h3 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Global Usage &amp; Licencing</h3>
 
           <p class="text-xs sm:text-sm text-neutral-300 leading-relaxed [text-wrap:pretty]">
 
@@ -1045,17 +1268,11 @@
 
         </div>
 
-        <div class="relative z-10 self-center mt-auto pt-10">
-
-          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/80 backdrop-blur-md font-sans text-xs font-medium tracking-wider uppercase text-white/90">
-
-            <span class="w-2 h-2 rounded-full bg-red-500"></span>
-
-            <span class="tracking-wider">RIGHTS SECURED</span>
-
-          </div>
-
-        </div>
+        <img
+          src="Content/usage-bento.jpg"
+          alt="Global Usage"
+          class="absolute -bottom-20 sm:-bottom-28 left-1/2 -translate-x-[54%] translate-y-[20%] sm:translate-y-[10%] w-[140%] sm:w-[175%] max-w-none -scale-y-100 opacity-80 filter grayscale-[20%] contrast-[120%] brightness-[0.8] pointer-events-none z-0 object-cover object-top"
+        />
 
       </div>
 
@@ -1162,17 +1379,17 @@
 
       </div>
 
-<!-- Card 05 / Optimization -->
+<!-- Card 05 / Optimisation -->
 
       <div class="w-[360px] sm:w-[440px] md:w-[480px] shrink-0 bg-[#f4f4f6] rounded-[24px] p-8 sm:p-9 flex flex-col justify-between min-h-[320px] sm:min-h-[340px]">
 
         <div>
 
-          <span class="text-xs font-semibold tracking-widest uppercase text-neutral-400">05 / Optimization</span>
+          <span class="text-xs font-semibold tracking-widest uppercase text-neutral-400">05 / Optimisation</span>
 
           <h3 class="text-2xl font-bold text-neutral-900 tracking-tight mt-2">Conversion yield</h3>
 
-          <p class="text-sm text-neutral-600 leading-relaxed mt-3 [text-wrap:pretty]">Bridge culture and checkout. We remove friction between a creator's post and your brand, optimizing user journeys from social feeds directly to point-of-sale.</p>
+          <p class="text-sm text-neutral-600 leading-relaxed mt-3 [text-wrap:pretty]">Bridge culture and checkout. We remove friction between a creator's post and your brand, optimising user journeys from social feeds directly to point-of-sale.</p>
 
         </div>
 
@@ -1209,33 +1426,29 @@
 
     <!-- Balanced typographic stats row -->
 
-    <div class="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-0 max-w-4xl mx-auto my-14 relative z-10 w-full px-6">
+    <div class="grid grid-cols-3 gap-2 sm:gap-8 text-center my-6 sm:my-10 max-w-4xl mx-auto relative z-10 w-full px-6">
 
-      <div class="flex-1 flex flex-col items-center justify-center text-center px-4">
+      <div class="flex flex-col items-center justify-center text-center px-1 sm:px-4">
 
-        <span class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">80+</span>
+        <span class="text-2xl xs:text-3xl sm:text-5xl font-extrabold text-white tracking-tight">80+</span>
 
-        <span class="text-xs font-semibold text-neutral-400 mt-2 tracking-widest uppercase">Countries</span>
-
-      </div>
-
-      <div class="hidden sm:block h-10 w-[1px] bg-white/10 self-center"></div>
-
-      <div class="flex-1 flex flex-col items-center justify-center text-center px-4">
-
-        <span class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">3</span>
-
-        <span class="text-xs font-semibold text-neutral-400 mt-2 tracking-widest uppercase">Offices</span>
+        <span class="text-[10px] sm:text-xs font-semibold text-neutral-400 mt-1 tracking-wider uppercase">Countries</span>
 
       </div>
 
-      <div class="hidden sm:block h-10 w-[1px] bg-white/10 self-center"></div>
+      <div class="flex flex-col items-center justify-center text-center px-1 sm:px-4">
 
-      <div class="flex-1 flex flex-col items-center justify-center text-center px-4">
+        <span class="text-2xl xs:text-3xl sm:text-5xl font-extrabold text-white tracking-tight">3</span>
 
-        <span class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">5</span>
+        <span class="text-[10px] sm:text-xs font-semibold text-neutral-400 mt-1 tracking-wider uppercase">Offices</span>
 
-        <span class="text-xs font-semibold text-neutral-400 mt-2 tracking-widest uppercase">Language Regions</span>
+      </div>
+
+      <div class="flex flex-col items-center justify-center text-center px-1 sm:px-4">
+
+        <span class="text-2xl xs:text-3xl sm:text-5xl font-extrabold text-white tracking-tight">5</span>
+
+        <span class="text-[10px] sm:text-xs font-semibold text-neutral-400 mt-1 tracking-wider uppercase">Language Regions</span>
 
       </div>
 
@@ -1245,7 +1458,8 @@
 
     <!-- LED Dot-Matrix Map + City Badges -->
 
-    <div class="relative max-w-[1400px] mx-auto mt-6 mb-16 px-4 sm:px-8 min-h-[480px] sm:min-h-[580px] flex items-center justify-center">
+    <div class="w-full overflow-x-auto no-scrollbar py-4 -mx-4 px-4 sm:mx-auto sm:px-8 max-w-[1400px] mx-auto mt-6 mb-16">
+    <div class="min-w-[620px] sm:min-w-full w-full relative aspect-[16/9] sm:aspect-auto sm:min-h-[580px] flex items-center justify-center">
 
       <img
         src="assets/world-dot-matrix.svg"
@@ -1257,7 +1471,7 @@
 
       <!-- Los Angeles -->
 
-      <div class="absolute top-[37%] left-[14.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
+      <div class="absolute top-[37%] left-[14.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
 
         <span class="relative flex h-2 w-2">
 
@@ -1267,13 +1481,13 @@
 
         </span>
 
-        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">Los Angeles</span>
+        <span class="font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">Los Angeles</span>
 
       </div>
 
       <!-- New York -->
 
-      <div class="absolute top-[27%] left-[26.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
+      <div class="absolute top-[27%] left-[26.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
 
         <span class="relative flex h-2 w-2">
 
@@ -1283,13 +1497,13 @@
 
         </span>
 
-        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">New York</span>
+        <span class="font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">New York</span>
 
       </div>
 
       <!-- Lisbon (SW of London) -->
 
-      <div class="absolute top-[27%] left-[43.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
+      <div class="absolute top-[27%] left-[43.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
 
         <span class="relative flex h-2 w-2">
 
@@ -1299,13 +1513,13 @@
 
         </span>
 
-        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">Lisbon</span>
+        <span class="font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">Lisbon</span>
 
       </div>
 
       <!-- London -->
 
-      <div class="absolute top-[18.5%] left-[47.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
+      <div class="absolute top-[18.5%] left-[47.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
 
         <span class="relative flex h-2 w-2">
 
@@ -1315,13 +1529,13 @@
 
         </span>
 
-        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">London</span>
+        <span class="font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">London</span>
 
       </div>
 
       <!-- Basel (SE of London) -->
 
-      <div class="absolute top-[26%] left-[49.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
+      <div class="absolute top-[26%] left-[49.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
 
         <span class="relative flex h-2 w-2">
 
@@ -1331,13 +1545,13 @@
 
         </span>
 
-        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">Basel</span>
+        <span class="font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">Basel</span>
 
       </div>
 
       <!-- Singapore -->
 
-      <div class="absolute top-[58%] left-[78.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-2 bg-neutral-900/90 backdrop-blur-md px-3 py-1.5 rounded-full z-20">
+      <div class="absolute top-[58%] left-[78.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
 
         <span class="relative flex h-2 w-2">
 
@@ -1347,10 +1561,11 @@
 
         </span>
 
-        <span class="text-[11px] font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">Singapore</span>
+        <span class="font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">Singapore</span>
 
       </div>
 
+    </div>
     </div>
 
   </section>
@@ -1359,7 +1574,7 @@
 
   <!-- 05.5 CREATOR THEATRE -->
 
-<section id="creators-section" data-theme="light" class="py-24 sm:py-32 bg-[#fafafa] text-neutral-900 relative overflow-hidden z-20 selection:bg-neutral-800 selection:text-white">
+<section id="creators-section" data-theme="light" class="py-24 sm:py-32 bg-[#fafafa] text-neutral-900 relative overflow-x-hidden z-20 selection:bg-neutral-800 selection:text-white">
   <div class="max-w-7xl mx-auto px-6 sm:px-8 mb-16 text-center relative z-10">
     <h2 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-neutral-900 leading-tight">
       Whoever they are. <span class="bg-gradient-to-r from-[#ff2a5f] via-[#ff007f] to-[#c800ff] bg-clip-text text-transparent">Wherever they are.</span>
@@ -1369,7 +1584,7 @@
     </p>
   </div>
 
-  <div id="imax-stage" class="w-full overflow-hidden py-8" style="perspective: 1200px; perspective-origin: 50% 50%;">
+  <div id="imax-stage" class="w-full overflow-x-hidden px-6 -mx-6 py-8 md:px-8 md:mx-0 md:py-12 no-scrollbar" style="perspective: 1200px; perspective-origin: 50% 50%;">
     <div
       id="imax-track"
       class="flex gap-4 sm:gap-6 items-center w-max cursor-grab active:cursor-grabbing select-none will-change-transform"
@@ -1377,50 +1592,101 @@
     >
 
       <!-- Card 01: Courtney -->
-      <div class="imax-card relative w-[280px] sm:w-[320px] h-[380px] sm:h-[430px] rounded-[28px] overflow-hidden shrink-0 shadow-sm bg-white">
-        <img src="Content/Creator profiles/courtney.avif" alt="Courtney Daniella Jesse" class="w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/courtney.avif';"/>
-        <div class="absolute top-5 left-5 z-10">
-          <span class="bg-black/50 backdrop-blur-md border border-white/15 px-4 py-2 rounded-full text-white text-xs sm:text-sm font-semibold tracking-wide shadow-lg">Courtney Daniella Jesse</span>
+      <div class="imax-card aspect-[3/4] w-[260px] sm:w-[280px] md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
+        <img src="Content/Creator profiles/courtney.avif" alt="Courtney Daniella Jesse" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/courtney.avif';"/>
+        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
+        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
+          <p class="text-center font-semibold text-xs xs:text-sm tracking-tight text-white/95 truncate w-full">Courtney Daniella Jesse</p>
         </div>
       </div>
 
       <!-- Card 02: Josh -->
-      <div class="imax-card relative w-[280px] sm:w-[320px] h-[380px] sm:h-[430px] rounded-[28px] overflow-hidden shrink-0 shadow-sm bg-white">
-        <img src="Content/Creator profiles/josh.jpeg" alt="Josh Oyinsan" class="w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/josh.jpeg';"/>
-        <div class="absolute top-5 left-5 z-10">
-          <span class="bg-black/50 backdrop-blur-md border border-white/15 px-4 py-2 rounded-full text-white text-xs sm:text-sm font-semibold tracking-wide shadow-lg">Josh Oyinsan</span>
+      <div class="imax-card aspect-[3/4] w-[260px] sm:w-[280px] md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
+        <img src="Content/Creator profiles/josh.jpeg" alt="Josh Oyinsan" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/josh.jpeg';"/>
+        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
+        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
+          <p class="text-center font-semibold text-xs xs:text-sm tracking-tight text-white/95 truncate w-full">Josh Oyinsan</p>
         </div>
       </div>
 
       <!-- Card 03: Helen -->
-      <div class="imax-card relative w-[280px] sm:w-[320px] h-[380px] sm:h-[430px] rounded-[28px] overflow-hidden shrink-0 shadow-sm bg-white">
-        <img src="Content/Creator profiles/helen.jpeg" alt="Helen Anderson" class="w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/helen.jpeg';"/>
-        <div class="absolute top-5 left-5 z-10">
-          <span class="bg-black/50 backdrop-blur-md border border-white/15 px-4 py-2 rounded-full text-white text-xs sm:text-sm font-semibold tracking-wide shadow-lg">Helen Anderson</span>
+      <div class="imax-card aspect-[3/4] w-[260px] sm:w-[280px] md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
+        <img src="Content/Creator profiles/helen.jpeg" alt="Helen Anderson" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/helen.jpeg';"/>
+        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
+        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
+          <p class="text-center font-semibold text-xs xs:text-sm tracking-tight text-white/95 truncate w-full">Helen Anderson</p>
         </div>
       </div>
 
-      <!-- Card 04: Fu Izzy -->
-      <div class="imax-card relative w-[280px] sm:w-[320px] h-[380px] sm:h-[430px] rounded-[28px] overflow-hidden shrink-0 shadow-sm bg-white">
-        <img src="Content/Creator profiles/fu-izzy-resized.jpg" alt="Fu Izzy" class="w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/fu-izzy-resized.jpg';"/>
-        <div class="absolute top-5 left-5 z-10">
-          <span class="bg-black/50 backdrop-blur-md border border-white/15 px-4 py-2 rounded-full text-white text-xs sm:text-sm font-semibold tracking-wide shadow-lg">Fu Izzy</span>
+      <!-- Card 04: Fu -->
+      <div class="imax-card aspect-[3/4] w-[260px] sm:w-[280px] md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
+        <img src="Content/Creator profiles/fu-izzy-resized.jpg" alt="Fu Izzy" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/fu-izzy-resized.jpg';"/>
+        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
+        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
+          <p class="text-center font-semibold text-xs xs:text-sm tracking-tight text-white/95 truncate w-full">Fu Izzy</p>
         </div>
       </div>
 
-      <!-- Card 05: Rose and Rosie -->
-      <div class="imax-card relative w-[280px] sm:w-[320px] h-[380px] sm:h-[430px] rounded-[28px] overflow-hidden shrink-0 shadow-sm bg-white">
-        <img src="Content/Creator profiles/roseandrosie.jpg" alt="Rose and Rosie" class="w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/roseandrosie.jpg';"/>
-        <div class="absolute top-5 left-5 z-10">
-          <span class="bg-black/50 backdrop-blur-md border border-white/15 px-4 py-2 rounded-full text-white text-xs sm:text-sm font-semibold tracking-wide shadow-lg">Rose and Rosie</span>
+      <!-- Card 05: Rose -->
+      <div class="imax-card aspect-[3/4] w-[260px] sm:w-[280px] md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
+        <img src="Content/Creator profiles/roseandrosie.jpg" alt="Rose and Rosie" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/roseandrosie.jpg';"/>
+        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
+        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
+          <p class="text-center font-semibold text-xs xs:text-sm tracking-tight text-white/95 truncate w-full">Rose and Rosie</p>
         </div>
       </div>
 
       <!-- Card 06: Charlessy -->
-      <div class="imax-card relative w-[280px] sm:w-[320px] h-[380px] sm:h-[430px] rounded-[28px] overflow-hidden shrink-0 shadow-sm bg-white">
-        <img src="Content/Creator profiles/charlessy.jpg" alt="Charlessy" class="w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/charlessy.jpg';"/>
-        <div class="absolute top-5 left-5 z-10">
-          <span class="bg-black/50 backdrop-blur-md border border-white/15 px-4 py-2 rounded-full text-white text-xs sm:text-sm font-semibold tracking-wide shadow-lg">Charlessy</span>
+      <div class="imax-card aspect-[3/4] w-[260px] sm:w-[280px] md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
+        <img src="Content/Creator profiles/charlessy.jpg" alt="Charlessy" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/charlessy.jpg';"/>
+        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
+        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
+          <p class="text-center font-semibold text-xs xs:text-sm tracking-tight text-white/95 truncate w-full">Charlessy</p>
+        </div>
+      </div>
+
+      <!-- Card 07: Hayls World -->
+      <div class="imax-card aspect-[3/4] w-[260px] sm:w-[280px] md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
+        <img src="Content/Creator profiles/hayls.jpg" alt="Hayls World" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/hayls.jpg';"/>
+        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
+        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
+          <p class="text-center font-semibold text-xs xs:text-sm tracking-tight text-white/95 truncate w-full">Hayls World</p>
+        </div>
+      </div>
+
+      <!-- Card 08: Craig & Aimee -->
+      <div class="imax-card aspect-[3/4] w-[260px] sm:w-[280px] md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
+        <img src="Content/Creator profiles/Craign-and-aimee.jpg" alt="Craig & Aimee" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/Craign-and-aimee.jpg';"/>
+        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
+        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
+          <p class="text-center font-semibold text-xs xs:text-sm tracking-tight text-white/95 truncate w-full">Craig & Aimee</p>
+        </div>
+      </div>
+
+      <!-- Card 09: Hermione Chantal -->
+      <div class="imax-card aspect-[3/4] w-[260px] sm:w-[280px] md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
+        <img src="Content/Creator profiles/hermione.jpg" alt="Hermione Chantal" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/hermione.jpg';"/>
+        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
+        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
+          <p class="text-center font-semibold text-xs xs:text-sm tracking-tight text-white/95 truncate w-full">Hermione Chantal</p>
+        </div>
+      </div>
+
+      <!-- Card 10: George Alexander -->
+      <div class="imax-card aspect-[3/4] w-[260px] sm:w-[280px] md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
+        <img src="Content/Creator profiles/george.jpg" alt="George Alexander" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/george.jpg';"/>
+        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
+        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
+          <p class="text-center font-semibold text-xs xs:text-sm tracking-tight text-white/95 truncate w-full">George Alexander</p>
+        </div>
+      </div>
+
+      <!-- Card 11: Taz Alam -->
+      <div class="imax-card aspect-[3/4] w-[260px] sm:w-[280px] md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
+        <img src="Content/Creator profiles/clickfortaz.jpg" alt="Taz Alam" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/clickfortaz.jpg';"/>
+        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
+        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
+          <p class="text-center font-semibold text-xs xs:text-sm tracking-tight text-white/95 truncate w-full">Taz Alam</p>
         </div>
       </div>
 
@@ -1432,153 +1698,145 @@
 
   <!-- 07. CASE STUDIES (Apple Keynote Accordion) -->
 
-  <section id="case-studies" data-theme="light" class="py-24 sm:py-32 bg-[#f5f5f7] text-neutral-900 relative overflow-hidden z-20 selection:bg-neutral-800 selection:text-white">
-    <div class="max-w-7xl mx-auto px-6 sm:px-8">
+  <section id="case-studies" data-theme="light" class="py-12 md:py-24 lg:py-32 bg-[#f5f5f7] text-neutral-900 relative overflow-visible md:overflow-hidden z-20 selection:bg-neutral-800 selection:text-white">
+    <div class="max-w-7xl mx-auto px-6 sm:px-8 overflow-visible">
 
       <!-- Section Header -->
-      <div class="mb-10">
-        <h2 class="text-4xl sm:text-6xl font-bold tracking-tight text-neutral-900">From award-winning, to scroll stopping.</h2>
-        <p class="text-lg text-neutral-500 mt-3">We’ll let our work do the talking.</p>
+      <div class="mb-6 md:mb-10">
+        <h2 class="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-neutral-900 mb-2">From award-winning, to <span class="bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent">scroll stopping.</span></h2>
+        <p class="text-sm sm:text-base text-neutral-400 mb-6 md:mb-0 md:mt-3 md:text-lg md:text-neutral-500">We’ll let our work do the talking.</p>
       </div>
 
-      <!-- Accordion Canvas Stage -->
-      <div id="deck-accordion" class="flex gap-3 sm:gap-4 h-[620px] sm:h-[680px] w-full overflow-hidden select-none relative">
+      <!-- Accordion Canvas Stage (mobile: snap carousel / md+: accordion) -->
+      <div id="deck-accordion" class="flex overflow-x-auto md:overflow-hidden snap-x snap-mandatory gap-4 px-5 -mx-5 md:mx-0 md:px-0 py-2 no-scrollbar w-screen max-w-none relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] md:w-full md:max-w-full md:left-auto md:right-auto md:ml-0 md:mr-0 h-auto md:h-[620px] lg:h-[680px] select-none">
 
         <!-- Card 01: Movember -->
-        <div class="accordion-card flex-1 min-w-0 rounded-[32px] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer" data-index="0">
-          <img src="Content/Case Studies/movember.jpg" alt="Movember" class="case-study-bg" style="object-position: center 30%;" loading="lazy" decoding="async"/>
-          <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/70 to-transparent z-10"></div>
+        <div class="accordion-card is-active w-[88vw] max-w-[360px] flex-shrink-0 snap-center h-[520px] md:h-auto md:max-w-none md:snap-align-none rounded-3xl md:rounded-[32px] overflow-hidden transition-[flex-grow,flex-basis] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer" data-index="0">
+          <img src="Content/Case Studies/movember-resized.jpg" alt="Movember Case Study" class="case-study-bg absolute inset-0 w-full h-full object-cover pointer-events-none" loading="lazy" decoding="async"/>
+          <div class="case-study-scrim absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent md:from-neutral-950 md:via-neutral-950/70 z-10"></div>
+          <div class="case-top-fade absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-black/70 via-black/30 to-transparent pointer-events-none z-10"></div>
 
-          <!-- Balanced Logo -->
-          <div class="absolute top-8 left-8 sm:top-10 sm:left-10 z-30 flex items-center h-12">
+          <!-- Brand logo: top-left when expanded; centered on inactive spine (CSS) -->
+          <div class="case-brand-logo absolute top-8 left-8 sm:top-10 sm:left-10 z-30 flex items-center h-12">
             <img src="Content/Brand%20Logos/movember.png" alt="Movember" class="h-9 sm:h-11 w-auto object-contain filter brightness-0 invert" loading="lazy" decoding="async" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';"/>
             <span class="hidden text-xl sm:text-2xl font-black tracking-tighter text-white uppercase italic">MOVEMBER</span>
           </div>
 
-          <!-- Collapsed Vertical Tab (No Red Dot) -->
-          <div class="collapsed-content opacity-0 pointer-events-none absolute inset-0 p-5 flex flex-col justify-between items-center z-20">
-            <span class="text-xs font-bold text-white/60">01</span>
+          <!-- Collapsed spine: vertically centered title -->
+          <div class="collapsed-content opacity-0 pointer-events-none absolute inset-y-0 left-0 right-0 flex items-center justify-center z-20 transition-opacity duration-150 ease-out">
             <span class="text-xs font-semibold tracking-widest text-white/90 uppercase [writing-mode:vertical-lr] rotate-180 whitespace-nowrap">Movember</span>
-            <div></div>
           </div>
 
           <!-- Expanded Content Canvas -->
-          <div class="expanded-content opacity-100 absolute inset-0 w-[800px] lg:w-[880px] h-full p-8 sm:p-12 flex flex-col justify-end pointer-events-auto transition-opacity duration-300 z-20">
-            <div class="grid grid-cols-12 gap-6 lg:gap-8 items-end w-full pb-8">
-
-              <!-- Left Column: Equal Height Copy Container -->
-              <div class="col-span-7 h-[270px] sm:h-[290px] flex flex-col justify-end">
-                <span class="text-xs font-bold tracking-widest uppercase text-[#ff2a5f] block mb-1">Case Study Showcase</span>
-                <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">Nuts of the Roundtable</h3>
-                <p class="text-base sm:text-lg font-semibold text-neutral-200 mt-2 line-clamp-2">Transforming health stigma into a heroic mission. A pattern-interrupt creative campaign that drove real-world action.</p>
-                <p class="text-xs sm:text-sm text-neutral-300 mt-3 leading-relaxed max-w-xl">We cast creators as "Nuts of the Round Table" at Hedingham Castle, using high-concept production to bypass traditional health-ad filters. By reframing check-ups as a "Knight's Code," we turned a medical chore into a heroic mandate.</p>
-              </div>
-
-              <!-- Right Column: Stats Block -->
-              <div class="col-span-5 flex flex-col items-end justify-end h-[270px] sm:h-[290px] pb-1">
-                <div class="flex flex-col items-end">
-                  <span class="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-none">1.19M</span>
-                  <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Impressions</span>
+          <div class="expanded-content opacity-100 absolute inset-0 w-full h-full pointer-events-auto transition-opacity duration-300 delay-300 ease-in z-20">
+            <div class="case-mobile-panel transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
+              <div class="case-expanded-body w-full h-full flex flex-col md:flex-row justify-between items-end p-8 md:p-12 relative z-10">
+                <div class="case-copy max-w-xl md:w-[58%] flex flex-col justify-end">
+                  <span class="text-xs tracking-widest uppercase block mb-1 bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent font-extrabold">Case Study Showcase</span>
+                  <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">Nuts of the Roundtable</h3>
+                  <p class="text-base sm:text-lg font-semibold text-neutral-200 mt-2 line-clamp-2">Transforming health stigma into a heroic mission. A pattern-interrupt creative campaign that drove real-world action.</p>
+                  <p class="text-xs sm:text-sm text-neutral-300 mt-3 leading-relaxed max-w-xl">We cast creators as "Nuts of the Round Table" at Hedingham Castle, using high-concept production to bypass traditional health-ad filters. By reframing check-ups as a "Knight's Code," we turned a medical chore into a heroic mandate.</p>
                 </div>
-                <div class="w-32 h-[1px] bg-white/20 my-3"></div>
-                <div class="flex flex-col items-end">
-                  <span class="text-4xl sm:text-5xl lg:text-6xl font-black text-[#ff2a5f] tracking-tight leading-none">9.51%</span>
-                  <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Peak Engagement</span>
+                <div class="case-metrics flex gap-8 items-end flex-shrink-0 md:ml-auto">
+                  <div class="flex flex-col items-end">
+                    <span class="text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-none bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent font-extrabold">1.19M</span>
+                    <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Impressions</span>
+                  </div>
+                  <div class="flex flex-col items-end">
+                    <span class="text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-none bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent font-extrabold">9.51%</span>
+                    <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Peak Engagement</span>
+                  </div>
                 </div>
               </div>
-
             </div>
+            <button type="button" class="case-view-more-btn bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-semibold tracking-wider uppercase px-4 py-2 rounded-full transition-all duration-300 hover:bg-white/20 active:scale-95" aria-expanded="false">View more</button>
           </div>
         </div>
 
         <!-- Card 02: Tourism Ireland -->
-        <div class="accordion-card w-16 sm:w-20 shrink-0 rounded-[32px] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer" data-index="1">
-          <img src="Content/Case Studies/ireland.jpg" alt="Tourism Ireland" class="case-study-bg" style="object-position: center;" loading="lazy" decoding="async"/>
-          <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/70 to-transparent z-10"></div>
+        <div class="accordion-card is-inactive w-[88vw] max-w-[360px] flex-shrink-0 snap-center h-[520px] md:h-auto md:max-w-none md:snap-align-none rounded-3xl md:rounded-[32px] overflow-hidden transition-[flex-grow,flex-basis] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer" data-index="1">
+          <img src="Content/Case Studies/ireland.jpg" alt="Tourism Ireland" class="case-study-bg absolute inset-0 w-full h-full object-cover object-center pointer-events-none" loading="lazy" decoding="async"/>
+          <div class="case-study-scrim absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent md:from-neutral-950 md:via-neutral-950/70 z-10"></div>
+          <div class="case-top-fade absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-black/70 via-black/30 to-transparent pointer-events-none z-10"></div>
 
-          <div class="absolute top-8 left-8 sm:top-10 sm:left-10 z-30 flex items-center h-12">
+          <div class="case-brand-logo absolute top-8 left-8 sm:top-10 sm:left-10 z-30 flex items-center h-12">
             <img src="Content/Brand%20Logos/tourism-ireland.webp" alt="Tourism Ireland" class="h-10 sm:h-12 w-auto object-contain filter brightness-0 invert" loading="lazy" decoding="async" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';"/>
             <span class="hidden text-xl sm:text-2xl font-bold tracking-wider text-white uppercase">Tourism Ireland</span>
           </div>
 
-          <div class="collapsed-content opacity-100 absolute inset-0 p-5 flex flex-col justify-between items-center z-20">
-            <span class="text-xs font-bold text-white/60">02</span>
+          <div class="collapsed-content opacity-100 absolute inset-y-0 left-0 right-0 flex items-center justify-center pointer-events-none z-20 transition-opacity duration-200 delay-200 ease-in">
             <span class="text-xs font-semibold tracking-widest text-white/90 uppercase [writing-mode:vertical-lr] rotate-180 whitespace-nowrap">Tourism Ireland</span>
-            <div></div>
           </div>
 
-          <div class="expanded-content opacity-0 pointer-events-none absolute inset-0 w-[800px] lg:w-[880px] h-full p-8 sm:p-12 flex flex-col justify-end transition-opacity duration-300 z-20">
-            <div class="grid grid-cols-12 gap-6 lg:gap-8 items-end w-full pb-8">
-
-              <div class="col-span-7 h-[270px] sm:h-[290px] flex flex-col justify-end">
-                <span class="text-xs font-bold tracking-widest uppercase text-[#ff2a5f] block mb-1">Case Study Showcase</span>
-                <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">Just Go</h3>
-                <p class="text-base sm:text-lg font-semibold text-neutral-200 mt-2 line-clamp-2">Shifting from simple awareness to genuine travel intent. Ireland defined by feeling, not just place.</p>
-                <p class="text-xs sm:text-sm text-neutral-300 mt-3 leading-relaxed max-w-xl">We partnered with creators to deliver platform-native storytelling tailored to traveller mindsets. By positioning Ireland through lived experience, we transformed tourism marketing into a series of relatable human stories.</p>
-              </div>
-
-              <div class="col-span-5 flex flex-col items-end justify-end h-[270px] sm:h-[290px] pb-1">
-                <div class="flex flex-col items-end">
-                  <span class="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-none">1.25M</span>
-                  <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Organic Impressions</span>
+          <div class="expanded-content opacity-0 pointer-events-none absolute inset-0 w-full h-full transition-opacity duration-150 ease-out z-20">
+            <div class="case-mobile-panel transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
+              <div class="case-expanded-body w-full h-full flex flex-col md:flex-row justify-between items-end p-8 md:p-12 relative z-10">
+                <div class="case-copy max-w-xl md:w-[58%] flex flex-col justify-end">
+                  <span class="text-xs tracking-widest uppercase block mb-1 bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent font-extrabold">Case Study Showcase</span>
+                  <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">Just Go</h3>
+                  <p class="text-base sm:text-lg font-semibold text-neutral-200 mt-2 line-clamp-2">Shifting from simple awareness to genuine travel intent. Ireland defined by feeling, not just place.</p>
+                  <p class="text-xs sm:text-sm text-neutral-300 mt-3 leading-relaxed max-w-xl">We partnered with creators to deliver platform-native storytelling tailored to traveller mindsets. By positioning Ireland through lived experience, we transformed tourism marketing into a series of relatable human stories.</p>
                 </div>
-                <div class="w-32 h-[1px] bg-white/20 my-3"></div>
-                <div class="flex flex-col items-end">
-                  <span class="text-4xl sm:text-5xl lg:text-6xl font-black text-[#ff2a5f] tracking-tight leading-none">+33%</span>
-                  <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Traffic Uplift</span>
+                <div class="case-metrics flex gap-8 items-end flex-shrink-0 md:ml-auto">
+                  <div class="flex flex-col items-end">
+                    <span class="text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-none bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent font-extrabold">1.25M</span>
+                    <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Organic Impressions</span>
+                  </div>
+                  <div class="flex flex-col items-end">
+                    <span class="text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-none bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent font-extrabold">+33%</span>
+                    <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Traffic Uplift</span>
+                  </div>
                 </div>
               </div>
-
             </div>
+            <button type="button" class="case-view-more-btn bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-semibold tracking-wider uppercase px-4 py-2 rounded-full transition-all duration-300 hover:bg-white/20 active:scale-95" aria-expanded="false">View more</button>
           </div>
         </div>
 
         <!-- Card 03: Volvic -->
-        <div class="accordion-card w-16 sm:w-20 shrink-0 rounded-[32px] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer" data-index="2">
-          <img src="Content/Case Studies/volvic.jpg" alt="Volvic" class="case-study-bg" style="object-position: center;" loading="lazy" decoding="async"/>
-          <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/70 to-transparent z-10"></div>
+        <div class="accordion-card is-inactive w-[88vw] max-w-[360px] flex-shrink-0 snap-center h-[520px] md:h-auto md:max-w-none md:snap-align-none rounded-3xl md:rounded-[32px] overflow-hidden transition-[flex-grow,flex-basis] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer" data-index="2">
+          <img src="Content/Case Studies/volvic.jpg" alt="Volvic" class="case-study-bg absolute inset-0 w-full h-full object-cover object-center pointer-events-none" loading="lazy" decoding="async"/>
+          <div class="case-study-scrim absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent md:from-neutral-950 md:via-neutral-950/70 z-10"></div>
+          <div class="case-top-fade absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-black/70 via-black/30 to-transparent pointer-events-none z-10"></div>
 
-          <div class="absolute top-8 left-8 sm:top-10 sm:left-10 z-30 flex items-center h-12">
+          <div class="case-brand-logo absolute top-8 left-8 sm:top-10 sm:left-10 z-30 flex items-center h-12">
             <img src="Content/Brand%20Logos/volvic.png" alt="Volvic" class="h-7 sm:h-9 w-auto object-contain filter brightness-0 invert" loading="lazy" decoding="async" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';"/>
             <span class="hidden text-2xl sm:text-3xl font-extrabold tracking-tight text-white italic">Volvic</span>
           </div>
 
-          <div class="collapsed-content opacity-100 absolute inset-0 p-5 flex flex-col justify-between items-center z-20">
-            <span class="text-xs font-bold text-white/60">03</span>
+          <div class="collapsed-content opacity-100 absolute inset-y-0 left-0 right-0 flex items-center justify-center pointer-events-none z-20 transition-opacity duration-200 delay-200 ease-in">
             <span class="text-xs font-semibold tracking-widest text-white/90 uppercase [writing-mode:vertical-lr] rotate-180 whitespace-nowrap">Volvic</span>
-            <div></div>
           </div>
 
-          <div class="expanded-content opacity-0 pointer-events-none absolute inset-0 w-[800px] lg:w-[880px] h-full p-8 sm:p-12 flex flex-col justify-end transition-opacity duration-300 z-20">
-            <div class="grid grid-cols-12 gap-6 lg:gap-8 items-end w-full pb-8">
-
-              <div class="col-span-7 h-[270px] sm:h-[290px] flex flex-col justify-end">
-                <span class="text-xs font-bold tracking-widest uppercase text-[#ff2a5f] block mb-1">Case Study Showcase</span>
-                <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">Well, that's refreshing.</h3>
-                <p class="text-base sm:text-lg font-semibold text-neutral-200 mt-2 line-clamp-2">Capturing authentic summer joy. Extending festival energy into a digital, high-volume ecosystem.</p>
-                <p class="text-xs sm:text-sm text-neutral-300 mt-3 leading-relaxed max-w-xl">We commissioned 19 creators to capture authentic summer moments—seaside swims, park picnics—with Volvic Watermelon as the companion. We shifted the focus from flavor to feeling, embedding the product into summer culture.</p>
-              </div>
-
-              <div class="col-span-5 flex flex-col items-end justify-end h-[270px] sm:h-[290px] pb-1">
-                <div class="flex flex-col items-end">
-                  <span class="text-4xl sm:text-5xl lg:text-6xl font-black text-[#ff2a5f] tracking-tight leading-none">5.0%+</span>
-                  <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Avg Engagement</span>
+          <div class="expanded-content opacity-0 pointer-events-none absolute inset-0 w-full h-full transition-opacity duration-150 ease-out z-20">
+            <div class="case-mobile-panel transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
+              <div class="case-expanded-body w-full h-full flex flex-col md:flex-row justify-between items-end p-8 md:p-12 relative z-10">
+                <div class="case-copy max-w-xl md:w-[58%] flex flex-col justify-end">
+                  <span class="text-xs tracking-widest uppercase block mb-1 bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent font-extrabold">Case Study Showcase</span>
+                  <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">Well, that's refreshing.</h3>
+                  <p class="text-base sm:text-lg font-semibold text-neutral-200 mt-2 line-clamp-2">Capturing authentic summer joy. Extending festival energy into a digital, high-volume ecosystem.</p>
+                  <p class="text-xs sm:text-sm text-neutral-300 mt-3 leading-relaxed max-w-xl">We commissioned 19 creators to capture authentic summer moments—seaside swims, park picnics—with Volvic Watermelon as the companion. We shifted the focus from flavour to feeling, embedding the product into summer culture.</p>
                 </div>
-                <div class="w-32 h-[1px] bg-white/20 my-3"></div>
-                <div class="flex flex-col items-end">
-                  <span class="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-none">605K</span>
-                  <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Impressions</span>
+                <div class="case-metrics flex gap-8 items-end flex-shrink-0 md:ml-auto">
+                  <div class="flex flex-col items-end">
+                    <span class="text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-none bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent font-extrabold">5.0%+</span>
+                    <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Avg Engagement</span>
+                  </div>
+                  <div class="flex flex-col items-end">
+                    <span class="text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-none bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent font-extrabold">605K</span>
+                    <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Impressions</span>
+                  </div>
                 </div>
               </div>
-
             </div>
+            <button type="button" class="case-view-more-btn bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-semibold tracking-wider uppercase px-4 py-2 rounded-full transition-all duration-300 hover:bg-white/20 active:scale-95" aria-expanded="false">View more</button>
           </div>
         </div>
 
       </div>
 
-      <!-- External Navigation Controls (Bottom Right) -->
-      <div class="flex justify-end gap-3 mt-6">
+      <!-- External Navigation Controls (Bottom Right) — desktop only -->
+      <div class="hidden md:flex justify-end gap-3 mt-6">
         <button id="deck-prev" aria-label="Previous case study" class="w-11 h-11 rounded-full border border-neutral-300 bg-white hover:bg-neutral-100 flex items-center justify-center transition-all cursor-pointer text-neutral-800 shadow-sm">&larr;</button>
         <button id="deck-next" aria-label="Next case study" class="w-11 h-11 rounded-full border border-neutral-300 bg-white hover:bg-neutral-100 flex items-center justify-center transition-all cursor-pointer text-neutral-800 shadow-sm">&rarr;</button>
       </div>
@@ -1640,7 +1898,7 @@
               <textarea placeholder="Write a little something here" class="bg-white/5 border border-white/10 rounded-2xl p-5 text-white text-base placeholder:text-neutral-500 focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all w-full min-h-[140px] resize-none"></textarea>
             </div>
             <button type="submit" class="bg-white text-neutral-950 font-bold py-4 px-8 rounded-2xl hover:bg-neutral-200 transition-all flex items-center justify-center gap-2 cursor-pointer w-full text-base mt-2">
-              Get started &rarr;
+              Let's get this show on the road.
             </button>
           </form>
 
@@ -1665,11 +1923,11 @@
 
           <div class="border-b border-white/10 pb-4">
             <button type="button" class="faq-toggle w-full flex justify-between items-center text-left text-base sm:text-lg font-medium text-neutral-200 hover:text-white transition-colors py-1.5 cursor-pointer">
-              <span>How are creator licensing and global usage rights handled?</span>
+              <span>How are creator licencing and global usage rights handled?</span>
               <span class="text-xl font-light text-neutral-500 ml-4">+</span>
             </button>
             <div class="faq-content hidden mt-2 text-neutral-400 text-sm leading-relaxed max-w-3xl">
-              All usage rights, licensing scopes, and territory expansions are managed centrally through ThreadOS™, giving your legal and brand teams 100% clarity and immediate access to contracts.
+              All usage rights, licencing scopes, and territory expansions are managed centrally through ThreadOS™, giving your legal and brand teams 100% clarity and immediate access to contracts.
             </div>
           </div>
 
@@ -1692,10 +1950,33 @@
           <p class="text-neutral-500">&copy; 2026 Red Thread Agency Ltd. All rights reserved.</p>
         </div>
 
-        <div class="flex gap-6 text-neutral-400 pb-1">
-          <a href="#" class="hover:text-white transition-colors">Privacy policy</a>
+        <div class="flex flex-wrap items-center gap-6 text-neutral-400 pb-1">
+          <a href="privacy.html" class="hover:text-white transition-colors">Privacy policy</a>
           <a href="#" class="hover:text-white transition-colors">Terms of service</a>
-          <a href="#" class="hover:text-white transition-colors">LinkedIn</a>
+          <div class="flex items-center gap-4">
+            <a
+              href="https://www.linkedin.com/company/redthreadagency"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Red Thread on LinkedIn"
+              class="text-white/90 hover:text-white transition-colors"
+            >
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+              </svg>
+            </a>
+            <a
+              href="https://www.instagram.com/red_thread_agency/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Red Thread on Instagram"
+              class="text-white/90 hover:text-white transition-colors"
+            >
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+              </svg>
+            </a>
+          </div>
         </div>
       </footer>
 
@@ -2124,15 +2405,16 @@
 
           
 
-          // Increase horizontal spacing factor to ensure outer cards spill past the viewport edges
+          // Desktop keeps 230px step; mobile pulls side phones inward so ~3 stay on-screen
+          const spacing = window.innerWidth < 640 ? 148 : 230;
+          const translateX = idx * (spacing * progress);
 
-          const translateX = idx * (230 * progress);
+          // Keep rotateY subtle — strong Y rotation was squashing outer phones
+          const rotateY = -idx * (4.5 * progress);
 
-          const rotateY = -idx * (14 * progress);
+          const translateZ = -Math.abs(idx) * (18 * progress);
 
-          const translateZ = -Math.abs(idx) * (40 * progress);
-
-          const scale = 1 - Math.abs(idx) * (0.025 * progress);
+          const scale = 1 - Math.abs(idx) * (0.012 * progress);
 
 
 
@@ -2450,53 +2732,156 @@
       if (!deck || cards.length === 0) return;
 
       let activeIndex = 0;
+      const isMobile = () => window.innerWidth < 768;
+
+      const MOBILE_CARD = 'accordion-card w-[88vw] max-w-[360px] flex-shrink-0 snap-center h-[520px] rounded-3xl relative overflow-hidden cursor-pointer';
+      const DESKTOP_CARD = 'accordion-card rounded-[32px] overflow-hidden transition-[flex-grow,flex-basis] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer';
+
+      const COLLAPSED_BASE = 'collapsed-content absolute inset-y-0 left-0 right-0 flex items-center justify-center pointer-events-none z-20';
+      // Active card: vertical tab vanishes immediately (no delay)
+      const COLLAPSED_ACTIVE = COLLAPSED_BASE + ' opacity-0 transition-opacity duration-150 ease-out';
+      // Inactive card: tab fades in after width settles
+      const COLLAPSED_INACTIVE = COLLAPSED_BASE + ' opacity-100 transition-opacity duration-200 delay-200 ease-in';
+
+      const EXPANDED_BASE = 'expanded-content absolute inset-0 w-full h-full z-20';
+      // Active: copy fades in after ~85% of the 500ms width expand
+      const EXPANDED_ACTIVE = EXPANDED_BASE + ' opacity-100 pointer-events-auto transition-opacity duration-300 delay-300 ease-in';
+      // Inactive: copy fades out immediately as the card starts closing
+      const EXPANDED_INACTIVE = EXPANDED_BASE + ' opacity-0 pointer-events-none transition-opacity duration-150 ease-out';
+      const EXPANDED_MOBILE = EXPANDED_BASE + ' opacity-100 pointer-events-auto';
+      const COLLAPSED_MOBILE = COLLAPSED_BASE + ' opacity-0 pointer-events-none';
 
       function syncDeckBgWidth() {
-        // Keep every case-study BG at full deck width so expand/collapse only clips, never rescales
-        deck.style.setProperty('--deck-bg-width', deck.clientWidth + 'px');
+        if (isMobile()) {
+          deck.style.setProperty('--deck-bg-width', '100%');
+        } else {
+          // Keep every case-study BG at full deck width so expand/collapse only clips, never rescales
+          deck.style.setProperty('--deck-bg-width', deck.clientWidth + 'px');
+        }
       }
-      syncDeckBgWidth();
-      window.addEventListener('resize', syncDeckBgWidth);
+
+      function scrollMobileCard(index) {
+        const card = cards[index];
+        if (!card) return;
+        card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
 
       function updateAccordion() {
+        if (isMobile()) {
+          cards.forEach((card) => {
+            const wasOpen = card.classList.contains('is-open');
+            card.className = MOBILE_CARD + (wasOpen ? ' is-open' : '');
+            const collapsed = card.querySelector('.collapsed-content');
+            const expanded = card.querySelector('.expanded-content');
+            if (collapsed) collapsed.className = COLLAPSED_MOBILE;
+            if (expanded) expanded.className = EXPANDED_MOBILE;
+          });
+          syncDeckBgWidth();
+          return;
+        }
+
         cards.forEach((card, index) => {
           const collapsed = card.querySelector('.collapsed-content');
           const expanded = card.querySelector('.expanded-content');
+          const active = index === activeIndex;
+          const becomingActive = active && !card.classList.contains('is-active');
 
-          if (index === activeIndex) {
-            card.className = 'accordion-card flex-1 min-w-0 rounded-[32px] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer';
-            if (collapsed) {
-              collapsed.classList.add('opacity-0', 'pointer-events-none');
-              collapsed.classList.remove('opacity-100');
-            }
-            if (expanded) {
-              expanded.classList.remove('opacity-0', 'pointer-events-none');
-              expanded.classList.add('opacity-100');
-            }
-          } else {
-            card.className = 'accordion-card w-16 sm:w-20 shrink-0 rounded-[32px] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer';
-            if (collapsed) {
-              collapsed.classList.remove('opacity-0', 'pointer-events-none');
-              collapsed.classList.add('opacity-100');
-            }
-            if (expanded) {
-              expanded.classList.add('opacity-0', 'pointer-events-none');
-              expanded.classList.remove('opacity-100');
+          card.className = DESKTOP_CARD + (active ? ' is-active' : ' is-inactive');
+          if (collapsed) collapsed.className = active ? COLLAPSED_ACTIVE : COLLAPSED_INACTIVE;
+
+          if (expanded) {
+            if (becomingActive) {
+              // Retrigger delayed fade-in so copy never flashes mid-expand (esp. returning to card 0)
+              expanded.className = EXPANDED_INACTIVE;
+              void expanded.offsetWidth;
+              expanded.className = EXPANDED_ACTIVE;
+            } else {
+              expanded.className = active ? EXPANDED_ACTIVE : EXPANDED_INACTIVE;
             }
           }
         });
+        syncDeckBgWidth();
       }
 
-      if (nextBtn) nextBtn.onclick = (e) => { e.stopPropagation(); activeIndex = (activeIndex + 1) % cards.length; updateAccordion(); };
-      if (prevBtn) prevBtn.onclick = (e) => { e.stopPropagation(); activeIndex = (activeIndex - 1 + cards.length) % cards.length; updateAccordion(); };
+      function goTo(index) {
+        activeIndex = (index + cards.length) % cards.length;
+        if (isMobile()) {
+          collapseMobileSheets();
+          scrollMobileCard(activeIndex);
+        } else {
+          updateAccordion();
+        }
+      }
+
+      if (nextBtn) nextBtn.onclick = (e) => { e.stopPropagation(); goTo(activeIndex + 1); };
+      if (prevBtn) prevBtn.onclick = (e) => { e.stopPropagation(); goTo(activeIndex - 1); };
 
       cards.forEach((card, index) => {
         card.addEventListener('click', () => {
+          if (isMobile()) {
+            activeIndex = index;
+            scrollMobileCard(index);
+            return;
+          }
           if (activeIndex !== index) {
             activeIndex = index;
             updateAccordion();
           }
         });
+      });
+
+      // Mobile-only: slide full case copy up into the card
+      cards.forEach((card) => {
+        const btn = card.querySelector('.case-view-more-btn');
+        if (!btn) return;
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (!isMobile()) return;
+          const panel = card.querySelector('.case-mobile-panel');
+          const open = !card.classList.contains('is-open');
+          if (panel && !open) panel.scrollTop = 0; // reset before collapse tween
+          card.classList.toggle('is-open', open);
+          btn.textContent = open ? 'View less' : 'View more';
+          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      });
+
+      function collapseMobileSheets() {
+        cards.forEach((card) => {
+          const panel = card.querySelector('.case-mobile-panel');
+          if (panel) panel.scrollTop = 0;
+          card.classList.remove('is-open');
+          const btn = card.querySelector('.case-view-more-btn');
+          if (btn) {
+            btn.textContent = 'View more';
+            btn.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+
+      // Keep activeIndex in sync while the user swipes on mobile
+      deck.addEventListener('scroll', () => {
+        if (!isMobile()) return;
+        const deckCenter = deck.scrollLeft + deck.clientWidth / 2;
+        let closest = 0;
+        let closestDist = Infinity;
+        cards.forEach((card, index) => {
+          const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+          const dist = Math.abs(cardCenter - deckCenter);
+          if (dist < closestDist) {
+            closestDist = dist;
+            closest = index;
+          }
+        });
+        if (activeIndex !== closest) {
+          activeIndex = closest;
+          collapseMobileSheets();
+        }
+      }, { passive: true });
+
+      window.addEventListener('resize', () => {
+        updateAccordion();
       });
 
       updateAccordion();
