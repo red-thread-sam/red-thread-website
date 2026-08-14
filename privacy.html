@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Privacy Policy | Red Thread</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -29,6 +30,7 @@
       margin: 0;
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", sans-serif;
+      letter-spacing: -0.015em;
       -webkit-font-smoothing: antialiased;
       background-color: #ffffff;
       color: #171717;
@@ -46,7 +48,7 @@
     }
   </style>
 </head>
-<body class="bg-white text-neutral-900 antialiased selection:bg-[#FF0066] selection:text-white min-h-screen flex flex-col">
+<body class="bg-white text-neutral-900 antialiased min-h-screen flex flex-col">
 
   <!-- HIG DYNAMIC THEME-AWARE NAV (exact structure from index.html; light-theme state for this page) -->
   <nav id="main-nav" class="fixed top-0 left-0 w-full z-50 opacity-100 pointer-events-auto glass-light transition-all duration-500">
@@ -56,7 +58,7 @@
       </a>
 
       <div id="nav-links" class="hidden md:flex items-center gap-8 text-[11px] font-medium uppercase tracking-wider text-neutral-600">
-        <a href="index.html#tech-bento" class="transition-colors hover:text-neutral-900">Our Tech</a>
+        <a href="tech.html" class="transition-colors hover:text-neutral-900">Our Tech</a>
         <a href="index.html#how-it-works" class="transition-colors hover:text-neutral-900">How It Works</a>
         <a href="index.html#case-studies" class="transition-colors hover:text-neutral-900">Our Work</a>
       </div>
@@ -228,7 +230,7 @@
   </main>
 
   <!-- Dark footer shell (matches index.html contact-faq footer context) -->
-  <section class="bg-[#0a0a0c] text-white relative overflow-hidden z-20 selection:bg-neutral-800 selection:text-white">
+  <section class="bg-[#0a0a0c] text-white relative overflow-hidden z-20">
     <div class="max-w-7xl mx-auto px-6 sm:px-8">
       <!-- PAGE FOOTER (Borderless Top, Flush Left Logo) -->
       <footer class="pt-8 pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 text-xs text-neutral-500">
@@ -238,6 +240,7 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-6 text-neutral-400 pb-1">
+          <a href="tech.html" class="hover:text-white transition-colors">Our Tech</a>
           <a href="privacy.html" class="hover:text-white transition-colors" aria-current="page">Privacy policy</a>
           <a href="#" class="hover:text-white transition-colors">Terms of service</a>
           <div class="flex items-center gap-4">
