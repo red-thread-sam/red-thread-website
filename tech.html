@@ -242,14 +242,13 @@
 
   <!-- Razor-thin dynamic header (borderless) -->
   <header id="mainHeader" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-none text-neutral-900">
-    <nav class="max-w-7xl mx-auto px-3.5 sm:px-6 h-10 sm:h-11 flex items-center justify-between gap-2">
+    <nav class="relative max-w-7xl mx-auto px-3.5 sm:px-6 h-10 sm:h-11 flex items-center justify-between gap-2">
       <a href="index.html" class="flex items-center shrink-0">
         <img id="navLogo" src="logo-black.png" alt="Red Thread" class="h-3.5 sm:h-4 w-auto object-contain transition-opacity duration-300">
       </a>
 
-      <div class="flex items-center gap-2.5 sm:gap-6 text-[10px] sm:text-[11px] font-bold tracking-wide">
+      <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-2.5 sm:gap-6 text-[10px] sm:text-[11px] font-bold tracking-wide">
         <a href="tech.html" class="nav-link text-neutral-700 hover:text-black transition-colors" aria-current="page">Our Tech</a>
-        <a href="index.html#how-it-works" class="nav-link hidden sm:inline-block text-neutral-700 hover:text-black transition-colors">How It Works</a>
         <a href="index.html#case-studies" class="nav-link text-neutral-700 hover:text-black transition-colors">Our Work</a>
       </div>
 
