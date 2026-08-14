@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en" class="scroll-smooth bg-black font-sans">
+<html lang="en" class="scroll-smooth bg-black font-sans overflow-x-clip">
 
 <head>
 
@@ -149,6 +149,30 @@
 
     }
 
+    @keyframes fluidGradientSweep {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .fluid-gradient-text {
+      background: linear-gradient(
+        120deg,
+        #FF0066 0%,
+        #E00199 25%,
+        #8B5CF6 50%,
+        #E00199 75%,
+        #FF0066 100%
+      );
+      background-size: 250% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: fluidGradientSweep 6s ease-in-out infinite;
+      display: inline-block;
+      font-weight: 800;
+    }
+
 
 
     .glass-dark {
@@ -295,16 +319,14 @@
 
     }
 
-    /* Mobile-only deck scale — never set transform on desktop (breaks 3D / squashes phones) */
-    @media (max-width: 389px) {
-      #hw-deck {
-        transform: scale(0.72);
+    /* Mobile-only: no deck CSS scale — JS cascade owns sizing to avoid double-shrink */
+    @media (max-width: 767px) {
+      #hw-deck,
+      .phone-fan-container {
+        transform: none;
       }
-    }
-
-    @media (min-width: 390px) and (max-width: 639px) {
-      #hw-deck {
-        transform: scale(0.8);
+      #phoneShowcaseSection {
+        overflow-x: clip;
       }
     }
 
@@ -726,7 +748,7 @@
 
 </head>
 
-<body class="bg-black text-white font-sans antialiased overflow-x-hidden">
+<body class="bg-black text-white font-sans antialiased overflow-x-clip">
 
 
 
@@ -789,15 +811,22 @@
 
 
 
-      <div id="hero-scroll-hint" class="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 transition-opacity duration-300">
-
-        <div class="w-8 h-12 rounded-full flex items-center justify-center">
-
-          <div class="w-1 h-2.5 bg-white/60 rounded-full animate-bounce"></div>
-
-        </div>
-
-      </div>
+      <!-- Apple visionOS Glass Capsule Scroll Indicator -->
+      <a id="heroScrollIndicator"
+         href="#section-intro"
+         aria-label="Scroll down"
+         class="fixed bottom-8 sm:bottom-10 left-1/2 -translate-x-1/2 z-30 flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.3),inset_0_1px_1px_rgba(255,255,255,0.4)] text-white hover:bg-white/20 hover:scale-105 active:scale-95 transition-all duration-500 group pointer-events-auto">
+        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white/80 group-hover:text-white transition-colors duration-300 animate-pulse"
+             fill="none"
+             stroke="currentColor"
+             viewBox="0 0 24 24"
+             stroke-width="2.2"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             aria-hidden="true">
+          <path d="M19 9l-7 7-7-7" />
+        </svg>
+      </a>
 
 
 
@@ -809,49 +838,42 @@
 
   <!-- 02. AGENCY INTRO (Restored Editorial Statement) -->
 
-  <section id="intro" data-theme="light" data-header-theme="light" class="w-full bg-[#F5F5F7] text-black py-36 px-6 lg:px-8 relative z-20">
+  <section id="section-intro" data-theme="light" data-header-theme="light" class="relative z-20 bg-white text-neutral-950 py-20 sm:py-32 px-5 sm:px-8 overflow-hidden">
+    <div class="max-w-5xl mx-auto text-center space-y-6 sm:space-y-8">
 
-    <div class="max-w-5xl mx-auto text-center space-y-8">
-
-      
-
-      <!-- Headline with Coral Red to Magenta Accents -->
-
-      <h2 class="text-3xl sm:text-5xl md:text-6xl font-semibold tracking-tight text-neutral-900 leading-[1.08] text-balance-custom">
-
-        We bring <span class="text-prism-gradient">real human feeling</span> and <span class="text-prism-gradient">creator instinct</span> to the places people actually spend their lives today.
-
+      <!-- Main Manifesto Headline -->
+      <h2 class="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.18] text-neutral-950 [text-wrap:balance]">
+        We bring
+        <span class="fluid-gradient-text">real human feeling</span>
+        and
+        <span class="fluid-gradient-text">creator instinct</span>
+        to the places people actually spend their lives today.
       </h2>
 
-
-
-      <!-- Subcopy Contrast -->
-
-      <p class="text-neutral-600 font-normal text-xl sm:text-2xl md:text-3xl leading-relaxed max-w-4xl mx-auto text-balance-custom">
-
+      <!-- Subtitle -->
+      <p class="text-base sm:text-lg md:text-2xl lg:text-[28px] font-medium leading-relaxed text-neutral-800 max-w-3xl mx-auto mt-6 sm:mt-10 tracking-tight [text-wrap:balance]">
         Backed by custom tech. Driven by creator instinct. Built for real, measurable impact.
-
       </p>
-
-
 
     </div>
 
+    <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-b from-transparent to-neutral-950/5 pointer-events-none"></div>
   </section>
 
 
 
-  <!-- 03. HARDWARE GALLERY (Concept A: 3D Curved Theater Arc) -->
+  <!-- 03. HARDWARE GALLERY (Phone Fan-Out Showcase) -->
 
-  <section id="hardware" data-theme="dark" data-header-theme="dark" class="relative w-full h-[260vh] bg-black text-white z-0">
+  <section id="phoneShowcaseSection" data-theme="dark" data-header-theme="dark" class="relative h-[130vh] sm:h-[150vh] bg-neutral-950 text-white z-10 overflow-x-clip">
 
-    <div id="hw-sticky-stage" class="sticky top-0 left-0 w-full h-screen overflow-hidden flex items-center justify-center hardware-stage-perspective z-0">
+    <!-- Sticky Viewport Wrapper -->
+    <div class="sticky top-0 h-[100dvh] w-full flex items-center justify-center overflow-hidden z-10 hardware-stage-perspective">
 
-      <div class="w-full max-w-full overflow-hidden sm:overflow-visible flex justify-center items-center py-6">
-      <div id="hw-deck" class="relative w-full max-w-7xl mx-auto h-[500px] sm:h-[600px] md:h-[650px] lg:h-[700px] flex items-center justify-center">
+      <!-- Inner Phone Fan Container -->
+      <div id="hw-deck" class="phone-fan-container relative w-full max-w-6xl mx-auto flex items-center justify-center h-[520px] sm:h-[620px]">
 
           <!-- Phone 1: screen1.mov -->
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:10;">
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:10;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
@@ -862,7 +884,7 @@
           </div>
 
           <!-- Phone 2: screen2.mov -->
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:20;">
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:20;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
@@ -873,7 +895,7 @@
           </div>
 
           <!-- Phone 3: video7.mov -->
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:30;">
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:30;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
@@ -884,7 +906,7 @@
           </div>
 
           <!-- Phone 4: screen3.mov -->
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:40;">
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:40;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
@@ -895,7 +917,7 @@
           </div>
 
           <!-- Phone 5: video9.mov -->
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:50;">
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:50;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
@@ -906,7 +928,7 @@
           </div>
 
           <!-- Phone 6 (Center Hero): pic 8 resized.jpg -->
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:60;">
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:60;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <img
@@ -919,7 +941,7 @@
           </div>
 
           <!-- Phone 7: Screen4.mov -->
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:50;">
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:50;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
@@ -930,7 +952,7 @@
           </div>
 
           <!-- Phone 8: video10.mov -->
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:40;">
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:40;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
@@ -941,7 +963,7 @@
           </div>
 
           <!-- Phone 9: screen5.mov -->
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:30;">
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:30;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
@@ -952,7 +974,7 @@
           </div>
 
           <!-- Phone 10: video11.mov -->
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:20;">
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:20;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
@@ -963,7 +985,7 @@
           </div>
 
           <!-- Phone 11: video6.mov -->
-          <div class="hw-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] bg-[#1D1D1F] rounded-[2.8rem] p-2.5 overflow-hidden" style="z-index:10;">
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:10;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
@@ -974,7 +996,6 @@
           </div>
 
       </div>
-      </div>
 
     </div>
 
@@ -984,7 +1005,7 @@
 
   <!-- 04. BRAND PROOF -->
 
-  <section id="brand-proof" data-theme="light" data-header-theme="light" class="relative z-10 bg-[#ffffff] py-10 sm:py-24 -mt-[100vh]">
+  <section id="brand-proof" data-theme="light" data-header-theme="light" class="relative z-20 bg-white text-neutral-950 py-20 sm:py-28 px-6">
 
     <div class="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
 
@@ -1023,25 +1044,25 @@
 
           <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/bbc.png" alt="BBC" style="height: 40px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
+            <img src="Content/Brand Logos/bbc.png" alt="BBC" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
 
           </div>
 
           <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/brit-awards.svg" alt="Brit Awards" style="height: 48px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
+            <img src="Content/Brand Logos/brit-awards.svg" alt="Brit Awards" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
 
           </div>
 
           <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/disney.png" alt="Disney" style="height: 32px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
+            <img src="Content/Brand Logos/disney.png" alt="Disney" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
 
           </div>
 
           <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/dr-pepper.png" alt="Dr Pepper" style="height: 44px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
+            <img src="Content/Brand Logos/dr-pepper.png" alt="Dr Pepper" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
 
           </div>
 
@@ -1051,25 +1072,25 @@
 
           <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/gamma.webp" alt="Gamma" style="height: 26px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
+            <img src="Content/Brand Logos/gamma.webp" alt="Gamma" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
 
           </div>
 
           <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/google.png" alt="Google" style="height: 38px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
+            <img src="Content/Brand Logos/google.png" alt="Google" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
 
           </div>
 
           <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/lego.png" alt="Lego" style="height: 42px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
+            <img src="Content/Brand Logos/lego.png" alt="Lego" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
 
           </div>
 
           <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/lexus.png" alt="Lexus" style="height: 72px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
+            <img src="Content/Brand Logos/lexus.png" alt="Lexus" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
 
           </div>
 
@@ -1079,25 +1100,25 @@
 
           <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/lynx.svg" alt="Lynx" style="height: 19px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
+            <img src="Content/Brand Logos/lynx.svg" alt="Lynx" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
 
           </div>
 
           <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/major-league-baseball.png" alt="MLB" style="height: 74px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
+            <img src="Content/Brand Logos/major-league-baseball.png" alt="MLB" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
 
           </div>
 
           <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/mcdonalds.png" alt="McDonalds" style="height: 60px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
+            <img src="Content/Brand Logos/mcdonalds.png" alt="McDonalds" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
 
           </div>
 
           <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/movember.png" alt="Movember" style="height: 54px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
+            <img src="Content/Brand Logos/movember.png" alt="Movember" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
 
           </div>
 
@@ -1107,25 +1128,25 @@
 
           <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/O2.png" alt="O2" style="height: 50px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
+            <img src="Content/Brand Logos/O2.png" alt="O2" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
 
           </div>
 
           <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/oracle_red_bull_racing.jpg" alt="Oracle Red Bull Racing" style="height: 42px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
+            <img src="Content/Brand Logos/oracle_red_bull_racing.jpg" alt="Oracle Red Bull Racing" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
 
           </div>
 
           <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/paramount.svg" alt="Paramount" style="height: 52px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
+            <img src="Content/Brand Logos/paramount.svg" alt="Paramount" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
 
           </div>
 
           <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/Pfizer.svg" alt="Pfizer" style="height: 44px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
+            <img src="Content/Brand Logos/Pfizer.svg" alt="Pfizer" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
 
           </div>
 
@@ -1135,25 +1156,25 @@
 
           <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/porsche.png" alt="Porsche" style="height: 58px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
+            <img src="Content/Brand Logos/porsche.png" alt="Porsche" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
 
           </div>
 
           <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/tourism-ireland.webp" alt="Tourism Ireland" style="height: 76px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
+            <img src="Content/Brand Logos/tourism-ireland.webp" alt="Tourism Ireland" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
 
           </div>
 
           <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/Uefa.jpg" alt="UEFA" style="height: 40px; mix-blend-mode: multiply; filter: grayscale(100%) contrast(150%); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
+            <img src="Content/Brand Logos/Uefa.jpg" alt="UEFA" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
 
           </div>
 
           <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
 
-            <img src="Content/Brand Logos/Universal_Pictures_logo.svg" alt="Universal Pictures" style="height: 48px; filter: brightness(0); opacity: 0.75;" loading="lazy" decoding="async" class="brand-logo-img max-h-7 sm:max-h-none w-auto object-contain mx-auto transition-all duration-200" />
+            <img src="Content/Brand Logos/Universal_Pictures_logo.svg" alt="Universal Pictures" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
 
           </div>
 
@@ -1175,7 +1196,7 @@
 
   <section id="tech-bento" data-theme="dark" data-header-theme="dark" class="w-full bg-[#111113] text-white pt-36 pb-24 relative z-20">
 
-    <h2 class="text-4xl sm:text-5xl font-bold tracking-tight text-white text-center mb-8 sm:mb-16 px-6">Culture, meet commerce.</h2>
+    <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white text-center mb-8 sm:mb-16 px-6">Culture, meet commerce. 🤝</h2>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 max-w-7xl mx-auto px-6">
 
@@ -1521,20 +1542,20 @@
 
     <!-- LED Dot-Matrix Map + City Badges -->
 
-    <div class="w-full overflow-x-auto no-scrollbar py-4 -mx-4 px-4 sm:mx-auto sm:px-8 max-w-[1400px] mx-auto mt-6 mb-16">
-    <div class="min-w-[620px] sm:min-w-full w-full relative aspect-[16/9] sm:aspect-auto sm:min-h-[580px] flex items-center justify-center">
+    <div class="w-full px-4 sm:px-8 max-w-5xl mx-auto mt-6 mb-16 relative z-10">
+    <div class="relative w-full aspect-[2/1] max-w-5xl mx-auto overflow-hidden">
 
       <img
         src="assets/world-dot-matrix.svg"
         alt="World Dot Matrix Map"
-        class="w-full h-auto max-h-[700px] object-contain opacity-50 filter brightness-[1.75]"
+        class="w-full h-full object-contain opacity-50 filter brightness-[1.75]"
         loading="lazy"
         decoding="async"
       />
 
       <!-- Los Angeles -->
 
-      <div class="absolute top-[37%] left-[14.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
+      <div class="absolute top-[38%] left-[16.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
 
         <span class="relative flex h-2 w-2">
 
@@ -1550,7 +1571,7 @@
 
       <!-- New York -->
 
-      <div class="absolute top-[27%] left-[26.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
+      <div class="absolute top-[34%] left-[28.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
 
         <span class="relative flex h-2 w-2">
 
@@ -1564,9 +1585,9 @@
 
       </div>
 
-      <!-- Lisbon (SW of London) — nudged further SW on mobile to clear Basel -->
+      <!-- Lisbon -->
 
-      <div class="absolute top-[34%] left-[39%] sm:top-[27%] sm:left-[43.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
+      <div class="absolute top-[41%] left-[45.2%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
 
         <span class="relative flex h-2 w-2">
 
@@ -1582,7 +1603,7 @@
 
       <!-- London -->
 
-      <div class="absolute top-[18.5%] left-[47.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
+      <div class="absolute top-[30%] left-[47.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
 
         <span class="relative flex h-2 w-2">
 
@@ -1596,9 +1617,9 @@
 
       </div>
 
-      <!-- Basel (SE of London) — nudged further SE on mobile to clear Lisbon -->
+      <!-- Basel -->
 
-      <div class="absolute top-[28%] left-[56%] sm:top-[26%] sm:left-[49.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
+      <div class="absolute top-[33.5%] left-[50.1%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
 
         <span class="relative flex h-2 w-2">
 
@@ -1614,7 +1635,7 @@
 
       <!-- Singapore -->
 
-      <div class="absolute top-[58%] left-[78.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
+      <div class="absolute top-[62%] left-[80.2%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
 
         <span class="relative flex h-2 w-2">
 
@@ -2321,8 +2342,6 @@
 
       const stencil = document.getElementById('hero-stencil-svg');
 
-      const scrollHint = document.getElementById('hero-scroll-hint');
-
       if (!runway || !stencil) return;
 
 
@@ -2342,8 +2361,6 @@
         stencil.style.transform = 'translate3d(0, 0, 0) scale(1)';
 
         stencil.style.opacity = '1';
-
-        if (scrollHint) scrollHint.style.opacity = '1';
 
         return;
 
@@ -2385,8 +2402,6 @@
 
         stencil.style.pointerEvents = 'none';
 
-        if (scrollHint) scrollHint.style.opacity = '0';
-
         return;
 
       }
@@ -2415,21 +2430,17 @@
 
       stencil.style.opacity = opacity.toFixed(3);
 
-      if (scrollHint) {
-
-        scrollHint.style.opacity = Math.max(0, 1 - progress * 4).toFixed(3);
-
-      }
-
     });
 
 
 
-    // D. Hardware Curtain Sweep Engine
+    // D. Hardware Curtain Sweep Engine — mobile tight cascade / desktop cinematic spread
 
-    const hwSection = document.getElementById('hardware');
+    const hwSection = document.getElementById('phoneShowcaseSection');
 
-    const hwCards = document.querySelectorAll('.hw-card');
+    const hwCards = hwSection
+      ? hwSection.querySelectorAll('.phone-card')
+      : document.querySelectorAll('.phone-card');
 
     // Auto-rotate landscape phone media to fill vertical bezels
     document.querySelectorAll('#hw-deck video.phone-media').forEach((video) => {
@@ -2443,54 +2454,74 @@
       else video.addEventListener('loadedmetadata', applyOrientation, { once: true });
     });
 
-    if (hwSection && hwCards.length > 0) {
+    (function initBulletproofPhoneFanout() {
+      const section = document.getElementById('phoneShowcaseSection');
+      if (!section) return;
 
-      window.addEventListener('scroll', () => {
+      let isTicking = false;
 
-        const rect = hwSection.getBoundingClientRect();
+      function updateFanout() {
+        const rect = section.getBoundingClientRect();
+        const vh = window.innerHeight;
+        const scrollableDistance = section.offsetHeight - vh;
 
-        const currentScroll = Math.max(0, -rect.top);
+        if (scrollableDistance <= 0) {
+          isTicking = false;
+          return;
+        }
 
-        
+        let progress = 0;
 
-        // Unfold completes rapidly in first 500px of section scroll
+        if (rect.top <= 0) {
+          // Map progress 0.0 to 1.0 continuously across 100% of the sticky scroll distance
+          const scrollOffset = Math.abs(rect.top);
+          progress = Math.min(Math.max(scrollOffset / scrollableDistance, 0), 1.0);
+        }
 
-        const progress = Math.min(1, currentScroll / 500);
+        // Smooth sinusoidal easing for a silky, continuous fluid flow
+        const easedProgress = Math.sin(progress * (Math.PI / 2));
 
-        const totalCards = hwCards.length;
+        const isMobile = window.innerWidth < 768;
+        const phoneCards = section.querySelectorAll('.phone-card');
+        const centerIndex = (phoneCards.length - 1) / 2;
 
-        const centerIdx = Math.floor(totalCards / 2); // Center card is index 5 for 11 cards
+        phoneCards.forEach((card, index) => {
+          const offset = index - centerIndex;
 
+          if (isMobile) {
+            // Mobile tight 3D cascade - smooth continuous spread up to max offset
+            const xSpread = offset * (easedProgress * 42);
+            const scale = 1 - Math.abs(offset) * (easedProgress * 0.08);
+            const rotation = offset * (easedProgress * 3.5);
 
+            card.style.transform = `translate(-50%, -50%) translate3d(${xSpread}px, 0, 0) scale(${scale}) rotate(${rotation}deg)`;
+            card.style.opacity = '1';
+            card.style.zIndex = String(10 - Math.abs(Math.round(offset)));
+          } else {
+            // Desktop widescreen fan - continuous cinematic opening
+            const xSpread = offset * (easedProgress * 155);
+            const rotation = offset * (easedProgress * 5);
 
-        hwCards.forEach((card, i) => {
-
-          const idx = i - centerIdx; // Generates indices from -5 to +5
-
-          
-
-          // Desktop keeps 230px step; mobile pulls side phones inward so ~3 stay on-screen
-          const spacing = window.innerWidth < 640 ? 148 : 230;
-          const translateX = idx * (spacing * progress);
-
-          // Keep rotateY subtle — strong Y rotation was squashing outer phones
-          const rotateY = -idx * (4.5 * progress);
-
-          const translateZ = -Math.abs(idx) * (18 * progress);
-
-          const scale = 1 - Math.abs(idx) * (0.012 * progress);
-
-
-
-          card.style.transform = `translate(-50%, -50%) translateX(${translateX}px) translateZ(${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`;
-
-          card.style.opacity = '1';
-
+            card.style.transform = `translate(-50%, -50%) translate3d(${xSpread}px, 0, 0) rotate(${rotation}deg)`;
+            card.style.opacity = '1';
+            card.style.zIndex = String(10 - Math.abs(Math.round(offset)));
+          }
         });
 
-      });
+        isTicking = false;
+      }
 
-    }
+      function onScroll() {
+        if (!isTicking) {
+          requestAnimationFrame(updateFanout);
+          isTicking = true;
+        }
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      updateFanout();
+    })();
 
 
 
@@ -2987,6 +3018,17 @@
     window.addEventListener('resize', updateHeader, { passive: true });
     updateHeader();
   })();
+
+  const scrollPill = document.getElementById('heroScrollIndicator');
+  if (scrollPill) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 30) {
+        scrollPill.classList.add('opacity-0', 'pointer-events-none');
+      } else {
+        scrollPill.classList.remove('opacity-0', 'pointer-events-none');
+      }
+    }, { passive: true });
+  }
 </script>
 
 </body>
