@@ -41,37 +41,38 @@
     .spring-pill:active {
       transform: scale(0.94);
     }
-    .glass-light {
-      background: rgba(245, 245, 247, 0.85);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-    }
   </style>
 </head>
 <body class="bg-white text-neutral-900 antialiased min-h-screen flex flex-col">
 
-  <!-- HIG DYNAMIC THEME-AWARE NAV (exact structure from index.html; light-theme state for this page) -->
-  <nav id="main-nav" class="fixed top-0 left-0 w-full z-50 opacity-100 pointer-events-auto glass-light transition-all duration-500">
-    <div class="max-w-7xl mx-auto px-6 h-12 flex items-center justify-between">
-      <a href="index.html" id="nav-logo" class="flex items-center gap-2 text-white font-bold text-base tracking-tight transition-opacity">
-        <img id="nav-logo-img" src="logo-black.png" alt="Red Thread Logo" class="h-5 w-auto transition-all duration-300" />
+  <!-- Razor-thin dynamic header (borderless) -->
+  <header id="mainHeader" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-none text-neutral-900">
+    <nav class="max-w-7xl mx-auto px-3.5 sm:px-6 h-10 sm:h-11 flex items-center justify-between gap-2">
+      <a href="index.html" class="flex items-center shrink-0">
+        <img id="navLogo" src="logo-black.png" alt="Red Thread" class="h-3.5 sm:h-4 w-auto object-contain transition-opacity duration-300">
       </a>
 
-      <div id="nav-links" class="hidden md:flex items-center gap-8 text-[11px] font-medium uppercase tracking-wider text-neutral-600">
-        <a href="tech.html" class="transition-colors hover:text-neutral-900">Our Tech</a>
-        <a href="index.html#how-it-works" class="transition-colors hover:text-neutral-900">How It Works</a>
-        <a href="index.html#case-studies" class="transition-colors hover:text-neutral-900">Our Work</a>
+      <div class="flex items-center gap-2.5 sm:gap-6 text-[10px] sm:text-[11px] font-bold tracking-wider uppercase">
+        <a href="tech.html" class="nav-link text-neutral-700 hover:text-black transition-colors">Our Tech</a>
+        <a href="index.html#how-it-works" class="nav-link hidden sm:inline-block text-neutral-700 hover:text-black transition-colors">How It Works</a>
+        <a href="index.html#case-studies" class="nav-link text-neutral-700 hover:text-black transition-colors">Our Work</a>
       </div>
 
-      <!-- Spring Physics Button: "Let's chat." -->
-      <a id="nav-cta" href="index.html#contact-faq" class="spring-pill px-4 py-1.5 rounded-full bg-black text-white text-xs font-semibold">
-        Let's chat.
-      </a>
-    </div>
-  </nav>
+      <div class="flex items-center shrink-0">
+        <a id="navCtaMobile" href="index.html#contact-faq" class="sm:hidden flex items-center justify-center w-6 h-6 rounded-full bg-neutral-950 text-white transition-all" aria-label="Let's chat">
+          <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.2L4 17.2V4h16v12z"/>
+          </svg>
+        </a>
+        <a id="navCtaDesktop" href="index.html#contact-faq" class="hidden sm:inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-neutral-950 text-white font-bold text-[11px] hover:bg-neutral-800 transition-all">
+          Let's chat.
+        </a>
+      </div>
+    </nav>
+  </header>
 
   <!-- MAIN CONTENT -->
-  <main class="flex-1 pt-20">
+  <main data-header-theme="light" class="flex-1 pt-10 sm:pt-11">
     <article class="max-w-3xl mx-auto px-6 py-16 md:py-24">
 
       <!-- PAGE HEADER -->
@@ -230,7 +231,7 @@
   </main>
 
   <!-- Dark footer shell (matches index.html contact-faq footer context) -->
-  <section class="bg-[#0a0a0c] text-white relative overflow-hidden z-20">
+  <section data-header-theme="dark" class="bg-[#0a0a0c] text-white relative overflow-hidden z-20">
     <div class="max-w-7xl mx-auto px-6 sm:px-8">
       <!-- PAGE FOOTER (Borderless Top, Flush Left Logo) -->
       <footer class="pt-8 pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 text-xs text-neutral-500">
@@ -271,6 +272,73 @@
       </footer>
     </div>
   </section>
+
+
+
+
+<script>
+  (function setupDynamicHeader() {
+    const header = document.getElementById('mainHeader');
+    const logo = document.getElementById('navLogo');
+    const links = document.querySelectorAll('.nav-link');
+    const ctaDesktop = document.getElementById('navCtaDesktop');
+    const ctaMobile = document.getElementById('navCtaMobile');
+    if (!header || !logo) return;
+
+    const path = window.location.pathname || '';
+    const isHomepage = (path.endsWith('index.html') || path === '/' || path.endsWith('/') || path === '')
+      && !/tech\.html|privacy\.html/.test(path);
+
+    function linkClasses(theme, el) {
+      const isHow = (el.getAttribute('href') || '').includes('how-it-works');
+      const hide = isHow ? 'hidden sm:inline-block ' : '';
+      if (theme === 'light') {
+        return 'nav-link ' + hide + 'text-neutral-700 hover:text-black transition-colors';
+      }
+      return 'nav-link ' + hide + 'text-white/90 hover:text-white transition-colors';
+    }
+
+    function updateHeader() {
+      const atLanding = window.scrollY < 1;
+      const sections = document.querySelectorAll('[data-header-theme]');
+      let currentTheme = isHomepage ? 'dark' : 'light';
+      sections.forEach((sec) => {
+        const rect = sec.getBoundingClientRect();
+        if (rect.top <= 25 && rect.bottom >= 25) {
+          currentTheme = sec.getAttribute('data-header-theme') || currentTheme;
+        }
+      });
+
+      if (isHomepage && atLanding) {
+        // Fully invisible until the user scrolls past 1px
+        header.className = 'fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent backdrop-blur-none border-none text-white opacity-0 pointer-events-none';
+        logo.src = 'logo-white.png';
+        links.forEach((l) => { l.className = linkClasses('dark', l); });
+        if (ctaDesktop) ctaDesktop.className = 'hidden sm:inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-white text-neutral-950 font-bold text-[11px] hover:bg-neutral-200 transition-all';
+        if (ctaMobile) ctaMobile.className = 'sm:hidden flex items-center justify-center w-6 h-6 rounded-full bg-white text-neutral-950 transition-all';
+        return;
+      }
+
+      if (currentTheme === 'light') {
+        header.className = 'fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-none text-neutral-900 opacity-100 pointer-events-auto';
+        logo.src = 'logo-black.png';
+        links.forEach((l) => { l.className = linkClasses('light', l); });
+        if (ctaDesktop) ctaDesktop.className = 'hidden sm:inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-neutral-950 text-white font-bold text-[11px] hover:bg-neutral-800 transition-all';
+        if (ctaMobile) ctaMobile.className = 'sm:hidden flex items-center justify-center w-6 h-6 rounded-full bg-neutral-950 text-white transition-all';
+      } else {
+        header.className = 'fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-neutral-950/80 backdrop-blur-md border-none text-white opacity-100 pointer-events-auto';
+        logo.src = 'logo-white.png';
+        links.forEach((l) => { l.className = linkClasses('dark', l); });
+        if (ctaDesktop) ctaDesktop.className = 'hidden sm:inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-white text-neutral-950 font-bold text-[11px] hover:bg-neutral-200 transition-all';
+        if (ctaMobile) ctaMobile.className = 'sm:hidden flex items-center justify-center w-6 h-6 rounded-full bg-white text-neutral-950 transition-all';
+      }
+    }
+
+    window.addEventListener('scroll', updateHeader, { passive: true });
+    window.addEventListener('resize', updateHeader, { passive: true });
+    updateHeader();
+  })();
+</script>
 
 </body>
 </html>
