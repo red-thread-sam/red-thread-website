@@ -65,6 +65,8 @@
 
             'radar-ping': 'radarPing 2s cubic-bezier(0, 0, 0.2, 1) infinite',
 
+            'gradient': 'gradientShift 4s linear infinite',
+
           },
 
           keyframes: {
@@ -88,6 +90,14 @@
             radarPing: {
 
               '75%, 100%': { transform: 'scale(2.4)', opacity: '0' },
+
+            },
+
+            gradientShift: {
+
+              '0%': { backgroundPosition: '0% 50%' },
+
+              '100%': { backgroundPosition: '200% 50%' },
 
             }
 
@@ -125,10 +135,15 @@
 
     }
 
-    h1, h2, h3, h4, #mainHeader, #mainHeader a {
-
+    h1, h2, h3, h4, #mainHeader {
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", sans-serif;
+    }
 
+    #mainHeader .nav-link {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
     }
 
 
@@ -171,6 +186,10 @@
       animation: fluidGradientSweep 6s ease-in-out infinite;
       display: inline-block;
       font-weight: 800;
+      /* Keep descenders (g, y, p) visible under background-clip */
+      padding-bottom: 0.15em;
+      line-height: 1.2;
+      overflow: visible;
     }
 
 
@@ -211,6 +230,24 @@
 
       scrollbar-width: none;
 
+    }
+
+    /* Organic process track — native momentum + soft snap settle */
+    .how-it-works-track {
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+      touch-action: pan-x;
+      scroll-behavior: auto;
+    }
+
+    .how-it-works-track.is-dragging {
+      cursor: grabbing;
+      scroll-snap-type: none;
+      user-select: none;
+    }
+
+    .how-it-works-track.is-dragging > * {
+      pointer-events: none;
     }
 
 
@@ -268,12 +305,11 @@
     /* Brand logos: compact mobile sizing only — desktop inline heights untouched */
     @media (max-width: 639px) {
       /* Pure white canvas so baked-in white logo pads blend away */
-      #brand-proof,
-      #brand-proof #logos-section,
-      #brand-proof #logos-section > div {
+      #section-brands,
+      #section-brands #logos-section {
         background-color: #ffffff !important;
       }
-      #brand-proof .brand-logo-img {
+      #section-brands .brand-logo-img {
         height: auto !important;
         max-height: 1.75rem; /* max-h-7 */
         width: auto;
@@ -372,34 +408,25 @@
 
 
 
+    /* Case study cards — image peeks (desktop) + snap carousel (mobile) */
     .accordion-card {
-
-      will-change: width, flex, opacity;
-
+      will-change: flex-grow, flex-basis, opacity, transform;
     }
 
-    /* Lock BG anchor: full-bleed cover, deck-width on desktop so expand only clips */
     .accordion-card > .case-study-bg {
       position: absolute;
       inset: 0;
-      top: 0;
-      left: 0;
-      right: auto;
-      bottom: 0;
+      width: 100%;
       height: 100%;
-      width: var(--deck-bg-width, 100%);
-      max-width: none;
       object-fit: cover;
       object-position: center;
       pointer-events: none;
-      transition: none !important;
     }
-    /* Movember: bias crop upward so faces/helmets stay in frame */
+
     #deck-accordion .accordion-card[data-index="0"] > .case-study-bg {
       object-position: center 22%;
     }
 
-    /* Case studies: mobile snap carousel (desktop accordion unchanged) */
     @media (max-width: 767px) {
       #case-studies {
         overflow: visible !important;
@@ -414,24 +441,22 @@
         -webkit-overflow-scrolling: touch;
       }
       #deck-accordion .accordion-card {
-        width: 88vw !important;
-        max-width: 360px !important;
+        width: 85vw !important;
+        max-width: 380px !important;
         min-width: 0 !important;
         flex: 0 0 auto !important;
-        height: 520px !important;
+        aspect-ratio: 4 / 5 !important;
+        height: auto !important;
+        min-height: 520px !important;
         flex-shrink: 0 !important;
         scroll-snap-align: center;
       }
-      #deck-accordion .accordion-card > .case-study-bg {
-        width: 100% !important;
-      }
-      /* Soft gradient mask — keep photo visible through the top half */
       #deck-accordion .accordion-card > .case-study-scrim {
-        background: linear-gradient(to top, #000 0%, rgba(0,0,0,0.8) 42%, transparent 72%) !important;
+        background: linear-gradient(to top, #0a0a0a 0%, rgba(10, 10, 10, 0.5) 45%, transparent 100%) !important;
         transition: background 0.28s ease-out;
       }
       #deck-accordion .accordion-card.is-open > .case-study-scrim {
-        background: linear-gradient(to top, #000 0%, rgba(0,0,0,0.9) 45%, rgba(0,0,0,0.3) 100%) !important;
+        background: linear-gradient(to top, #0a0a0a 0%, rgba(10, 10, 10, 0.72) 55%, rgba(10, 10, 10, 0.25) 100%) !important;
       }
       #deck-accordion .collapsed-content {
         display: none !important;
@@ -445,10 +470,6 @@
         justify-content: flex-end !important;
         overflow: hidden !important;
       }
-      /*
-        Smooth sheet: pin to bottom, animate max-height.
-        Collapsed: mask + edge fade so copy dissolves into the card edge.
-      */
       #deck-accordion .case-mobile-panel {
         position: absolute;
         left: 0;
@@ -463,7 +484,6 @@
         overflow: hidden;
         background: transparent;
         transform: none;
-        /* Snappy spring — only max-height (avoid transition: all) */
         transition: max-height 0.32s cubic-bezier(0.16, 1, 0.3, 1);
         will-change: max-height;
         -webkit-mask-image: linear-gradient(
@@ -481,7 +501,6 @@
           transparent 100%
         );
       }
-      /* Soft fade along the card’s bottom edge (no backdrop-filter — keeps it smooth) */
       #deck-accordion .case-mobile-panel::after {
         content: '';
         position: absolute;
@@ -500,7 +519,6 @@
         opacity: 1;
         transition: opacity 0.2s ease-out;
       }
-      /* Open: full card, crisp text, no inner scroll */
       #deck-accordion .accordion-card.is-open .case-mobile-panel {
         max-height: 100%;
         overflow: hidden;
@@ -528,13 +546,12 @@
         max-width: 100% !important;
         height: auto !important;
         max-height: none !important;
-        align-items: flex-start !important;
+        align-items: stretch !important;
       }
       #deck-accordion .expanded-content h3 {
         font-size: 1.45rem !important;
         line-height: 1.15 !important;
       }
-      /* Keep teaser clamped on mobile so closed peek height stays stable */
       #deck-accordion .expanded-content p.line-clamp-2 {
         display: -webkit-box !important;
         -webkit-line-clamp: 2;
@@ -542,7 +559,6 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
       }
-      /* Body + metrics: quick fade-up in sync with the sheet */
       #deck-accordion .expanded-content p.max-w-xl,
       #deck-accordion .case-metrics {
         opacity: 0;
@@ -560,7 +576,6 @@
         display: block !important;
         margin-top: 0.65rem;
       }
-      /* Metrics: 2-column glass tiles on mobile */
       #deck-accordion .case-metrics {
         display: grid !important;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -569,23 +584,11 @@
         padding-top: 1rem;
         margin-top: 0.85rem;
         margin-left: 0 !important;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-      }
-      #deck-accordion .case-metrics > div {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(4px);
-        -webkit-backdrop-filter: blur(4px);
-        padding: 0.75rem;
-        border-radius: 1rem;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-top: none;
       }
       #deck-accordion .case-metrics > div > span:first-child {
-        font-size: 1.45rem !important;
+        font-size: 1.35rem !important;
       }
-      /* Caret rides the TOP of the text sheet (inside .case-mobile-panel) */
       #deck-accordion .case-view-more-btn {
         position: relative;
         z-index: 7;
@@ -626,7 +629,9 @@
       #deck-accordion .case-top-fade {
         display: none;
       }
-      /* Full-bleed expanded row: copy left, metrics right */
+      #deck-accordion .collapsed-content {
+        display: none !important;
+      }
       #deck-accordion .expanded-content {
         width: 100%;
         max-width: none;
@@ -642,36 +647,52 @@
       #deck-accordion .case-metrics {
         margin-left: auto;
         flex-shrink: 0;
+        display: flex;
+        gap: 0.75rem;
+        align-items: stretch;
       }
-      /* Inactive spine: center brand logo on the tab */
-      #deck-accordion .accordion-card.is-inactive .case-brand-logo {
-        left: 50%;
-        right: auto;
-        top: 2rem;
-        transform: translateX(-50%);
-      }
-      /* Animate flex-basis/grow (not width↔flex-1) — width↔auto cannot interpolate and jumps */
       #deck-accordion .accordion-card {
-        transition-property: flex-grow, flex-basis;
+        transition-property: flex-grow, flex-basis, opacity, transform;
         transition-duration: 500ms;
         transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
       }
+      /* Focused hero card */
       #deck-accordion .accordion-card.is-active {
         flex-grow: 1;
         flex-shrink: 1;
         flex-basis: 0%;
         min-width: 0;
+        max-width: 56rem;
+        opacity: 1;
+        transform: scale(1);
+        z-index: 20;
       }
+      /* Adjacent image peeks — no dark pillars */
       #deck-accordion .accordion-card.is-inactive {
         flex-grow: 0;
         flex-shrink: 0;
-        flex-basis: 4rem;
+        flex-basis: 7.5rem;
+        opacity: 0.4;
+        transform: scale(0.95);
+        z-index: 10;
+        cursor: pointer;
+      }
+      #deck-accordion .accordion-card.is-inactive:hover {
+        opacity: 0.7;
+      }
+      #deck-accordion .accordion-card.is-inactive .case-brand-logo,
+      #deck-accordion .accordion-card.is-inactive .expanded-content {
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+      #deck-accordion .accordion-card.is-inactive > .case-study-scrim {
+        background: linear-gradient(to top, rgba(10, 10, 10, 0.35), transparent 55%) !important;
       }
     }
 
     @media (min-width: 1024px) {
       #deck-accordion .accordion-card.is-inactive {
-        flex-basis: 5rem;
+        flex-basis: 9rem;
       }
     }
 
@@ -759,10 +780,10 @@
         <img id="navLogo" src="logo-white.png" alt="Red Thread" class="h-3.5 sm:h-4 w-auto object-contain transition-opacity duration-300">
       </a>
 
-      <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-2.5 sm:gap-6 text-[10px] sm:text-[11px] font-bold tracking-wide">
-        <a href="tech.html" class="nav-link text-white/90 hover:text-white transition-colors">Our Tech</a>
-        <a href="#how-it-works" class="nav-link hidden sm:inline-block text-white/90 hover:text-white transition-colors">How It Works</a>
-        <a href="#case-studies" class="nav-link text-white/90 hover:text-white transition-colors">Our Work</a>
+      <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-7 text-[12px] font-normal tracking-[-0.01em] font-['SF_Pro_Text',-apple-system,BlinkMacSystemFont,'Helvetica_Neue',sans-serif]">
+        <a href="tech.html" class="nav-link text-white/80 hover:text-white transition-colors">Our Tech</a>
+        <a href="#how-it-works" class="nav-link hidden sm:inline-block text-white/80 hover:text-white transition-colors">How It Works</a>
+        <a href="#case-studies" class="nav-link text-white/80 hover:text-white transition-colors">Our Work</a>
       </div>
 
       <div class="flex items-center shrink-0">
@@ -864,7 +885,7 @@
 
   <!-- 03. HARDWARE GALLERY (Phone Fan-Out Showcase) -->
 
-  <section id="phoneShowcaseSection" data-theme="dark" data-header-theme="dark" class="relative h-[130vh] sm:h-[150vh] bg-neutral-950 text-white z-10 overflow-x-clip">
+  <section id="phoneShowcaseSection" data-theme="dark" data-header-theme="dark" class="relative h-[250vh] bg-neutral-950 text-white z-10 overflow-x-clip">
 
     <!-- Sticky Viewport Wrapper -->
     <div class="sticky top-0 h-[100dvh] w-full flex items-center justify-center overflow-hidden z-10 hardware-stage-perspective">
@@ -1005,7 +1026,7 @@
 
   <!-- 04. BRAND PROOF -->
 
-  <section id="brand-proof" data-theme="light" data-header-theme="light" class="relative z-20 bg-white text-neutral-950 py-20 sm:py-28 px-6">
+  <section id="section-brands" data-theme="light" data-header-theme="light" class="relative z-20 bg-white -mt-[100vh] shadow-[0_-30px_60px_rgba(0,0,0,0.35)] text-neutral-950 py-20 sm:py-32 px-5 sm:px-12">
 
     <div class="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
 
@@ -1021,10 +1042,8 @@
 
         </h2>
 
-        <p class="text-xl text-neutral-600 leading-relaxed max-w-md mt-4">
-
-          A few of the stories we’ve helped tell.
-
+        <p class="text-lg sm:text-xl text-neutral-500 font-normal mt-3 sm:mt-4 max-w-md">
+          A few of the stories we've helped tell.
         </p>
 
       </div>
@@ -1035,150 +1054,28 @@
 
       <div class="lg:col-span-7">
 
-        <!-- Mobile: centered flex wrap. sm+: CSS grid -->
-        <div id="logos-section" class="flex flex-wrap justify-center items-center gap-x-4 gap-y-6 sm:grid sm:grid-cols-5 sm:gap-8 md:gap-12">
-
-          
-
-          <!-- Row 1 -->
-
-          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
-
-            <img src="Content/Brand Logos/bbc.png" alt="BBC" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
-
-          </div>
-
-          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
-
-            <img src="Content/Brand Logos/brit-awards.svg" alt="Brit Awards" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
-
-          </div>
-
-          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
-
-            <img src="Content/Brand Logos/disney.png" alt="Disney" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
-
-          </div>
-
-          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
-
-            <img src="Content/Brand Logos/dr-pepper.png" alt="Dr Pepper" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
-
-          </div>
-
-
-
-          <!-- Row 2 -->
-
-          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
-
-            <img src="Content/Brand Logos/gamma.webp" alt="Gamma" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
-
-          </div>
-
-          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
-
-            <img src="Content/Brand Logos/google.png" alt="Google" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
-
-          </div>
-
-          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
-
-            <img src="Content/Brand Logos/lego.png" alt="Lego" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
-
-          </div>
-
-          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
-
-            <img src="Content/Brand Logos/lexus.png" alt="Lexus" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
-
-          </div>
-
-
-
-          <!-- Row 3 -->
-
-          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
-
-            <img src="Content/Brand Logos/lynx.svg" alt="Lynx" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
-
-          </div>
-
-          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
-
-            <img src="Content/Brand Logos/major-league-baseball.png" alt="MLB" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
-
-          </div>
-
-          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
-
-            <img src="Content/Brand Logos/mcdonalds.png" alt="McDonalds" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
-
-          </div>
-
-          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
-
-            <img src="Content/Brand Logos/movember.png" alt="Movember" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
-
-          </div>
-
-
-
-          <!-- Row 4 -->
-
-          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
-
-            <img src="Content/Brand Logos/O2.png" alt="O2" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
-
-          </div>
-
-          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
-
-            <img src="Content/Brand Logos/oracle_red_bull_racing.jpg" alt="Oracle Red Bull Racing" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
-
-          </div>
-
-          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
-
-            <img src="Content/Brand Logos/paramount.svg" alt="Paramount" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
-
-          </div>
-
-          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
-
-            <img src="Content/Brand Logos/Pfizer.svg" alt="Pfizer" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
-
-          </div>
-
-
-
-          <!-- Row 5 -->
-
-          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
-
-            <img src="Content/Brand Logos/porsche.png" alt="Porsche" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
-
-          </div>
-
-          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
-
-            <img src="Content/Brand Logos/tourism-ireland.webp" alt="Tourism Ireland" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
-
-          </div>
-
-          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
-
-            <img src="Content/Brand Logos/Uefa.jpg" alt="UEFA" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
-
-          </div>
-
-          <div class="w-[28%] sm:w-auto h-12 sm:h-20 flex justify-center items-center p-1">
-
-            <img src="Content/Brand Logos/Universal_Pictures_logo.svg" alt="Universal Pictures" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
-
-          </div>
-
-
+        <div id="logos-section" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-y-10 gap-x-8 sm:gap-y-12 sm:gap-x-12 items-center justify-items-center">
+
+          <img src="Content/Brand Logos/bbc.png" alt="BBC" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
+          <img src="Content/Brand Logos/brit-awards.svg" alt="Brit Awards" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
+          <img src="Content/Brand Logos/disney.png" alt="Disney" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
+          <img src="Content/Brand Logos/dr-pepper.png" alt="Dr Pepper" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
+          <img src="Content/Brand Logos/gamma.webp" alt="Gamma" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
+          <img src="Content/Brand Logos/google.png" alt="Google" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
+          <img src="Content/Brand Logos/lego.png" alt="Lego" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
+          <img src="Content/Brand Logos/lexus.png" alt="Lexus" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
+          <img src="Content/Brand Logos/lynx.svg" alt="Lynx" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
+          <img src="Content/Brand Logos/major-league-baseball.png" alt="MLB" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
+          <img src="Content/Brand Logos/mcdonalds.png" alt="McDonalds" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
+          <img src="Content/Brand Logos/movember.png" alt="Movember" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
+          <img src="Content/Brand Logos/O2.png" alt="O2" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
+          <img src="Content/Brand Logos/oracle_red_bull_racing.jpg" alt="Oracle Red Bull Racing" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
+          <img src="Content/Brand Logos/paramount.svg" alt="Paramount" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
+          <img src="Content/Brand Logos/Pfizer.svg" alt="Pfizer" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
+          <img src="Content/Brand Logos/porsche.png" alt="Porsche" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
+          <img src="Content/Brand Logos/tourism-ireland.webp" alt="Tourism Ireland" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
+          <img src="Content/Brand Logos/Uefa.jpg" alt="UEFA" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
+          <img src="Content/Brand Logos/Universal_Pictures_logo.svg" alt="Universal Pictures" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-9 w-auto object-contain mix-blend-multiply filter grayscale opacity-80 hover:opacity-100 transition-all mx-auto" />
 
         </div>
 
@@ -1200,156 +1097,87 @@
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 max-w-7xl mx-auto px-6">
 
-      <!-- Hero: ThreadOS™ & Fred AI -->
+      <!-- ThreadOS Hero Card -->
+      <div class="col-span-1 md:col-span-2 bg-black border border-white/10 rounded-[28px] p-6 sm:p-8 relative overflow-hidden flex flex-col justify-between group min-h-[360px] hover:border-white/20 transition-all duration-300">
 
-      <div class="md:col-span-2 relative bg-neutral-900 rounded-3xl overflow-hidden p-5 sm:p-8 md:p-10 min-h-[220px] sm:min-h-[300px] flex flex-col justify-center transition-all duration-300">
+        <!-- Particle Canvas Layer -->
+        <canvas id="threadosCanvas" class="absolute inset-0 w-full h-full pointer-events-none z-0" aria-hidden="true"></canvas>
 
-        <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover object-right scale-125 opacity-50 z-0 pointer-events-none">
-
-          <source src="Content/Tech-bento1.mp4" type="video/mp4">
-
-        </video>
-
-        <div class="absolute inset-0 bg-gradient-to-r from-neutral-950 via-neutral-950/85 to-transparent z-0 pointer-events-none"></div>
-
-        <div class="relative z-10 max-w-md space-y-2 sm:space-y-4">
-
-          <h3 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">ThreadOS™ &amp; Fred AI</h3>
-
-          <p class="text-sm sm:text-base text-neutral-300 leading-relaxed [text-wrap:pretty]">
-
-            We didn’t just build software—we built a system that understands the heartbeat of culture. ThreadOS™ and Fred AI turn the chaos of the feed into measurable, undeniable&nbsp;impact.
-
+        <!-- Content Layer -->
+        <div class="relative z-10 max-w-md space-y-3">
+          <h3 class="text-2xl sm:text-3xl font-bold tracking-tight text-white">ThreadOS™ &amp; Fred AI</h3>
+          <p class="text-sm sm:text-base text-neutral-300 leading-relaxed">
+            We didn't just build software—we built a system that understands the heartbeat of culture. ThreadOS™ and Fred AI turn the chaos of the feed into measurable, undeniable impact.
           </p>
-
         </div>
-
       </div>
-
-
 
       <!-- Precision Creator Matchmaking -->
-
-      <div class="md:col-span-1 relative bg-neutral-900/90 rounded-3xl p-5 sm:p-8 md:p-10 flex flex-col justify-between overflow-hidden transition-all duration-300 min-h-[260px] sm:min-h-[340px]">
-
-        <div>
-
-          <h3 class="text-xl sm:text-2xl font-semibold tracking-tight text-white">Precision Creator Matchmaking</h3>
-
-          <p class="mt-2 sm:mt-3 text-xs sm:text-sm text-neutral-400 leading-relaxed [text-wrap:pretty]">
-
-            We map authenticity scores, historical engagement, and brand fit—filtering out vanity metrics to lock in tastemakers with true cultural&nbsp;authority.
-
+      <div class="md:col-span-1 border border-white/10 bg-black rounded-[28px] p-6 sm:p-8 relative overflow-hidden flex flex-col justify-between group min-h-[340px] hover:border-white/20 transition-all duration-300">
+        <div class="space-y-2.5 z-10 relative">
+          <h3 class="text-xl sm:text-2xl font-bold tracking-tight text-white">Precision Creator Matchmaking</h3>
+          <p class="text-sm text-neutral-400 leading-relaxed">
+            We map authenticity scores, historical engagement, and brand fit—filtering out vanity metrics to lock in tastemakers with true cultural authority.
           </p>
-
         </div>
 
-        <div class="mt-4 sm:mt-8 flex items-center justify-center -space-x-3">
+        <!-- Radar + avatars: single centered bottom unit -->
+        <div class="absolute inset-x-0 bottom-0 h-48 overflow-hidden flex justify-center items-end pointer-events-none z-10">
+          <div class="relative w-[360px] h-[180px]">
+            <canvas id="radarDomeCanvas" class="absolute left-1/2 bottom-[-180px] -translate-x-1/2 w-[360px] h-[360px] pointer-events-none" aria-hidden="true"></canvas>
 
-          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" alt="" class="w-14 h-14 rounded-full object-cover z-30" />
-
-          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80" alt="" class="w-14 h-14 rounded-full object-cover z-20" />
-
-          <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=300&q=80" alt="" class="w-14 h-14 rounded-full object-cover z-10" />
-
-          <div class="relative z-40 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md font-sans text-xs font-medium tracking-wider uppercase text-white/90">
-
-            <span class="w-2 h-2 rounded-full bg-red-500"></span> 100% MATCH
-
+            <div class="relative w-full h-full z-10">
+              <img src="Content/Creator profiles/hayls.jpg" alt="" class="absolute left-[4%] bottom-[8px] w-9 h-9 rounded-full border-2 border-white/20 object-cover shadow-lg">
+              <img src="Content/Creator profiles/george.jpg" alt="" class="absolute left-[22%] top-[22px] w-9 h-9 rounded-full border-2 border-white/30 object-cover shadow-lg">
+              <img src="Content/Creator profiles/hermione.jpg" alt="" class="absolute left-1/2 -translate-x-1/2 top-[2px] w-11 h-11 rounded-full border-2 border-pink-500 object-cover shadow-xl ring-4 ring-pink-500/20">
+              <img src="Content/Creator profiles/josh.jpeg" alt="" class="absolute right-[22%] top-[22px] w-9 h-9 rounded-full border-2 border-white/30 object-cover shadow-lg">
+              <img src="Content/Creator profiles/courtney.avif" alt="" class="absolute right-[4%] bottom-[8px] w-9 h-9 rounded-full border-2 border-white/20 object-cover shadow-lg">
+            </div>
           </div>
-
         </div>
 
+        <!-- Spacer so copy doesn't collide with absolute radar -->
+        <div class="h-40 shrink-0" aria-hidden="true"></div>
       </div>
-
-
 
       <!-- Attention Engine™ -->
-
-      <div class="md:col-span-1 relative bg-neutral-900/90 rounded-3xl p-5 sm:p-8 md:p-10 flex flex-col justify-between overflow-hidden transition-all duration-300 min-h-[260px] sm:min-h-[340px]">
-
-        <div>
-
-          <h3 class="text-xl sm:text-2xl font-semibold tracking-tight text-white">Attention Engine™</h3>
-
-          <p class="mt-2 sm:mt-3 text-xs sm:text-sm text-neutral-400 leading-relaxed [text-wrap:pretty]">
-
-            Stop guessing. Our engine models every hook and drop-off curve, ensuring your budget goes exclusively where predictable results&nbsp;live.
-
+      <div class="md:col-span-1 border border-white/10 bg-black rounded-[28px] p-6 sm:p-8 relative overflow-hidden flex flex-col justify-between group min-h-[300px] hover:border-white/20 transition-all duration-300">
+        <div class="space-y-2.5 z-10 relative">
+          <h3 class="text-xl sm:text-2xl font-bold tracking-tight text-white">Attention Engine™</h3>
+          <p class="text-sm text-neutral-400 leading-relaxed">
+            Stop guessing. Our engine models every hook and drop-off curve, ensuring your budget goes exclusively where predictable results live.
           </p>
-
         </div>
 
-        <div class="mt-4 sm:mt-8 space-y-2">
-
-          <div class="text-4xl font-extrabold text-white tracking-tight">9.4x</div>
-
-          <span class="font-sans text-xs font-medium tracking-wider uppercase text-neutral-400">PREDICTIVE ROAS SCORE</span>
-
+        <!-- Static Multi-Color Analytics Chart -->
+        <div class="relative w-full h-28 mt-4 z-10">
+          <canvas id="retentionWaveCanvas" class="w-full h-full" aria-hidden="true"></canvas>
         </div>
-
       </div>
-
-
 
       <!-- Paid Whitelisting & Scaling -->
-
-      <div class="md:col-span-1 relative bg-neutral-900/90 rounded-3xl p-5 sm:p-8 md:p-10 flex flex-col justify-between overflow-hidden transition-all duration-300 min-h-[260px] sm:min-h-[340px]">
-
-        <div>
-
-          <h3 class="text-xl sm:text-2xl font-semibold tracking-tight text-white">Paid Whitelisting &amp; Scaling</h3>
-
-          <p class="mt-2 sm:mt-3 text-xs sm:text-sm text-neutral-400 leading-relaxed [text-wrap:pretty]">
-
-            Secure native access to creator accounts, transforming authentic organic moments into high-performance media with lower&nbsp;CAC.
-
+      <div class="md:col-span-1 border border-white/10 bg-black rounded-[28px] p-6 sm:p-8 relative overflow-hidden flex flex-col justify-between group min-h-[300px] hover:border-white/20 transition-all duration-300">
+        <div class="space-y-2.5 z-10 relative">
+          <h3 class="text-xl sm:text-2xl font-bold tracking-tight text-white">Paid Whitelisting &amp; Scaling</h3>
+          <p class="text-sm text-neutral-400 leading-relaxed max-w-xs">
+            Secure native access to creator accounts, transforming authentic organic moments into high-performance media with lower CAC.
           </p>
-
         </div>
 
-        <div class="mt-4 sm:mt-8">
-
-          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md font-sans text-xs font-medium tracking-wider uppercase text-white/90 mb-2 sm:mb-4">
-
-            <span class="w-2 h-2 rounded-full bg-red-500"></span> -38% CAC REDUCTION
-
-          </div>
-
-          <div class="h-16 sm:h-20 w-full">
-
-            <svg class="w-full h-full overflow-visible" viewBox="0 0 200 60" fill="none" aria-hidden="true">
-
-              <path d="M0 50 Q 50 48, 90 32 T 170 12" stroke="#FF5A5F" stroke-width="3" stroke-linecap="round" class="opacity-90"/>
-
-              <circle cx="170" cy="12" r="5" fill="#FF5A5F" class=""/>
-
-              <circle cx="170" cy="12" r="9" stroke="#FF5A5F" stroke-width="1.5" class="opacity-40"/>
-
-            </svg>
-
-          </div>
-
+        <!-- Static Tapered Mesh Canvas -->
+        <div class="absolute inset-0 w-full h-full pointer-events-none z-0">
+          <canvas id="staticMeshCanvas" class="w-full h-full opacity-35" aria-hidden="true"></canvas>
         </div>
-
       </div>
 
-
-
-      <!-- Global Usage & Licencing -->
-
-      <div class="md:col-span-1 relative bg-black rounded-3xl overflow-hidden p-5 sm:p-8 md:p-10 flex flex-col min-h-[280px] sm:min-h-[360px] transition-all duration-300">
+      <!-- Global Usage & Licensing -->
+      <div class="md:col-span-1 border border-white/10 bg-black rounded-[28px] p-6 sm:p-8 relative overflow-hidden flex flex-col justify-between hover:border-white/20 transition-all duration-300 min-h-[280px] sm:min-h-[360px]">
 
         <div class="relative z-10 space-y-2 sm:space-y-3 max-w-xs pb-32 sm:pb-40">
-
-          <h3 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Global Usage &amp; Licencing</h3>
-
+          <h3 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Global Usage &amp; Licensing</h3>
           <p class="text-xs sm:text-sm text-neutral-300 leading-relaxed [text-wrap:pretty]">
-
             Never lose the content you love. We lock in usage, multi-platform rights, and ownership—ensuring your best assets stay&nbsp;yours.
-
           </p>
-
         </div>
 
         <img
@@ -1357,7 +1185,6 @@
           alt="Global Usage"
           class="absolute -bottom-20 sm:-bottom-28 left-1/2 -translate-x-[54%] translate-y-[20%] sm:translate-y-[10%] w-[140%] sm:w-[175%] max-w-none -scale-y-100 opacity-80 filter grayscale-[20%] contrast-[120%] brightness-[0.8] pointer-events-none z-0 object-cover object-top"
         />
-
       </div>
 
     </div>
@@ -1383,21 +1210,17 @@
     <!-- Slider Track (Zero Padding Walls) -->
 
     <div
-      id="process-slider"
-      class="w-full flex gap-6 overflow-x-auto scroll-smooth no-scrollbar pt-2 pb-8 pr-12"
+      id="processCarouselTrack"
+      class="how-it-works-track w-full flex gap-6 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden py-2 cursor-grab"
     >
 
-      <!-- Flex Spacer (Expands dynamically on load to position Card 01) -->
+<!-- Card 01 | Strategy -->
 
-      <div id="slider-spacer" class="shrink-0 pointer-events-none"></div>
-
-<!-- Card 01 / Strategy -->
-
-      <div class="w-[360px] sm:w-[440px] md:w-[480px] shrink-0 bg-[#f4f4f6] rounded-[24px] p-8 sm:p-9 flex flex-col justify-between min-h-[320px] sm:min-h-[340px]">
+      <div class="w-[360px] sm:w-[440px] md:w-[480px] shrink-0 flex-shrink-0 transition-transform duration-300 hover:-translate-y-0.5 bg-[#f4f4f6] rounded-[24px] p-8 sm:p-9 flex flex-col justify-between min-h-[320px] sm:min-h-[340px]">
 
         <div>
 
-          <span class="text-xs font-semibold tracking-widest uppercase text-neutral-400">01 / Strategy</span>
+          <span class="text-xs font-semibold tracking-widest text-neutral-400">01 | Strategy</span>
 
           <h3 class="text-2xl font-bold text-neutral-900 tracking-tight mt-2">Creative strategy</h3>
 
@@ -1405,17 +1228,17 @@
 
         </div>
 
-        <div class="mt-auto pt-6"><svg class="w-8 h-8" fill="none" viewBox="0 0 24 24"><defs><linearGradient id="red-thread-gradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff2a5f"/><stop offset="100%" stop-color="#e000ff"/></linearGradient></defs><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg></div>
+        <div class="mt-auto pt-6"><svg class="w-9 h-9 sm:w-10 sm:h-10" fill="none" viewBox="0 0 24 24"><defs><linearGradient id="red-thread-gradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff2a5f"/><stop offset="100%" stop-color="#e000ff"/></linearGradient></defs><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg></div>
 
       </div>
 
-<!-- Card 02 / Activation -->
+<!-- Card 02 | Activation -->
 
-      <div class="w-[360px] sm:w-[440px] md:w-[480px] shrink-0 bg-[#f4f4f6] rounded-[24px] p-8 sm:p-9 flex flex-col justify-between min-h-[320px] sm:min-h-[340px]">
+      <div class="w-[360px] sm:w-[440px] md:w-[480px] shrink-0 flex-shrink-0 transition-transform duration-300 hover:-translate-y-0.5 bg-[#f4f4f6] rounded-[24px] p-8 sm:p-9 flex flex-col justify-between min-h-[320px] sm:min-h-[340px]">
 
         <div>
 
-          <span class="text-xs font-semibold tracking-widest uppercase text-neutral-400">02 / Activation</span>
+          <span class="text-xs font-semibold tracking-widest text-neutral-400">02 | Activation</span>
 
           <h3 class="text-2xl font-bold text-neutral-900 tracking-tight mt-2">Creator activation</h3>
 
@@ -1423,17 +1246,17 @@
 
         </div>
 
-        <div class="mt-auto pt-6"><svg class="w-8 h-8" fill="none" viewBox="0 0 24 24"><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+        <div class="mt-auto pt-6"><svg class="w-9 h-9 sm:w-10 sm:h-10" fill="none" viewBox="0 0 24 24"><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
 
       </div>
 
-<!-- Card 03 / Whitelisting -->
+<!-- Card 03 | Whitelisting -->
 
-      <div class="w-[360px] sm:w-[440px] md:w-[480px] shrink-0 bg-[#f4f4f6] rounded-[24px] p-8 sm:p-9 flex flex-col justify-between min-h-[320px] sm:min-h-[340px]">
+      <div class="w-[360px] sm:w-[440px] md:w-[480px] shrink-0 flex-shrink-0 transition-transform duration-300 hover:-translate-y-0.5 bg-[#f4f4f6] rounded-[24px] p-8 sm:p-9 flex flex-col justify-between min-h-[320px] sm:min-h-[340px]">
 
         <div>
 
-          <span class="text-xs font-semibold tracking-widest uppercase text-neutral-400">03 / Whitelisting</span>
+          <span class="text-xs font-semibold tracking-widest text-neutral-400">03 | Whitelisting</span>
 
           <h3 class="text-2xl font-bold text-neutral-900 tracking-tight mt-2">Creator paid ads</h3>
 
@@ -1441,17 +1264,17 @@
 
         </div>
 
-        <div class="mt-auto pt-6"><svg class="w-8 h-8" fill="none" viewBox="0 0 24 24"><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="m3 11 18-5v12L3 13v-2zm0 0h-1a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1m8 2v4a2 2 0 0 1-2 2H8a1 1 0 0 1-1-1v-5"/></svg></div>
+        <div class="mt-auto pt-6"><svg class="w-9 h-9 sm:w-10 sm:h-10" fill="none" viewBox="0 0 24 24"><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m3 11 18-5v12L3 13v-2zm0 0h-1a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1m8 2v4a2 2 0 0 1-2 2H8a1 1 0 0 1-1-1v-5"/></svg></div>
 
       </div>
 
-<!-- Card 04 / Intelligence -->
+<!-- Card 04 | Intelligence -->
 
-      <div class="w-[360px] sm:w-[440px] md:w-[480px] shrink-0 bg-[#f4f4f6] rounded-[24px] p-8 sm:p-9 flex flex-col justify-between min-h-[320px] sm:min-h-[340px]">
+      <div class="w-[360px] sm:w-[440px] md:w-[480px] shrink-0 flex-shrink-0 transition-transform duration-300 hover:-translate-y-0.5 bg-[#f4f4f6] rounded-[24px] p-8 sm:p-9 flex flex-col justify-between min-h-[320px] sm:min-h-[340px]">
 
         <div>
 
-          <span class="text-xs font-semibold tracking-widest uppercase text-neutral-400">04 / Intelligence</span>
+          <span class="text-xs font-semibold tracking-widest text-neutral-400">04 | Intelligence</span>
 
           <h3 class="text-2xl font-bold text-neutral-900 tracking-tight mt-2">Measurement &amp; analytics</h3>
 
@@ -1459,17 +1282,17 @@
 
         </div>
 
-        <div class="mt-auto pt-6"><svg class="w-8 h-8" fill="none" viewBox="0 0 24 24"><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+        <div class="mt-auto pt-6"><svg class="w-9 h-9 sm:w-10 sm:h-10" fill="none" viewBox="0 0 24 24"><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
 
       </div>
 
-<!-- Card 05 / Optimisation -->
+<!-- Card 05 | Optimisation -->
 
-      <div class="w-[360px] sm:w-[440px] md:w-[480px] shrink-0 bg-[#f4f4f6] rounded-[24px] p-8 sm:p-9 flex flex-col justify-between min-h-[320px] sm:min-h-[340px]">
+      <div class="w-[360px] sm:w-[440px] md:w-[480px] shrink-0 flex-shrink-0 transition-transform duration-300 hover:-translate-y-0.5 bg-[#f4f4f6] rounded-[24px] p-8 sm:p-9 flex flex-col justify-between min-h-[320px] sm:min-h-[340px]">
 
         <div>
 
-          <span class="text-xs font-semibold tracking-widest uppercase text-neutral-400">05 / Optimisation</span>
+          <span class="text-xs font-semibold tracking-widest text-neutral-400">05 | Optimisation</span>
 
           <h3 class="text-2xl font-bold text-neutral-900 tracking-tight mt-2">Conversion yield</h3>
 
@@ -1477,7 +1300,7 @@
 
         </div>
 
-        <div class="mt-auto pt-6"><svg class="w-8 h-8" fill="none" viewBox="0 0 24 24"><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12z"/><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg></div>
+        <div class="mt-auto pt-6"><svg class="w-9 h-9 sm:w-10 sm:h-10" fill="none" viewBox="0 0 24 24"><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12z"/><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg></div>
 
       </div>
 
@@ -1487,9 +1310,9 @@
 
     <div class="max-w-7xl mx-auto px-6 sm:px-8 flex justify-end gap-3 mt-4">
 
-      <button id="prev-btn" aria-label="Previous" class="w-11 h-11 rounded-full bg-neutral-200/80 text-neutral-800 flex items-center justify-center transition-all cursor-pointer">&larr;</button>
+      <button id="prevProcessBtn" aria-label="Previous" class="process-prev-btn w-11 h-11 rounded-full bg-neutral-200/80 text-neutral-800 flex items-center justify-center transition-all cursor-pointer">&larr;</button>
 
-      <button id="next-btn" aria-label="Next" class="w-11 h-11 rounded-full bg-neutral-200/80 text-neutral-800 flex items-center justify-center transition-all cursor-pointer">&rarr;</button>
+      <button id="nextProcessBtn" aria-label="Next" class="process-next-btn w-11 h-11 rounded-full bg-neutral-200/80 text-neutral-800 flex items-center justify-center transition-all cursor-pointer">&rarr;</button>
 
     </div>
 
@@ -1502,154 +1325,99 @@
 
     <div class="max-w-4xl mx-auto text-center relative z-10 px-6">
 
-      <h2 class="text-4xl sm:text-6xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[#ff2a5f] via-[#ff007f] to-[#c800ff] pb-2 inline-block">Global strategy, local soul.</h2>
+      <h2 class="fluid-gradient-text text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-center py-2 leading-[1.15]">
+        Global strategy, local soul.
+      </h2>
 
       <p class="text-base sm:text-lg text-neutral-400 max-w-2xl mx-auto text-center leading-relaxed mt-4 [text-wrap:pretty]">We pair worldwide perspective with deep cultural fluency—so the right content reaches the right audience at the perfect&nbsp;moment.</p>
 
     </div>
 
-    <!-- Balanced typographic stats row -->
-
-    <div class="grid grid-cols-3 gap-2 sm:gap-8 text-center my-6 sm:my-10 max-w-4xl mx-auto relative z-10 w-full px-6">
+    <!-- Stats counter grid -->
+    <div class="grid grid-cols-3 gap-2 text-center max-w-xl mx-auto my-8 relative z-10 w-full px-6 sm:max-w-4xl sm:gap-8">
 
       <div class="flex flex-col items-center justify-center text-center px-1 sm:px-4">
-
         <span class="text-2xl xs:text-3xl sm:text-5xl font-extrabold text-white tracking-tight">80+</span>
-
         <span class="text-[10px] sm:text-xs font-semibold text-neutral-400 mt-1 tracking-wider uppercase">Countries</span>
-
       </div>
 
       <div class="flex flex-col items-center justify-center text-center px-1 sm:px-4">
-
         <span class="text-2xl xs:text-3xl sm:text-5xl font-extrabold text-white tracking-tight">3</span>
-
         <span class="text-[10px] sm:text-xs font-semibold text-neutral-400 mt-1 tracking-wider uppercase">Offices</span>
-
       </div>
 
       <div class="flex flex-col items-center justify-center text-center px-1 sm:px-4">
-
         <span class="text-2xl xs:text-3xl sm:text-5xl font-extrabold text-white tracking-tight">5</span>
-
         <span class="text-[10px] sm:text-xs font-semibold text-neutral-400 mt-1 tracking-wider uppercase">Language Regions</span>
-
       </div>
 
     </div>
 
+    <!-- Percentage-locked map + pins (aspect matches SVG to avoid letterbox drift) -->
+    <div class="w-full px-4 sm:px-8 mb-16 relative z-10">
+      <div class="relative w-full max-w-7xl mx-auto mt-10 sm:mt-16 overflow-hidden select-none" style="aspect-ratio: 1404.7773 / 600.81262;">
 
+        <img
+          src="assets/world-dot-matrix.svg"
+          class="absolute inset-0 w-full h-full object-fill opacity-40 pointer-events-none"
+          alt="World Map"
+          loading="lazy"
+          decoding="async"
+        />
 
-    <!-- LED Dot-Matrix Map + City Badges -->
+        <!-- Los Angeles — beacon only on mobile; pill on sm+ -->
+        <div class="absolute top-[36.5%] left-[16.2%] z-10 -translate-x-1/2 -translate-y-1/2 flex items-center gap-1.5">
+          <span class="relative flex w-2.5 h-2.5 sm:w-2 sm:h-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-500 opacity-75 sm:hidden"></span>
+            <span class="relative inline-flex w-full h-full rounded-full bg-pink-500"></span>
+          </span>
+          <span class="hidden sm:inline-block px-2.5 py-1 rounded-full bg-neutral-900/90 border border-white/10 text-xs font-semibold text-white shadow-lg whitespace-nowrap">LOS ANGELES</span>
+        </div>
 
-    <div class="w-full px-4 sm:px-8 max-w-5xl mx-auto mt-6 mb-16 relative z-10">
-    <div class="relative w-full aspect-[2/1] max-w-5xl mx-auto overflow-hidden">
+        <!-- New York -->
+        <div class="absolute top-[30.5%] left-[27.2%] z-10 -translate-x-1/2 -translate-y-1/2 flex items-center gap-1.5">
+          <span class="relative flex w-2.5 h-2.5 sm:w-2 sm:h-2">
+            <span class="relative inline-flex w-full h-full rounded-full bg-pink-500"></span>
+          </span>
+          <span class="hidden sm:inline-block px-2.5 py-1 rounded-full bg-neutral-900/90 border border-white/10 text-xs font-semibold text-white shadow-lg whitespace-nowrap">NEW YORK</span>
+        </div>
 
-      <img
-        src="assets/world-dot-matrix.svg"
-        alt="World Dot Matrix Map"
-        class="w-full h-full object-contain opacity-50 filter brightness-[1.75]"
-        loading="lazy"
-        decoding="async"
-      />
+        <!-- London -->
+        <div class="absolute top-[21%] left-[45%] z-10 -translate-x-1/2 -translate-y-1/2 flex items-center gap-1.5">
+          <span class="relative flex w-2.5 h-2.5 sm:w-2 sm:h-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-500 opacity-75 sm:hidden"></span>
+            <span class="relative inline-flex w-full h-full rounded-full bg-pink-500"></span>
+          </span>
+          <span class="hidden sm:inline-block px-2.5 py-1 rounded-full bg-neutral-900/90 border border-white/10 text-xs font-semibold text-white shadow-lg whitespace-nowrap">LONDON</span>
+        </div>
 
-      <!-- Los Angeles -->
+        <!-- Lisbon -->
+        <div class="absolute top-[29.5%] left-[42.5%] z-10 -translate-x-1/2 -translate-y-1/2 flex items-center gap-1.5">
+          <span class="relative flex w-2.5 h-2.5 sm:w-2 sm:h-2">
+            <span class="relative inline-flex w-full h-full rounded-full bg-pink-500"></span>
+          </span>
+          <span class="hidden sm:inline-block px-2.5 py-1 rounded-full bg-neutral-900/90 border border-white/10 text-xs font-semibold text-white shadow-lg whitespace-nowrap">LISBON</span>
+        </div>
 
-      <div class="absolute top-[38%] left-[16.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
+        <!-- Basel -->
+        <div class="absolute top-[24%] left-[46.8%] z-10 -translate-x-1/2 -translate-y-1/2 flex items-center gap-1.5">
+          <span class="relative flex w-2.5 h-2.5 sm:w-2 sm:h-2">
+            <span class="relative inline-flex w-full h-full rounded-full bg-pink-500"></span>
+          </span>
+          <span class="hidden sm:inline-block px-2.5 py-1 rounded-full bg-neutral-900/90 border border-white/10 text-xs font-semibold text-white shadow-lg whitespace-nowrap">BASEL</span>
+        </div>
 
-        <span class="relative flex h-2 w-2">
-
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-[#ff2a5f]"></span>
-
-        </span>
-
-        <span class="font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">Los Angeles</span>
-
-      </div>
-
-      <!-- New York -->
-
-      <div class="absolute top-[34%] left-[28.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
-
-        <span class="relative flex h-2 w-2">
-
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-[#ff2a5f]"></span>
-
-        </span>
-
-        <span class="font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">New York</span>
-
-      </div>
-
-      <!-- Lisbon -->
-
-      <div class="absolute top-[41%] left-[45.2%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
-
-        <span class="relative flex h-2 w-2">
-
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-[#ff2a5f]"></span>
-
-        </span>
-
-        <span class="font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">Lisbon</span>
-
-      </div>
-
-      <!-- London -->
-
-      <div class="absolute top-[30%] left-[47.5%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
-
-        <span class="relative flex h-2 w-2">
-
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-[#ff2a5f]"></span>
-
-        </span>
-
-        <span class="font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">London</span>
+        <!-- Singapore -->
+        <div class="absolute top-[57.8%] left-[75.6%] z-10 -translate-x-1/2 -translate-y-1/2 flex items-center gap-1.5">
+          <span class="relative flex w-2.5 h-2.5 sm:w-2 sm:h-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-500 opacity-75 sm:hidden"></span>
+            <span class="relative inline-flex w-full h-full rounded-full bg-pink-500"></span>
+          </span>
+          <span class="hidden sm:inline-block px-2.5 py-1 rounded-full bg-neutral-900/90 border border-white/10 text-xs font-semibold text-white shadow-lg whitespace-nowrap">SINGAPORE</span>
+        </div>
 
       </div>
 
-      <!-- Basel -->
-
-      <div class="absolute top-[33.5%] left-[50.1%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
-
-        <span class="relative flex h-2 w-2">
-
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-[#ff2a5f]"></span>
-
-        </span>
-
-        <span class="font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">Basel</span>
-
-      </div>
-
-      <!-- Singapore -->
-
-      <div class="absolute top-[62%] left-[80.2%] -translate-x-1/2 -translate-y-1/2 scale-90 flex items-center gap-1 sm:gap-1.5 bg-neutral-900/90 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full z-20 text-[9px] sm:text-xs">
-
-        <span class="relative flex h-2 w-2">
-
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-[#ff2a5f]"></span>
-
-        </span>
-
-        <span class="font-semibold tracking-wider text-neutral-100 uppercase whitespace-nowrap">Singapore</span>
-
-      </div>
-
-    </div>
     </div>
 
   </section>
@@ -1661,22 +1429,22 @@
 <section id="creators-section" data-theme="light" data-header-theme="light" class="py-24 sm:py-32 bg-[#fafafa] text-neutral-900 relative overflow-x-hidden z-20">
   <div class="max-w-7xl mx-auto px-6 sm:px-8 mb-16 text-center relative z-10">
     <h2 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-neutral-900 leading-tight">
-      Whoever they are. <span class="bg-gradient-to-r from-[#ff2a5f] via-[#ff007f] to-[#c800ff] bg-clip-text text-transparent">Wherever they are.</span>
+      Whoever they are. <span class="fluid-gradient-text">Wherever they are.</span>
     </h2>
     <p class="text-base sm:text-xl text-neutral-500 mt-4 max-w-3xl mx-auto leading-relaxed text-balance">
       We don’t represent talent—we discover it. We find the architects of culture—the voices, trendsetters, and tastemakers shaping the world today—and connect them to your brand.
     </p>
   </div>
 
-  <div id="imax-stage" class="w-full overflow-x-hidden px-6 -mx-6 py-8 md:px-8 md:mx-0 md:py-12 no-scrollbar" style="perspective: 1200px; perspective-origin: 50% 50%;">
+  <div id="imax-stage" class="w-screen max-w-[100vw] relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] overflow-x-hidden px-0 py-8 sm:w-full sm:max-w-none sm:left-auto sm:right-auto sm:ml-0 sm:mr-0 sm:px-8 sm:py-12 no-scrollbar" style="perspective: 1200px; perspective-origin: 50% 50%;">
     <div
       id="imax-track"
-      class="flex gap-4 sm:gap-6 items-center w-max cursor-grab active:cursor-grabbing select-none will-change-transform"
+      class="flex gap-3 sm:gap-6 items-center w-max cursor-grab active:cursor-grabbing select-none will-change-transform"
       style="transform-style: preserve-3d;"
     >
 
       <!-- Card 01: Courtney -->
-      <div class="imax-card aspect-[3/4] w-[260px] sm:w-[280px] md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
         <img src="Content/Creator profiles/courtney.avif" alt="Courtney Daniella Jesse" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/courtney.avif';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
         <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
@@ -1685,7 +1453,7 @@
       </div>
 
       <!-- Card 02: Josh -->
-      <div class="imax-card aspect-[3/4] w-[260px] sm:w-[280px] md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
         <img src="Content/Creator profiles/josh.jpeg" alt="Josh Oyinsan" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/josh.jpeg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
         <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
@@ -1694,7 +1462,7 @@
       </div>
 
       <!-- Card 03: Helen -->
-      <div class="imax-card aspect-[3/4] w-[260px] sm:w-[280px] md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
         <img src="Content/Creator profiles/helen.jpeg" alt="Helen Anderson" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/helen.jpeg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
         <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
@@ -1703,7 +1471,7 @@
       </div>
 
       <!-- Card 04: Fu -->
-      <div class="imax-card aspect-[3/4] w-[260px] sm:w-[280px] md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
         <img src="Content/Creator profiles/fu-izzy-resized.jpg" alt="Fu Izzy" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/fu-izzy-resized.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
         <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
@@ -1712,7 +1480,7 @@
       </div>
 
       <!-- Card 05: Rose -->
-      <div class="imax-card aspect-[3/4] w-[260px] sm:w-[280px] md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
         <img src="Content/Creator profiles/roseandrosie.jpg" alt="Rose and Rosie" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/roseandrosie.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
         <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
@@ -1721,7 +1489,7 @@
       </div>
 
       <!-- Card 06: Charlessy -->
-      <div class="imax-card aspect-[3/4] w-[260px] sm:w-[280px] md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
         <img src="Content/Creator profiles/charlessy.jpg" alt="Charlessy" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/charlessy.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
         <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
@@ -1730,7 +1498,7 @@
       </div>
 
       <!-- Card 07: Hayls World -->
-      <div class="imax-card aspect-[3/4] w-[260px] sm:w-[280px] md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
         <img src="Content/Creator profiles/hayls.jpg" alt="Hayls World" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/hayls.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
         <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
@@ -1739,7 +1507,7 @@
       </div>
 
       <!-- Card 08: Craig & Aimee -->
-      <div class="imax-card aspect-[3/4] w-[260px] sm:w-[280px] md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
         <img src="Content/Creator profiles/Craign-and-aimee.jpg" alt="Craig & Aimee" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/Craign-and-aimee.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
         <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
@@ -1748,7 +1516,7 @@
       </div>
 
       <!-- Card 09: Hermione Chantal -->
-      <div class="imax-card aspect-[3/4] w-[260px] sm:w-[280px] md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
         <img src="Content/Creator profiles/hermione.jpg" alt="Hermione Chantal" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/hermione.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
         <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
@@ -1757,7 +1525,7 @@
       </div>
 
       <!-- Card 10: George Alexander -->
-      <div class="imax-card aspect-[3/4] w-[260px] sm:w-[280px] md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
         <img src="Content/Creator profiles/george.jpg" alt="George Alexander" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/george.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
         <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
@@ -1766,7 +1534,7 @@
       </div>
 
       <!-- Card 11: Taz Alam -->
-      <div class="imax-card aspect-[3/4] w-[260px] sm:w-[280px] md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
         <img src="Content/Creator profiles/clickfortaz.jpg" alt="Taz Alam" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/clickfortaz.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
         <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
@@ -1787,49 +1555,45 @@
 
       <!-- Section Header -->
       <div class="mb-6 md:mb-10">
-        <h2 class="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-neutral-900 mb-2">From award-winning, to <span class="bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent">scroll stopping.</span></h2>
+        <h2 class="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-neutral-900 mb-2">From award-winning, <span class="fluid-gradient-text">to scroll stopping.</span></h2>
         <p class="text-sm sm:text-base text-neutral-400 mb-6 md:mb-0 md:mt-3 md:text-lg md:text-neutral-500">We’ll let our work do the talking.</p>
       </div>
 
-      <!-- Accordion Canvas Stage (mobile: snap carousel / md+: accordion) -->
-      <div id="deck-accordion" class="flex overflow-x-auto md:overflow-hidden snap-x snap-mandatory gap-4 px-5 -mx-5 md:mx-0 md:px-0 py-2 no-scrollbar w-screen max-w-none relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] md:w-full md:max-w-full md:left-auto md:right-auto md:ml-0 md:mr-0 h-auto md:h-[620px] lg:h-[680px] select-none">
+      <!-- Accordion Canvas Stage (mobile: snap carousel / md+: image peeks) -->
+      <div id="deck-accordion" class="flex gap-4 sm:gap-8 overflow-x-auto md:overflow-hidden snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden py-4 px-5 -mx-5 md:mx-0 md:px-0 w-screen max-w-none relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] md:w-full md:max-w-full md:left-auto md:right-auto md:ml-0 md:mr-0 h-auto md:h-[620px] lg:h-[680px] select-none items-stretch">
 
         <!-- Card 01: Movember -->
-        <div class="accordion-card is-active w-[88vw] max-w-[360px] flex-shrink-0 snap-center h-[520px] md:h-auto md:max-w-none md:snap-align-none rounded-3xl md:rounded-[32px] overflow-hidden transition-[flex-grow,flex-basis] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer" data-index="0">
+        <div class="accordion-card is-active w-[85vw] max-w-[380px] flex-shrink-0 snap-center aspect-[4/5] min-h-[520px] md:aspect-auto md:h-auto md:min-h-0 md:max-w-4xl md:snap-align-none rounded-3xl md:rounded-[32px] overflow-hidden relative cursor-pointer transition-all duration-500" data-index="0">
           <img src="Content/Case Studies/movember-resized.jpg" alt="Movember Case Study" class="case-study-bg absolute inset-0 w-full h-full object-cover pointer-events-none" loading="lazy" decoding="async"/>
-          <div class="case-study-scrim absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent md:from-neutral-950 md:via-neutral-950/70 z-10"></div>
+          <div class="case-study-scrim absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/50 to-transparent z-10 pointer-events-none"></div>
           <div class="case-top-fade absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-black/70 via-black/30 to-transparent pointer-events-none z-10"></div>
 
-          <!-- Brand logo: top-left when expanded; centered on inactive spine (CSS) -->
           <div class="case-brand-logo absolute top-8 left-8 sm:top-10 sm:left-10 z-30 flex items-center h-12">
             <img src="Content/Brand%20Logos/movember.png" alt="Movember" class="h-9 sm:h-11 w-auto object-contain filter brightness-0 invert" loading="lazy" decoding="async" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';"/>
             <span class="hidden text-xl sm:text-2xl font-black tracking-tighter text-white uppercase italic">MOVEMBER</span>
           </div>
 
-          <!-- Collapsed spine: vertically centered title -->
-          <div class="collapsed-content opacity-0 pointer-events-none absolute inset-y-0 left-0 right-0 flex items-center justify-center z-20 transition-opacity duration-150 ease-out">
+          <div class="collapsed-content opacity-0 pointer-events-none absolute inset-y-0 left-0 right-0 flex items-center justify-center z-20">
             <span class="text-xs font-semibold tracking-widest text-white/90 uppercase [writing-mode:vertical-lr] rotate-180 whitespace-nowrap">Movember</span>
           </div>
 
-          <!-- Expanded Content Canvas -->
           <div class="expanded-content opacity-100 absolute inset-0 w-full h-full pointer-events-auto transition-opacity duration-300 delay-300 ease-in z-20">
             <div class="case-mobile-panel">
               <button type="button" class="case-view-more-btn" aria-expanded="false" aria-label="View more">^</button>
               <div class="case-expanded-body w-full h-full flex flex-col md:flex-row justify-between items-end p-8 md:p-12 relative z-10">
                 <div class="case-copy max-w-xl md:w-[58%] flex flex-col justify-end">
-                  <span class="text-xs tracking-widest uppercase block mb-1 bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent font-extrabold">Case Study Showcase</span>
                   <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">Nuts of the Roundtable</h3>
                   <p class="text-base sm:text-lg font-semibold text-neutral-200 mt-2 line-clamp-2">Transforming health stigma into a heroic mission. A pattern-interrupt creative campaign that drove real-world action.</p>
                   <p class="text-xs sm:text-sm text-neutral-300 mt-3 leading-relaxed max-w-xl">We cast creators as "Nuts of the Round Table" at Hedingham Castle, using high-concept production to bypass traditional health-ad filters. By reframing check-ups as a "Knight's Code," we turned a medical chore into a heroic mandate.</p>
                 </div>
-                <div class="case-metrics flex gap-8 items-end flex-shrink-0 md:ml-auto">
-                  <div class="flex flex-col items-end">
-                    <span class="text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-none bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent font-extrabold">1.19M</span>
-                    <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Impressions</span>
+                <div class="case-metrics flex gap-3 items-stretch flex-shrink-0 md:ml-auto">
+                  <div class="px-4 py-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 flex flex-col justify-center">
+                    <span class="text-2xl sm:text-3xl font-bold tracking-tight text-white">1.19M</span>
+                    <span class="text-[10px] sm:text-xs font-semibold text-neutral-300 uppercase tracking-wider">Impressions</span>
                   </div>
-                  <div class="flex flex-col items-end">
-                    <span class="text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-none bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent font-extrabold">9.51%</span>
-                    <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Peak Engagement</span>
+                  <div class="px-4 py-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 flex flex-col justify-center">
+                    <span class="text-2xl sm:text-3xl font-bold tracking-tight text-white">9.51%</span>
+                    <span class="text-[10px] sm:text-xs font-semibold text-neutral-300 uppercase tracking-wider">Engagement</span>
                   </div>
                 </div>
               </div>
@@ -1838,9 +1602,9 @@
         </div>
 
         <!-- Card 02: Tourism Ireland -->
-        <div class="accordion-card is-inactive w-[88vw] max-w-[360px] flex-shrink-0 snap-center h-[520px] md:h-auto md:max-w-none md:snap-align-none rounded-3xl md:rounded-[32px] overflow-hidden transition-[flex-grow,flex-basis] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer" data-index="1">
+        <div class="accordion-card is-inactive w-[85vw] max-w-[380px] flex-shrink-0 snap-center aspect-[4/5] min-h-[520px] md:aspect-auto md:h-auto md:min-h-0 md:max-w-none md:snap-align-none rounded-3xl md:rounded-[32px] overflow-hidden relative cursor-pointer transition-all duration-500" data-index="1">
           <img src="Content/Case Studies/ireland.jpg" alt="Tourism Ireland" class="case-study-bg absolute inset-0 w-full h-full object-cover object-center pointer-events-none" loading="lazy" decoding="async"/>
-          <div class="case-study-scrim absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent md:from-neutral-950 md:via-neutral-950/70 z-10"></div>
+          <div class="case-study-scrim absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/50 to-transparent z-10 pointer-events-none"></div>
           <div class="case-top-fade absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-black/70 via-black/30 to-transparent pointer-events-none z-10"></div>
 
           <div class="case-brand-logo absolute top-8 left-8 sm:top-10 sm:left-10 z-30 flex items-center h-12">
@@ -1848,7 +1612,7 @@
             <span class="hidden text-xl sm:text-2xl font-bold tracking-wider text-white uppercase">Tourism Ireland</span>
           </div>
 
-          <div class="collapsed-content opacity-100 absolute inset-y-0 left-0 right-0 flex items-center justify-center pointer-events-none z-20 transition-opacity duration-200 delay-200 ease-in">
+          <div class="collapsed-content opacity-0 absolute inset-y-0 left-0 right-0 flex items-center justify-center pointer-events-none z-20">
             <span class="text-xs font-semibold tracking-widest text-white/90 uppercase [writing-mode:vertical-lr] rotate-180 whitespace-nowrap">Tourism Ireland</span>
           </div>
 
@@ -1857,19 +1621,18 @@
               <button type="button" class="case-view-more-btn" aria-expanded="false" aria-label="View more">^</button>
               <div class="case-expanded-body w-full h-full flex flex-col md:flex-row justify-between items-end p-8 md:p-12 relative z-10">
                 <div class="case-copy max-w-xl md:w-[58%] flex flex-col justify-end">
-                  <span class="text-xs tracking-widest uppercase block mb-1 bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent font-extrabold">Case Study Showcase</span>
                   <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">Just Go</h3>
                   <p class="text-base sm:text-lg font-semibold text-neutral-200 mt-2 line-clamp-2">Shifting from simple awareness to genuine travel intent. Ireland defined by feeling, not just place.</p>
                   <p class="text-xs sm:text-sm text-neutral-300 mt-3 leading-relaxed max-w-xl">We partnered with creators to deliver platform-native storytelling tailored to traveller mindsets. By positioning Ireland through lived experience, we transformed tourism marketing into a series of relatable human stories.</p>
                 </div>
-                <div class="case-metrics flex gap-8 items-end flex-shrink-0 md:ml-auto">
-                  <div class="flex flex-col items-end">
-                    <span class="text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-none bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent font-extrabold">1.25M</span>
-                    <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Organic Impressions</span>
+                <div class="case-metrics flex gap-3 items-stretch flex-shrink-0 md:ml-auto">
+                  <div class="px-4 py-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 flex flex-col justify-center">
+                    <span class="text-2xl sm:text-3xl font-bold tracking-tight text-white">1.25M</span>
+                    <span class="text-[10px] sm:text-xs font-semibold text-neutral-300 uppercase tracking-wider">Impressions</span>
                   </div>
-                  <div class="flex flex-col items-end">
-                    <span class="text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-none bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent font-extrabold">+33%</span>
-                    <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Traffic Uplift</span>
+                  <div class="px-4 py-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 flex flex-col justify-center">
+                    <span class="text-2xl sm:text-3xl font-bold tracking-tight text-white">+33%</span>
+                    <span class="text-[10px] sm:text-xs font-semibold text-neutral-300 uppercase tracking-wider">Traffic Uplift</span>
                   </div>
                 </div>
               </div>
@@ -1878,9 +1641,9 @@
         </div>
 
         <!-- Card 03: Volvic -->
-        <div class="accordion-card is-inactive w-[88vw] max-w-[360px] flex-shrink-0 snap-center h-[520px] md:h-auto md:max-w-none md:snap-align-none rounded-3xl md:rounded-[32px] overflow-hidden transition-[flex-grow,flex-basis] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer" data-index="2">
+        <div class="accordion-card is-inactive w-[85vw] max-w-[380px] flex-shrink-0 snap-center aspect-[4/5] min-h-[520px] md:aspect-auto md:h-auto md:min-h-0 md:max-w-none md:snap-align-none rounded-3xl md:rounded-[32px] overflow-hidden relative cursor-pointer transition-all duration-500" data-index="2">
           <img src="Content/Case Studies/volvic.jpg" alt="Volvic" class="case-study-bg absolute inset-0 w-full h-full object-cover object-center pointer-events-none" loading="lazy" decoding="async"/>
-          <div class="case-study-scrim absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent md:from-neutral-950 md:via-neutral-950/70 z-10"></div>
+          <div class="case-study-scrim absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/50 to-transparent z-10 pointer-events-none"></div>
           <div class="case-top-fade absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-black/70 via-black/30 to-transparent pointer-events-none z-10"></div>
 
           <div class="case-brand-logo absolute top-8 left-8 sm:top-10 sm:left-10 z-30 flex items-center h-12">
@@ -1888,7 +1651,7 @@
             <span class="hidden text-2xl sm:text-3xl font-extrabold tracking-tight text-white italic">Volvic</span>
           </div>
 
-          <div class="collapsed-content opacity-100 absolute inset-y-0 left-0 right-0 flex items-center justify-center pointer-events-none z-20 transition-opacity duration-200 delay-200 ease-in">
+          <div class="collapsed-content opacity-0 absolute inset-y-0 left-0 right-0 flex items-center justify-center pointer-events-none z-20">
             <span class="text-xs font-semibold tracking-widest text-white/90 uppercase [writing-mode:vertical-lr] rotate-180 whitespace-nowrap">Volvic</span>
           </div>
 
@@ -1897,19 +1660,18 @@
               <button type="button" class="case-view-more-btn" aria-expanded="false" aria-label="View more">^</button>
               <div class="case-expanded-body w-full h-full flex flex-col md:flex-row justify-between items-end p-8 md:p-12 relative z-10">
                 <div class="case-copy max-w-xl md:w-[58%] flex flex-col justify-end">
-                  <span class="text-xs tracking-widest uppercase block mb-1 bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent font-extrabold">Case Study Showcase</span>
                   <h3 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">Well, that's refreshing.</h3>
                   <p class="text-base sm:text-lg font-semibold text-neutral-200 mt-2 line-clamp-2">Capturing authentic summer joy. Extending festival energy into a digital, high-volume ecosystem.</p>
                   <p class="text-xs sm:text-sm text-neutral-300 mt-3 leading-relaxed max-w-xl">We commissioned 19 creators to capture authentic summer moments—seaside swims, park picnics—with Volvic Watermelon as the companion. We shifted the focus from flavour to feeling, embedding the product into summer culture.</p>
                 </div>
-                <div class="case-metrics flex gap-8 items-end flex-shrink-0 md:ml-auto">
-                  <div class="flex flex-col items-end">
-                    <span class="text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-none bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent font-extrabold">5.0%+</span>
-                    <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Avg Engagement</span>
+                <div class="case-metrics flex gap-3 items-stretch flex-shrink-0 md:ml-auto">
+                  <div class="px-4 py-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 flex flex-col justify-center">
+                    <span class="text-2xl sm:text-3xl font-bold tracking-tight text-white">5.0%+</span>
+                    <span class="text-[10px] sm:text-xs font-semibold text-neutral-300 uppercase tracking-wider">Engagement</span>
                   </div>
-                  <div class="flex flex-col items-end">
-                    <span class="text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-none bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent font-extrabold">605K</span>
-                    <span class="text-[10px] sm:text-xs font-bold tracking-widest text-neutral-300 uppercase mt-1">Impressions</span>
+                  <div class="px-4 py-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 flex flex-col justify-center">
+                    <span class="text-2xl sm:text-3xl font-bold tracking-tight text-white">605K</span>
+                    <span class="text-[10px] sm:text-xs font-semibold text-neutral-300 uppercase tracking-wider">Impressions</span>
                   </div>
                 </div>
               </div>
@@ -1934,7 +1696,7 @@
     <div class="max-w-7xl mx-auto px-6 sm:px-8 pb-20 border-b border-white/10 text-center">
       <h2 id="philosophy-title" class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight text-balance">
         Creator instinct, amplified by proprietary tech. <br class="hidden sm:inline"/>
-        <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#ff2a5f] to-[#e000ff] pb-1 inline-block">Built on proof, not promises.</span>
+        <span class="fluid-gradient-text pb-1">Built on proof, not promises.</span>
       </h2>
     </div>
   </section>
@@ -1956,15 +1718,15 @@
         <!-- Right Column: Interactive Form -->
         <div class="lg:col-span-7 flex flex-col gap-6">
 
-          <!-- Full-Width Segmented Control -->
-          <div class="bg-white/5 p-1.5 rounded-2xl border border-white/10 grid grid-cols-3 gap-1.5 w-full">
-            <button type="button" class="type-pill active bg-white/20 text-white border border-white/30 shadow-sm font-semibold py-3.5 rounded-xl text-xs sm:text-sm transition-all cursor-pointer text-center" data-type="campaign">
+          <!-- Segmented Option Control -->
+          <div class="relative bg-neutral-900/80 p-1.5 rounded-2xl border border-white/10 flex items-center justify-between gap-1 overflow-x-auto no-scrollbar">
+            <button type="button" class="form-tab-btn active flex-1 py-2.5 px-3 text-xs sm:text-sm font-semibold rounded-xl transition-all duration-200 text-center whitespace-nowrap bg-neutral-800 text-white shadow-sm" data-tab="campaign">
               Campaign
             </button>
-            <button type="button" class="type-pill text-neutral-400 hover:text-white border border-transparent py-3.5 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer text-center" data-type="demo">
+            <button type="button" class="form-tab-btn flex-1 py-2.5 px-3 text-xs sm:text-sm font-semibold rounded-xl transition-all duration-200 text-center whitespace-nowrap text-neutral-400 hover:text-white" data-tab="demo">
               ThreadOS™ demo
             </button>
-            <button type="button" class="type-pill text-neutral-400 hover:text-white border border-transparent py-3.5 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer text-center" data-type="audit">
+            <button type="button" class="form-tab-btn flex-1 py-2.5 px-3 text-xs sm:text-sm font-semibold rounded-xl transition-all duration-200 text-center whitespace-nowrap text-neutral-400 hover:text-white" data-tab="audit">
               Performance audit
             </button>
           </div>
@@ -1972,16 +1734,16 @@
           <!-- Form Fields -->
           <form class="flex flex-col gap-4 mt-2" onsubmit="event.preventDefault();">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <input type="text" placeholder="First name" autocomplete="given-name" class="bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white text-base placeholder:text-neutral-500 focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all w-full" required/>
-              <input type="text" placeholder="Last name" autocomplete="family-name" class="bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white text-base placeholder:text-neutral-500 focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all w-full" required/>
+              <input type="text" placeholder="First name" autocomplete="given-name" class="w-full bg-neutral-900/60 border border-white/10 rounded-2xl px-4 py-3.5 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-pink-500/60 focus:ring-1 focus:ring-pink-500/30 transition-all duration-200" required/>
+              <input type="text" placeholder="Last name" autocomplete="family-name" class="w-full bg-neutral-900/60 border border-white/10 rounded-2xl px-4 py-3.5 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-pink-500/60 focus:ring-1 focus:ring-pink-500/30 transition-all duration-200" required/>
             </div>
             <div>
-              <input type="email" placeholder="Email address" autocomplete="email" class="bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white text-base placeholder:text-neutral-500 focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all w-full" required/>
+              <input type="email" placeholder="Email address" autocomplete="email" class="w-full bg-neutral-900/60 border border-white/10 rounded-2xl px-4 py-3.5 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-pink-500/60 focus:ring-1 focus:ring-pink-500/30 transition-all duration-200" required/>
             </div>
             <div>
-              <textarea placeholder="Write a little something here" class="bg-white/5 border border-white/10 rounded-2xl p-5 text-white text-base placeholder:text-neutral-500 focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all w-full min-h-[140px] resize-none"></textarea>
+              <textarea placeholder="Write a little something here" class="w-full bg-neutral-900/60 border border-white/10 rounded-2xl px-4 py-3.5 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-pink-500/60 focus:ring-1 focus:ring-pink-500/30 transition-all duration-200 min-h-[140px] resize-none"></textarea>
             </div>
-            <button type="submit" class="bg-white text-neutral-950 font-bold py-4 px-8 rounded-2xl hover:bg-neutral-200 transition-all flex items-center justify-center gap-2 cursor-pointer w-full text-base mt-2">
+            <button type="submit" class="w-full bg-white text-black font-bold py-4 rounded-2xl hover:bg-neutral-100 hover:scale-[1.01] active:scale-[0.98] transition-all duration-200 ease-out shadow-lg cursor-pointer mt-2">
               Let's get this show on the road.
             </button>
           </form>
@@ -1990,38 +1752,68 @@
 
       </div>
 
-      <!-- SUBDUED COMPACT FAQ SECTION -->
+      <!-- FAQ Accordion -->
       <div id="faq" class="pt-16 pb-8">
         <h3 class="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-300 mb-8">Frequently asked.</h3>
 
-        <div class="space-y-4">
-          <div class="border-b border-white/10 pb-4">
-            <button type="button" class="faq-toggle w-full flex justify-between items-center text-left text-base sm:text-lg font-medium text-neutral-200 hover:text-white transition-colors py-1.5 cursor-pointer">
-              <span>How does Red Thread guarantee brand safety with creators?</span>
-              <span class="text-xl font-light text-neutral-500 ml-4">+</span>
+        <div class="space-y-0">
+          <div class="faq-item border-b border-white/10 py-5 sm:py-6 group transition-colors duration-300">
+            <button type="button" class="faq-trigger w-full flex items-center justify-between gap-4 text-left cursor-pointer focus:outline-none">
+              <span class="faq-question text-base sm:text-xl font-bold tracking-tight text-white transition-colors duration-300 group-hover:text-neutral-200">
+                How does Red Thread guarantee brand safety with creators?
+              </span>
+              <div class="faq-badge w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:border-white/20">
+                <svg class="faq-icon w-3.5 h-3.5 text-neutral-300 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+              </div>
             </button>
-            <div class="faq-content hidden mt-2 text-neutral-400 text-sm leading-relaxed max-w-3xl">
-              We run every creator partner through proprietary safety screening and human vetting before contract execution, ensuring brand compliance across tone, past content history, and audience authenticity.
+            <div class="faq-answer grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-out">
+              <div class="overflow-hidden">
+                <p class="pt-4 text-sm sm:text-base text-neutral-400 leading-relaxed max-w-3xl">
+                  We vet every creator partner through proprietary safety screening and human vetting before contract execution, ensuring brand compliance across tone, past content history, and audience authenticity.
+                </p>
+              </div>
             </div>
           </div>
 
-          <div class="border-b border-white/10 pb-4">
-            <button type="button" class="faq-toggle w-full flex justify-between items-center text-left text-base sm:text-lg font-medium text-neutral-200 hover:text-white transition-colors py-1.5 cursor-pointer">
-              <span>How are creator licencing and global usage rights handled?</span>
-              <span class="text-xl font-light text-neutral-500 ml-4">+</span>
+          <div class="faq-item border-b border-white/10 py-5 sm:py-6 group transition-colors duration-300">
+            <button type="button" class="faq-trigger w-full flex items-center justify-between gap-4 text-left cursor-pointer focus:outline-none">
+              <span class="faq-question text-base sm:text-xl font-bold tracking-tight text-white transition-colors duration-300 group-hover:text-neutral-200">
+                How are creator licencing and global usage rights handled?
+              </span>
+              <div class="faq-badge w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:border-white/20">
+                <svg class="faq-icon w-3.5 h-3.5 text-neutral-300 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+              </div>
             </button>
-            <div class="faq-content hidden mt-2 text-neutral-400 text-sm leading-relaxed max-w-3xl">
-              All usage rights, licencing scopes, and territory expansions are managed centrally through ThreadOS™, giving your legal and brand teams 100% clarity and immediate access to contracts.
+            <div class="faq-answer grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-out">
+              <div class="overflow-hidden">
+                <p class="pt-4 text-sm sm:text-base text-neutral-400 leading-relaxed max-w-3xl">
+                  All usage rights, licencing scopes, and territory expansions are managed centrally through ThreadOS™, giving your legal and brand teams 100% clarity and immediate access to contracts.
+                </p>
+              </div>
             </div>
           </div>
 
-          <div class="border-b border-white/10 pb-4">
-            <button type="button" class="faq-toggle w-full flex justify-between items-center text-left text-base sm:text-lg font-medium text-neutral-200 hover:text-white transition-colors py-1.5 cursor-pointer">
-              <span>Can ThreadOS™ integrate directly into our internal analytics stack?</span>
-              <span class="text-xl font-light text-neutral-500 ml-4">+</span>
+          <div class="faq-item border-b border-white/10 py-5 sm:py-6 group transition-colors duration-300">
+            <button type="button" class="faq-trigger w-full flex items-center justify-between gap-4 text-left cursor-pointer focus:outline-none">
+              <span class="faq-question text-base sm:text-xl font-bold tracking-tight text-white transition-colors duration-300 group-hover:text-neutral-200">
+                Can ThreadOS™ integrate directly into our internal analytics stack?
+              </span>
+              <div class="faq-badge w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:border-white/20">
+                <svg class="faq-icon w-3.5 h-3.5 text-neutral-300 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+              </div>
             </button>
-            <div class="faq-content hidden mt-2 text-neutral-400 text-sm leading-relaxed max-w-3xl">
-              Yes. ThreadOS™ provides direct API hooks and automated reporting exports into Snowflake, Looker, Google BigQuery, and custom enterprise dashboards.
+            <div class="faq-answer grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-out">
+              <div class="overflow-hidden">
+                <p class="pt-4 text-sm sm:text-base text-neutral-400 leading-relaxed max-w-3xl">
+                  Yes. ThreadOS™ provides direct API hooks and automated reporting exports into Snowflake, Looker, Google BigQuery, and custom enterprise dashboards.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -2077,45 +1869,210 @@
 
 
 
-    // Process slider chevrons
+    // Process track — fluid scroll, title-aligned start, reliable end states
+    (function initProcessTrackPhysics() {
+      const track = document.getElementById('processCarouselTrack') || document.querySelector('.how-it-works-track');
+      const prevBtn = document.getElementById('prevProcessBtn') || document.querySelector('.process-prev-btn');
+      const nextBtn = document.getElementById('nextProcessBtn') || document.querySelector('.process-next-btn');
 
-    (function () {
+      if (!track) return;
 
-      const slider = document.getElementById('process-slider');
+      let animFrame = 0;
+      let inertiaFrame = 0;
+      const EDGE = 2;
 
-      const prevBtn = document.getElementById('prev-btn');
-
-      const nextBtn = document.getElementById('next-btn');
-
-      if (!slider || !prevBtn || !nextBtn) return;
-
-      const getScrollDistance = () => {
-
-        // Target the first actual card (skipping the #slider-spacer)
-
-        const card = slider.children[1];
-
-        return card ? card.offsetWidth + 24 : 440; // card width + 24px gap
-
-      };
-
-      function updatePrevState() {
-
-        prevBtn.disabled = slider.scrollLeft <= 4;
-
+      function getCards() {
+        return Array.from(track.children);
       }
 
-      nextBtn.onclick = () => slider.scrollBy({ left: getScrollDistance(), behavior: 'smooth' });
+      function getMaxScroll() {
+        return Math.max(0, track.scrollWidth - track.clientWidth);
+      }
 
-      prevBtn.onclick = () => slider.scrollBy({ left: -getScrollDistance(), behavior: 'smooth' });
+      function getScrollAmount() {
+        const card = getCards()[0];
+        if (!card) return 380;
+        const gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap) || 24;
+        return card.offsetWidth + gap;
+      }
 
-      slider.addEventListener('scroll', updatePrevState, { passive: true });
+      function easeOutCubic(t) {
+        return 1 - Math.pow(1 - t, 3);
+      }
 
-      updatePrevState();
+      function animateScrollTo(targetLeft, duration) {
+        cancelAnimationFrame(animFrame);
+        cancelAnimationFrame(inertiaFrame);
 
+        const clamped = Math.min(Math.max(0, targetLeft), getMaxScroll());
+        const start = track.scrollLeft;
+        const delta = clamped - start;
+        if (Math.abs(delta) < 0.5) {
+          track.scrollLeft = clamped;
+          updateArrowStates();
+          return;
+        }
+
+        // Distance-scaled duration — fluid coast, not a snap
+        const ms = duration || Math.min(780, Math.max(380, Math.abs(delta) * 0.7));
+        const t0 = performance.now();
+
+        function frame(now) {
+          const t = Math.min(1, (now - t0) / ms);
+          track.scrollLeft = start + delta * easeOutCubic(t);
+          updateArrowStates();
+          if (t < 1) {
+            animFrame = requestAnimationFrame(frame);
+          } else {
+            track.scrollLeft = clamped;
+            updateArrowStates();
+          }
+        }
+
+        animFrame = requestAnimationFrame(frame);
+      }
+
+      function updateArrowStates() {
+        const maxScroll = getMaxScroll();
+        const current = track.scrollLeft;
+        const atStart = current <= EDGE;
+        const atEnd = maxScroll <= EDGE || current >= maxScroll - EDGE;
+
+        if (prevBtn) {
+          prevBtn.style.opacity = atStart ? '0.3' : '1';
+          prevBtn.style.pointerEvents = atStart ? 'none' : 'auto';
+          prevBtn.setAttribute('aria-disabled', atStart ? 'true' : 'false');
+        }
+        if (nextBtn) {
+          nextBtn.style.opacity = atEnd ? '0.3' : '1';
+          nextBtn.style.pointerEvents = atEnd ? 'none' : 'auto';
+          nextBtn.setAttribute('aria-disabled', atEnd ? 'true' : 'false');
+        }
+      }
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+          animateScrollTo(track.scrollLeft - getScrollAmount());
+        });
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          animateScrollTo(track.scrollLeft + getScrollAmount());
+        });
+      }
+
+      // Desktop drag + inertia (touch keeps native momentum)
+      let dragging = false;
+      let dragMoved = false;
+      let startX = 0;
+      let startScroll = 0;
+      let lastX = 0;
+      let lastT = 0;
+      let velocity = 0;
+
+      function onPointerDown(e) {
+        if (e.pointerType === 'touch') return;
+        if (e.button !== 0) return;
+
+        cancelAnimationFrame(animFrame);
+        cancelAnimationFrame(inertiaFrame);
+
+        dragging = true;
+        dragMoved = false;
+        startX = e.clientX;
+        startScroll = track.scrollLeft;
+        lastX = e.clientX;
+        lastT = performance.now();
+        velocity = 0;
+
+        track.classList.add('is-dragging');
+        track.setPointerCapture(e.pointerId);
+      }
+
+      function onPointerMove(e) {
+        if (!dragging) return;
+        const dx = e.clientX - startX;
+        if (Math.abs(dx) > 3) dragMoved = true;
+
+        const now = performance.now();
+        const dt = Math.max(1, now - lastT);
+        velocity = ((e.clientX - lastX) / dt) * 16;
+        lastX = e.clientX;
+        lastT = now;
+
+        track.scrollLeft = startScroll - dx;
+        updateArrowStates();
+      }
+
+      function runInertia() {
+        const friction = 0.95;
+        const minVelocity = 0.18;
+
+        function step() {
+          if (Math.abs(velocity) < minVelocity) {
+            updateArrowStates();
+            return;
+          }
+
+          const maxScroll = getMaxScroll();
+          track.scrollLeft = Math.min(maxScroll, Math.max(0, track.scrollLeft - velocity));
+          velocity *= friction;
+
+          if (track.scrollLeft <= 0 || track.scrollLeft >= maxScroll) {
+            velocity = 0;
+            updateArrowStates();
+            return;
+          }
+
+          updateArrowStates();
+          inertiaFrame = requestAnimationFrame(step);
+        }
+
+        inertiaFrame = requestAnimationFrame(step);
+      }
+
+      function onPointerUp(e) {
+        if (!dragging) return;
+        dragging = false;
+        track.classList.remove('is-dragging');
+
+        try {
+          track.releasePointerCapture(e.pointerId);
+        } catch (_) {}
+
+        if (dragMoved && Math.abs(velocity) > 0.45) {
+          runInertia();
+        } else {
+          updateArrowStates();
+        }
+      }
+
+      track.addEventListener('pointerdown', onPointerDown);
+      track.addEventListener('pointermove', onPointerMove);
+      track.addEventListener('pointerup', onPointerUp);
+      track.addEventListener('pointercancel', onPointerUp);
+
+      track.addEventListener(
+        'wheel',
+        (e) => {
+          const absX = Math.abs(e.deltaX);
+          const absY = Math.abs(e.deltaY);
+          if (absY <= absX) return;
+
+          e.preventDefault();
+          cancelAnimationFrame(animFrame);
+          cancelAnimationFrame(inertiaFrame);
+          track.scrollLeft += e.deltaY + e.deltaX;
+          updateArrowStates();
+        },
+        { passive: false }
+      );
+
+      track.addEventListener('scroll', updateArrowStates, { passive: true });
+      window.addEventListener('resize', updateArrowStates);
+      updateArrowStates();
     })();
-
-
 
 
 
@@ -2463,24 +2420,18 @@
       function updateFanout() {
         const rect = section.getBoundingClientRect();
         const vh = window.innerHeight;
-        const scrollableDistance = section.offsetHeight - vh;
-
-        if (scrollableDistance <= 0) {
-          isTicking = false;
-          return;
-        }
 
         let progress = 0;
-
         if (rect.top <= 0) {
-          // Map progress 0.0 to 1.0 continuously across 100% of the sticky scroll distance
           const scrollOffset = Math.abs(rect.top);
-          progress = Math.min(Math.max(scrollOffset / scrollableDistance, 0), 1.0);
+
+          // FRONT-LOADED TIMELINE:
+          // - Reaches 100% full spread within 0.9 vh of scroll distance
+          // - Holds 100% open while user scrolls through the remaining runway before the white curtain arrives
+          progress = Math.min(scrollOffset / (vh * 0.9), 1.0);
         }
 
-        // Smooth sinusoidal easing for a silky, continuous fluid flow
         const easedProgress = Math.sin(progress * (Math.PI / 2));
-
         const isMobile = window.innerWidth < 768;
         const phoneCards = section.querySelectorAll('.phone-card');
         const centerIndex = (phoneCards.length - 1) / 2;
@@ -2489,17 +2440,19 @@
           const offset = index - centerIndex;
 
           if (isMobile) {
-            // Mobile tight 3D cascade - smooth continuous spread up to max offset
-            const xSpread = offset * (easedProgress * 42);
-            const scale = 1 - Math.abs(offset) * (easedProgress * 0.08);
+            // Mobile receding camera (1.0 down to 0.72) + tight fan-out
+            const baseScale = 1 - (easedProgress * 0.28);
+            const cardScale = baseScale * (1 - Math.abs(offset) * 0.06);
+
+            const xSpread = offset * (easedProgress * 48);
             const rotation = offset * (easedProgress * 3.5);
 
-            card.style.transform = `translate(-50%, -50%) translate3d(${xSpread}px, 0, 0) scale(${scale}) rotate(${rotation}deg)`;
+            card.style.transform = `translate(-50%, -50%) translate3d(${xSpread}px, 0, 0) scale(${cardScale}) rotate(${rotation}deg)`;
             card.style.opacity = '1';
             card.style.zIndex = String(10 - Math.abs(Math.round(offset)));
           } else {
-            // Desktop widescreen fan - continuous cinematic opening
-            const xSpread = offset * (easedProgress * 155);
+            // Desktop widescreen full expansion
+            const xSpread = offset * (easedProgress * 165);
             const rotation = offset * (easedProgress * 5);
 
             card.style.transform = `translate(-50%, -50%) translate3d(${xSpread}px, 0, 0) rotate(${rotation}deg)`;
@@ -2521,6 +2474,309 @@
       window.addEventListener('scroll', onScroll, { passive: true });
       window.addEventListener('resize', onScroll);
       updateFanout();
+    })();
+
+    // ThreadOS full-bleed multi-layer Z-depth gradient wave field
+    (function initThreadOSFullGradientWave() {
+      const canvas = document.getElementById('threadosCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      let width = 0;
+      let height = 0;
+      let time = 0;
+      let rafId = 0;
+      let running = false;
+      const cols = 44;
+      const rows = 30;
+
+      // Three parallax Z-layers: far / mid / near
+      const layers = [
+        { speed: 0.010, amp: 10, sizeScale: 0.55, alphaScale: 0.45, yBias: 0.02 },
+        { speed: 0.016, amp: 16, sizeScale: 0.85, alphaScale: 0.75, yBias: 0 },
+        { speed: 0.022, amp: 22, sizeScale: 1.25, alphaScale: 1.0, yBias: -0.02 }
+      ];
+
+      function resize() {
+        width = canvas.width = Math.max(1, Math.round(canvas.offsetWidth || canvas.clientWidth));
+        height = canvas.height = Math.max(1, Math.round(canvas.offsetHeight || canvas.clientHeight));
+      }
+
+      function draw() {
+        if (!running) return;
+        ctx.clearRect(0, 0, width, height);
+        time += 0.018;
+
+        const cellX = width / cols;
+        // Span full height — last row lands at y ≈ height
+        const cellY = height / Math.max(rows - 1, 1);
+
+        for (let L = 0; L < layers.length; L++) {
+          const layer = layers[L];
+          const layerTime = time * (0.7 + L * 0.35);
+
+          for (let i = 0; i < cols; i++) {
+            const normX = i / (cols - 1);
+
+            for (let j = 0; j < rows; j++) {
+              const normY = j / (rows - 1);
+
+              // Multi-frequency organic sine noise
+              const wave1 = Math.sin(normX * 5.2 + layerTime * layer.speed * 55) * layer.amp;
+              const wave2 = Math.cos(normY * 7.4 + layerTime * 1.15) * (layer.amp * 0.7);
+              const wave3 = Math.sin((normX + normY) * 9.0 - layerTime * 1.8) * (layer.amp * 0.35);
+              const wave4 = Math.sin(i * 0.37 + j * 0.61 + layerTime * 2.4) * 3.5;
+              const yOff = wave1 + wave2 + wave3 + wave4;
+
+              const posX = i * cellX + cellX / 2;
+              const posY = (height * 0.05) + (j * cellY * 0.95) + yOff + height * layer.yBias;
+
+              if (posY < -8 || posY > height + 8) continue;
+
+              // Radial distance mask protects top-left text area opacity
+              const distFromText = Math.hypot(posX - 100, posY - 80);
+              const textProtection = Math.min(Math.max((distFromText - 60) / 140, 0.15), 1.0);
+
+              const depthFactor = j / rows;
+              const size = (0.7 + depthFactor * 2.0) * layer.sizeScale;
+              const alpha = (0.1 + depthFactor * 0.65) * textProtection * layer.alphaScale;
+
+              // Strict 2-color palette: Magenta #EC4899 & Purple #8B5CF6
+              const isMagenta = (i + j + L) % 2 === 0;
+              const r = isMagenta ? 236 : 139;
+              const g = isMagenta ? 72 : 92;
+              const b = isMagenta ? 153 : 246;
+
+              ctx.beginPath();
+              ctx.arc(posX, posY, size, 0, Math.PI * 2);
+              ctx.fillStyle = 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')';
+              ctx.fill();
+            }
+          }
+        }
+
+        rafId = requestAnimationFrame(draw);
+      }
+
+      function start() {
+        if (running) return;
+        resize();
+        running = true;
+        rafId = requestAnimationFrame(draw);
+      }
+
+      function stop() {
+        running = false;
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = 0;
+        }
+      }
+
+      window.addEventListener('resize', () => {
+        if (running) resize();
+      }, { passive: true });
+
+      if (typeof IntersectionObserver !== 'undefined') {
+        new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) start();
+            else stop();
+          });
+        }, { threshold: 0.1 }).observe(canvas);
+      } else {
+        start();
+      }
+
+      requestAnimationFrame(start);
+    })();
+
+    // Continuous 360° 4-arm radar
+    (function initContinuous360Radar() {
+      const canvas = document.getElementById('radarDomeCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      let angle = 0;
+      let rafId = 0;
+      let running = false;
+
+      function resize() {
+        canvas.width = Math.max(1, Math.round(canvas.offsetWidth || canvas.clientWidth));
+        canvas.height = Math.max(1, Math.round(canvas.offsetHeight || canvas.clientHeight));
+      }
+
+      function draw() {
+        if (!running) return;
+        const w = canvas.width;
+        const h = canvas.height;
+        ctx.clearRect(0, 0, w, h);
+
+        const cx = w / 2;
+        const cy = h / 2;
+        const radius = (w / 2) - 8;
+
+        // Continuous 360 deg rotation loop (never resets angle)
+        angle += 0.008;
+
+        // Concentric grid circles — ultra-thin white rings
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+        ctx.lineWidth = 0.5;
+        [0.3, 0.6, 0.95].forEach((r) => {
+          ctx.beginPath();
+          ctx.arc(cx, cy, radius * r, 0, Math.PI * 2);
+          ctx.stroke();
+        });
+
+        // Crosshair axes
+        ctx.beginPath();
+        ctx.moveTo(cx - radius, cy);
+        ctx.lineTo(cx + radius, cy);
+        ctx.moveTo(cx, cy - radius);
+        ctx.lineTo(cx, cy + radius);
+        ctx.stroke();
+
+        // 4 radar sweep arms — muted magenta, zero glow
+        for (let i = 0; i < 4; i++) {
+          const armAngle = angle + (i * Math.PI / 2);
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.arc(cx, cy, radius, armAngle, armAngle + 0.22);
+          ctx.closePath();
+
+          const grad = ctx.createRadialGradient(cx, cy, 5, cx, cy, radius);
+          grad.addColorStop(0, 'rgba(236, 72, 153, 0.15)');
+          grad.addColorStop(1, 'rgba(236, 72, 153, 0)');
+          ctx.fillStyle = grad;
+          ctx.fill();
+        }
+
+        rafId = requestAnimationFrame(draw);
+      }
+
+      function start() {
+        if (running) return;
+        resize();
+        running = true;
+        rafId = requestAnimationFrame(draw);
+      }
+
+      function stop() {
+        running = false;
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = 0;
+        }
+      }
+
+      window.addEventListener('resize', () => {
+        if (running) resize();
+      }, { passive: true });
+
+      if (typeof IntersectionObserver !== 'undefined') {
+        new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) start();
+            else stop();
+          });
+        }, { threshold: 0.1 }).observe(canvas);
+      } else {
+        start();
+      }
+
+      requestAnimationFrame(start);
+    })();
+
+    // Attention Engine — razor-sharp dual trend lines, zero glow
+    (function initCleanAttentionChart() {
+      const canvas = document.getElementById('retentionWaveCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      function draw() {
+        const w = canvas.width = Math.max(1, Math.round(canvas.offsetWidth || canvas.clientWidth));
+        const h = canvas.height = Math.max(1, Math.round(canvas.offsetHeight || canvas.clientHeight));
+        ctx.clearRect(0, 0, w, h);
+
+        // 1. Secondary Benchmark Line (1px Dashed Purple)
+        ctx.beginPath();
+        for (let x = 0; x <= w; x += 4) {
+          const normX = x / w;
+          const y = h * 0.7 - Math.sin(normX * Math.PI) * (h * 0.3);
+          if (x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.strokeStyle = '#8B5CF6';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([3, 4]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // 2. Primary Trend Line (1.5px Solid Magenta, Zero Shadow Blur)
+        ctx.beginPath();
+        for (let x = 0; x <= w; x += 2) {
+          const normX = x / w;
+          const y = normX < 0.65
+            ? h * 0.8 - Math.pow(normX / 0.65, 1.5) * (h * 0.65)
+            : (h * 0.15) + Math.pow((normX - 0.65) / 0.35, 1.2) * (h * 0.6);
+          if (x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.strokeStyle = '#EC4899';
+        ctx.lineWidth = 1.5;
+        ctx.shadowBlur = 0;
+        ctx.stroke();
+      }
+
+      draw();
+      window.addEventListener('resize', draw, { passive: true });
+    })();
+
+    // Paid Whitelisting — minimal scaling curve
+    (function initMinimalScalingCurve() {
+      const canvas = document.getElementById('staticMeshCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      function draw() {
+        const w = canvas.width = Math.max(1, Math.round(canvas.offsetWidth || canvas.clientWidth));
+        const h = canvas.height = Math.max(1, Math.round(canvas.offsetHeight || canvas.clientHeight));
+        ctx.clearRect(0, 0, w, h);
+
+        // Baseline grid line
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, h * 0.85);
+        ctx.lineTo(w, h * 0.85);
+        ctx.stroke();
+
+        // Smooth exponential scaling curve
+        ctx.beginPath();
+        ctx.moveTo(0, h * 0.85);
+        ctx.bezierCurveTo(w * 0.4, h * 0.85, w * 0.6, h * 0.25, w, h * 0.15);
+
+        const strokeGrad = ctx.createLinearGradient(0, 0, w, 0);
+        strokeGrad.addColorStop(0, '#8B5CF6');
+        strokeGrad.addColorStop(1, '#EC4899');
+        ctx.strokeStyle = strokeGrad;
+        ctx.lineWidth = 1.5;
+        ctx.shadowBlur = 0;
+        ctx.stroke();
+
+        // End Node Dot
+        ctx.beginPath();
+        ctx.arc(w - 2, h * 0.15, 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#EC4899';
+        ctx.fill();
+      }
+
+      draw();
+      window.addEventListener('resize', draw, { passive: true });
     })();
 
 
@@ -2618,25 +2874,21 @@
   </script>
 
   <script>
-    function alignSliderWithSpacer() {
+    function alignProcessTrackToTitle() {
       const title = document.getElementById('process-title');
-      const spacer = document.getElementById('slider-spacer');
-      const slider = document.getElementById('process-slider');
+      const track = document.getElementById('processCarouselTrack') || document.querySelector('.how-it-works-track');
 
-      if (title && spacer && slider) {
-        // Measure exact left coordinate of the "H" in "How it works."
-        const titleLeft = title.getBoundingClientRect().left;
-        // Subtract flex gap so Card 01 (not the gap after the spacer) lands on the "H"
-        const gap = parseFloat(getComputedStyle(slider).columnGap || getComputedStyle(slider).gap) || 0;
+      if (!title || !track) return;
 
-        // Set spacer width so Card 01 starts exactly under the "H"
-        spacer.style.width = Math.max(0, titleLeft - gap) + 'px';
-      }
+      // Inset so Card 01 lines up with the title; matching right pad so the end feels balanced
+      const inset = Math.max(0, title.getBoundingClientRect().left - track.getBoundingClientRect().left);
+      track.style.paddingLeft = inset + 'px';
+      track.style.paddingRight = inset + 'px';
     }
 
-    window.addEventListener('DOMContentLoaded', alignSliderWithSpacer);
-    window.addEventListener('load', alignSliderWithSpacer);
-    window.addEventListener('resize', alignSliderWithSpacer);
+    window.addEventListener('DOMContentLoaded', alignProcessTrackToTitle);
+    window.addEventListener('load', alignProcessTrackToTitle);
+    window.addEventListener('resize', alignProcessTrackToTitle);
   </script>
 
 
@@ -2661,12 +2913,25 @@
       }
 
       let scrollPos = 0;
-      const speed = 2.7;
       let cardWidth = 0;
       let gap = 0;
       let step = 0;
       let singleSetWidth = 0;
       let numOriginalCards = 0;
+      let lastTime = performance.now();
+
+      // Desktop ~2.7px/frame @ 60fps. Mobile is slower relative to wider cards.
+      const DESKTOP_PX_PER_SEC = 162;
+
+      function isMobileViewport() {
+        return window.innerWidth < 640;
+      }
+
+      function speedPxPerSec() {
+        if (!isMobileViewport()) return DESKTOP_PX_PER_SEC;
+        // ~1.6s to cross one card (2x previous mobile glide)
+        return Math.max(96, step * 0.62);
+      }
 
       function measureGeometry() {
         const cards = track.querySelectorAll('.imax-card');
@@ -2693,9 +2958,12 @@
       window.addEventListener('resize', measureGeometry);
       window.addEventListener('load', measureGeometry);
 
-      function animate() {
+      function animate(now) {
+        const dt = Math.min(0.05, (now - lastTime) / 1000); // clamp frame hitches
+        lastTime = now;
+
         if (singleSetWidth > 0) {
-          scrollPos += speed;
+          scrollPos += speedPxPerSec() * dt;
           if (scrollPos >= singleSetWidth) {
             scrollPos %= singleSetWidth;
           }
@@ -2704,9 +2972,17 @@
           track.style.transform = `translate3d(-${scrollPos}px, 0, 0)`;
 
           // PURE MATH 3D CURVE (Zero getBoundingClientRect layout thrashing)
-          const stageWidth = window.innerWidth;
+          const stageWidth = stage.clientWidth || window.innerWidth;
           const stageCenter = stageWidth / 2;
           const cards = track.children;
+          const mobile = isMobileViewport();
+
+          // Softer mobile curve = less "pop" as each card hits center
+          const rotAmt = mobile ? -9 : -18;
+          const scaleAmt = mobile ? 0.045 : 0.1;
+          const zAmt = mobile ? 36 : 90;
+          const opacAmt = mobile ? 0.1 : 0.2;
+          const clampLimit = mobile ? 1.5 : 1.35;
 
           for (let i = 0; i < cards.length; i++) {
             const card = cards[i];
@@ -2716,15 +2992,18 @@
             const cardCenterOnStage = cardLeftOnStage + (cardWidth / 2);
 
             const distFromCenter = (cardCenterOnStage - stageCenter) / (stageWidth / 2);
-            const clampedDist = Math.max(-1.2, Math.min(1.2, distFromCenter));
+            const clampedDist = Math.max(-clampLimit, Math.min(clampLimit, distFromCenter));
 
-            const rotateY = clampedDist * -22;
-            const scale = 1 - Math.abs(clampedDist) * 0.12;
-            const translateZ = -Math.abs(clampedDist) * 120;
-            const opacity = 1 - Math.abs(clampedDist) * 0.25;
+            // Quadratic falloff through center avoids the sharp |x| kink that reads as a snap
+            const softAbs = clampedDist * clampedDist;
+
+            const rotateY = clampedDist * rotAmt;
+            const scale = 1 - softAbs * scaleAmt;
+            const translateZ = -softAbs * zAmt;
+            const opacity = 1 - softAbs * opacAmt;
 
             card.style.transform = `rotateY(${rotateY}deg) translateZ(${translateZ}px) scale(${scale})`;
-            card.style.opacity = Math.max(0.4, opacity);
+            card.style.opacity = Math.max(mobile ? 0.55 : 0.45, opacity);
           }
         }
 
@@ -2747,30 +3026,21 @@
       let activeIndex = 0;
       const isMobile = () => window.innerWidth < 768;
 
-      const MOBILE_CARD = 'accordion-card w-[88vw] max-w-[360px] flex-shrink-0 snap-center h-[520px] rounded-3xl relative overflow-hidden cursor-pointer';
-      const DESKTOP_CARD = 'accordion-card rounded-[32px] overflow-hidden transition-[flex-grow,flex-basis] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer';
+      const MOBILE_CARD = 'accordion-card w-[85vw] max-w-[380px] flex-shrink-0 snap-center aspect-[4/5] min-h-[520px] rounded-3xl relative overflow-hidden cursor-pointer transition-all duration-500';
+      const DESKTOP_CARD = 'accordion-card rounded-[32px] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative cursor-pointer';
 
       const COLLAPSED_BASE = 'collapsed-content absolute inset-y-0 left-0 right-0 flex items-center justify-center pointer-events-none z-20';
-      // Active card: vertical tab vanishes immediately (no delay)
-      const COLLAPSED_ACTIVE = COLLAPSED_BASE + ' opacity-0 transition-opacity duration-150 ease-out';
-      // Inactive card: tab fades in after width settles
-      const COLLAPSED_INACTIVE = COLLAPSED_BASE + ' opacity-100 transition-opacity duration-200 delay-200 ease-in';
+      const COLLAPSED_ACTIVE = COLLAPSED_BASE + ' opacity-0';
+      const COLLAPSED_INACTIVE = COLLAPSED_BASE + ' opacity-0';
 
       const EXPANDED_BASE = 'expanded-content absolute inset-0 w-full h-full z-20';
-      // Active: copy fades in after ~85% of the 500ms width expand
       const EXPANDED_ACTIVE = EXPANDED_BASE + ' opacity-100 pointer-events-auto transition-opacity duration-300 delay-300 ease-in';
-      // Inactive: copy fades out immediately as the card starts closing
       const EXPANDED_INACTIVE = EXPANDED_BASE + ' opacity-0 pointer-events-none transition-opacity duration-150 ease-out';
       const EXPANDED_MOBILE = EXPANDED_BASE + ' opacity-100 pointer-events-auto';
       const COLLAPSED_MOBILE = COLLAPSED_BASE + ' opacity-0 pointer-events-none';
 
       function syncDeckBgWidth() {
-        if (isMobile()) {
-          deck.style.setProperty('--deck-bg-width', '100%');
-        } else {
-          // Keep every case-study BG at full deck width so expand/collapse only clips, never rescales
-          deck.style.setProperty('--deck-bg-width', deck.clientWidth + 'px');
-        }
+        deck.style.setProperty('--deck-bg-width', '100%');
       }
 
       function scrollMobileCard(index) {
@@ -2918,35 +3188,55 @@
   </script>
 
   <script>
-    (function initContactAndFAQ() {
-      const pills = document.querySelectorAll('.type-pill');
+    (function initContactFormTabs() {
+      const tabBtns = document.querySelectorAll('.form-tab-btn');
+      if (!tabBtns.length) return;
 
-      pills.forEach(pill => {
-        pill.addEventListener('click', () => {
-          pills.forEach(p => {
-            p.classList.remove('bg-white/20', 'text-white', 'border-white/30', 'shadow-sm', 'active');
-            p.classList.add('text-neutral-400', 'border-transparent');
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          tabBtns.forEach(b => {
+            b.classList.remove('bg-neutral-800', 'text-white', 'shadow-sm', 'active');
+            b.classList.add('text-neutral-400');
           });
-          pill.classList.remove('text-neutral-400', 'border-transparent');
-          pill.classList.add('bg-white/20', 'text-white', 'border-white/30', 'shadow-sm', 'active');
+          btn.classList.add('bg-neutral-800', 'text-white', 'shadow-sm', 'active');
+          btn.classList.remove('text-neutral-400');
         });
       });
+    })();
 
-      const faqToggles = document.querySelectorAll('.faq-toggle');
-      faqToggles.forEach(toggle => {
-        toggle.addEventListener('click', () => {
-          const content = toggle.nextElementSibling;
-          const icon = toggle.querySelector('span:last-child');
-          if (!content || !icon) return;
+    (function initAppleFAQAccordion() {
+      const faqItems = document.querySelectorAll('.faq-item');
+      if (!faqItems.length) return;
 
-          const isOpen = !content.classList.contains('hidden');
+      faqItems.forEach(item => {
+        const trigger = item.querySelector('.faq-trigger');
+        const question = item.querySelector('.faq-question');
+        const answer = item.querySelector('.faq-answer');
+        const icon = item.querySelector('.faq-icon');
+        const badge = item.querySelector('.faq-badge');
 
-          document.querySelectorAll('.faq-content').forEach(c => c.classList.add('hidden'));
-          document.querySelectorAll('.faq-toggle span:last-child').forEach(i => { i.textContent = '+'; });
+        if (!trigger || !answer) return;
+
+        trigger.addEventListener('click', () => {
+          const isOpen = answer.classList.contains('grid-rows-[1fr]');
+
+          faqItems.forEach(otherItem => {
+            const oAnswer = otherItem.querySelector('.faq-answer');
+            const oQuestion = otherItem.querySelector('.faq-question');
+            const oIcon = otherItem.querySelector('.faq-icon');
+            const oBadge = otherItem.querySelector('.faq-badge');
+
+            if (oAnswer) oAnswer.className = 'faq-answer grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-out';
+            if (oQuestion) oQuestion.classList.remove('fluid-gradient-text');
+            if (oIcon) oIcon.style.transform = 'rotate(0deg)';
+            if (oBadge) oBadge.classList.remove('bg-pink-500/10', 'border-pink-500/30');
+          });
 
           if (!isOpen) {
-            content.classList.remove('hidden');
-            icon.textContent = '–';
+            answer.className = 'faq-answer grid grid-rows-[1fr] transition-[grid-template-rows] duration-300 ease-out';
+            if (question) question.classList.add('fluid-gradient-text');
+            if (icon) icon.style.transform = 'rotate(45deg)';
+            if (badge) badge.classList.add('bg-pink-500/10', 'border-pink-500/30');
           }
         });
       });
@@ -2972,10 +3262,11 @@
     function linkClasses(theme, el) {
       const isHow = (el.getAttribute('href') || '').includes('how-it-works');
       const hide = isHow ? 'hidden sm:inline-block ' : '';
+      const base = 'nav-link ' + hide + 'text-[12px] font-normal tracking-[-0.01em] transition-colors ';
       if (theme === 'light') {
-        return 'nav-link ' + hide + 'text-neutral-700 hover:text-black transition-colors';
+        return base + 'text-neutral-900/80 hover:text-black';
       }
-      return 'nav-link ' + hide + 'text-white/90 hover:text-white transition-colors';
+      return base + 'text-white/80 hover:text-white';
     }
 
     function updateHeader() {
