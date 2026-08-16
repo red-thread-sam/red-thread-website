@@ -109,6 +109,15 @@
       animation: stackGradientSweep 5s ease-in-out infinite;
     }
 
+    .threados-logo-mask {
+      display: block;
+      width: 3rem;
+      height: 3rem;
+      margin-bottom: 1rem;
+      flex-shrink: 0;
+      object-fit: contain;
+    }
+
     #orbitCanvasStage {
       position: relative;
       width: min(100%, 720px);
@@ -133,7 +142,13 @@
     #stackCarouselTrack {
       -webkit-overflow-scrolling: touch;
       overscroll-behavior-x: contain;
-      scroll-padding-inline: 0;
+      scroll-padding-inline: 1rem;
+    }
+
+    @media (min-width: 640px) {
+      #stackCarouselTrack {
+        scroll-padding-inline: 0;
+      }
     }
 
     @keyframes mesh-blob-drift {
@@ -382,6 +397,8 @@
 
     <!-- 2b. ORBITAL ECOSYSTEM + PROPRIETARY STACK -->
     <section id="engine-orbit" data-theme="dark" data-header-theme="dark" class="relative z-20 bg-black text-white py-20 sm:py-28 lg:py-32 overflow-hidden">
+      <!-- Continuous particle field behind Orbit + Proprietary Stack -->
+      <canvas id="techBackgroundCanvas" class="absolute top-0 left-0 w-full pointer-events-none z-0 opacity-80" aria-hidden="true"></canvas>
       <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-[#EC4899]/10 via-[#8B5CF6]/10 to-transparent blur-[160px] pointer-events-none rounded-full z-0"></div>
 
       <div class="relative z-10 w-full">
@@ -396,86 +413,84 @@
           </div>
         </div>
 
-        <!-- Apple-style bento — shared left gutter so mobile card 1 aligns with title -->
+        <!-- Apple-style bento: title gutter matches card 1; track full-bleeds so cards scroll to viewport edge -->
         <div class="mt-20 sm:mt-28 w-full">
           <div class="max-w-7xl mx-auto pl-4 sm:px-8">
             <h3 class="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-8 pr-4 sm:pr-0">Our Proprietary Stack.</h3>
+          </div>
 
-            <div id="stackCarouselTrack" class="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden py-4 pr-4 sm:grid sm:grid-cols-2 sm:overflow-visible sm:snap-none sm:pr-0 sm:gap-4 lg:grid-cols-4 lg:gap-5">
+          <div id="stackCarouselTrack" class="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden py-4 pl-4 pr-4 sm:max-w-7xl sm:mx-auto sm:grid sm:grid-cols-2 sm:overflow-visible sm:snap-none sm:px-8 sm:pr-8 sm:gap-4 lg:grid-cols-4 lg:gap-5">
 
-            <!-- Fred AI -->
-            <div class="bento-card w-[85vw] sm:w-full min-h-[560px] flex-shrink-0 sm:min-w-0 snap-start sm:snap-align-none bg-neutral-900/90 rounded-[28px] border border-white/10 border-t-white/20 shadow-2xl shadow-black/80 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.015]">
+            <!-- Fred AI — Electric Rose -->
+            <div class="bento-card w-[85vw] sm:w-full min-h-[560px] flex-shrink-0 sm:min-w-0 snap-start sm:snap-align-none bg-neutral-900/80 backdrop-blur-xl rounded-[28px] border border-white/10 shadow-2xl shadow-black/90 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.015] border-t-rose-500/30 hover:border-rose-500/50">
               <div class="p-6 sm:p-7 flex flex-col">
-                <svg class="w-6 h-6 text-pink-500 mb-3 block flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
-                <div class="text-xs font-semibold tracking-widest text-pink-500 uppercase mb-1.5">FRED AI</div>
+                <svg class="w-12 h-12 text-rose-500 mb-4 block flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                <div class="text-xs font-semibold tracking-widest text-rose-500 uppercase mb-1.5">01 <span class="text-neutral-600 font-light">|</span> FRED AI</div>
                 <h4 class="text-xl sm:text-2xl font-bold tracking-tight text-white leading-snug mb-2 min-h-[56px] flex items-end">Fred knows best.</h4>
                 <p class="text-sm text-neutral-400 leading-relaxed min-h-[72px]">
                   Scans 8.4M+ cultural niches to map high-intent micro-pockets and shortlist vetted creators.
                 </p>
               </div>
-              <div class="relative w-full aspect-[16/11] bg-neutral-950 border-t border-white/10 overflow-hidden rounded-b-[28px]">
+              <div class="relative w-full aspect-[16/11] bg-neutral-950/90 border-t border-rose-500/20 overflow-hidden rounded-b-[28px]">
                 <canvas id="fredNeuralCanvas" class="absolute inset-0 w-full h-full block" aria-hidden="true"></canvas>
               </div>
             </div>
 
-            <!-- ThreadOS -->
-            <div class="bento-card w-[85vw] sm:w-full min-h-[560px] flex-shrink-0 sm:min-w-0 snap-start sm:snap-align-none bg-neutral-900/90 rounded-[28px] border border-white/10 border-t-white/20 shadow-2xl shadow-black/80 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.015]">
+            <!-- ThreadOS — Hot Magenta -->
+            <div class="bento-card w-[85vw] sm:w-full min-h-[560px] flex-shrink-0 sm:min-w-0 snap-start sm:snap-align-none bg-neutral-900/80 backdrop-blur-xl rounded-[28px] border border-white/10 shadow-2xl shadow-black/90 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.015] border-t-pink-500/30 hover:border-pink-500/50">
               <div class="p-6 sm:p-7 flex flex-col">
-                <svg class="w-6 h-6 text-pink-500 mb-3 block flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
-                <div class="text-xs font-semibold tracking-widest text-pink-500 uppercase mb-1.5">THREADOS™</div>
+                <img src="Content/Tech/thread-logo-e00199.png" alt="" class="threados-logo-mask" width="48" height="48" decoding="async" aria-hidden="true" onerror="this.onerror=null;this.src='Content/Tech/thread-logo.png';">
+                <div class="text-xs font-semibold tracking-widest text-pink-500 uppercase mb-1.5">02 <span class="text-neutral-600 font-light">|</span> THREADOS™</div>
                 <h4 class="text-xl sm:text-2xl font-bold tracking-tight text-white leading-snug mb-2 min-h-[56px] flex items-end">The backstage pass.</h4>
                 <p class="text-sm text-neutral-400 leading-relaxed min-h-[72px]">
                   Automates digital contracting, vaults master media usage rights in &lt;24h, and tracks shipping.
                 </p>
               </div>
-              <div class="w-full aspect-[16/11] bg-neutral-950 border-t border-white/15 relative overflow-hidden rounded-b-[28px]">
-                <span class="absolute top-3 right-3 z-10 px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide text-white/90 bg-white/10 border border-white/15 backdrop-blur-md shadow-sm">ThreadOS™ v2.4</span>
-                <img src="Content/Tech/ThreadOS.png" alt="ThreadOS" class="w-full h-full object-cover object-top" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/Tech/ThreadOS.png';">
+              <div class="w-full aspect-[16/11] bg-neutral-950 border-t border-pink-500/20 relative overflow-hidden rounded-b-[28px]">
+                <img src="Content/Tech/thread-os-dark.png" alt="ThreadOS Dark" class="w-full h-full object-cover object-top" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Tech/ThreadOS.png';">
               </div>
             </div>
 
-            <!-- Attention Engine -->
-            <div class="bento-card w-[85vw] sm:w-full min-h-[560px] flex-shrink-0 sm:min-w-0 snap-start sm:snap-align-none bg-neutral-900/90 rounded-[28px] border border-white/10 border-t-white/20 shadow-2xl shadow-black/80 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.015]">
+            <!-- Attention Engine — Vivid Fuchsia -->
+            <div class="bento-card w-[85vw] sm:w-full min-h-[560px] flex-shrink-0 sm:min-w-0 snap-start sm:snap-align-none bg-neutral-900/80 backdrop-blur-xl rounded-[28px] border border-white/10 shadow-2xl shadow-black/90 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.015] border-t-fuchsia-500/30 hover:border-fuchsia-500/50">
               <div class="p-6 sm:p-7 flex flex-col">
-                <svg class="w-6 h-6 text-pink-500 mb-3 block flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-                <div class="text-xs font-semibold tracking-widest text-pink-500 uppercase mb-1.5">ATTENTION ENGINE™</div>
+                <svg class="w-12 h-12 text-fuchsia-400 mb-4 block flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                <div class="text-xs font-semibold tracking-widest text-fuchsia-400 uppercase mb-1.5">03 <span class="text-neutral-600 font-light">|</span> ATTENTION ENGINE™</div>
                 <h4 class="text-xl sm:text-2xl font-bold tracking-tight text-white leading-snug mb-2 min-h-[56px] flex items-end">Proof over promise.</h4>
                 <p class="text-sm text-neutral-400 leading-relaxed min-h-[72px]">
                   Models retention curves and connects point-of-sale checkout metrics via Shopify &amp; GA APIs.
                 </p>
               </div>
-              <div class="w-full aspect-[16/11] bg-neutral-950 border-t border-white/15 relative overflow-hidden rounded-b-[28px]">
-                <span class="absolute top-3 right-3 z-10 px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide text-white/90 bg-white/10 border border-white/15 backdrop-blur-md shadow-sm">Shopify &amp; GA Live</span>
-                <img src="Content/Tech/attention-engine.png" alt="Attention Engine" class="w-full h-full object-cover object-top" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/Tech/attention-engine.png';">
+              <div class="w-full aspect-[16/11] bg-neutral-950 border-t border-fuchsia-500/20 relative overflow-hidden rounded-b-[28px]">
+                <img src="Content/Tech/attention-engine-dark.png" alt="Attention Engine Dark" class="w-full h-full object-cover object-top" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Tech/attention-engine.png';">
               </div>
             </div>
 
-            <!-- Algorithmic Feedback -->
-            <div class="bento-card w-[85vw] sm:w-full min-h-[560px] flex-shrink-0 sm:min-w-0 snap-start sm:snap-align-none bg-neutral-900/90 rounded-[28px] border border-white/10 border-t-white/20 shadow-2xl shadow-black/80 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.015]">
+            <!-- Algorithmic Feedback — Electric Purple -->
+            <div class="bento-card w-[85vw] sm:w-full min-h-[560px] flex-shrink-0 sm:min-w-0 snap-start sm:snap-align-none bg-neutral-900/80 backdrop-blur-xl rounded-[28px] border border-white/10 shadow-2xl shadow-black/90 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.015] border-t-purple-500/30 hover:border-purple-500/50">
               <div class="p-6 sm:p-7 flex flex-col">
-                <svg class="w-6 h-6 text-pink-500 mb-3 block flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                <div class="text-xs font-semibold tracking-widest text-pink-500 uppercase mb-1.5">ALGORITHMIC FEEDBACK</div>
+                <svg class="w-12 h-12 text-purple-400 mb-4 block flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                <div class="text-xs font-semibold tracking-widest text-purple-400 uppercase mb-1.5">04 <span class="text-neutral-600 font-light">|</span> ALGORITHMIC FEEDBACK</div>
                 <h4 class="text-xl sm:text-2xl font-bold tracking-tight text-white leading-snug mb-2 min-h-[56px] flex items-end">Closed-loop yield.</h4>
                 <p class="text-sm text-neutral-400 leading-relaxed min-h-[72px]">
                   Performance yield data automatically feeds back into Fred AI to continuously refine targeting.
                 </p>
               </div>
-              <div class="w-full aspect-[16/11] bg-neutral-950 border-t border-white/10 relative overflow-hidden rounded-b-[28px] flex items-center justify-center">
-                <div class="absolute w-44 h-44 rounded-full bg-pink-600/25 blur-2xl animate-pulse"></div>
-                <div class="absolute w-28 h-28 rounded-full bg-rose-500/15 blur-2xl translate-x-5 -translate-y-3"></div>
-                <div class="relative z-10 w-20 h-20 rounded-full border border-pink-500/30 bg-pink-500/5 backdrop-blur-sm flex items-center justify-center animate-[spin_12s_linear_infinite]">
-                  <div class="w-12 h-12 rounded-full border-t border-r border-pink-400/60"></div>
+              <div class="w-full aspect-[16/11] bg-neutral-950 border-t border-purple-500/20 relative overflow-hidden rounded-b-[28px] flex items-center justify-center">
+                <div class="absolute w-44 h-44 rounded-full bg-purple-600/30 blur-2xl animate-pulse"></div>
+                <div class="absolute w-28 h-28 rounded-full bg-purple-500/15 blur-2xl translate-x-5 -translate-y-3"></div>
+                <div class="relative z-10 w-20 h-20 rounded-full border border-purple-400/40 bg-purple-500/10 backdrop-blur-sm flex items-center justify-center animate-[spin_12s_linear_infinite]">
+                  <div class="w-12 h-12 rounded-full border-t border-r border-purple-300/80"></div>
                 </div>
               </div>
             </div>
 
           </div>
 
-            <div class="mt-6 pr-4 flex items-center justify-end gap-3 sm:hidden">
+            <div class="mt-6 pr-4 pl-4 max-w-7xl mx-auto flex items-center justify-end gap-3 sm:hidden">
               <button id="prevStackBtn" type="button" aria-label="Previous" class="w-11 h-11 rounded-full border border-white/10 bg-neutral-900 text-white flex items-center justify-center hover:bg-neutral-800 transition-all shadow-md">&larr;</button>
               <button id="nextStackBtn" type="button" aria-label="Next" class="w-11 h-11 rounded-full border border-white/10 bg-neutral-900 text-white flex items-center justify-center hover:bg-neutral-800 transition-all shadow-md">&rarr;</button>
             </div>
-          </div>
         </div>
       </div>
     </section>
@@ -565,7 +580,7 @@
       let running = false;
       let animationFrameId = 0;
 
-      const particleCount = 500;
+      const particleCount = 600;
       const particles = [];
       const colors = ['#e11d48', '#c026d3', '#ec4899', '#8b5cf6', '#ffffff'];
 
@@ -702,6 +717,119 @@
       ensureRunning();
     })();
 
+    (function initTechBackgroundField() {
+      const section = document.getElementById('engine-orbit');
+      const canvas = document.getElementById('techBackgroundCanvas');
+      if (!section || !canvas) return;
+      const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
+      if (!ctx) return;
+
+      let w = 0;
+      let h = 0;
+      let dpr = 1;
+      let running = false;
+      let rafId = 0;
+      const particles = [];
+      // Match orbit hero particle palette (rose / fuchsia / magenta / purple)
+      const colors = ['#e11d48', '#c026d3', '#ec4899', '#8b5cf6'];
+
+      function particleBudget() {
+        const area = Math.max(1, w * h);
+        return Math.min(264, Math.max(108, Math.round((area / 14000) * 1.2)));
+      }
+
+      function initParticles() {
+        const count = particleBudget();
+        particles.length = 0;
+        for (let i = 0; i < count; i++) {
+          particles.push({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            vx: (Math.random() - 0.5) * 0.22,
+            vy: -0.08 - Math.random() * 0.18,
+            size: Math.random() * 1.6 + 0.4,
+            alpha: 0.12 + Math.random() * 0.28,
+            color: colors[Math.floor(Math.random() * colors.length)]
+          });
+        }
+      }
+
+      function resize() {
+        const cssW = Math.max(1, Math.round(section.clientWidth || section.offsetWidth));
+        const cssH = Math.max(1, Math.round(section.scrollHeight || section.offsetHeight));
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        w = cssW;
+        h = cssH;
+        canvas.width = Math.round(cssW * dpr);
+        canvas.height = Math.round(cssH * dpr);
+        canvas.style.width = cssW + 'px';
+        canvas.style.height = cssH + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        initParticles();
+      }
+
+      function draw() {
+        if (!running || !w || !h) return;
+        ctx.clearRect(0, 0, w, h);
+
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+
+          if (p.y < -8) {
+            p.y = h + 8;
+            p.x = Math.random() * w;
+          } else if (p.y > h + 8) {
+            p.y = -8;
+            p.x = Math.random() * w;
+          }
+          if (p.x < -8) p.x = w + 8;
+          else if (p.x > w + 8) p.x = -8;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = p.alpha;
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+
+        rafId = requestAnimationFrame(draw);
+      }
+
+      function stop() {
+        running = false;
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = 0;
+        }
+      }
+
+      function ensureRunning() {
+        resize();
+        if (!running) {
+          running = true;
+          rafId = requestAnimationFrame(draw);
+        }
+      }
+
+      window.addEventListener('resize', ensureRunning, { passive: true });
+      if (typeof ResizeObserver !== 'undefined') {
+        new ResizeObserver(ensureRunning).observe(section);
+      }
+      if (typeof IntersectionObserver !== 'undefined') {
+        new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) ensureRunning();
+            else stop();
+          });
+        }, { threshold: 0.02 }).observe(section);
+      }
+
+      ensureRunning();
+    })();
+
     (function initStackCarouselPhysics() {
       const track = document.getElementById('stackCarouselTrack');
       const prevBtn = document.getElementById('prevStackBtn');
@@ -756,7 +884,7 @@
       updateArrowStates();
     })();
 
-    (function initStaticMagentaNeuralNet() {
+    (function initStaticRoseNeuralNet() {
       const canvas = document.getElementById('fredNeuralCanvas');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
@@ -768,6 +896,8 @@
       let rafId = 0;
       let running = false;
       const nodeCount = 22;
+      const roseCore = '#e11d48';
+      const roseHot = '#f43f5e';
 
       function initNodes() {
         nodes = [];
@@ -801,7 +931,7 @@
         if (!running) return;
         ctx.clearRect(0, 0, w, h);
 
-        // Fixed strands with magenta light pulses (nodes never move)
+        // Fixed strands with electric-rose light pulses (nodes never move)
         for (let i = 0; i < nodes.length; i++) {
           for (let j = i + 1; j < nodes.length; j++) {
             const dist = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
@@ -810,22 +940,22 @@
               ctx.beginPath();
               ctx.moveTo(nodes[i].x, nodes[i].y);
               ctx.lineTo(nodes[j].x, nodes[j].y);
-              ctx.strokeStyle = 'rgba(236, 72, 153, ' + (0.05 + pulse * 0.25) + ')';
+              ctx.strokeStyle = 'rgba(225, 29, 72, ' + (0.05 + pulse * 0.28) + ')';
               ctx.lineWidth = 0.8 + pulse * 0.6;
               ctx.stroke();
             }
           }
         }
 
-        // Static nodes with magenta glow pulses only
+        // Static nodes with rose glow pulses only
         nodes.forEach((node) => {
           node.phase += node.pulseSpeed;
           const glow = (Math.sin(node.phase) + 1) / 2;
 
           ctx.beginPath();
           ctx.arc(node.x, node.y, node.radius + glow * 1.2, 0, Math.PI * 2);
-          ctx.fillStyle = glow > 0.6 ? '#f43f5e' : '#ec4899';
-          ctx.shadowColor = '#ec4899';
+          ctx.fillStyle = glow > 0.6 ? roseHot : roseCore;
+          ctx.shadowColor = roseCore;
           ctx.shadowBlur = glow * 12;
           ctx.fill();
           ctx.shadowBlur = 0;
