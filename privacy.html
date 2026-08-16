@@ -34,12 +34,32 @@
       -webkit-font-smoothing: antialiased;
       background-color: #ffffff;
       color: #171717;
+      line-height: 1.5; /* Apple body leading-relaxed */
+    }
+    /* Apple HIG line-spacing system */
+    h1, h2 {
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    h3, h4 {
+      line-height: 1.375; /* leading-snug */
+      letter-spacing: 0;
+    }
+    p, li {
+      line-height: 1.5; /* leading-relaxed */
     }
     .spring-pill {
       transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     .spring-pill:active {
       transform: scale(0.94);
+    }
+    #mainHeader .nav-link {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      line-height: normal;
     }
   </style>
 </head>
@@ -52,9 +72,9 @@
         <img id="navLogo" src="logo-black.png" alt="Red Thread" class="h-3.5 sm:h-4 w-auto object-contain transition-opacity duration-300">
       </a>
 
-      <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-2.5 sm:gap-6 text-[10px] sm:text-[11px] font-bold tracking-wide">
-        <a href="tech.html" class="nav-link text-neutral-700 hover:text-black transition-colors">Our Tech</a>
-        <a href="index.html#case-studies" class="nav-link text-neutral-700 hover:text-black transition-colors">Our Work</a>
+      <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-7 text-[12px] font-normal tracking-[-0.01em] font-['SF_Pro_Text',-apple-system,BlinkMacSystemFont,'Helvetica_Neue',sans-serif]">
+        <a href="tech.html" class="nav-link text-neutral-900/80 hover:text-black transition-colors">Our Tech</a>
+        <a href="index.html#case-studies" class="nav-link text-neutral-900/80 hover:text-black transition-colors">Our Work</a>
       </div>
 
       <div class="flex items-center shrink-0">
@@ -291,10 +311,11 @@
     function linkClasses(theme, el) {
       const isHow = (el.getAttribute('href') || '').includes('how-it-works');
       const hide = isHow ? 'hidden sm:inline-block ' : '';
+      const base = 'nav-link ' + hide + 'text-[12px] font-normal tracking-[-0.01em] transition-colors ';
       if (theme === 'light') {
-        return 'nav-link ' + hide + 'text-neutral-700 hover:text-black transition-colors';
+        return base + 'text-neutral-900/80 hover:text-black';
       }
-      return 'nav-link ' + hide + 'text-white/90 hover:text-white transition-colors';
+      return base + 'text-white/80 hover:text-white';
     }
 
     function updateHeader() {

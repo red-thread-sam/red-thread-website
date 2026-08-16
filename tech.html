@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-GB" class="scroll-smooth bg-neutral-950 text-neutral-950 font-sans">
+<html lang="en-GB" class="bg-neutral-950 text-neutral-950 font-sans">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -49,9 +49,105 @@
       overscroll-behavior-y: none;
     }
     /* Keep section header lockups on the shared face */
-    h1, h2, h3, h4, #mainHeader, #mainHeader nav, #mainHeader a {
+    h1, h2, h3, h4, #mainHeader {
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", sans-serif;
     }
+    /* Apple HIG line-spacing system */
+    h1, h2 {
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    h3, h4 {
+      line-height: 1.375; /* leading-snug */
+      letter-spacing: 0;
+    }
+    p, li, body {
+      line-height: 1.5; /* leading-relaxed */
+    }
+    #mainHeader .nav-link {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      line-height: normal;
+    }
+
+    @keyframes fluidGradientSweep {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .fluid-gradient-text {
+      background: linear-gradient(
+        120deg,
+        #FF0066 0%,
+        #E00199 25%,
+        #8B5CF6 50%,
+        #E00199 75%,
+        #FF0066 100%
+      );
+      background-size: 250% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: fluidGradientSweep 6s ease-in-out infinite;
+      display: inline-block;
+      font-weight: 800;
+      padding-bottom: 0.15em;
+      line-height: 1.2;
+      overflow: visible;
+    }
+
+    @keyframes stackGradientSweep {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .animate-gradient {
+      animation: stackGradientSweep 5s ease-in-out infinite;
+    }
+
+    #orbitCanvasStage {
+      position: relative;
+      width: min(100%, 720px);
+      aspect-ratio: 1 / 1;
+      max-height: min(72vh, 640px);
+      margin-inline: auto;
+    }
+
+    #orbitCanvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    /* Apple HIG dark bento material */
+    .bento-card {
+      background: rgba(23, 23, 23, 0.9);
+      will-change: transform;
+    }
+
+    #stackCarouselTrack {
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+      scroll-padding-inline: 0;
+    }
+
+    @keyframes mesh-blob-drift {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(12%, -10%) scale(1.12); }
+      66% { transform: translate(-8%, 8%) scale(0.92); }
+    }
+    .mesh-blob {
+      will-change: transform;
+      animation: mesh-blob-drift 12s ease-in-out infinite;
+    }
+    .mesh-blob-b { animation-duration: 15s; animation-direction: reverse; }
+    .mesh-blob-c { animation-duration: 18s; animation-delay: -4s; }
+
     p {
       text-wrap: pretty;
     }
@@ -63,92 +159,6 @@
     }
     .spring-pill:active {
       transform: scale(0.94);
-    }
-    .orbit-card {
-      transition: all 500ms cubic-bezier(0.22, 1, 0.36, 1);
-      will-change: opacity, filter, transform, border-color;
-    }
-
-    /* Mobile-only — desktop (≥768px) unchanged */
-    @media (max-width: 767px) {
-      /* Orbit section: natural pass-through stack over ambient canvas */
-      #engine-orbit {
-        min-height: 0;
-        padding-top: 4rem;
-        padding-bottom: 4rem;
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
-        position: relative;
-      }
-      #orbitMobileTrack {
-        height: auto;
-        position: relative;
-        width: 100%;
-      }
-      #orbitCanvasShell {
-        position: fixed;
-        inset: 0;
-        height: 100vh;
-        height: 100dvh;
-        width: 100%;
-        margin: 0;
-        pointer-events: none;
-        z-index: 0;
-        overflow: hidden;
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 200ms ease;
-      }
-      #orbitCanvasShell.is-orbit-visible {
-        opacity: 1;
-        visibility: visible;
-      }
-      #orbitCanvas {
-        display: block;
-        position: absolute;
-        inset: 0;
-        width: 100% !important;
-        height: 100% !important;
-        max-width: none;
-        z-index: 0;
-        border: none;
-        outline: none;
-        pointer-events: none;
-        object-fit: fill;
-      }
-      #orbitMobileStage {
-        min-height: 0;
-        width: 100%;
-        position: relative;
-        z-index: 10;
-        pointer-events: auto;
-      }
-      #orbitMobileCards .bento-card {
-        transition: opacity 300ms ease, transform 300ms ease;
-        transform-origin: center center;
-      }
-      @media (max-height: 760px) {
-        #orbitMobileTrack h2 {
-          font-size: 1.25rem;
-          margin-bottom: 0.75rem;
-        }
-        #orbitMobileCards {
-          margin-top: 0.5rem;
-          gap: 0.5rem;
-        }
-        #orbitMobileCards .bento-card {
-          padding: 0.75rem;
-        }
-        #orbitMobileCards .bento-card p {
-          display: none;
-        }
-      }
-    }
-
-    /* Orbit cards stay borderless; stack cards own their hardware chrome */
-    #engine-orbit .orbit-card {
-      border: none !important;
-      border-color: transparent !important;
     }
 
     /* ==========================================
@@ -185,12 +195,14 @@
         justify-content: center !important;
       }
 
-      /* Headline centered inside sticky viewport */
+      /* Headline lock-up — absolute inside sticky viewport (scrolls with section) */
       #heroHeadline {
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
+        position: absolute !important;
+        inset: 0 !important;
         height: 100% !important;
         width: 100% !important;
         margin: 0 auto !important;
@@ -198,9 +210,8 @@
         padding-right: 1.25rem !important;
         text-align: center !important;
         transform-origin: center center !important;
-        position: relative !important;
-        inset: auto !important;
         max-width: none !important;
+        z-index: 30 !important;
       }
 
       #heroHeadline h1 {
@@ -246,43 +257,6 @@
         font-size: 1rem !important;
         line-height: 1.6 !important;
       }
-
-      /* ==========================================
-         SECTION 3 MOBILE HORIZONTAL SWIPE TRACK
-         ========================================== */
-      .proprietary-stack-grid {
-        display: flex !important;
-        flex-direction: row !important;
-        overflow-x: auto !important;
-        scroll-snap-type: x mandatory !important;
-        -webkit-overflow-scrolling: touch !important;
-        padding-left: 1.25rem !important;
-        padding-right: 1.25rem !important;
-        margin-left: -1.25rem !important;
-        margin-right: -1.25rem !important;
-        gap: 1rem !important;
-        scrollbar-width: none !important;
-        -ms-overflow-style: none !important;
-      }
-
-      .proprietary-stack-grid::-webkit-scrollbar {
-        display: none !important;
-      }
-
-      .proprietary-stack-grid > div {
-        width: 86vw !important;
-        max-width: 340px !important;
-        flex-shrink: 0 !important;
-        scroll-snap-align: center !important;
-        min-height: 540px !important;
-      }
-
-      .proprietary-stack-grid > div .mt-auto {
-        width: 100% !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        height: 13rem !important; /* h-52 */
-      }
     }
 
     @media (min-width: 640px) and (max-width: 767px) {
@@ -291,20 +265,68 @@
       }
     }
 
+    /* After first play: lockup + manifesto become normal stacked sections (organic scroll) */
+    #heroScrollPin.hero-static-flow {
+      height: auto !important;
+    }
+    #heroScrollPin.hero-static-flow #heroViewport {
+      position: relative !important;
+      top: auto !important;
+      height: auto !important;
+      overflow: visible !important;
+      display: block !important;
+    }
+    #heroScrollPin.hero-static-flow #heroLockupPanel {
+      position: relative !important;
+      inset: auto !important;
+      /* Shorter than a full viewport so return-scroll isn't a long empty runway */
+      height: 72vh !important;
+      height: 72dvh !important;
+      width: 100% !important;
+      overflow: hidden !important;
+    }
+    #heroScrollPin.hero-static-flow #heroHeadline {
+      opacity: 1 !important;
+      filter: none !important;
+      transform: none !important;
+    }
+    #heroScrollPin.hero-static-flow #manifestoReveal {
+      position: relative !important;
+      inset: auto !important;
+      min-height: 0 !important;
+      height: auto !important;
+      opacity: 1 !important;
+      transform: none !important;
+      z-index: 1 !important;
+      /* Content-sized — no full-viewport spacer between lockup and orbit */
+      padding: 4.5rem 1.5rem 5.5rem !important;
+      display: flex !important;
+      align-items: center !important;
+    }
+
+    @media (min-width: 768px) {
+      #heroScrollPin.hero-static-flow #heroLockupPanel {
+        height: 78vh !important;
+      }
+      #heroScrollPin.hero-static-flow #manifestoReveal {
+        padding: 5.5rem 3rem 6.5rem !important;
+      }
+    }
+
   </style>
 </head>
 <body class="font-sans bg-neutral-950 text-neutral-950 antialiased overflow-x-clip">
 
-  <!-- Razor-thin dynamic header (borderless) -->
-  <header id="mainHeader" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-none text-neutral-900">
+  <!-- Razor-thin dynamic header (borderless) — under particles, above hero bg -->
+  <header id="mainHeader" class="fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-white/80 backdrop-blur-md border-none text-neutral-900">
     <nav class="relative max-w-7xl mx-auto px-3.5 sm:px-6 h-10 sm:h-11 flex items-center justify-between gap-2">
       <a href="index.html" class="flex items-center shrink-0">
         <img id="navLogo" src="logo-black.png" alt="Red Thread" class="h-3.5 sm:h-4 w-auto object-contain transition-opacity duration-300">
       </a>
 
-      <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-2.5 sm:gap-6 text-[10px] sm:text-[11px] font-bold tracking-wide">
-        <a href="tech.html" class="nav-link text-neutral-700 hover:text-black transition-colors" aria-current="page">Our Tech</a>
-        <a href="index.html#case-studies" class="nav-link text-neutral-700 hover:text-black transition-colors">Our Work</a>
+      <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-7 text-[12px] font-normal tracking-[-0.01em] font-['SF_Pro_Text',-apple-system,BlinkMacSystemFont,'Helvetica_Neue',sans-serif]">
+        <a href="tech.html" class="nav-link text-neutral-900/80 hover:text-black transition-colors" aria-current="page">Our Tech</a>
+        <a href="index.html#case-studies" class="nav-link text-neutral-900/80 hover:text-black transition-colors">Our Work</a>
       </div>
 
       <div class="flex items-center shrink-0">
@@ -320,18 +342,27 @@
     </nav>
   </header>
 
-  <main class="pt-10 sm:pt-11 bg-white">
+  <main class="bg-white">
 
-    <!-- 1. HERO — particles + headline over manifesto reveal (same sticky frame) -->
-    <section id="heroScrollPin" data-theme="light" data-header-theme="light" class="h-[170vh] relative z-20 bg-white">
+    <!-- 1. HERO — sticky scrub first; after play, flattens to lockup + manifesto stack -->
+    <section id="heroScrollPin" data-theme="light" data-header-theme="light" class="h-[170vh] relative z-10 bg-white pointer-events-none">
       <div id="heroViewport" class="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center bg-white">
-        <!-- Manifesto appears THROUGH the particle field (behind canvas) -->
+        <div id="heroLockupPanel" class="absolute inset-0 w-full h-full">
+          <canvas id="heroWaveformCanvas" class="absolute inset-0 w-full h-full pointer-events-none z-20 opacity-90" aria-hidden="true"></canvas>
+          <div id="heroHeadline" class="absolute inset-0 z-30 flex items-center justify-center pointer-events-none px-6 will-change-transform">
+            <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold text-neutral-950 tracking-tight leading-[1.15] text-center max-w-5xl">
+              <span class="block md:whitespace-nowrap mb-1 sm:mb-2">Data meets culture.</span>
+              <span class="block md:whitespace-nowrap">Software meets scale.</span>
+            </h1>
+          </div>
+        </div>
+        <!-- Manifesto appears THROUGH the particle field during first scrub -->
         <div id="manifestoReveal" class="absolute inset-0 z-[1] flex items-center justify-center px-6 sm:px-12 pointer-events-none will-change-[opacity,transform]" style="opacity:0">
           <div class="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
             <div class="lg:col-span-6 pr-0 lg:pr-4">
               <h2 class="text-3xl sm:text-4xl lg:text-[2.85rem] xl:text-5xl font-extrabold text-neutral-950 tracking-tight leading-[1.12]">
                 Less guesswork.<br>
-                <span class="bg-gradient-to-r from-[#FF0066] via-[#E00099] to-[#C000FF] bg-clip-text text-transparent inline-block pb-1">
+                <span class="fluid-gradient-text">
                   More groundbreakers.
                 </span>
               </h2>
@@ -346,264 +377,126 @@
             </div>
           </div>
         </div>
-
-        <canvas id="heroWaveformCanvas" class="absolute inset-0 w-full h-full pointer-events-none z-[2] opacity-90"></canvas>
-
-        <div id="heroHeadline" class="relative z-[3] max-w-5xl mx-auto text-center pointer-events-none px-6 will-change-transform">
-          <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold text-neutral-950 tracking-tight leading-[1.15]">
-            <span class="block md:whitespace-nowrap mb-1 sm:mb-2">Data meets culture.</span>
-            <span class="block md:whitespace-nowrap">Software meets scale.</span>
-          </h1>
-        </div>
       </div>
     </section>
 
-    <!-- 2b. ORBITAL NODE CANVAS -->
-    <section id="engine-orbit" data-theme="dark" data-header-theme="dark" class="bg-black text-white py-24 sm:py-32 px-4 sm:px-6 border-0 relative min-h-0 md:min-h-[900px] flex flex-col items-center justify-center overflow-x-clip">
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-[#FF0066]/10 via-[#C000FF]/10 to-transparent blur-[160px] pointer-events-none rounded-full"></div>
+    <!-- 2b. ORBITAL ECOSYSTEM + PROPRIETARY STACK -->
+    <section id="engine-orbit" data-theme="dark" data-header-theme="dark" class="relative z-20 bg-black text-white py-20 sm:py-28 lg:py-32 overflow-hidden">
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-[#EC4899]/10 via-[#8B5CF6]/10 to-transparent blur-[160px] pointer-events-none rounded-full z-0"></div>
 
-      <div class="relative z-10 w-full flex flex-col items-center min-h-0">
-        <h2 class="hidden md:block text-2xl sm:text-4xl font-bold text-center text-white tracking-tight mb-8 text-balance">An ecosystem in constant orbit.</h2>
+      <div class="relative z-10 w-full">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+          <h2 class="text-3xl sm:text-5xl font-bold tracking-tight text-white text-center text-balance max-w-4xl mx-auto">
+            The Red Thread Stack. <span class="fluid-gradient-text">Engineered for predictable performance.</span>
+          </h2>
 
-        <!-- Desktop / tablet orbital stage (static N/E/S/W) -->
-        <div class="hidden md:flex w-full max-w-4xl h-[600px] sm:h-[650px] relative items-center justify-center my-4 min-h-0">
-          <!-- Doubled central particle orb (particles swirl behind cards) -->
-          <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] sm:w-[900px] sm:h-[900px] aspect-square flex items-center justify-center pointer-events-none z-10">
-            <canvas id="sphereCanvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
-            <div class="relative z-20 text-center pointer-events-none px-6 py-3 rounded-full bg-black/40 backdrop-blur-[2px] hidden md:inline-flex">
-              <span class="text-xs sm:text-sm font-extrabold tracking-[0.3em] text-white uppercase font-mono drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">INTELLIGENCE CORE</span>
-            </div>
+          <!-- Pure synchronized hero orbit (no labels) -->
+          <div id="orbitCanvasStage" class="mt-12 sm:mt-16 relative">
+            <canvas id="orbitCanvas" aria-hidden="true"></canvas>
           </div>
-
-          <!-- NODE 01 — 9 o'clock / West: Fred AI -->
-          <div data-orb-color="255,0,102" data-orb-physics="discovery" class="absolute -left-6 sm:-left-16 top-1/2 -translate-y-1/2 w-[240px] sm:w-[290px] flex flex-row items-start gap-3.5 bg-neutral-900/70 rounded-2xl p-4 sm:p-5 backdrop-blur-2xl shadow-xl transition-all duration-500 ease-out cursor-pointer z-30 orbit-card group">
-            <svg class="w-10 h-10 sm:w-11 sm:h-11 shrink-0 text-[#FF0066] drop-shadow-[0_0_8px_rgba(255,0,102,0.3)] group-hover:drop-shadow-[0_0_16px_rgba(255,0,102,0.6)] transition-all duration-500 ease-out mt-0.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z"/></svg>
-            <div class="min-w-0 flex-1">
-              <div class="flex items-center gap-2 mb-1">
-                <span class="text-[11px] font-mono font-medium text-neutral-500 tracking-wider">01</span>
-                <span class="text-neutral-700 text-xs">•</span>
-                <h3 class="text-sm font-bold text-white tracking-tight">Fred AI</h3>
-              </div>
-              <p class="text-[11px] text-neutral-400 leading-relaxed">Scans 8.4M+ cultural niches to map high-intent micro-pockets and shortlist&nbsp;vetted&nbsp;creators.</p>
-            </div>
-          </div>
-
-          <!-- NODE 02 — 12 o'clock / North: ThreadOS™ -->
-          <div data-orb-color="224,0,153" data-orb-physics="workflow" class="absolute top-0 left-1/2 -translate-x-1/2 w-[240px] sm:w-[290px] flex flex-row items-start gap-3.5 bg-neutral-900/70 rounded-2xl p-4 sm:p-5 backdrop-blur-2xl shadow-xl transition-all duration-500 ease-out cursor-pointer z-30 orbit-card group">
-            <img src="Content/Tech/thread-logo-e00199.png" alt="ThreadOS Logo" class="w-7 h-7 object-contain inline-block shrink-0 mt-0.5">
-            <div class="min-w-0 flex-1">
-              <div class="flex items-center gap-2 mb-1">
-                <span class="text-[11px] font-mono font-medium text-neutral-500 tracking-wider">02</span>
-                <span class="text-neutral-700 text-xs">•</span>
-                <h3 class="text-sm font-bold text-white tracking-tight">ThreadOS™</h3>
-              </div>
-              <p class="text-[11px] text-neutral-400 leading-relaxed">Automates digital contracting, vaults master media usage rights in &lt;24h, and&nbsp;tracks&nbsp;shipping.</p>
-            </div>
-          </div>
-
-          <!-- NODE 03 — 3 o'clock / East: Attention Engine™ -->
-          <div data-orb-color="37,99,235" data-orb-physics="attribution" class="absolute -right-6 sm:-right-16 top-1/2 -translate-y-1/2 w-[240px] sm:w-[290px] flex flex-row items-start gap-3.5 bg-neutral-900/70 rounded-2xl p-4 sm:p-5 backdrop-blur-2xl shadow-xl transition-all duration-500 ease-out cursor-pointer z-30 orbit-card group">
-            <svg class="w-10 h-10 sm:w-11 sm:h-11 shrink-0 text-[#2563EB] drop-shadow-[0_0_8px_rgba(37,99,235,0.35)] group-hover:drop-shadow-[0_0_16px_rgba(37,99,235,0.65)] transition-all duration-500 ease-out mt-0.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
-            <div class="min-w-0 flex-1">
-              <div class="flex items-center gap-2 mb-1">
-                <span class="text-[11px] font-mono font-medium text-neutral-500 tracking-wider">03</span>
-                <span class="text-neutral-700 text-xs">•</span>
-                <h3 class="text-sm font-bold text-white tracking-tight">Attention Engine™</h3>
-              </div>
-              <p class="text-[11px] text-neutral-400 leading-relaxed">Tracks retention curves and point-of-sale checkout metrics via direct Shopify&nbsp;&amp;&nbsp;GA&nbsp;APIs.</p>
-            </div>
-          </div>
-
-          <!-- NODE 04 — 6 o'clock / South: Algorithmic Feedback -->
-          <div data-orb-color="99,102,241" data-orb-physics="feedback" class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[240px] sm:w-[290px] flex flex-row items-start gap-3.5 bg-neutral-900/70 rounded-2xl p-4 sm:p-5 backdrop-blur-2xl shadow-xl transition-all duration-500 ease-out cursor-pointer z-30 orbit-card group">
-            <svg class="w-10 h-10 sm:w-11 sm:h-11 shrink-0 text-[#6366F1] drop-shadow-[0_0_8px_rgba(99,102,241,0.3)] group-hover:drop-shadow-[0_0_16px_rgba(99,102,241,0.6)] transition-all duration-500 ease-out mt-0.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
-            <div class="min-w-0 flex-1">
-              <div class="flex items-center gap-2 mb-1">
-                <span class="text-[11px] font-mono font-medium text-neutral-500 tracking-wider">04</span>
-                <span class="text-neutral-700 text-xs">•</span>
-                <h3 class="text-sm font-bold text-white tracking-tight">Algorithmic Feedback</h3>
-              </div>
-              <p class="text-[11px] text-neutral-400 leading-relaxed">Performance yield data automatically feeds back into Fred AI to refine targeting for&nbsp;future&nbsp;briefs.</p>
-            </div>
-          </div>
-
         </div>
 
-        <!-- Mobile: natural vertical stack over fixed ambient particle canvas -->
-        <div id="orbitMobileTrack" class="md:hidden w-full relative z-10">
-          <!-- Fixed full-viewport ambient canvas (shown only while section is in view) -->
-          <div id="orbitCanvasShell" class="fixed inset-0 h-[100dvh] w-full pointer-events-none z-0" aria-hidden="true">
-            <canvas id="orbitCanvas" class="absolute inset-0 w-full h-full block border-none outline-none pointer-events-none" aria-hidden="true"></canvas>
-          </div>
+        <!-- Apple-style bento — shared left gutter so mobile card 1 aligns with title -->
+        <div class="mt-20 sm:mt-28 w-full">
+          <div class="max-w-7xl mx-auto pl-4 sm:px-8">
+            <h3 class="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-8 pr-4 sm:pr-0">Our Proprietary Stack.</h3>
 
-          <!-- Pass-through content layer -->
-          <div class="relative z-10 w-full max-w-md mx-auto pointer-events-auto">
-            <h2 class="text-2xl font-bold text-center text-white tracking-tight mb-6 text-balance">An ecosystem in constant orbit.</h2>
+            <div id="stackCarouselTrack" class="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden py-4 pr-4 sm:grid sm:grid-cols-2 sm:overflow-visible sm:snap-none sm:pr-0 sm:gap-4 lg:grid-cols-4 lg:gap-5">
 
-            <div id="orbitMobileStage" class="relative z-10 w-full">
-              <div id="orbitMobileCards" class="relative z-30 space-y-4 mt-4">
-                <div data-bento-index="0" data-orb-index="0" data-orb-color="255,0,102" data-orb-physics="discovery" class="bento-card orbit-card w-full min-h-[44px] flex flex-row items-start gap-3.5 bg-neutral-900/70 rounded-2xl p-4 backdrop-blur-2xl shadow-xl transition-opacity duration-300 ease-out cursor-pointer z-30 group opacity-100">
-                  <svg class="w-10 h-10 shrink-0 text-[#FF0066] drop-shadow-[0_0_8px_rgba(255,0,102,0.3)] mt-0.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z"/></svg>
-                  <div class="min-w-0 flex-1">
-                    <div class="flex items-center gap-2 mb-1">
-                      <span class="text-[11px] font-mono font-medium text-neutral-500 tracking-wider">01</span>
-                      <span class="text-neutral-700 text-xs">•</span>
-                      <h3 class="text-sm font-bold text-white tracking-tight">Fred AI</h3>
-                    </div>
-                    <p class="text-[11px] text-neutral-400 leading-relaxed">Scans 8.4M+ cultural niches to map high-intent micro-pockets and shortlist&nbsp;vetted&nbsp;creators.</p>
-                  </div>
-                </div>
+            <!-- Fred AI -->
+            <div class="bento-card w-[85vw] sm:w-full min-h-[560px] flex-shrink-0 sm:min-w-0 snap-start sm:snap-align-none bg-neutral-900/90 rounded-[28px] border border-white/10 border-t-white/20 shadow-2xl shadow-black/80 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.015]">
+              <div class="p-6 sm:p-7 flex flex-col">
+                <svg class="w-6 h-6 text-pink-500 mb-3 block flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                <div class="text-xs font-semibold tracking-widest text-pink-500 uppercase mb-1.5">FRED AI</div>
+                <h4 class="text-xl sm:text-2xl font-bold tracking-tight text-white leading-snug mb-2 min-h-[56px] flex items-end">Fred knows best.</h4>
+                <p class="text-sm text-neutral-400 leading-relaxed min-h-[72px]">
+                  Scans 8.4M+ cultural niches to map high-intent micro-pockets and shortlist vetted creators.
+                </p>
+              </div>
+              <div class="relative w-full aspect-[16/11] bg-neutral-950 border-t border-white/10 overflow-hidden rounded-b-[28px]">
+                <canvas id="fredNeuralCanvas" class="absolute inset-0 w-full h-full block" aria-hidden="true"></canvas>
+              </div>
+            </div>
 
-                <div data-bento-index="1" data-orb-index="1" data-orb-color="52,211,153" data-orb-physics="workflow" class="bento-card orbit-card w-full min-h-[44px] flex flex-row items-start gap-3.5 bg-neutral-900/70 rounded-2xl p-4 backdrop-blur-2xl shadow-xl transition-opacity duration-300 ease-out cursor-pointer z-30 group opacity-40">
-                  <img src="Content/Tech/thread-logo-e00199.png" alt="ThreadOS Logo" class="w-7 h-7 object-contain inline-block shrink-0 mt-0.5">
-                  <div class="min-w-0 flex-1">
-                    <div class="flex items-center gap-2 mb-1">
-                      <span class="text-[11px] font-mono font-medium text-neutral-500 tracking-wider">02</span>
-                      <span class="text-neutral-700 text-xs">•</span>
-                      <h3 class="text-sm font-bold text-white tracking-tight">ThreadOS™</h3>
-                    </div>
-                    <p class="text-[11px] text-neutral-400 leading-relaxed">Automates digital contracting, vaults master media usage rights in &lt;24h, and&nbsp;tracks&nbsp;shipping.</p>
-                  </div>
-                </div>
+            <!-- ThreadOS -->
+            <div class="bento-card w-[85vw] sm:w-full min-h-[560px] flex-shrink-0 sm:min-w-0 snap-start sm:snap-align-none bg-neutral-900/90 rounded-[28px] border border-white/10 border-t-white/20 shadow-2xl shadow-black/80 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.015]">
+              <div class="p-6 sm:p-7 flex flex-col">
+                <svg class="w-6 h-6 text-pink-500 mb-3 block flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                <div class="text-xs font-semibold tracking-widest text-pink-500 uppercase mb-1.5">THREADOS™</div>
+                <h4 class="text-xl sm:text-2xl font-bold tracking-tight text-white leading-snug mb-2 min-h-[56px] flex items-end">The backstage pass.</h4>
+                <p class="text-sm text-neutral-400 leading-relaxed min-h-[72px]">
+                  Automates digital contracting, vaults master media usage rights in &lt;24h, and tracks shipping.
+                </p>
+              </div>
+              <div class="w-full aspect-[16/11] bg-neutral-950 border-t border-white/15 relative overflow-hidden rounded-b-[28px]">
+                <span class="absolute top-3 right-3 z-10 px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide text-white/90 bg-white/10 border border-white/15 backdrop-blur-md shadow-sm">ThreadOS™ v2.4</span>
+                <img src="Content/Tech/ThreadOS.png" alt="ThreadOS" class="w-full h-full object-cover object-top" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/Tech/ThreadOS.png';">
+              </div>
+            </div>
 
-                <div data-bento-index="2" data-orb-index="2" data-orb-color="37,99,235" data-orb-physics="attribution" class="bento-card orbit-card w-full min-h-[44px] flex flex-row items-start gap-3.5 bg-neutral-900/70 rounded-2xl p-4 backdrop-blur-2xl shadow-xl transition-opacity duration-300 ease-out cursor-pointer z-30 group opacity-40">
-                  <svg class="w-10 h-10 shrink-0 text-[#2563EB] drop-shadow-[0_0_8px_rgba(37,99,235,0.35)] mt-0.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
-                  <div class="min-w-0 flex-1">
-                    <div class="flex items-center gap-2 mb-1">
-                      <span class="text-[11px] font-mono font-medium text-neutral-500 tracking-wider">03</span>
-                      <span class="text-neutral-700 text-xs">•</span>
-                      <h3 class="text-sm font-bold text-white tracking-tight">Attention Engine™</h3>
-                    </div>
-                    <p class="text-[11px] text-neutral-400 leading-relaxed">Tracks retention curves and point-of-sale checkout metrics via direct Shopify&nbsp;&amp;&nbsp;GA&nbsp;APIs.</p>
-                  </div>
-                </div>
+            <!-- Attention Engine -->
+            <div class="bento-card w-[85vw] sm:w-full min-h-[560px] flex-shrink-0 sm:min-w-0 snap-start sm:snap-align-none bg-neutral-900/90 rounded-[28px] border border-white/10 border-t-white/20 shadow-2xl shadow-black/80 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.015]">
+              <div class="p-6 sm:p-7 flex flex-col">
+                <svg class="w-6 h-6 text-pink-500 mb-3 block flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                <div class="text-xs font-semibold tracking-widest text-pink-500 uppercase mb-1.5">ATTENTION ENGINE™</div>
+                <h4 class="text-xl sm:text-2xl font-bold tracking-tight text-white leading-snug mb-2 min-h-[56px] flex items-end">Proof over promise.</h4>
+                <p class="text-sm text-neutral-400 leading-relaxed min-h-[72px]">
+                  Models retention curves and connects point-of-sale checkout metrics via Shopify &amp; GA APIs.
+                </p>
+              </div>
+              <div class="w-full aspect-[16/11] bg-neutral-950 border-t border-white/15 relative overflow-hidden rounded-b-[28px]">
+                <span class="absolute top-3 right-3 z-10 px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide text-white/90 bg-white/10 border border-white/15 backdrop-blur-md shadow-sm">Shopify &amp; GA Live</span>
+                <img src="Content/Tech/attention-engine.png" alt="Attention Engine" class="w-full h-full object-cover object-top" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/Tech/attention-engine.png';">
+              </div>
+            </div>
 
-                <div data-bento-index="3" data-orb-index="3" data-orb-color="192,0,255" data-orb-physics="feedback" class="bento-card orbit-card w-full min-h-[44px] flex flex-row items-start gap-3.5 bg-neutral-900/70 rounded-2xl p-4 backdrop-blur-2xl shadow-xl transition-opacity duration-300 ease-out cursor-pointer z-30 group opacity-40">
-                  <svg class="w-10 h-10 shrink-0 text-[#C000FF] drop-shadow-[0_0_8px_rgba(192,0,255,0.3)] mt-0.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
-                  <div class="min-w-0 flex-1">
-                    <div class="flex items-center gap-2 mb-1">
-                      <span class="text-[11px] font-mono font-medium text-neutral-500 tracking-wider">04</span>
-                      <span class="text-neutral-700 text-xs">•</span>
-                      <h3 class="text-sm font-bold text-white tracking-tight">Algorithmic Feedback</h3>
-                    </div>
-                    <p class="text-[11px] text-neutral-400 leading-relaxed">Performance yield data automatically feeds back into Fred AI to refine targeting for&nbsp;future&nbsp;briefs.</p>
-                  </div>
+            <!-- Algorithmic Feedback -->
+            <div class="bento-card w-[85vw] sm:w-full min-h-[560px] flex-shrink-0 sm:min-w-0 snap-start sm:snap-align-none bg-neutral-900/90 rounded-[28px] border border-white/10 border-t-white/20 shadow-2xl shadow-black/80 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.015]">
+              <div class="p-6 sm:p-7 flex flex-col">
+                <svg class="w-6 h-6 text-pink-500 mb-3 block flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                <div class="text-xs font-semibold tracking-widest text-pink-500 uppercase mb-1.5">ALGORITHMIC FEEDBACK</div>
+                <h4 class="text-xl sm:text-2xl font-bold tracking-tight text-white leading-snug mb-2 min-h-[56px] flex items-end">Closed-loop yield.</h4>
+                <p class="text-sm text-neutral-400 leading-relaxed min-h-[72px]">
+                  Performance yield data automatically feeds back into Fred AI to continuously refine targeting.
+                </p>
+              </div>
+              <div class="w-full aspect-[16/11] bg-neutral-950 border-t border-white/10 relative overflow-hidden rounded-b-[28px] flex items-center justify-center">
+                <div class="absolute w-44 h-44 rounded-full bg-pink-600/25 blur-2xl animate-pulse"></div>
+                <div class="absolute w-28 h-28 rounded-full bg-rose-500/15 blur-2xl translate-x-5 -translate-y-3"></div>
+                <div class="relative z-10 w-20 h-20 rounded-full border border-pink-500/30 bg-pink-500/5 backdrop-blur-sm flex items-center justify-center animate-[spin_12s_linear_infinite]">
+                  <div class="w-12 h-12 rounded-full border-t border-r border-pink-400/60"></div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- 3. TECH STACK — Apple HIG flat white cards, flush media, continuous thread -->
-    <section id="stack" data-theme="light" data-header-theme="light" class="bg-[#F5F5F7] text-neutral-950 py-24 sm:py-32 px-6 relative z-20 overflow-hidden">
-      <h2 class="text-neutral-950 text-3xl sm:text-5xl font-extrabold tracking-tight text-center mb-16 lg:mb-20">Our Proprietary Stack.</h2>
-
-      <div class="max-w-7xl mx-auto">
-      <div class="flex md:grid md:grid-cols-3 gap-6 sm:gap-8 items-stretch proprietary-stack-grid snap-x snap-mandatory overflow-x-auto md:overflow-visible scrollbar-none">
-
-        <!-- CARD 01: ThreadOS™ -->
-        <div class="relative rounded-3xl bg-white border border-black/[0.06] shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-500 overflow-hidden flex flex-col justify-between min-h-[540px] md:min-h-[580px] snap-center shrink-0 md:shrink">
-          <div class="h-[3px] w-full absolute top-0 left-0 right-0 z-20 rounded-t-3xl bg-[#E00199]"></div>
-
-          <div class="px-7 sm:px-9 pt-8 sm:pt-10 pb-6">
-            <img src="Content/Tech/thread-logo-e00199.png" alt="ThreadOS Logo" class="w-10 h-10 object-contain mb-6">
-            <h3 class="text-2xl sm:text-3xl font-extrabold text-neutral-950 tracking-tight mb-1">ThreadOS™</h3>
-            <p class="text-[#E00199] font-semibold text-sm sm:text-base mb-3">The backstage pass.</p>
-            <p class="text-neutral-600 text-sm sm:text-base leading-relaxed">
-              The central nervous system for creator campaigns. We threw out messy spreadsheets and built an OS that handles brief-to-payout without administrative friction.
-            </p>
           </div>
 
-          <div class="w-full mt-auto h-52 sm:h-60 overflow-hidden relative border-t border-neutral-100 bg-neutral-950 flex flex-col">
-            <div class="flex items-center gap-1.5 px-3 py-1.5 bg-neutral-900 border-b border-neutral-800 shrink-0">
-              <span class="w-2 h-2 rounded-full bg-red-500"></span>
-              <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
-              <span class="w-2 h-2 rounded-full bg-green-500"></span>
-              <span class="text-[10px] font-mono text-neutral-400 ml-2">ThreadOS — Dashboard</span>
-            </div>
-            <img src="assets/Tech/ThreadOS.png" alt="ThreadOS Dashboard" class="w-full h-full object-cover object-top" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Tech/ThreadOS.png';" />
-          </div>
-        </div>
-
-        <!-- CARD 02: Attention Engine™ -->
-        <div class="relative rounded-3xl bg-white border border-black/[0.06] shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-500 overflow-hidden flex flex-col justify-between min-h-[540px] md:min-h-[580px] snap-center shrink-0 md:shrink">
-          <div class="h-[3px] w-full absolute top-0 left-0 right-0 z-20 rounded-t-3xl bg-[#2563EB]"></div>
-
-          <div class="px-7 sm:px-9 pt-8 sm:pt-10 pb-6">
-            <svg class="w-10 h-10 text-[#2563EB] mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-            <h3 class="text-2xl sm:text-3xl font-extrabold text-neutral-950 tracking-tight mb-1">Attention Engine™</h3>
-            <p class="text-[#2563EB] font-semibold text-sm sm:text-base mb-3">Proof over promise.</p>
-            <p class="text-neutral-600 text-sm sm:text-base leading-relaxed">
-              Ditch vanity metrics. Measure true commercial yield. We forecast attention curves before media spend and track revenue straight down to point-of-sale checkout.
-            </p>
-          </div>
-
-          <div class="w-full mt-auto h-52 sm:h-60 overflow-hidden relative border-t border-neutral-100 bg-neutral-900 p-2 sm:p-3">
-            <div class="w-full h-full rounded-b-xl overflow-hidden border border-neutral-700/60 bg-white shadow-sm">
-              <img src="Content/Tech/attention-engine.png" alt="Attention Engine Dashboard" class="w-full h-full object-cover object-top" loading="lazy" decoding="async" />
+            <div class="mt-6 pr-4 flex items-center justify-end gap-3 sm:hidden">
+              <button id="prevStackBtn" type="button" aria-label="Previous" class="w-11 h-11 rounded-full border border-white/10 bg-neutral-900 text-white flex items-center justify-center hover:bg-neutral-800 transition-all shadow-md">&larr;</button>
+              <button id="nextStackBtn" type="button" aria-label="Next" class="w-11 h-11 rounded-full border border-white/10 bg-neutral-900 text-white flex items-center justify-center hover:bg-neutral-800 transition-all shadow-md">&rarr;</button>
             </div>
           </div>
         </div>
-
-        <!-- CARD 03: Fred AI -->
-        <div class="relative rounded-3xl bg-white border border-black/[0.06] shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-500 overflow-hidden flex flex-col justify-between min-h-[540px] md:min-h-[580px] snap-center shrink-0 md:shrink">
-          <div class="h-[3px] w-full absolute top-0 left-0 right-0 z-20 rounded-t-3xl bg-[#E00199]"></div>
-
-          <div class="px-7 sm:px-9 pt-8 sm:pt-10 pb-6">
-            <svg class="w-10 h-10 text-[#E00199] mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-            </svg>
-            <h3 class="text-2xl sm:text-3xl font-extrabold text-neutral-950 tracking-tight mb-1">Fred AI</h3>
-            <p class="text-[#E00199] font-semibold text-sm sm:text-base mb-3">Fred knows who's next.</p>
-            <p class="text-neutral-600 text-sm sm:text-base leading-relaxed">
-              Algorithmic matchmaking minus the awkward first dates. Fred scans cultural sentiment and engagement velocity to find creator matches that actually convert.
-            </p>
-          </div>
-
-          <div class="w-full mt-auto h-52 sm:h-60 overflow-hidden relative border-t border-neutral-100 bg-neutral-950 flex flex-col">
-            <video autoplay loop muted playsinline class="w-full h-full object-cover">
-              <source src="assets/Tech/fredai.mov" type="video/quicktime">
-              <source src="assets/Tech/fredai.mov" type="video/mp4">
-              <source src="Content/Tech/fredai.mov" type="video/mp4">
-            </video>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="flex md:hidden justify-center items-center gap-2 pt-6" id="stackDots" aria-hidden="true">
-        <span class="w-2 h-2 rounded-full bg-neutral-900 transition-all duration-300"></span>
-        <span class="w-2 h-2 rounded-full bg-neutral-300 transition-all duration-300"></span>
-        <span class="w-2 h-2 rounded-full bg-neutral-300 transition-all duration-300"></span>
-      </div>
       </div>
     </section>
 
     <!-- Section 4: Apple Keynote Closing CTA -->
-    <section id="closing-cta" data-theme="dark" data-header-theme="dark" class="relative z-20 bg-neutral-950 text-white py-28 sm:py-40 px-6 overflow-hidden border-t border-neutral-900">
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-[#FF0066]/10 via-[#C000FF]/10 to-blue-600/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
-
-      <div class="relative z-10 max-w-4xl mx-auto text-center space-y-8">
-        <h2 class="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.08] text-balance">
-          Ready to scale with software,<br class="hidden sm:inline">
-          <span class="bg-gradient-to-r from-[#FF0066] via-[#E00099] to-[#C000FF] bg-clip-text text-transparent inline-block pb-1">
-            not spreadsheets?
-          </span>
+    <section id="closing-cta" data-theme="light" data-header-theme="light" class="bg-white text-neutral-900 py-24 sm:py-32 w-full relative overflow-hidden z-20">
+      <div class="relative z-10 max-w-4xl mx-auto px-6 text-center">
+        <h2 class="text-3xl sm:text-6xl font-bold tracking-tight text-black text-center leading-[1.1]">
+          Ready to scale with software,<br />
+          <span class="fluid-gradient-text">not spreadsheets?</span>
         </h2>
 
-        <p class="text-base sm:text-xl md:text-2xl text-neutral-300 font-normal max-w-2xl mx-auto leading-relaxed text-balance">
+        <p class="text-base sm:text-lg text-neutral-600 text-center max-w-xl mx-auto mt-6 leading-relaxed">
           Get in touch to see how our custom tech engine transforms your influencer&nbsp;marketing&nbsp;world.
         </p>
 
-        <div class="pt-6 flex justify-center">
+        <div class="flex justify-center">
           <a href="index.html#contact-faq"
-             class="inline-flex items-center justify-center px-9 py-4 rounded-full bg-white text-neutral-950 font-bold text-base sm:text-lg transition-all duration-300 hover:scale-[1.04] shadow-[0_0_25px_rgba(255,255,255,0.15)] hover:shadow-[0_0_35px_rgba(255,255,255,0.35)] gap-3 group">
+             class="inline-flex items-center gap-2 bg-black text-white hover:bg-neutral-800 px-8 py-4 rounded-full font-medium transition-all duration-300 shadow-xl hover:scale-105 mt-8 group">
             <span>Get in touch</span>
-            <svg class="w-5 h-5 text-neutral-700 group-hover:text-neutral-950 group-hover:translate-x-1 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <svg class="w-5 h-5 text-white group-hover:translate-x-0.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
             </svg>
           </a>
@@ -613,26 +506,26 @@
 
   </main>
 
-  <!-- Dark footer shell — seamless with CTA above -->
-  <footer data-header-theme="dark" class="w-full relative z-20 bg-neutral-950 text-white">
-    <div class="max-w-7xl mx-auto px-6 sm:px-8">
-      <div class="pt-8 pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 text-xs text-neutral-500">
+  <!-- Light footer — continuous with white CTA above -->
+  <footer data-header-theme="light" class="bg-white border-t border-neutral-200/80 py-12 px-4 sm:px-8 text-neutral-600 text-xs w-full relative z-20">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div class="flex flex-col items-start gap-3 ml-0 pl-0">
-          <img src="logo-thread-white.png" alt="Red Thread" class="h-8 w-auto object-contain filter brightness-0 invert opacity-90 block ml-0" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='logo-white.png';"/>
+          <img src="logo-black.png" alt="Red Thread" class="h-8 w-auto object-contain block ml-0" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='logo-thread-white.png'; this.classList.add('brightness-0');"/>
           <p class="text-neutral-500">&copy; 2026 Red Thread Agency Ltd. All rights reserved.</p>
         </div>
 
-        <div class="flex flex-wrap items-center gap-6 text-neutral-400 pb-1">
-          <a href="tech.html" class="hover:text-white transition-colors">Our Tech</a>
-          <a href="privacy.html" class="hover:text-white transition-colors">Privacy policy</a>
-          <a href="#" class="hover:text-white transition-colors">Terms of service</a>
+        <div class="flex flex-wrap items-center gap-6 text-neutral-600 pb-1">
+          <a href="tech.html" class="text-neutral-600 hover:text-black transition-colors">Our Tech</a>
+          <a href="privacy.html" class="text-neutral-600 hover:text-black transition-colors">Privacy policy</a>
+          <a href="#" class="text-neutral-600 hover:text-black transition-colors">Terms of service</a>
           <div class="flex items-center gap-4">
             <a
               href="https://www.linkedin.com/company/redthreadagency"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Red Thread on LinkedIn"
-              class="text-white/90 hover:text-white transition-colors"
+              class="text-neutral-600 hover:text-black transition-colors"
             >
               <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
@@ -643,7 +536,7 @@
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Red Thread on Instagram"
-              class="text-white/90 hover:text-white transition-colors"
+              class="text-neutral-600 hover:text-black transition-colors"
             >
               <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
@@ -656,374 +549,305 @@
   </footer>
 
   <script>
-    (function initOrbitFocusMode() {
-      // Desktop hover focus only — mobile uses scroll-driven sticky focus
-      const desktopStage = document.querySelector('#engine-orbit .hidden.md\\:flex');
-      const cards = desktopStage ? desktopStage.querySelectorAll('.orbit-card') : [];
-      if (!cards.length) return;
-      cards.forEach((card) => {
-        card.addEventListener('mouseenter', () => {
-          cards.forEach((otherCard) => {
-            if (otherCard !== card) {
-              otherCard.classList.add('opacity-30', 'blur-[1px]', 'scale-[0.98]');
-            }
-          });
-        });
-        card.addEventListener('mouseleave', () => {
-          cards.forEach((otherCard) => {
-            otherCard.classList.remove('opacity-30', 'blur-[1px]', 'scale-[0.98]');
-          });
-        });
-      });
-    })();
-
-    (function initSphereCanvas() {
-      let currentRGB = { r: 255, g: 255, b: 255 };
-      let targetRGB = { r: 255, g: 255, b: 255 };
-      let targetPhysics = 'idle';
-      let appliedPhysics = 'idle'; // last mode kept while mix eases out
-      let physicsMix = 0;
-      let currentSpeedY = -0.0032; // stronger clockwise native orbit
-      let currentSpeedX = 0.0009;
-      let mobileScrollLock = false;
-
-      window.__orbitSphereControl = {
-        targetRGB: { r: 255, g: 255, b: 255 },
-        targetPhysics: 'idle',
-        // Shared bento themes — same physics keys as desktop hover
-        themes: [
-          { rgb: { r: 255, g: 0, b: 102 }, physics: 'discovery' },   // 01 Fred AI — #FF0066
-          { rgb: { r: 52, g: 211, b: 153 }, physics: 'workflow' },    // 02 ThreadOS — #34D399
-          { rgb: { r: 37, g: 99, b: 235 }, physics: 'attribution' },  // 03 Attention Engine — #2563EB
-          { rgb: { r: 192, g: 0, b: 255 }, physics: 'feedback' }      // 04 Algorithmic Feedback — #C000FF
-        ],
-        setFocus(rgb, physics) {
-          mobileScrollLock = true;
-          targetRGB = rgb;
-          targetPhysics = physics || 'idle';
-          this.targetRGB = rgb;
-          this.targetPhysics = physics || 'idle';
-        },
-        // Mobile scroll + shared API — mirrors desktop hover state machine
-        setParticleTheme(index) {
-          const theme = this.themes[Math.max(0, Math.min(this.themes.length - 1, index | 0))];
-          if (!theme) return;
-          this.setFocus(theme.rgb, theme.physics);
-        },
-        clearFocus() {
-          mobileScrollLock = false;
-          targetRGB = { r: 255, g: 255, b: 255 };
-          targetPhysics = 'idle';
-          this.targetRGB = { r: 255, g: 255, b: 255 };
-          this.targetPhysics = 'idle';
-        },
-        isMobileLocked() {
-          return mobileScrollLock;
-        }
-      };
-
-      // Desktop hover only (mobile cards are driven by scroll)
-      const desktopStage = document.querySelector('#engine-orbit .hidden.md\\:flex');
-      const hoverCards = desktopStage
-        ? desktopStage.querySelectorAll('[data-orb-color]')
-        : document.querySelectorAll('#engine-orbit .hidden.md\\:flex [data-orb-color]');
-      hoverCards.forEach((card) => {
-        const activate = () => {
-          if (mobileScrollLock || window.matchMedia('(max-width: 767px)').matches) return;
-          const parts = (card.getAttribute('data-orb-color') || '255,255,255').split(',').map(Number);
-          targetRGB = { r: parts[0], g: parts[1], b: parts[2] };
-          targetPhysics = card.getAttribute('data-orb-physics') || 'idle';
-        };
-        const deactivate = () => {
-          if (mobileScrollLock || window.matchMedia('(max-width: 767px)').matches) return;
-          targetRGB = { r: 255, g: 255, b: 255 };
-          targetPhysics = 'idle';
-        };
-        card.addEventListener('pointerenter', activate);
-        card.addEventListener('pointerleave', deactivate);
-      });
-
-      function mountSphere(canvas) {
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
-        if (!ctx) return;
-
-        let size = 0;
-        let sphereRadius = 0;
-        let invRadius = 0;
-        let running = false;
-        let rafId = 0;
-        let t = 0;
-        let angleY = 0;
-        let angleX = 0;
-        const numParticles = 3600;
-
-        const hx = new Float32Array(numParticles);
-        const hy = new Float32Array(numParticles);
-        const hz = new Float32Array(numParticles);
-        const phase = new Float32Array(numParticles);
-
-        function seedParticles() {
-          for (let i = 0; i < numParticles; i++) {
-            const u = Math.random();
-            const v = Math.random();
-            const theta = u * 2.0 * Math.PI;
-            const phi = Math.acos(2.0 * v - 1.0);
-            const r = sphereRadius * Math.pow(Math.random(), 0.42);
-            const sinPhi = Math.sin(phi);
-            hx[i] = r * sinPhi * Math.cos(theta);
-            hy[i] = r * sinPhi * Math.sin(theta);
-            hz[i] = r * Math.cos(phi);
-            phase[i] = Math.random() * Math.PI * 2;
-          }
-        }
-
-        function resize() {
-          const rect = canvas.getBoundingClientRect();
-          const side = Math.min(rect.width, rect.height);
-          if (side < 2) {
-            size = 0;
-            return false;
-          }
-          const next = Math.round(side * 2);
-          if (next !== size) {
-            size = canvas.width = canvas.height = next;
-            sphereRadius = size * 0.5625;
-            invRadius = 1 / sphereRadius;
-            seedParticles();
-          }
-          return true;
-        }
-
-        function smoothstep(x) {
-          const t = Math.max(0, Math.min(1, x));
-          return t * t * (3 - 2 * t);
-        }
-
-        function render() {
-          if (!size) {
-            running = false;
-            return;
-          }
-
-          t += 1;
-
-          // Asymmetric ease: settle out slower than engage-in (organic release)
-          const wantMix = targetPhysics === 'idle' ? 0 : 1;
-          const mixRate = wantMix > physicsMix ? 0.065 : 0.038;
-          physicsMix += (wantMix - physicsMix) * mixRate;
-          if (physicsMix < 0.0015 && wantMix === 0) physicsMix = 0;
-
-          // Keep applying the last hover mode while intensity winds down — no force snap
-          if (targetPhysics !== 'idle') {
-            appliedPhysics = targetPhysics;
-          } else if (physicsMix === 0) {
-            appliedPhysics = 'idle';
-          }
-
-          const m = smoothstep(physicsMix);
-
-          // Colour eases independently (slightly slower on release)
-          const colorRate = wantMix > 0.5 ? 0.07 : 0.045;
-          currentRGB.r += (targetRGB.r - currentRGB.r) * colorRate;
-          currentRGB.g += (targetRGB.g - currentRGB.g) * colorRate;
-          currentRGB.b += (targetRGB.b - currentRGB.b) * colorRate;
-          const cr = Math.round(currentRGB.r);
-          const cg = Math.round(currentRGB.g);
-          const cb = Math.round(currentRGB.b);
-
-          // Desired angular velocities from applied mode, scaled by mix
-          // Native Y spin is negative = clockwise when viewing the orb
-          let desiredY = -0.0032;
-          let desiredX = 0.0009;
-          if (appliedPhysics === 'discovery') {
-            desiredY = -0.0032 + (-0.0002) * m;
-            desiredX = 0.0009 + (-0.0003 + 0.0004) * m;
-          } else if (appliedPhysics === 'workflow') {
-            desiredY = -0.0032 - 0.006 * m; // faster clockwise pipeline spin
-            desiredX = 0.0009 + 0.002 * m;
-          } else if (appliedPhysics === 'attribution') {
-            desiredY = -0.0032 - 0.003 * m;
-            desiredX = 0.0009 - 0.0025 * m;
-          } else if (appliedPhysics === 'feedback') {
-            desiredY = -0.0032 + 0.0045 * m; // reverse against native clockwise
-            desiredX = 0.0009 + 0.0035 * m;
-          }
-          currentSpeedY += (desiredY - currentSpeedY) * 0.055;
-          currentSpeedX += (desiredX - currentSpeedX) * 0.055;
-          angleY += currentSpeedY;
-          angleX += currentSpeedX;
-
-          const cosY = Math.cos(angleY);
-          const sinY = Math.sin(angleY);
-          const cosX = Math.cos(angleX);
-          const sinX = Math.sin(angleX);
-
-          ctx.clearRect(0, 0, size, size);
-          const cx = size * 0.5;
-          const cy = size * 0.5;
-          ctx.fillStyle = 'rgb(' + cr + ',' + cg + ',' + cb + ')';
-
-          const breath = Math.sin(t * 0.03);
-          const idleAmt = 1 - m;
-
-          for (let i = 0; i < numParticles; i++) {
-            let px = hx[i];
-            let py = hy[i];
-            let pz = hz[i];
-            const ph = phase[i];
-
-            // Idle micro-breath always present, fades under hover forces
-            if (idleAmt > 0.01) {
-              const idle = 1 + breath * 0.015 * idleAmt;
-              px *= idle;
-              py *= idle;
-              pz *= idle;
-            }
-
-            // Hover forces fade with smoothstep(m) — never cut off mid-pose
-            if (m > 0.001 && appliedPhysics !== 'idle') {
-              if (appliedPhysics === 'discovery') {
-                const pulse = 1 + (0.18 + 0.08 * Math.sin(t * 0.045 + ph)) * m;
-                px *= pulse;
-                py *= pulse;
-                pz *= pulse;
-              } else if (appliedPhysics === 'workflow') {
-                const band = Math.sin(ph * 3.0 + t * 0.02) * 0.12 * m;
-                py += band * sphereRadius * 0.15;
-                const twist = ph + t * 0.01 * m;
-                const rr = Math.sqrt(px * px + pz * pz);
-                const blend = 0.15 * m;
-                px = Math.cos(twist) * rr * blend + px * (1 - blend);
-                pz = Math.sin(twist) * rr * blend + pz * (1 - blend);
-              } else if (appliedPhysics === 'attribution') {
-                const burst = 1 + (0.22 + 0.1 * Math.sin(t * 0.08 + ph)) * m;
-                const jx = Math.sin(t * 0.11 + ph * 2.1) * sphereRadius * 0.04 * m;
-                const jy = Math.cos(t * 0.13 + ph * 1.7) * sphereRadius * 0.04 * m;
-                const jz = Math.sin(t * 0.09 + ph * 2.7) * sphereRadius * 0.04 * m;
-                px = px * burst + jx;
-                py = py * burst + jy;
-                pz = pz * burst + jz;
-              } else if (appliedPhysics === 'feedback') {
-                const pull = 1 - 0.28 * m * (0.55 + 0.45 * Math.sin(t * 0.05 + ph));
-                const spiral = t * 0.02 * m + ph;
-                const rr = Math.sqrt(px * px + pz * pz);
-                px = (px * pull) + Math.cos(spiral) * rr * 0.08 * m;
-                pz = (pz * pull) + Math.sin(spiral) * rr * 0.08 * m;
-                py = py * pull + Math.sin(spiral * 1.3) * sphereRadius * 0.03 * m;
-              }
-            }
-
-            const x1 = px * cosY - pz * sinY;
-            const z1 = pz * cosY + px * sinY;
-            const y1 = py * cosX - z1 * sinX;
-            const z2 = z1 * cosX + py * sinX;
-
-            const distFromCenter = Math.sqrt(x1 * x1 + y1 * y1);
-            const edgeNorm = distFromCenter * invRadius;
-            const edgeFactor = Math.max(0.04, 1 - Math.pow(edgeNorm, 2.4));
-            const depthFactor = (z2 + sphereRadius) * invRadius * 0.5;
-            const particleSize = Math.max(0.4, (depthFactor * 0.9 + 0.15) * edgeFactor * 1.3) * 6;
-            const alpha = Math.max(0.04, depthFactor * edgeFactor * 0.85);
-            if (alpha < 0.04) continue;
-
-            ctx.globalAlpha = alpha;
-            ctx.beginPath();
-            ctx.arc(x1 + cx, y1 + cy, particleSize * 0.5, 0, Math.PI * 2);
-            ctx.fill();
-          }
-
-          ctx.globalAlpha = 1;
-          rafId = requestAnimationFrame(render);
-        }
-
-        function stop() {
-          running = false;
-          if (rafId) {
-            cancelAnimationFrame(rafId);
-            rafId = 0;
-          }
-        }
-
-        function ensureRunning() {
-          if (!resize()) {
-            stop();
-            return;
-          }
-          if (!running) {
-            running = true;
-            rafId = requestAnimationFrame(render);
-          }
-        }
-
-        if (typeof ResizeObserver !== 'undefined') {
-          new ResizeObserver(ensureRunning).observe(canvas);
-        } else {
-          window.addEventListener('resize', ensureRunning, { passive: true });
-        }
-
-        if (typeof IntersectionObserver !== 'undefined') {
-          new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) ensureRunning();
-              else stop();
-            });
-          }, { threshold: 0.05 }).observe(canvas);
-        }
-
-        ensureRunning();
-      }
-
-      mountSphere(document.getElementById('sphereCanvas'));
-    })();
-
-    // Mobile orbit: full-viewport particle field (no sphere radius / no mask clip)
-    (function initOrbitViewportField() {
+    (function initPureHeroOrbit() {
       const canvas = document.getElementById('orbitCanvas');
-      if (!canvas) return;
+      const stage = document.getElementById('orbitCanvasStage');
+      if (!canvas || !stage) return;
       const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
       if (!ctx) return;
 
-      let particles = [];
-      let currentRGB = { r: 255, g: 255, b: 255 };
-      let physicsMix = 0;
-      let appliedPhysics = 'idle';
+      let w = 0;
+      let h = 0;
+      let cx = 0;
+      let cy = 0;
+      let dpr = 1;
+      let syncAngle = 0;
       let running = false;
-      let rafId = 0;
-      let t = 0;
+      let animationFrameId = 0;
+
+      const particleCount = 500;
+      const particles = [];
+      const colors = ['#e11d48', '#c026d3', '#ec4899', '#8b5cf6', '#ffffff'];
 
       function initParticles() {
-        // Dense full-screen field — no radial/center bias
-        const count = Math.max(1400, Math.min(2800, Math.floor((canvas.width * canvas.height) / 220)));
-        particles = new Array(count);
-        for (let i = 0; i < count; i++) {
-          particles[i] = {
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            vx: (Math.random() - 0.5) * 0.7,
-            vy: (Math.random() - 0.5) * 0.7,
-            size: 0.8 + Math.random() * 2.6,
-            phase: Math.random() * Math.PI * 2
-          };
+        particles.length = 0;
+        const maxRadius = Math.min(w, h) * 0.42;
+
+        for (let i = 0; i < particleCount; i++) {
+          const band = Math.pow(Math.random(), 0.8);
+          const radius = 25 + band * maxRadius;
+          const angle = Math.random() * Math.PI * 2;
+          const speed = (0.002 + (1 - radius / maxRadius) * 0.003);
+          const size = Math.random() < 0.15 ? Math.random() * 2 + 1.2 : Math.random() * 1.2 + 0.4;
+          const alpha = Math.random() * 0.5 + 0.2;
+          const color = colors[Math.floor(Math.random() * colors.length)];
+
+          particles.push({ radius, angle, speed, size, alpha, color });
         }
       }
 
-      function resizeCanvas() {
-        // Match drawing buffer to the canvas's *displayed* box so particles
-        // aren't squashed into a center cluster when CSS size ≠ innerWidth.
+      function resize() {
+        const rect = stage.getBoundingClientRect();
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        w = Math.max(1, Math.round(rect.width || canvas.offsetWidth));
+        h = Math.max(1, Math.round(rect.height || canvas.offsetHeight));
+        cx = w / 2;
+        cy = h / 2;
+        canvas.width = Math.round(w * dpr);
+        canvas.height = Math.round(h * dpr);
+        canvas.style.width = w + 'px';
+        canvas.style.height = h + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        initParticles();
+      }
+
+      function draw() {
+        if (!w || !h) {
+          running = false;
+          return;
+        }
+
+        ctx.clearRect(0, 0, w, h);
+
+        // Single locked velocity for all 4 hero nodes
+        syncAngle += 0.006;
+
+        const maxR = Math.min(w, h) * 0.38;
+        const rings = [maxR * 0.35, maxR * 0.58, maxR * 0.8, maxR * 1.0];
+
+        // Soft core glow
+        const coreGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxR * 0.22);
+        coreGrad.addColorStop(0, 'rgba(225,29,72,0.2)');
+        coreGrad.addColorStop(0.55, 'rgba(192,38,211,0.1)');
+        coreGrad.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = coreGrad;
+        ctx.beginPath();
+        ctx.arc(cx, cy, maxR * 0.22, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 1. Concentric Wireframe Orbit Rings
+        rings.forEach((r, idx) => {
+          ctx.beginPath();
+          ctx.arc(cx, cy, r, 0, Math.PI * 2);
+          ctx.strokeStyle = 'rgba(255, 255, 255, ' + (0.06 + idx * 0.02) + ')';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        });
+
+        // 2. Swarm Particles
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          p.angle += p.speed;
+          const px = cx + Math.cos(p.angle) * p.radius;
+          const py = cy + Math.sin(p.angle) * p.radius;
+
+          ctx.beginPath();
+          ctx.arc(px, py, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = p.alpha;
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1.0;
+
+        // 3. 4 Larger Synchronized Hero Particles (Locked Orbit Period)
+        const heroColors = ['#e11d48', '#c026d3', '#ec4899', '#8b5cf6'];
+
+        rings.forEach((r, idx) => {
+          // Locked 90-degree quarter shifts
+          const angle = syncAngle + (idx * (Math.PI / 2));
+          const nx = cx + Math.cos(angle) * r;
+          const ny = cy + Math.sin(angle) * r;
+
+          ctx.beginPath();
+          ctx.arc(nx, ny, 7, 0, Math.PI * 2);
+          ctx.fillStyle = heroColors[idx];
+          ctx.shadowColor = heroColors[idx];
+          ctx.shadowBlur = 18;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        });
+
+        animationFrameId = requestAnimationFrame(draw);
+      }
+
+      function stop() {
+        running = false;
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = 0;
+        }
+      }
+
+      function ensureRunning() {
+        resize();
+        if (!running) {
+          running = true;
+          animationFrameId = requestAnimationFrame(draw);
+        }
+      }
+
+      window.addEventListener('resize', ensureRunning, { passive: true });
+      if (typeof ResizeObserver !== 'undefined') {
+        new ResizeObserver(ensureRunning).observe(stage);
+      }
+      if (typeof IntersectionObserver !== 'undefined') {
+        new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) ensureRunning();
+            else stop();
+          });
+        }, { threshold: 0.05 }).observe(stage);
+      }
+
+      ensureRunning();
+    })();
+
+    (function initStackCarouselPhysics() {
+      const track = document.getElementById('stackCarouselTrack');
+      const prevBtn = document.getElementById('prevStackBtn');
+      const nextBtn = document.getElementById('nextStackBtn');
+      if (!track) return;
+
+      const mqCarousel = window.matchMedia('(max-width: 639px)');
+
+      function getScrollAmount() {
+        const firstCard = track.firstElementChild;
+        if (!firstCard) return 320;
+        const styles = window.getComputedStyle(track);
+        const gap = parseFloat(styles.columnGap || styles.gap) || 16;
+        return firstCard.offsetWidth + gap;
+      }
+
+      function updateArrowStates() {
+        if (!mqCarousel.matches) {
+          if (prevBtn) prevBtn.style.opacity = '0';
+          if (nextBtn) nextBtn.style.opacity = '0';
+          return;
+        }
+        const maxScroll = track.scrollWidth - track.clientWidth;
+        const current = track.scrollLeft;
+
+        if (prevBtn) {
+          prevBtn.style.opacity = current <= 10 ? '0.3' : '1';
+          prevBtn.style.pointerEvents = current <= 10 ? 'none' : 'auto';
+        }
+        if (nextBtn) {
+          nextBtn.style.opacity = current >= maxScroll - 10 ? '0.3' : '1';
+          nextBtn.style.pointerEvents = current >= maxScroll - 10 ? 'none' : 'auto';
+        }
+      }
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+          if (!mqCarousel.matches) return;
+          track.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+        });
+      }
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          if (!mqCarousel.matches) return;
+          track.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+        });
+      }
+
+      track.addEventListener('scroll', updateArrowStates, { passive: true });
+      window.addEventListener('resize', updateArrowStates);
+      if (mqCarousel.addEventListener) mqCarousel.addEventListener('change', updateArrowStates);
+      updateArrowStates();
+    })();
+
+    (function initStaticMagentaNeuralNet() {
+      const canvas = document.getElementById('fredNeuralCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      let w = 0;
+      let h = 0;
+      let nodes = [];
+      let rafId = 0;
+      let running = false;
+      const nodeCount = 22;
+
+      function initNodes() {
+        nodes = [];
+        for (let i = 0; i < nodeCount; i++) {
+          nodes.push({
+            x: (0.1 + Math.random() * 0.8) * w,
+            y: (0.1 + Math.random() * 0.8) * h,
+            radius: Math.random() * 2 + 1.5,
+            phase: Math.random() * Math.PI * 2,
+            pulseSpeed: 0.02 + Math.random() * 0.03
+          });
+        }
+      }
+
+      function resize() {
         const rect = canvas.getBoundingClientRect();
-        const w = Math.max(1, Math.round(rect.width || window.innerWidth));
-        const h = Math.max(1, Math.round(rect.height || window.innerHeight));
-        if (canvas.width !== w || canvas.height !== h) {
-          canvas.width = w;
-          canvas.height = h;
-          initParticles();
-        }
+        const cssW = Math.max(1, Math.round(rect.width || canvas.offsetWidth));
+        const cssH = Math.max(1, Math.round(rect.height || canvas.offsetHeight));
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.round(cssW * dpr);
+        canvas.height = Math.round(cssH * dpr);
+        canvas.style.width = cssW + 'px';
+        canvas.style.height = cssH + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        w = cssW;
+        h = cssH;
+        initNodes();
       }
 
-      function smoothstep(x) {
-        const u = Math.max(0, Math.min(1, x));
-        return u * u * (3 - 2 * u);
+      function draw() {
+        if (!running) return;
+        ctx.clearRect(0, 0, w, h);
+
+        // Fixed strands with magenta light pulses (nodes never move)
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+            const dist = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
+            if (dist < 110) {
+              const pulse = (Math.sin(nodes[i].phase + dist * 0.02) + 1) / 2;
+              ctx.beginPath();
+              ctx.moveTo(nodes[i].x, nodes[i].y);
+              ctx.lineTo(nodes[j].x, nodes[j].y);
+              ctx.strokeStyle = 'rgba(236, 72, 153, ' + (0.05 + pulse * 0.25) + ')';
+              ctx.lineWidth = 0.8 + pulse * 0.6;
+              ctx.stroke();
+            }
+          }
+        }
+
+        // Static nodes with magenta glow pulses only
+        nodes.forEach((node) => {
+          node.phase += node.pulseSpeed;
+          const glow = (Math.sin(node.phase) + 1) / 2;
+
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, node.radius + glow * 1.2, 0, Math.PI * 2);
+          ctx.fillStyle = glow > 0.6 ? '#f43f5e' : '#ec4899';
+          ctx.shadowColor = '#ec4899';
+          ctx.shadowBlur = glow * 12;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+
+          // Occasional brighter core spark
+          if (glow > 0.85) {
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, node.radius * 0.45, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+          }
+        });
+
+        rafId = requestAnimationFrame(draw);
+      }
+
+      function start() {
+        resize();
+        if (!running) {
+          running = true;
+          rafId = requestAnimationFrame(draw);
+        }
       }
 
       function stop() {
@@ -1034,240 +858,24 @@
         }
       }
 
-      function render() {
-        // Mobile-only field
-        if (window.innerWidth >= 768) {
-          stop();
-          return;
-        }
-        if (!canvas.width || !canvas.height) {
-          running = false;
-          return;
-        }
-
-        t += 1;
-        const ctrl = window.__orbitSphereControl;
-        const target = (ctrl && ctrl.targetRGB) || { r: 255, g: 255, b: 255 };
-        const targetPhysics = (ctrl && ctrl.targetPhysics) || 'idle';
-
-        currentRGB.r += (target.r - currentRGB.r) * 0.08;
-        currentRGB.g += (target.g - currentRGB.g) * 0.08;
-        currentRGB.b += (target.b - currentRGB.b) * 0.08;
-        const cr = Math.round(currentRGB.r);
-        const cg = Math.round(currentRGB.g);
-        const cb = Math.round(currentRGB.b);
-
-        // Same physics mix easing as desktop hover sphere
-        const wantMix = targetPhysics === 'idle' ? 0 : 1;
-        physicsMix += (wantMix - physicsMix) * (wantMix ? 0.065 : 0.038);
-        if (physicsMix < 0.0015 && !wantMix) physicsMix = 0;
-        if (targetPhysics !== 'idle') appliedPhysics = targetPhysics;
-        else if (physicsMix === 0) appliedPhysics = 'idle';
-        const m = smoothstep(physicsMix);
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'rgb(' + cr + ',' + cg + ',' + cb + ')';
-
-        const screenW = canvas.width;
-        const screenH = canvas.height;
-
-        for (let i = 0; i < particles.length; i++) {
-          const p = particles[i];
-          const ph = p.phase;
-
-          // On Mobile (< 768px), override radial clustering math:
-          // Allow particles to move freely across full screen dimensions
-          p.x += p.vx;
-          p.y += p.vy;
-
-          // Desktop-hover-equivalent forces, projected onto free 2D field
-          if (m > 0.001 && appliedPhysics !== 'idle') {
-            if (appliedPhysics === 'discovery') {
-              // Fred AI — pulse / expand
-              p.x += Math.cos(ph) * 0.35 * m;
-              p.y += Math.sin(ph) * 0.35 * m;
-            } else if (appliedPhysics === 'workflow') {
-              // ThreadOS — pipeline drift bands
-              p.x += 0.55 * m;
-              p.y += Math.sin(ph * 3.0 + t * 0.02) * 0.45 * m;
-            } else if (appliedPhysics === 'attribution') {
-              // Attention Engine — burst / jitter
-              p.x += Math.sin(t * 0.11 + ph * 2.1) * 1.1 * m;
-              p.y += Math.cos(t * 0.13 + ph * 1.7) * 1.1 * m;
-            } else if (appliedPhysics === 'feedback') {
-              // Algorithmic Feedback — spiral recirculation
-              const spiral = t * 0.02 * m + ph;
-              p.x += Math.cos(spiral) * 0.7 * m;
-              p.y += Math.sin(spiral * 1.3) * 0.7 * m;
-            }
-          }
-
-          // Screen wrap edge to edge (full canvas — no center box)
-          if (p.x < 0) p.x = screenW;
-          if (p.x > screenW) p.x = 0;
-          if (p.y < 0) p.y = screenH;
-          if (p.y > screenH) p.y = 0;
-
-          const alpha = 0.22 + 0.6 * (0.5 + 0.5 * Math.sin(t * 0.02 + ph));
-          ctx.globalAlpha = alpha;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size * 0.55, 0, Math.PI * 2);
-          ctx.fill();
-        }
-
-        ctx.globalAlpha = 1;
-        rafId = requestAnimationFrame(render);
-      }
-
-      function ensureRunning() {
-        if (window.innerWidth >= 768) {
-          stop();
-          return;
-        }
-        if (!canvas.width || !canvas.height) resizeCanvas();
-        if (!running) {
-          running = true;
-          rafId = requestAnimationFrame(render);
-        }
-      }
-
-      window.addEventListener('resize', () => {
-        if (window.innerWidth < 768) resizeCanvas();
-        ensureRunning();
-      }, { passive: true });
-      window.addEventListener('orientationchange', () => {
-        resizeCanvas();
-        ensureRunning();
-      }, { passive: true });
-
-      if (typeof ResizeObserver !== 'undefined') {
-        const shell = document.getElementById('orbitCanvasShell') || canvas.parentElement;
-        if (shell) new ResizeObserver(() => {
-          if (window.innerWidth < 768) resizeCanvas();
-        }).observe(shell);
-      }
-
+      window.addEventListener('resize', resize);
       if (typeof IntersectionObserver !== 'undefined') {
-        const track = document.getElementById('orbitMobileTrack') || canvas;
-        const shell = document.getElementById('orbitCanvasShell');
         new IntersectionObserver((entries) => {
           entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              if (shell) shell.classList.add('is-orbit-visible');
-              resizeCanvas();
-              ensureRunning();
-            } else {
-              if (shell) shell.classList.remove('is-orbit-visible');
-              stop();
-            }
+            if (entry.isIntersecting) start();
+            else stop();
           });
-        }, { threshold: 0.05 }).observe(track);
+        }, { threshold: 0.05 }).observe(canvas);
+      } else {
+        start();
       }
-
-      // Defer first measure until layout settles
-      requestAnimationFrame(() => {
-        resizeCanvas();
-        ensureRunning();
-      });
-    })();
-
-    (function initOrbitMobileBentoObserver() {
-      const track = document.getElementById('orbitMobileTrack');
-      const bentoCards = document.querySelectorAll('#orbitMobileCards .bento-card');
-      const mq = window.matchMedia('(max-width: 767px)');
-      if (!track || !bentoCards.length || typeof IntersectionObserver === 'undefined') return;
-
-      function setParticleTheme(index) {
-        if (window.__orbitSphereControl && typeof window.__orbitSphereControl.setParticleTheme === 'function') {
-          window.__orbitSphereControl.setParticleTheme(parseInt(index, 10));
-        }
-      }
-
-      // Expose for the observer callback pattern
-      window.setParticleTheme = setParticleTheme;
-
-      const observerOptions = {
-        root: null,
-        rootMargin: '-35% 0px -35% 0px', // Center 30% of the screen is the trigger zone
-        threshold: 0.2
-      };
-
-      const observer = new IntersectionObserver((entries) => {
-        if (!mq.matches) return;
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const index = entry.target.dataset.bentoIndex;
-            // Trigger background particle theme shift smoothly
-            if (typeof setParticleTheme === 'function') {
-              setParticleTheme(parseInt(index, 10));
-            }
-
-            // Highlight active card opacity on mobile
-            bentoCards.forEach((c) => {
-              c.classList.add('opacity-40');
-              c.classList.remove('opacity-100');
-            });
-            entry.target.classList.remove('opacity-40');
-            entry.target.classList.add('opacity-100');
-          }
-        });
-      }, observerOptions);
-
-      bentoCards.forEach((card, idx) => {
-        card.dataset.bentoIndex = String(idx);
-        observer.observe(card);
-      });
-
-      // Reset particle theme when the whole mobile orbit leaves the viewport
-      new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (!mq.matches) return;
-          if (!entry.isIntersecting && window.__orbitSphereControl) {
-            window.__orbitSphereControl.clearFocus();
-          }
-        });
-      }, { threshold: 0 }).observe(track);
-
-      mq.addEventListener('change', (e) => {
-        if (!e.matches && window.__orbitSphereControl) {
-          window.__orbitSphereControl.clearFocus();
-        }
-      });
-    })();
-
-    (function initStackCarouselDots() {
-      const track = document.querySelector('.proprietary-stack-grid');
-      const dots = document.querySelectorAll('#stackDots span');
-      if (!track || !dots.length) return;
-
-      function updateDots() {
-        if (window.innerWidth >= 768) return;
-        const cards = track.querySelectorAll(':scope > div');
-        if (!cards.length) return;
-        const center = track.scrollLeft + track.clientWidth / 2;
-        let active = 0;
-        let best = Infinity;
-        cards.forEach((card, i) => {
-          const mid = card.offsetLeft + card.offsetWidth / 2;
-          const dist = Math.abs(mid - center);
-          if (dist < best) {
-            best = dist;
-            active = i;
-          }
-        });
-        dots.forEach((dot, i) => {
-          dot.classList.toggle('bg-neutral-900', i === active);
-          dot.classList.toggle('bg-neutral-300', i !== active);
-        });
-      }
-
-      track.addEventListener('scroll', updateDots, { passive: true });
-      window.addEventListener('resize', updateDots, { passive: true });
-      updateDots();
+      start();
     })();
 
     (function initHeroPinnedScroll() {
       const pinTrack = document.getElementById('heroScrollPin');
+      const heroViewport = document.getElementById('heroViewport');
+      const heroLockupPanel = document.getElementById('heroLockupPanel');
       const heroHeadline = document.getElementById('heroHeadline');
       const waveCanvas = document.getElementById('heroWaveformCanvas');
       const manifestoReveal = document.getElementById('manifestoReveal');
@@ -1275,37 +883,145 @@
 
       let targetProgress = 0;
       let currentProgress = 0;
+      let heroPlayedOnce = false;
+      let heroStaticFlow = false;
+      let lastRawProgress = 0;
       let time = 0;
       let width = 0;
       let height = 0;
       let running = false;
       let rafId = 0;
 
-      function updateTargetProgress() {
-        if (!pinTrack) {
-          targetProgress = 0;
-          return;
-        }
+      function readScrollProgress() {
+        if (!pinTrack || heroStaticFlow) return 0;
         const rect = pinTrack.getBoundingClientRect();
         if (mqMobile.matches) {
-          // Mobile: measure against full track height (220vh) using innerHeight
-          // so touch-flick velocity maps smoothly across the pin runway
           const scrollableDistance = pinTrack.offsetHeight - window.innerHeight;
-          if (scrollableDistance > 0) {
-            const currentScroll = -rect.top;
-            targetProgress = Math.min(1, Math.max(0, currentScroll / scrollableDistance));
-          } else {
-            targetProgress = 0;
-          }
-          return;
+          if (scrollableDistance <= 0) return 0;
+          return Math.min(1, Math.max(0, (-rect.top) / scrollableDistance));
         }
-        // Desktop unchanged
         const viewH = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
         const maxScroll = pinTrack.offsetHeight - viewH;
-        const currentScroll = -rect.top;
-        targetProgress = maxScroll > 0
-          ? Math.min(1, Math.max(0, currentScroll / maxScroll))
-          : 0;
+        if (maxScroll <= 0) return 0;
+        return Math.min(1, Math.max(0, (-rect.top) / maxScroll));
+      }
+
+      function applyStaticLayout() {
+        pinTrack.style.overflowAnchor = 'none';
+        if (document.documentElement) document.documentElement.style.overflowAnchor = 'none';
+        pinTrack.classList.add('hero-static-flow');
+        pinTrack.style.setProperty('height', 'auto', 'important');
+        if (heroViewport) {
+          heroViewport.style.position = 'relative';
+          heroViewport.style.height = 'auto';
+          heroViewport.style.overflow = 'visible';
+          heroViewport.style.display = 'block';
+        }
+        if (heroLockupPanel) {
+          heroLockupPanel.style.position = 'relative';
+          heroLockupPanel.style.inset = 'auto';
+          heroLockupPanel.style.height = '';
+          heroLockupPanel.style.overflow = 'hidden';
+        }
+        if (heroHeadline) {
+          heroHeadline.style.transform = 'scale(1) translateZ(0)';
+          heroHeadline.style.filter = 'blur(0px)';
+          heroHeadline.style.opacity = '1';
+        }
+        if (manifestoReveal) {
+          manifestoReveal.style.position = 'relative';
+          manifestoReveal.style.inset = 'auto';
+          manifestoReveal.style.opacity = '1';
+          manifestoReveal.style.transform = 'none';
+          manifestoReveal.style.minHeight = '';
+          manifestoReveal.style.height = 'auto';
+        }
+      }
+
+      // Flatten sticky scrub → stacked lockup + manifesto.
+      // mode: 'offscreen' (user already in orbit) | 'onscreen' (scrolling back up to lockup)
+      function finalizeHeroToStaticFlow(mode) {
+        if (heroStaticFlow || !pinTrack || !manifestoReveal) return;
+        heroStaticFlow = true;
+        heroPlayedOnce = true;
+
+        const orbit = document.getElementById('engine-orbit');
+        const useOffscreen = mode === 'offscreen' ||
+          (pinTrack.getBoundingClientRect().bottom <= 0);
+
+        if (useOffscreen) {
+          // Convert while the pin is fully above the viewport — anchor orbit so
+          // shrinking the runway doesn't yank section 3.
+          const anchorBefore = orbit ? orbit.getBoundingClientRect().top : 0;
+          if (waveCanvas) waveCanvas.style.visibility = 'hidden';
+          applyStaticLayout();
+          if (orbit) {
+            const anchorAfter = orbit.getBoundingClientRect().top;
+            const delta = anchorAfter - anchorBefore;
+            if (Math.abs(delta) > 0.5) window.scrollBy(0, delta);
+          }
+        } else {
+          // Convert while manifesto is still on screen (user scrolling up).
+          const manifestoBefore = manifestoReveal.getBoundingClientRect().top;
+          const orbitBefore = orbit ? orbit.getBoundingClientRect().top : 0;
+          if (waveCanvas) waveCanvas.style.visibility = 'hidden';
+          applyStaticLayout();
+
+          const manifestoAfter = manifestoReveal.getBoundingClientRect().top;
+          const mDelta = manifestoAfter - manifestoBefore;
+          if (Math.abs(mDelta) > 0.5) window.scrollBy(0, mDelta);
+
+          if (orbit) {
+            const orbitAfter = orbit.getBoundingClientRect().top;
+            const orbitGap = orbitBefore - orbitAfter;
+            if (orbitGap > 1) {
+              let spacer = document.getElementById('heroOrbitSpacer');
+              if (!spacer) {
+                spacer = document.createElement('div');
+                spacer.id = 'heroOrbitSpacer';
+                spacer.setAttribute('aria-hidden', 'true');
+                spacer.style.cssText = 'width:100%;margin:0;padding:0;pointer-events:none;';
+                pinTrack.appendChild(spacer);
+              }
+              spacer.style.height = Math.round(orbitGap) + 'px';
+            }
+          }
+        }
+
+        targetProgress = 0;
+        currentProgress = 0;
+        resizeCanvas();
+        requestAnimationFrame(function () {
+          if (waveCanvas) waveCanvas.style.visibility = 'visible';
+        });
+      }
+
+      function updateTargetProgress() {
+        if (heroStaticFlow) return;
+
+        const raw = readScrollProgress();
+
+        if (!heroPlayedOnce) {
+          targetProgress = raw;
+          if (raw >= 0.92) {
+            heroPlayedOnce = true;
+            targetProgress = 1;
+            currentProgress = 1;
+          }
+          lastRawProgress = raw;
+          return;
+        }
+
+        // First play done: keep sticky manifesto locked — do NOT flatten yet.
+        // Flattening mid-view is what yanked orbit into place.
+        targetProgress = 1;
+        currentProgress = 1;
+
+        // Only flatten when the user starts scrolling back up toward the lockup.
+        if (raw < lastRawProgress - 0.02 && raw < 0.97) {
+          finalizeHeroToStaticFlow('onscreen');
+        }
+        lastRawProgress = raw;
       }
 
       window.addEventListener('scroll', updateTargetProgress, { passive: true });
@@ -1317,7 +1033,6 @@
 
       const ctx = waveCanvas ? waveCanvas.getContext('2d', { alpha: true, desynchronized: true }) : null;
 
-      // Desktop keeps full density; mobile uses a lighter field for scroll performance
       const numParticles = mqMobile.matches ? 900 : 1600;
       const particles = [];
       const colors = [
@@ -1341,51 +1056,74 @@
 
       function resizeCanvas() {
         if (!waveCanvas) return false;
-        const rect = waveCanvas.getBoundingClientRect();
-        if (rect.width < 2 || rect.height < 2) {
+        const bounds = (heroStaticFlow && heroLockupPanel)
+          ? heroLockupPanel.getBoundingClientRect()
+          : { width: window.innerWidth, height: window.innerHeight };
+        const cssW = Math.max(1, Math.round(bounds.width));
+        const cssH = Math.max(1, Math.round(bounds.height));
+        if (cssW < 2 || cssH < 2) {
           width = 0;
           height = 0;
           return false;
         }
         if (mqMobile.matches) {
           const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
-          width = waveCanvas.width = Math.round(rect.width * dpr);
-          height = waveCanvas.height = Math.round(rect.height * dpr);
+          width = waveCanvas.width = Math.round(cssW * dpr);
+          height = waveCanvas.height = Math.round(cssH * dpr);
         } else {
-          width = waveCanvas.width = Math.round(rect.width * 2);
-          height = waveCanvas.height = Math.round(rect.height * 2);
+          width = waveCanvas.width = Math.round(cssW * 2);
+          height = waveCanvas.height = Math.round(cssH * 2);
         }
+        waveCanvas.style.width = cssW + 'px';
+        waveCanvas.style.height = cssH + 'px';
         return true;
       }
 
+      function setHeroOverlayVisible(visible) {
+        const v = visible ? 'visible' : 'hidden';
+        if (waveCanvas) waveCanvas.style.visibility = v;
+        if (heroHeadline) heroHeadline.style.visibility = v;
+      }
+
       function renderHero() {
-        // Higher lerp on mobile so touch flicks track tightly without skipping zoom frames
         const isMobile = window.innerWidth < 768;
-        const lerpFactor = isMobile ? 0.18 : 0.08;
-        currentProgress += (targetProgress - currentProgress) * lerpFactor;
         const mobile = mqMobile.matches;
 
-        if (heroHeadline) {
-          // Desktop scale curve unchanged; mobile uses a gentler zoom for stability
-          const scaleFactor = mobile ? 48 : 110;
-          const blurFactor = mobile ? 18 : 35;
-          const scale = 1 + Math.pow(currentProgress, 2.5) * scaleFactor;
-          const blur = Math.pow(currentProgress, 1.8) * blurFactor;
-          const headlineOpacity = Math.max(0, 1 - Math.pow(currentProgress, 1.35) * 1.15);
-          // Mobile: no Y nudge — CSS owns optical center; desktop transform unchanged
-          heroHeadline.style.transform = 'scale(' + scale.toFixed(3) + ') translateZ(0)';
-          heroHeadline.style.filter = 'blur(' + blur.toFixed(2) + 'px)';
-          heroHeadline.style.opacity = headlineOpacity.toFixed(3);
+        if (heroStaticFlow) {
+          currentProgress = 0;
+        } else if (heroPlayedOnce) {
+          currentProgress = 1;
+          targetProgress = 1;
+        } else {
+          const lerpFactor = isMobile ? 0.18 : 0.08;
+          currentProgress += (targetProgress - currentProgress) * lerpFactor;
+          if (currentProgress >= 0.92) {
+            currentProgress = 1;
+            targetProgress = 1;
+            heroPlayedOnce = true;
+          }
         }
 
-        if (manifestoReveal) {
-          // Passthrough reveal on both; mobile starts slightly earlier for readability
-          const revealStart = mobile ? 0.12 : 0.18;
-          const revealSpan = mobile ? 0.38 : 0.42;
-          const reveal = Math.min(1, Math.max(0, (currentProgress - revealStart) / revealSpan));
-          const ease = reveal * reveal * (3 - 2 * reveal);
-          manifestoReveal.style.opacity = ease.toFixed(3);
-          manifestoReveal.style.transform = 'scale(' + (0.97 + ease * 0.03).toFixed(3) + ')';
+        if (!heroStaticFlow) {
+          if (heroHeadline) {
+            const scaleFactor = mobile ? 48 : 110;
+            const blurFactor = mobile ? 18 : 35;
+            const scale = 1 + Math.pow(currentProgress, 2.5) * scaleFactor;
+            const blur = Math.pow(currentProgress, 1.8) * blurFactor;
+            const headlineOpacity = Math.max(0, 1 - Math.pow(currentProgress, 1.35) * 1.15);
+            heroHeadline.style.transform = 'scale(' + scale.toFixed(3) + ') translateZ(0)';
+            heroHeadline.style.filter = 'blur(' + blur.toFixed(2) + 'px)';
+            heroHeadline.style.opacity = headlineOpacity.toFixed(3);
+          }
+
+          if (manifestoReveal) {
+            const revealStart = mobile ? 0.12 : 0.18;
+            const revealSpan = mobile ? 0.38 : 0.42;
+            const reveal = Math.min(1, Math.max(0, (currentProgress - revealStart) / revealSpan));
+            const ease = reveal * reveal * (3 - 2 * reveal);
+            manifestoReveal.style.opacity = ease.toFixed(3);
+            manifestoReveal.style.transform = 'scale(' + (0.97 + ease * 0.03).toFixed(3) + ')';
+          }
         }
 
         if (ctx && waveCanvas && width && height) {
@@ -1397,7 +1135,6 @@
           const explosion = Math.pow(currentProgress, 2.0) * (mobile ? 28.0 : 35.0);
           const basePush = Math.pow(currentProgress, 2.5) * Math.hypot(width, height) * (mobile ? 0.9 : 0.85);
 
-          // Mobile: clip dispersion to visible canvas so narrow aspect ratios stay clean
           if (mobile) {
             ctx.save();
             ctx.beginPath();
@@ -1439,7 +1176,6 @@
             const alpha = Math.max(0.2, edgeAlpha * 0.95);
             const currentSize = p.size * 1.5 * scaleMultiplier;
 
-            // Mobile: skip particles fully outside the visible canvas bounds
             if (mobile) {
               if (px + currentSize < 0 || px - currentSize > width ||
                   py + currentSize < 0 || py - currentSize > height) {
@@ -1469,14 +1205,15 @@
 
       function ensureRunning() {
         resizeCanvas();
+        setHeroOverlayVisible(true);
         if (!running) {
           running = true;
           rafId = requestAnimationFrame(renderHero);
         }
       }
 
-      if (typeof ResizeObserver !== 'undefined' && waveCanvas) {
-        new ResizeObserver(ensureRunning).observe(waveCanvas);
+      if (typeof ResizeObserver !== 'undefined' && pinTrack) {
+        new ResizeObserver(ensureRunning).observe(pinTrack);
       } else {
         window.addEventListener('resize', ensureRunning);
       }
@@ -1484,10 +1221,18 @@
       if (typeof IntersectionObserver !== 'undefined' && pinTrack) {
         new IntersectionObserver((entries) => {
           entries.forEach((entry) => {
-            if (entry.isIntersecting) ensureRunning();
-            else stop();
+            if (entry.isIntersecting) {
+              ensureRunning();
+            } else {
+              // Left for orbit: flatten offscreen so return-scroll is organic,
+              // without a mid-manifesto layout jump into section 3.
+              if (heroPlayedOnce && !heroStaticFlow) {
+                finalizeHeroToStaticFlow('offscreen');
+              }
+              stop();
+            }
           });
-        }, { threshold: 0.01 }).observe(pinTrack);
+        }, { threshold: 0 }).observe(pinTrack);
       }
 
       ensureRunning();
@@ -1513,10 +1258,11 @@
     function linkClasses(theme, el) {
       const isHow = (el.getAttribute('href') || '').includes('how-it-works');
       const hide = isHow ? 'hidden sm:inline-block ' : '';
+      const base = 'nav-link ' + hide + 'text-[12px] font-normal tracking-[-0.01em] transition-colors ';
       if (theme === 'light') {
-        return 'nav-link ' + hide + 'text-neutral-700 hover:text-black transition-colors';
+        return base + 'text-neutral-900/80 hover:text-black';
       }
-      return 'nav-link ' + hide + 'text-white/90 hover:text-white transition-colors';
+      return base + 'text-white/80 hover:text-white';
     }
 
     function updateHeader() {
@@ -1532,7 +1278,7 @@
 
       if (isHomepage && atLanding) {
         // Fully invisible until the user scrolls past 1px
-        header.className = 'fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent backdrop-blur-none border-none text-white opacity-0 pointer-events-none';
+        header.className = 'fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-transparent backdrop-blur-none border-none text-white opacity-0 pointer-events-none';
         logo.src = 'logo-white.png';
         links.forEach((l) => { l.className = linkClasses('dark', l); });
         if (ctaDesktop) ctaDesktop.className = 'hidden sm:inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-white text-neutral-950 font-bold text-[11px] hover:bg-neutral-200 transition-all';
@@ -1541,13 +1287,13 @@
       }
 
       if (currentTheme === 'light') {
-        header.className = 'fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-none text-neutral-900 opacity-100 pointer-events-auto';
+        header.className = 'fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-white/80 backdrop-blur-md border-none text-neutral-900 opacity-100 pointer-events-auto';
         logo.src = 'logo-black.png';
         links.forEach((l) => { l.className = linkClasses('light', l); });
         if (ctaDesktop) ctaDesktop.className = 'hidden sm:inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-neutral-950 text-white font-bold text-[11px] hover:bg-neutral-800 transition-all';
         if (ctaMobile) ctaMobile.className = 'sm:hidden flex items-center justify-center w-6 h-6 rounded-full bg-neutral-950 text-white transition-all';
       } else {
-        header.className = 'fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-neutral-950/80 backdrop-blur-md border-none text-white opacity-100 pointer-events-auto';
+        header.className = 'fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-neutral-950/80 backdrop-blur-md border-none text-white opacity-100 pointer-events-auto';
         logo.src = 'logo-white.png';
         links.forEach((l) => { l.className = linkClasses('dark', l); });
         if (ctaDesktop) ctaDesktop.className = 'hidden sm:inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-white text-neutral-950 font-bold text-[11px] hover:bg-neutral-200 transition-all';
