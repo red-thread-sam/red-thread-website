@@ -10,6 +10,8 @@
 
   <title>Red Thread | Global Influencer Marketing Agency</title>
 
+  <link rel="icon" type="image/svg+xml" href="Content/Brand%20Logos/thread-icon.svg">
+
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Tailwind CSS CDN -->
@@ -1985,16 +1987,20 @@
           </div>
 
           <!-- Form Fields -->
-          <form class="flex flex-col gap-4 mt-2" onsubmit="event.preventDefault();">
+          <form action="https://formsubmit.co/hello@redthread.co" method="POST" class="flex flex-col gap-4 mt-2">
+            <input type="hidden" name="_captcha" value="false">
+            <input type="hidden" name="_subject" value="New Inquiry from Red Thread Website">
+            <input type="hidden" name="inquiry_type" id="inquiryType" value="Campaign">
+
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <input type="text" placeholder="First name" autocomplete="given-name" class="w-full bg-neutral-900/60 border border-white/10 rounded-2xl px-4 py-3.5 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-pink-500/60 focus:ring-1 focus:ring-pink-500/30 transition-all duration-200" required/>
-              <input type="text" placeholder="Last name" autocomplete="family-name" class="w-full bg-neutral-900/60 border border-white/10 rounded-2xl px-4 py-3.5 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-pink-500/60 focus:ring-1 focus:ring-pink-500/30 transition-all duration-200" required/>
+              <input type="text" name="name" placeholder="Full name" autocomplete="name" class="w-full bg-neutral-900/60 border border-white/10 rounded-2xl px-4 py-3.5 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-pink-500/60 focus:ring-1 focus:ring-pink-500/30 transition-all duration-200" required/>
+              <input type="text" name="company" placeholder="Company / role" autocomplete="organization" class="w-full bg-neutral-900/60 border border-white/10 rounded-2xl px-4 py-3.5 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-pink-500/60 focus:ring-1 focus:ring-pink-500/30 transition-all duration-200"/>
             </div>
             <div>
-              <input type="email" placeholder="Email address" autocomplete="email" class="w-full bg-neutral-900/60 border border-white/10 rounded-2xl px-4 py-3.5 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-pink-500/60 focus:ring-1 focus:ring-pink-500/30 transition-all duration-200" required/>
+              <input type="email" name="email" placeholder="Email address" autocomplete="email" class="w-full bg-neutral-900/60 border border-white/10 rounded-2xl px-4 py-3.5 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-pink-500/60 focus:ring-1 focus:ring-pink-500/30 transition-all duration-200" required/>
             </div>
             <div>
-              <textarea placeholder="Write a little something here" class="w-full bg-neutral-900/60 border border-white/10 rounded-2xl px-4 py-3.5 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-pink-500/60 focus:ring-1 focus:ring-pink-500/30 transition-all duration-200 min-h-[140px] resize-none"></textarea>
+              <textarea name="message" placeholder="Write a little something here" class="w-full bg-neutral-900/60 border border-white/10 rounded-2xl px-4 py-3.5 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-pink-500/60 focus:ring-1 focus:ring-pink-500/30 transition-all duration-200 min-h-[140px] resize-none" required></textarea>
             </div>
             <button type="submit" class="w-full bg-white text-black font-bold py-4 rounded-2xl hover:bg-neutral-100 hover:scale-[1.01] active:scale-[0.98] transition-all duration-200 ease-out shadow-lg cursor-pointer mt-2">
               Let's get this show on the road.
@@ -3481,7 +3487,14 @@
   <script>
     (function initContactFormTabs() {
       const tabBtns = document.querySelectorAll('.form-tab-btn');
+      const inquiryType = document.getElementById('inquiryType');
       if (!tabBtns.length) return;
+
+      const labels = {
+        campaign: 'Campaign',
+        demo: 'ThreadOS™ demo',
+        audit: 'Performance audit'
+      };
 
       tabBtns.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -3491,6 +3504,10 @@
           });
           btn.classList.add('bg-neutral-800', 'text-white', 'shadow-sm', 'active');
           btn.classList.remove('text-neutral-400');
+          if (inquiryType) {
+            const key = btn.getAttribute('data-tab');
+            inquiryType.value = labels[key] || btn.textContent.trim();
+          }
         });
       });
     })();
