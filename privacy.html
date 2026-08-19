@@ -101,7 +101,7 @@
 
       <!-- PAGE HEADER -->
       <header class="border-b border-neutral-200 pb-8">
-        <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight mb-4 bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent">
+        <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight mb-4 bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent pb-[0.18em] leading-[1.15] overflow-visible">
           How we handle your data.
         </h1>
         <p class="text-xs tracking-widest text-neutral-400">Effective date: August 2026</p>
@@ -244,13 +244,6 @@
         <p class="text-neutral-600 leading-relaxed text-sm sm:text-base">We review this policy periodically. Updates are published directly to this page.</p>
       </section>
 
-      <!-- BACK LINK -->
-      <div class="pt-10">
-        <a href="index.html" class="inline-flex items-center gap-2 text-sm font-semibold text-[#FF0066] font-medium hover:text-[#C000FF] transition-colors underline">
-          &larr; Back to Red Thread homepage
-        </a>
-      </div>
-
     </article>
   </main>
 
@@ -266,7 +259,7 @@
         <div class="flex flex-wrap items-center gap-6 text-neutral-600 pb-1">
           <a href="tech.html" class="text-neutral-600 hover:text-black transition-colors">Our Tech</a>
           <a href="privacy.html" class="text-neutral-600 hover:text-black transition-colors" aria-current="page">Privacy policy</a>
-          <a href="#" class="text-neutral-600 hover:text-black transition-colors">Terms of service</a>
+          <a href="terms.html" class="text-neutral-600 hover:text-black transition-colors">Terms of service</a>
           <div class="flex items-center gap-4">
             <a
               href="https://www.linkedin.com/company/redthreadagency"
@@ -310,7 +303,7 @@
 
     const path = window.location.pathname || '';
     const isHomepage = (path.endsWith('index.html') || path === '/' || path.endsWith('/') || path === '')
-      && !/tech\.html|privacy\.html/.test(path);
+      && !/tech\.html|privacy\.html|terms\.html/.test(path);
 
     function linkClasses(theme, el) {
       const isHow = (el.getAttribute('href') || '').includes('how-it-works');
@@ -361,6 +354,33 @@
     window.addEventListener('scroll', updateHeader, { passive: true });
     window.addEventListener('resize', updateHeader, { passive: true });
     updateHeader();
+  })();
+</script>
+
+<div id="cookie-banner" class="fixed bottom-6 right-6 z-50 max-w-sm bg-neutral-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-5 shadow-2xl hidden">
+  <p class="text-xs text-neutral-300 leading-relaxed mb-3">
+    We use essential cookies to analyse traffic and optimise your experience. Read our <a href="privacy.html" class="text-neutral-300 hover:text-white underline decoration-neutral-500">Privacy Policy</a>.
+  </p>
+  <div class="flex items-center gap-2">
+    <button type="button" id="accept-cookies" class="px-4 py-1.5 bg-white text-black text-xs font-medium rounded-full hover:bg-neutral-200 transition-all">Accept</button>
+    <button type="button" id="decline-cookies" class="px-4 py-1.5 bg-white/10 text-white text-xs font-medium rounded-full hover:bg-white/20 transition-all">Decline</button>
+  </div>
+</div>
+<script>
+  (function initCookieBanner() {
+    const banner = document.getElementById('cookie-banner');
+    if (!banner) return;
+    if (!localStorage.getItem('cookieConsent')) {
+      banner.classList.remove('hidden');
+    }
+    document.getElementById('accept-cookies')?.addEventListener('click', () => {
+      localStorage.setItem('cookieConsent', 'accepted');
+      banner.classList.add('hidden');
+    });
+    document.getElementById('decline-cookies')?.addEventListener('click', () => {
+      localStorage.setItem('cookieConsent', 'declined');
+      banner.classList.add('hidden');
+    });
   })();
 </script>
 

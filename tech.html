@@ -460,7 +460,7 @@
                 </p>
               </div>
               <div class="w-full aspect-[16/11] bg-neutral-950 border-t border-pink-500/20 relative overflow-hidden rounded-b-[28px]">
-                <img src="Content/Tech/thread-os-dark.png" alt="ThreadOS Dark" class="w-full h-full object-cover object-top" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Tech/ThreadOS.png';">
+                <img src="Content/Tech/thread-os-dark.webp" alt="ThreadOS Dark" class="w-full h-full object-cover object-top" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Tech/thread-os-dark.png';">
               </div>
             </div>
 
@@ -475,7 +475,7 @@
                 </p>
               </div>
               <div class="w-full aspect-[16/11] bg-neutral-950 border-t border-fuchsia-500/20 relative overflow-hidden rounded-b-[28px]">
-                <img src="Content/Tech/attention-engine-dark.png" alt="Attention Engine Dark" class="w-full h-full object-cover object-top" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Tech/attention-engine.png';">
+                <img src="Content/Tech/attention-engine-dark.webp" alt="Attention Engine Dark" class="w-full h-full object-cover object-top" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Tech/attention-engine-dark.png';">
               </div>
             </div>
 
@@ -548,7 +548,7 @@
         <div class="flex flex-wrap items-center gap-6 text-neutral-600 pb-1">
           <a href="tech.html" class="text-neutral-600 hover:text-black transition-colors" aria-current="page">Our Tech</a>
           <a href="privacy.html" class="text-neutral-600 hover:text-black transition-colors">Privacy policy</a>
-          <a href="#" class="text-neutral-600 hover:text-black transition-colors">Terms of service</a>
+          <a href="terms.html" class="text-neutral-600 hover:text-black transition-colors">Terms of service</a>
           <div class="flex items-center gap-4">
             <a
               href="https://www.linkedin.com/company/redthreadagency"
@@ -1449,6 +1449,33 @@
     window.addEventListener('scroll', updateHeader, { passive: true });
     window.addEventListener('resize', updateHeader, { passive: true });
     updateHeader();
+  })();
+</script>
+
+<div id="cookie-banner" class="fixed bottom-6 right-6 z-50 max-w-sm bg-neutral-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-5 shadow-2xl hidden">
+  <p class="text-xs text-neutral-300 leading-relaxed mb-3">
+    We use essential cookies to analyse traffic and optimise your experience. Read our <a href="privacy.html" class="text-neutral-300 hover:text-white underline decoration-neutral-500">Privacy Policy</a>.
+  </p>
+  <div class="flex items-center gap-2">
+    <button type="button" id="accept-cookies" class="px-4 py-1.5 bg-white text-black text-xs font-medium rounded-full hover:bg-neutral-200 transition-all">Accept</button>
+    <button type="button" id="decline-cookies" class="px-4 py-1.5 bg-white/10 text-white text-xs font-medium rounded-full hover:bg-white/20 transition-all">Decline</button>
+  </div>
+</div>
+<script>
+  (function initCookieBanner() {
+    const banner = document.getElementById('cookie-banner');
+    if (!banner) return;
+    if (!localStorage.getItem('cookieConsent')) {
+      banner.classList.remove('hidden');
+    }
+    document.getElementById('accept-cookies')?.addEventListener('click', () => {
+      localStorage.setItem('cookieConsent', 'accepted');
+      banner.classList.add('hidden');
+    });
+    document.getElementById('decline-cookies')?.addEventListener('click', () => {
+      localStorage.setItem('cookieConsent', 'declined');
+      banner.classList.add('hidden');
+    });
   })();
 </script>
 
