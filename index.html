@@ -440,11 +440,16 @@
       #phoneShowcaseSection {
         overflow-x: clip;
       }
+      /* Contain paint so GPU layers don't thrash while scrolling the sticky fan */
+      .hw-card {
+        contain: layout style;
+        backface-visibility: hidden;
+      }
     }
 
     .hw-card {
 
-      will-change: transform, opacity;
+      will-change: transform;
 
       transform-style: preserve-3d;
 
@@ -475,6 +480,17 @@
       backface-visibility: hidden;
       /* Instant transforms for the IMAX curve; soft shadow only */
       transition: box-shadow 0.3s ease !important;
+      background-color: #e8e8ea;
+    }
+
+    .imax-card img.creator-portrait {
+      opacity: 0;
+      transition: opacity 0.45s ease;
+      background-color: #e8e8ea;
+    }
+
+    .imax-card img.creator-portrait.is-loaded {
+      opacity: 1;
     }
 
     #imax-track {
@@ -804,18 +820,6 @@
       object-fit: cover;
     }
 
-    /* Landscape QuickTime → fill vertical 9:19 bezel */
-    .rotate-media-90 {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transform: translate(-50%, -50%) rotate(90deg) scale(1.78);
-      transform-origin: center center;
-    }
-
 
 
     /* Apple-Style Glass Scrim Modal Overlay */
@@ -962,8 +966,8 @@
 
   <section id="phoneShowcaseSection" data-theme="dark" data-header-theme="dark" class="relative h-[250vh] bg-neutral-950 text-white z-10 overflow-x-clip">
 
-    <!-- Sticky Viewport Wrapper -->
-    <div class="sticky top-0 h-[100dvh] w-full flex items-center justify-center overflow-hidden z-10 hardware-stage-perspective">
+    <!-- Sticky Viewport Wrapper — height locked in JS on mobile to avoid URL-bar vh jitter -->
+    <div id="hw-sticky" class="sticky top-0 h-[100dvh] w-full flex items-center justify-center overflow-hidden z-10 hardware-stage-perspective">
 
       <!-- Inner Phone Fan Container -->
       <div id="hw-deck" class="phone-fan-container relative w-full max-w-6xl mx-auto flex items-center justify-center h-[520px] sm:h-[620px]">
@@ -972,7 +976,7 @@
           <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:10;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
-              <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
+              <video muted loop playsinline preload="none" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
                 <source src="Content/Phone%20mockups/Compressed/screen1.mov" type="video/mp4"/>
                 <source src="Phone%20mockups/Compressed/screen1.mov" type="video/mp4"/>
               </video>
@@ -983,7 +987,7 @@
           <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:20;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
-              <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
+              <video muted loop playsinline preload="none" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
                 <source src="Content/Phone%20mockups/Compressed/screen2.mov" type="video/mp4"/>
                 <source src="Phone%20mockups/Compressed/screen2.mov" type="video/mp4"/>
               </video>
@@ -994,7 +998,7 @@
           <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:30;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
-              <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
+              <video muted loop playsinline preload="none" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
                 <source src="Content/Phone%20mockups/Compressed/video7.mov" type="video/mp4"/>
                 <source src="Phone%20mockups/Compressed/video7.mov" type="video/mp4"/>
               </video>
@@ -1005,7 +1009,7 @@
           <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:40;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
-              <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
+              <video muted loop playsinline preload="none" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
                 <source src="Content/Phone%20mockups/Compressed/screen3.mov" type="video/mp4"/>
                 <source src="Phone%20mockups/Compressed/screen3.mov" type="video/mp4"/>
               </video>
@@ -1016,7 +1020,7 @@
           <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:50;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
-              <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
+              <video muted loop playsinline preload="none" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
                 <source src="Content/Phone%20mockups/Compressed/video9.mov" type="video/mp4"/>
                 <source src="Phone%20mockups/Compressed/video9.mov" type="video/mp4"/>
               </video>
@@ -1042,7 +1046,7 @@
           <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:50;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
-              <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
+              <video muted loop playsinline preload="none" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
                 <source src="Content/Phone%20mockups/Compressed/Screen4.mov" type="video/mp4"/>
                 <source src="Phone%20mockups/Compressed/Screen4.mov" type="video/mp4"/>
               </video>
@@ -1053,7 +1057,7 @@
           <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:40;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
-              <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
+              <video muted loop playsinline preload="none" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
                 <source src="Content/Phone%20mockups/Compressed/video10.mov" type="video/mp4"/>
                 <source src="Phone%20mockups/Compressed/video10.mov" type="video/mp4"/>
               </video>
@@ -1064,7 +1068,7 @@
           <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:30;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
-              <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
+              <video muted loop playsinline preload="none" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
                 <source src="Content/Phone%20mockups/Compressed/screen5.mov" type="video/mp4"/>
                 <source src="Phone%20mockups/Compressed/screen5.mov" type="video/mp4"/>
               </video>
@@ -1075,7 +1079,7 @@
           <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:20;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
-              <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
+              <video muted loop playsinline preload="none" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
                 <source src="Content/Phone%20mockups/Compressed/video11.mov" type="video/mp4"/>
                 <source src="Phone%20mockups/Compressed/video11.mov" type="video/mp4"/>
               </video>
@@ -1086,7 +1090,7 @@
           <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:10;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
-              <video autoplay muted loop playsinline preload="metadata" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
+              <video muted loop playsinline preload="none" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none">
                 <source src="Content/Phone%20mockups/Compressed/video6.mov" type="video/mp4"/>
                 <source src="Phone%20mockups/Compressed/video6.mov" type="video/mp4"/>
               </video>
@@ -1214,7 +1218,7 @@
               <img src="Content/Creator profiles/george.webp" alt="" class="absolute left-[22%] top-[22px] w-9 h-9 rounded-full border-2 border-white/30 object-cover shadow-lg" loading="lazy" decoding="async">
               <img src="Content/Creator profiles/hermione.webp" alt="" class="absolute left-1/2 -translate-x-1/2 top-[2px] w-11 h-11 rounded-full border-2 border-pink-500 object-cover shadow-xl ring-4 ring-pink-500/20" loading="lazy" decoding="async">
               <img src="Content/Creator profiles/josh.webp" alt="" class="absolute right-[22%] top-[22px] w-9 h-9 rounded-full border-2 border-white/30 object-cover shadow-lg" loading="lazy" decoding="async">
-              <img src="Content/Creator profiles/courtney.avif" alt="" class="absolute right-[4%] bottom-[8px] w-9 h-9 rounded-full border-2 border-white/20 object-cover shadow-lg" loading="lazy" decoding="async">
+              <img src="Content/Creator profiles/courtney.webp" alt="" class="absolute right-[4%] bottom-[8px] w-9 h-9 rounded-full border-2 border-white/20 object-cover shadow-lg" loading="lazy" decoding="async">
             </div>
           </div>
         </div>
@@ -1635,8 +1639,8 @@
     >
 
       <!-- Card 01: Courtney -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
-        <img src="Content/Creator profiles/courtney.avif" alt="Courtney Daniella Jesse" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/courtney.avif';"/>
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
+        <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/courtney.webp" alt="Courtney Daniella Jesse" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/courtney.avif';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
         <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
           <p class="text-center text-xs font-semibold text-white truncate w-full">Courtney Daniella Jesse</p>
@@ -1644,8 +1648,8 @@
       </div>
 
       <!-- Card 02: Josh -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
-        <img src="Content/Creator profiles/josh.webp" alt="Josh Oyinsan" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Content/Creator profiles/josh.jpeg';"/>
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
+        <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/josh.webp" alt="Josh Oyinsan" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/josh.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
         <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
           <p class="text-center text-xs font-semibold text-white truncate w-full">Josh Oyinsan</p>
@@ -1653,8 +1657,8 @@
       </div>
 
       <!-- Card 03: Helen -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
-        <img src="Content/Creator profiles/helen.jpeg" alt="Helen Anderson" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Creator profiles/helen.jpeg';"/>
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
+        <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/helen.webp" alt="Helen Anderson" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/helen.jpeg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
         <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
           <p class="text-center text-xs font-semibold text-white truncate w-full">Helen Anderson</p>
@@ -1662,8 +1666,8 @@
       </div>
 
       <!-- Card 04: Fu -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
-        <img src="Content/Creator profiles/fu-izzy-resized.webp" alt="Fu Izzy" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Content/Creator profiles/fu-izzy-resized.jpg';"/>
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
+        <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/fu-izzy-resized.webp" alt="Fu Izzy" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/fu-izzy-resized.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
         <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
           <p class="text-center text-xs font-semibold text-white truncate w-full">Fu Izzy</p>
@@ -1671,8 +1675,8 @@
       </div>
 
       <!-- Card 05: Rose -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
-        <img src="Content/Creator profiles/roseandrosie.webp" alt="Rose and Rosie" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Content/Creator profiles/roseandrosie.jpg';"/>
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
+        <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/roseandrosie.webp" alt="Rose and Rosie" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/roseandrosie.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
         <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
           <p class="text-center text-xs font-semibold text-white truncate w-full">Rose and Rosie</p>
@@ -1680,8 +1684,8 @@
       </div>
 
       <!-- Card 06: Charlessy -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
-        <img src="Content/Creator profiles/charlessy.webp" alt="Charlessy" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Content/Creator profiles/charlessy.jpg';"/>
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
+        <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/charlessy.webp" alt="Charlessy" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/charlessy.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
         <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
           <p class="text-center text-xs font-semibold text-white truncate w-full">Charlessy</p>
@@ -1689,8 +1693,8 @@
       </div>
 
       <!-- Card 07: Hayls World -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
-        <img src="Content/Creator profiles/hayls.webp" alt="Hayls World" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Content/Creator profiles/hayls.jpg';"/>
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
+        <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/hayls.webp" alt="Hayls World" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/hayls.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
         <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
           <p class="text-center text-xs font-semibold text-white truncate w-full">Hayls World</p>
@@ -1698,8 +1702,8 @@
       </div>
 
       <!-- Card 08: Craig & Aimee -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
-        <img src="Content/Creator profiles/Craign-and-aimee.webp" alt="Craig & Aimee" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Content/Creator profiles/Craign-and-aimee.jpg';"/>
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
+        <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/Craign-and-aimee.webp" alt="Craig & Aimee" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/Craign-and-aimee.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
         <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
           <p class="text-center text-xs font-semibold text-white truncate w-full">Craig & Aimee</p>
@@ -1707,8 +1711,8 @@
       </div>
 
       <!-- Card 09: Hermione Chantal -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
-        <img src="Content/Creator profiles/hermione.webp" alt="Hermione Chantal" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Content/Creator profiles/hermione.jpg';"/>
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
+        <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/hermione.webp" alt="Hermione Chantal" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/hermione.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
         <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
           <p class="text-center text-xs font-semibold text-white truncate w-full">Hermione Chantal</p>
@@ -1716,8 +1720,8 @@
       </div>
 
       <!-- Card 10: George Alexander -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
-        <img src="Content/Creator profiles/george.webp" alt="George Alexander" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Content/Creator profiles/george.jpg';"/>
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
+        <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/george.webp" alt="George Alexander" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/george.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
         <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
           <p class="text-center text-xs font-semibold text-white truncate w-full">George Alexander</p>
@@ -1725,8 +1729,8 @@
       </div>
 
       <!-- Card 11: Taz Alam -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-900 shadow-lg shadow-black/5">
-        <img src="Content/Creator profiles/clickfortaz.webp" alt="Taz Alam" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" onError="this.src='Content/Creator profiles/clickfortaz.jpg';"/>
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
+        <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/clickfortaz.webp" alt="Taz Alam" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/clickfortaz.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
         <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
           <p class="text-center text-xs font-semibold text-white truncate w-full">Taz Alam</p>
@@ -2662,65 +2666,124 @@
       ? hwSection.querySelectorAll('.phone-card')
       : document.querySelectorAll('.phone-card');
 
-    // Auto-rotate landscape phone media to fill vertical bezels
-    document.querySelectorAll('#hw-deck video.phone-media').forEach((video) => {
-      const applyOrientation = () => {
-        if (video.videoWidth > video.videoHeight) {
-          video.classList.add('rotate-media-90');
-          video.classList.remove('absolute', 'inset-0');
-        }
-      };
-      if (video.readyState >= 1) applyOrientation();
-      else video.addEventListener('loadedmetadata', applyOrientation, { once: true });
-    });
+    // Shuffle which media sits in which phone shell on each page load
+    (function randomizePhoneShowcaseMedia() {
+      const deck = document.getElementById('hw-deck');
+      if (!deck) return;
+      const frames = Array.from(deck.querySelectorAll('.phone-card > div.w-full.h-full'));
+      const payloads = frames
+        .map((frame) => frame.querySelector('.phone-media'))
+        .filter(Boolean);
+      if (payloads.length < 2) return;
+
+      for (let i = payloads.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const tmp = payloads[i];
+        payloads[i] = payloads[j];
+        payloads[j] = tmp;
+      }
+
+      frames.forEach((frame, i) => {
+        const existing = frame.querySelector('.phone-media');
+        if (existing) existing.remove();
+        const media = payloads[i];
+        if (!media) return;
+        frame.appendChild(media);
+      });
+    })();
 
     (function initBulletproofPhoneFanout() {
       const section = document.getElementById('phoneShowcaseSection');
       if (!section) return;
 
+      const sticky = document.getElementById('hw-sticky') || section.querySelector('.sticky');
       let isTicking = false;
+      let layoutWidth = window.innerWidth;
+      let layoutVh = window.innerHeight;
+      let lastProgressKey = '';
+
+      function lockMobileLayoutMetrics(force) {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const widthChanged = Math.abs(w - layoutWidth) > 2;
+        if (!force && !widthChanged) return;
+        layoutWidth = w;
+        layoutVh = h;
+        // Pin pixel heights so mobile URL-bar show/hide does not rewrite 250vh mid-scroll
+        if (w < 768) {
+          section.style.height = `${Math.round(layoutVh * 2.5)}px`;
+          if (sticky) sticky.style.height = `${layoutVh}px`;
+        } else {
+          section.style.height = '';
+          if (sticky) sticky.style.height = '';
+        }
+      }
+
+      lockMobileLayoutMetrics(true);
 
       function updateFanout() {
         const rect = section.getBoundingClientRect();
-        const vh = window.innerHeight;
+        const isMobile = layoutWidth < 768;
+        const progressVh = isMobile ? layoutVh : window.innerHeight;
 
         let progress = 0;
         if (rect.top <= 0) {
           const scrollOffset = Math.abs(rect.top);
-
           // FRONT-LOADED TIMELINE:
           // - Reaches 100% full spread within 0.9 vh of scroll distance
           // - Holds 100% open while user scrolls through the remaining runway before the white curtain arrives
-          progress = Math.min(scrollOffset / (vh * 0.9), 1.0);
+          progress = Math.min(scrollOffset / (progressVh * 0.9), 1.0);
         }
 
         const easedProgress = Math.sin(progress * (Math.PI / 2));
-        const isMobile = window.innerWidth < 768;
         const phoneCards = section.querySelectorAll('.phone-card');
         const centerIndex = (phoneCards.length - 1) / 2;
+        const progressKey = `${isMobile ? 1 : 0}:${(easedProgress * 1000) | 0}`;
 
+        // Skip redundant style writes (reduces mobile compositor jitter)
+        if (progressKey !== lastProgressKey) {
+          lastProgressKey = progressKey;
+
+          phoneCards.forEach((card, index) => {
+            const offset = index - centerIndex;
+
+            if (isMobile) {
+              // Mobile receding camera (1.0 down to 0.72) + tight fan-out — round for subpixel stability
+              const baseScale = 1 - (easedProgress * 0.28);
+              const cardScale = Math.round(baseScale * (1 - Math.abs(offset) * 0.06) * 1000) / 1000;
+              const xSpread = Math.round(offset * (easedProgress * 48));
+              const rotation = Math.round(offset * (easedProgress * 3.5) * 100) / 100;
+
+              card.style.transform = `translate(-50%, -50%) translate3d(${xSpread}px, 0, 0) scale(${cardScale}) rotate(${rotation}deg)`;
+              card.style.opacity = '1';
+              card.style.zIndex = String(10 - Math.abs(Math.round(offset)));
+            } else {
+              const xSpread = Math.round(offset * (easedProgress * 165));
+              const rotation = Math.round(offset * (easedProgress * 5) * 100) / 100;
+
+              card.style.transform = `translate(-50%, -50%) translate3d(${xSpread}px, 0, 0) rotate(${rotation}deg)`;
+              card.style.opacity = '1';
+              card.style.zIndex = String(10 - Math.abs(Math.round(offset)));
+            }
+          });
+        }
+
+        // Pause off-screen (and far) phone videos to keep mobile scroll smooth
+        const inView = rect.bottom > 0 && rect.top < window.innerHeight;
         phoneCards.forEach((card, index) => {
-          const offset = index - centerIndex;
-
-          if (isMobile) {
-            // Mobile receding camera (1.0 down to 0.72) + tight fan-out
-            const baseScale = 1 - (easedProgress * 0.28);
-            const cardScale = baseScale * (1 - Math.abs(offset) * 0.06);
-
-            const xSpread = offset * (easedProgress * 48);
-            const rotation = offset * (easedProgress * 3.5);
-
-            card.style.transform = `translate(-50%, -50%) translate3d(${xSpread}px, 0, 0) scale(${cardScale}) rotate(${rotation}deg)`;
-            card.style.opacity = '1';
-            card.style.zIndex = String(10 - Math.abs(Math.round(offset)));
-          } else {
-            // Desktop widescreen full expansion
-            const xSpread = offset * (easedProgress * 165);
-            const rotation = offset * (easedProgress * 5);
-
-            card.style.transform = `translate(-50%, -50%) translate3d(${xSpread}px, 0, 0) rotate(${rotation}deg)`;
-            card.style.opacity = '1';
-            card.style.zIndex = String(10 - Math.abs(Math.round(offset)));
+          const video = card.querySelector('video.phone-media');
+          if (!video) return;
+          const offset = Math.abs(index - centerIndex);
+          const shouldPlay = inView && progress > 0.02 && (!isMobile || offset <= 2.5);
+          if (shouldPlay) {
+            if (video.preload !== 'auto') {
+              video.preload = 'auto';
+              video.load();
+            }
+            video.muted = true;
+            if (video.paused) video.play().catch(() => {});
+          } else if (!video.paused) {
+            video.pause();
           }
         });
 
@@ -2734,10 +2797,32 @@
         }
       }
 
+      function onResize() {
+        lockMobileLayoutMetrics(false);
+        lastProgressKey = '';
+        onScroll();
+      }
+
       window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', onScroll);
+      window.addEventListener('resize', onResize, { passive: true });
+      window.addEventListener('orientationchange', () => {
+        layoutWidth = -1;
+        lockMobileLayoutMetrics(true);
+        lastProgressKey = '';
+        onScroll();
+      });
       updateFanout();
     })();
+
+    // Creator carousel: fade portraits in once decoded (avoids black empty shells)
+    document.querySelectorAll('.imax-card img.creator-portrait').forEach((img) => {
+      const markLoaded = () => img.classList.add('is-loaded');
+      if (img.complete && img.naturalWidth > 0) markLoaded();
+      else {
+        img.addEventListener('load', markLoaded, { once: true });
+        img.addEventListener('error', markLoaded, { once: true });
+      }
+    });
 
     // ThreadOS full-bleed multi-layer Z-depth gradient wave field
     (function initThreadOSFullGradientWave() {
@@ -2747,11 +2832,17 @@
       if (!ctx) return;
 
       let width = 0;
+
       let height = 0;
+
       let time = 0;
+
       let rafId = 0;
+
       let running = false;
+
       const cols = 44;
+
       const rows = 30;
 
       // Three parallax Z-layers: far / mid / near
