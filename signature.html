@@ -3,50 +3,286 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Red Thread Email Signature</title>
+  <title>Team Signature Generator | Red Thread</title>
+  <link rel="icon" type="image/svg+xml" href="Content/Brand%20Logos/thread-icon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'Inter', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", Inter, sans-serif;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 0, 102, 0.12), transparent 55%),
+        radial-gradient(ellipse 60% 40% at 100% 0%, rgba(139, 92, 246, 0.1), transparent 50%),
+        #0a0a0a;
+      min-height: 100vh;
+    }
+
+    .glass-card {
+      background: rgba(23, 23, 23, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .field-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: #f5f5f7;
+      font-size: 15px;
+      line-height: 1.4;
+      padding: 12px 14px;
+      outline: none;
+      transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .field-input::placeholder { color: rgba(255, 255, 255, 0.28); }
+
+    .field-input:focus {
+      border-color: rgba(255, 0, 102, 0.55);
+      background: rgba(255, 255, 255, 0.06);
+      box-shadow: 0 0 0 3px rgba(255, 0, 102, 0.15);
+    }
+
+    .preview-card {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.06),
+        0 24px 48px rgba(0, 0, 0, 0.35);
+    }
+
+    .copy-btn {
+      background: linear-gradient(120deg, #FF0066 0%, #E00199 45%, #8B5CF6 100%);
+      background-size: 160% auto;
+      transition: transform 0.15s ease, filter 0.2s ease, background-position 0.4s ease;
+    }
+
+    .copy-btn:hover {
+      filter: brightness(1.06);
+      background-position: 100% 50%;
+    }
+
+    .copy-btn:active { transform: scale(0.98); }
+
+    .toast {
+      transform: translateY(12px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .toast.is-visible {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+  </style>
 </head>
-<body style="margin:0; padding:0; background-color:#ffffff;">
-  <!-- Copy from the table below into Gmail → Settings → Signature -->
-  <table cellpadding="0" cellspacing="0" border="0" role="presentation" style="max-width:450px; border-collapse:collapse; font-family:Arial, Helvetica, sans-serif;">
-    <tr>
-      <!-- Logo -->
-      <td valign="middle" style="padding:0 16px 0 0; vertical-align:middle;">
-        <img
-          src="https://redthread.co/assets/logo-gradient.gif"
-          alt="Red Thread"
-          width="48"
-          height="48"
-          style="display:block; border:0; outline:none; text-decoration:none; width:48px; height:48px;"
-        />
-      </td>
-      <!-- Divider + details -->
-      <td valign="middle" style="padding:0 0 0 16px; border-left:1px solid #E5E5E5; vertical-align:middle;">
-        <table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse; font-family:Arial, Helvetica, sans-serif;">
-          <tr>
-            <td style="padding:0 0 2px 0; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; line-height:1.35; color:#111111;">
-              Your Name
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:0 0 2px 0; font-family:Arial, Helvetica, sans-serif; font-size:13px; font-weight:normal; line-height:1.35; color:#666666;">
-              Your Title
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:0 0 8px 0; font-family:Arial, Helvetica, sans-serif; font-size:13px; font-weight:normal; line-height:1.35; color:#111111;">
-              Red Thread Creative Ltd
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:0; font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:normal; line-height:1.4; color:#666666;">
-              <a href="https://redthread.co" style="color:#666666; text-decoration:none;">Website</a>
-              <span style="color:#CCCCCC;">&nbsp;|&nbsp;</span>
-              <a href="https://redthread.co/privacy.html" style="color:#666666; text-decoration:none;">Privacy Policy</a>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
+<body class="text-white antialiased">
+  <div class="min-h-screen flex flex-col">
+    <header class="border-b border-white/10 bg-black/40 backdrop-blur-md">
+      <div class="max-w-5xl mx-auto px-5 sm:px-8 py-5 flex items-center gap-4">
+        <img src="logo-white.png" alt="Red Thread" class="h-4 w-auto object-contain" />
+        <div class="h-4 w-px bg-white/15" aria-hidden="true"></div>
+        <h1 class="text-sm sm:text-base font-semibold tracking-tight text-white/90">
+          Team Signature Generator
+        </h1>
+      </div>
+    </header>
+
+    <main class="flex-1 w-full px-5 sm:px-8 py-10 sm:py-14">
+      <div class="max-w-5xl mx-auto mb-8 sm:mb-10">
+        <div class="max-w-xl">
+          <p class="text-xs font-medium tracking-wider text-white/40 uppercase mb-2">Internal tool</p>
+          <p class="text-white/60 text-sm sm:text-base leading-relaxed">
+            Fill in your details, preview the Apple-style signature, then copy and paste it into Gmail Settings → Signature.
+          </p>
+        </div>
+      </div>
+
+      <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-start">
+        <!-- Left: Form -->
+        <section class="glass-card bg-neutral-900/60 border border-white/10 rounded-2xl p-6">
+          <h2 class="text-sm font-semibold text-white mb-5">Your Details</h2>
+          <form id="signatureForm" class="space-y-5" autocomplete="on" onsubmit="return false;">
+            <div>
+              <label for="fullName" class="block text-xs font-medium text-white/50 mb-2">Full Name</label>
+              <input id="fullName" name="fullName" type="text" class="field-input" value="Sammy Albon" placeholder="Sammy Albon" autocomplete="name" />
+            </div>
+            <div>
+              <label for="jobTitle" class="block text-xs font-medium text-white/50 mb-2">Job Title</label>
+              <input id="jobTitle" name="jobTitle" type="text" class="field-input" value="Co-Founder" placeholder="Co-Founder" autocomplete="organization-title" />
+            </div>
+            <div>
+              <label for="directEmail" class="block text-xs font-medium text-white/50 mb-2">Direct Email</label>
+              <input id="directEmail" name="directEmail" type="email" class="field-input" value="sammy@redthread.co" placeholder="you@redthread.co" autocomplete="email" />
+            </div>
+          </form>
+        </section>
+
+        <!-- Right: Preview + Copy -->
+        <section class="space-y-4">
+          <div class="flex items-center justify-between gap-3">
+            <h2 class="text-sm font-semibold text-white">Live preview</h2>
+            <span class="text-[11px] text-white/35">As seen in a light email client</span>
+          </div>
+
+          <div class="preview-card p-6 sm:p-8 min-h-[168px] flex items-center">
+            <div id="signaturePreview" class="w-full"></div>
+          </div>
+
+          <button
+            type="button"
+            id="copyBtn"
+            class="copy-btn w-full inline-flex items-center justify-center gap-2 rounded-full px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-pink-500/20"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+            Copy Signature
+          </button>
+
+          <p class="text-[11px] text-white/35 leading-relaxed text-center md:text-left">
+            Copies formatted HTML — paste directly into Gmail’s signature editor (not as plain text).
+          </p>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div
+    id="toast"
+    class="toast fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-full bg-emerald-500 text-white text-sm font-semibold px-5 py-3 shadow-xl shadow-emerald-500/25 whitespace-nowrap"
+    role="status"
+    aria-live="polite"
+  >
+    Copied to Clipboard! Paste in Gmail Settings
+  </div>
+
+  <script>
+    (function () {
+      const nameInput = document.getElementById('fullName');
+      const titleInput = document.getElementById('jobTitle');
+      const emailInput = document.getElementById('directEmail');
+      const preview = document.getElementById('signaturePreview');
+      const copyBtn = document.getElementById('copyBtn');
+      const toast = document.getElementById('toast');
+
+      const FONT = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+      const LOGO = 'https://redthread.co/logo-gradient.gif';
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function escapeAttr(value) {
+        return escapeHtml(value).replace(/`/g, '&#96;');
+      }
+
+      function buildSignatureHtml(name, title, email) {
+        const safeName = escapeHtml(name.trim() || 'Your Name');
+        const safeTitle = escapeHtml(title.trim() || 'Your Title');
+        const rawEmail = email.trim() || 'hello@redthread.co';
+        const safeEmail = escapeHtml(rawEmail);
+        const mailto = escapeAttr(rawEmail);
+
+        return (
+          '<table width="380" cellpadding="0" cellspacing="0" border="0" role="presentation" style="max-width:380px; width:100%; border-collapse:collapse; border-spacing:0; font-family:' + FONT + ';">' +
+            '<tr>' +
+              '<td valign="top" style="padding:0; vertical-align:top;">' +
+                '<img src="' + LOGO + '" width="28" height="28" alt="Red Thread" style="display:block; width:28px; height:28px; border:0; outline:none; text-decoration:none;">' +
+              '</td>' +
+              '<td width="25" valign="top" style="width:25px; padding:0 12px; border-left:1px solid #E5E5E5; vertical-align:top; font-size:0; line-height:0;">&nbsp;</td>' +
+              '<td valign="top" style="padding:0; vertical-align:top;">' +
+                '<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse; border-spacing:0; font-family:' + FONT + ';">' +
+                  '<tr><td style="padding:0 0 1px 0; font-family:' + FONT + '; font-size:13px; font-weight:600; line-height:1.35; color:#1D1D1F;">' + safeName + '</td></tr>' +
+                  '<tr><td style="padding:0 0 1px 0; font-family:' + FONT + '; font-size:12px; font-weight:400; line-height:1.35; color:#6E6E73;">' + safeTitle + '</td></tr>' +
+                  '<tr><td style="padding:0 0 6px 0; font-family:' + FONT + '; font-size:12px; font-weight:500; line-height:1.35; color:#1D1D1F;">Red Thread Creative Ltd</td></tr>' +
+                  '<tr><td style="padding:0 0 4px 0; font-family:' + FONT + '; font-size:11px; font-weight:400; line-height:1.4; color:#6E6E73;"><a href="mailto:' + mailto + '" style="color:#6E6E73; text-decoration:none;">' + safeEmail + '</a></td></tr>' +
+                  '<tr><td style="padding:0; font-family:' + FONT + '; font-size:11px; font-weight:400; line-height:1.4; color:#6E6E73;">' +
+                    '<a href="https://redthread.co" style="color:#1D1D1F; text-decoration:none;">redthread.co</a>' +
+                    '<span style="color:#D2D2D7;">&nbsp;|&nbsp;</span>' +
+                    '<a href="https://redthread.co/privacy.html" style="color:#1D1D1F; text-decoration:none;">Privacy Policy</a>' +
+                  '</td></tr>' +
+                '</table>' +
+              '</td>' +
+            '</tr>' +
+          '</table>'
+        );
+      }
+
+      function updatePreview() {
+        preview.innerHTML = buildSignatureHtml(
+          nameInput.value,
+          titleInput.value,
+          emailInput.value
+        );
+      }
+
+      function showToast() {
+        toast.classList.add('is-visible');
+        clearTimeout(showToast._timer);
+        showToast._timer = setTimeout(function () {
+          toast.classList.remove('is-visible');
+        }, 2600);
+      }
+
+      async function copySignature() {
+        const html = preview.innerHTML;
+        const plain = preview.innerText;
+
+        try {
+          if (navigator.clipboard && window.ClipboardItem) {
+            await navigator.clipboard.write([
+              new ClipboardItem({
+                'text/html': new Blob([html], { type: 'text/html' }),
+                'text/plain': new Blob([plain], { type: 'text/plain' })
+              })
+            ]);
+            showToast();
+            return;
+          }
+        } catch (err) { /* fallback below */ }
+
+        const range = document.createRange();
+        range.selectNodeContents(preview);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        let ok = false;
+        try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+        selection.removeAllRanges();
+        if (ok) showToast();
+        else alert('Could not copy automatically. Please select the signature preview and copy manually.');
+      }
+
+      ['keyup', 'change', 'input'].forEach(function (evt) {
+        nameInput.addEventListener(evt, updatePreview);
+        titleInput.addEventListener(evt, updatePreview);
+        emailInput.addEventListener(evt, updatePreview);
+      });
+
+      copyBtn.addEventListener('click', copySignature);
+      updatePreview();
+    })();
+  </script>
 </body>
 </html>
