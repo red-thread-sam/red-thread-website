@@ -129,6 +129,10 @@
               <label for="directEmail" class="block text-xs font-medium text-white/50 mb-2">Direct Email</label>
               <input id="directEmail" name="directEmail" type="email" class="field-input" value="sammy@redthread.co" placeholder="you@redthread.co" autocomplete="email" />
             </div>
+            <div>
+              <label for="directPhone" class="block text-xs font-medium text-white/50 mb-2">Direct Phone</label>
+              <input id="directPhone" name="directPhone" type="tel" class="field-input" value="+44 7703 434 557" placeholder="+44 …" autocomplete="tel" />
+            </div>
           </form>
         </section>
 
@@ -177,12 +181,14 @@
       const nameInput = document.getElementById('fullName');
       const titleInput = document.getElementById('jobTitle');
       const emailInput = document.getElementById('directEmail');
+      const phoneInput = document.getElementById('directPhone');
       const preview = document.getElementById('signaturePreview');
       const copyBtn = document.getElementById('copyBtn');
       const toast = document.getElementById('toast');
 
-      const FONT = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-      const LOGO = 'https://redthread.co/logo-gradient.gif';
+      const FONT = 'sans-serif';
+      const CHARCOAL = '#1d1d1f';
+      const SLATE = '#6e6e73';
 
       function escapeHtml(value) {
         return String(value)
@@ -197,30 +203,53 @@
         return escapeHtml(value).replace(/`/g, '&#96;');
       }
 
-      function buildSignatureHtml(name, title, email) {
+      /** Gmail blue-link defense: matching <a> + inner <span> with !important */
+      function protectedLink(href, label, color) {
+        const style = 'color: ' + color + ' !important; text-decoration: none !important; font-family: sans-serif;';
+        return (
+          '<a href="' + escapeAttr(href) + '" style="' + style + '">' +
+            '<span style="' + style + '">' + escapeHtml(label) + '</span>' +
+          '</a>'
+        );
+      }
+
+      function telHref(phone) {
+        return 'tel:' + phone.replace(/[^\d+]/g, '');
+      }
+
+      function buildSignatureHtml(name, title, email, phone) {
         const safeName = escapeHtml(name.trim() || 'Your Name');
         const safeTitle = escapeHtml(title.trim() || 'Your Title');
         const rawEmail = email.trim() || 'hello@redthread.co';
-        const safeEmail = escapeHtml(rawEmail);
-        const mailto = escapeAttr(rawEmail);
+        const rawPhone = phone.trim();
+
+        const phoneRow = rawPhone
+          ? (
+              '<tr><td style="padding:0 0 1px 0; font-family:' + FONT + '; font-size:12px; font-weight:400; line-height:1.4; color:' + SLATE + ';">' +
+                protectedLink(telHref(rawPhone), rawPhone, SLATE) +
+              '</td></tr>'
+            )
+          : '';
 
         return (
-          '<table width="380" cellpadding="0" cellspacing="0" border="0" role="presentation" style="max-width:380px; width:100%; border-collapse:collapse; border-spacing:0; font-family:' + FONT + ';">' +
+          '<table width="420" cellpadding="0" cellspacing="0" border="0" role="presentation" style="max-width:420px; width:100%; border-collapse:collapse; border-spacing:0; font-family:' + FONT + ';">' +
             '<tr>' +
               '<td valign="top" style="padding:0; vertical-align:top;">' +
-                '<img src="' + LOGO + '" width="28" height="28" alt="Red Thread" style="display:block; width:28px; height:28px; border:0; outline:none; text-decoration:none;">' +
+                '<img src="https://redthread.co/logo-gradient.gif" width="32" height="28" style="display:block; width:32px; height:28px; border:0; margin-bottom:6px;" alt="Red Thread Icon">' +
+                '<img src="https://redthread.co/logo-text-black.png" width="70" height="11" style="display:block; width:70px; height:11px; border:0;" alt="Red Thread">' +
               '</td>' +
               '<td width="25" valign="top" style="width:25px; padding:0 12px; border-left:1px solid #E5E5E5; vertical-align:top; font-size:0; line-height:0;">&nbsp;</td>' +
               '<td valign="top" style="padding:0; vertical-align:top;">' +
                 '<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse; border-spacing:0; font-family:' + FONT + ';">' +
-                  '<tr><td style="padding:0 0 1px 0; font-family:' + FONT + '; font-size:13px; font-weight:600; line-height:1.35; color:#1D1D1F;">' + safeName + '</td></tr>' +
-                  '<tr><td style="padding:0 0 1px 0; font-family:' + FONT + '; font-size:12px; font-weight:400; line-height:1.35; color:#6E6E73;">' + safeTitle + '</td></tr>' +
-                  '<tr><td style="padding:0 0 6px 0; font-family:' + FONT + '; font-size:12px; font-weight:500; line-height:1.35; color:#1D1D1F;">Red Thread Creative Ltd</td></tr>' +
-                  '<tr><td style="padding:0 0 4px 0; font-family:' + FONT + '; font-size:11px; font-weight:400; line-height:1.4; color:#6E6E73;"><a href="mailto:' + mailto + '" style="color:#6E6E73; text-decoration:none;">' + safeEmail + '</a></td></tr>' +
-                  '<tr><td style="padding:0; font-family:' + FONT + '; font-size:11px; font-weight:400; line-height:1.4; color:#6E6E73;">' +
-                    '<a href="https://redthread.co" style="color:#1D1D1F; text-decoration:none;">redthread.co</a>' +
-                    '<span style="color:#D2D2D7;">&nbsp;|&nbsp;</span>' +
-                    '<a href="https://redthread.co/privacy.html" style="color:#1D1D1F; text-decoration:none;">Privacy Policy</a>' +
+                  '<tr><td style="padding:0 0 1px 0; font-family:' + FONT + '; font-size:13px; font-weight:bold; line-height:1.35; color:' + CHARCOAL + ';">' + safeName + '</td></tr>' +
+                  '<tr><td style="padding:0 0 1px 0; font-family:' + FONT + '; font-size:12px; font-weight:400; line-height:1.35; color:' + SLATE + ';">' + safeTitle + '</td></tr>' +
+                  '<tr><td style="padding:0 0 6px 0; font-family:' + FONT + '; font-size:12px; font-weight:600; line-height:1.35; color:' + CHARCOAL + ';">Red Thread Creative Ltd</td></tr>' +
+                  '<tr><td style="padding:0 0 1px 0; font-family:' + FONT + '; font-size:12px; font-weight:400; line-height:1.4; color:' + CHARCOAL + ';">' +
+                    protectedLink('mailto:' + rawEmail, rawEmail, CHARCOAL) +
+                  '</td></tr>' +
+                  phoneRow +
+                  '<tr><td style="padding:0; font-family:' + FONT + '; font-size:12px; font-weight:400; line-height:1.4; color:' + CHARCOAL + ';">' +
+                    protectedLink('https://redthread.co', 'redthread.co', CHARCOAL) +
                   '</td></tr>' +
                 '</table>' +
               '</td>' +
@@ -233,7 +262,8 @@
         preview.innerHTML = buildSignatureHtml(
           nameInput.value,
           titleInput.value,
-          emailInput.value
+          emailInput.value,
+          phoneInput.value
         );
       }
 
@@ -278,6 +308,7 @@
         nameInput.addEventListener(evt, updatePreview);
         titleInput.addEventListener(evt, updatePreview);
         emailInput.addEventListener(evt, updatePreview);
+        phoneInput.addEventListener(evt, updatePreview);
       });
 
       copyBtn.addEventListener('click', copySignature);
