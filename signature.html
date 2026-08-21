@@ -28,53 +28,25 @@
       min-height: 100vh;
     }
 
-    .glass-card {
-      background: rgba(23, 23, 23, 0.6);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-    }
-
     .field-input {
       width: 100%;
-      background: rgba(255, 255, 255, 0.04);
+      background: rgba(38, 38, 38, 0.5);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      color: #f5f5f7;
+      border-radius: 0.75rem;
+      color: #ffffff;
       font-size: 15px;
       line-height: 1.4;
-      padding: 12px 14px;
+      padding: 0.75rem;
       outline: none;
-      transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .field-input::placeholder { color: rgba(255, 255, 255, 0.28); }
+    .field-input::placeholder { color: rgba(255, 255, 255, 0.3); }
 
     .field-input:focus {
-      border-color: rgba(255, 0, 102, 0.55);
-      background: rgba(255, 255, 255, 0.06);
-      box-shadow: 0 0 0 3px rgba(255, 0, 102, 0.15);
+      border-color: #f43f5e;
+      box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.15);
     }
-
-    .preview-card {
-      background: #ffffff;
-      border-radius: 16px;
-      box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.06),
-        0 24px 48px rgba(0, 0, 0, 0.35);
-    }
-
-    .copy-btn {
-      background: linear-gradient(120deg, #FF0066 0%, #E00199 45%, #8B5CF6 100%);
-      background-size: 160% auto;
-      transition: transform 0.15s ease, filter 0.2s ease, background-position 0.4s ease;
-    }
-
-    .copy-btn:hover {
-      filter: brightness(1.06);
-      background-position: 100% 50%;
-    }
-
-    .copy-btn:active { transform: scale(0.98); }
 
     .toast {
       transform: translateY(12px);
@@ -103,64 +75,60 @@
     </header>
 
     <main class="flex-1 w-full px-5 sm:px-8 py-10 sm:py-14">
-      <div class="max-w-5xl mx-auto mb-8 sm:mb-10">
-        <div class="max-w-xl">
-          <p class="text-xs font-medium tracking-wider text-white/40 uppercase mb-2">Internal tool</p>
-          <p class="text-white/60 text-sm sm:text-base leading-relaxed">
-            Fill in your details, preview the Apple-style signature, then copy and paste it into Gmail Settings → Signature.
-          </p>
-        </div>
+      <div class="mb-8 max-w-5xl mx-auto">
+        <span class="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-medium tracking-wider text-white/50 uppercase mb-3">
+          Internal tool
+        </span>
+        <p class="text-white/60 text-sm sm:text-base leading-relaxed max-w-xl">
+          Fill in your details, preview the Apple-style signature, then copy and paste it into Gmail Settings → Signature.
+        </p>
       </div>
 
-      <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-start">
-        <!-- Left: Form -->
-        <section class="glass-card bg-neutral-900/60 border border-white/10 rounded-2xl p-6">
-          <h2 class="text-sm font-semibold text-white mb-5">Your Details</h2>
-          <form id="signatureForm" class="space-y-5" autocomplete="on" onsubmit="return false;">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch max-w-5xl mx-auto">
+        <!-- Left bento: Your Details -->
+        <section class="bg-neutral-900/60 border border-white/10 rounded-2xl p-6 shadow-2xl backdrop-blur-xl h-full">
+          <h2 class="text-lg font-semibold text-white mb-4">Your Details</h2>
+          <form id="signatureForm" class="space-y-4" autocomplete="on" onsubmit="return false;">
             <div>
               <label for="fullName" class="block text-xs font-medium text-white/50 mb-2">Full Name</label>
-              <input id="fullName" name="fullName" type="text" class="field-input" value="Sammy Albon" placeholder="Sammy Albon" autocomplete="name" />
+              <input id="fullName" name="fullName" type="text" class="field-input bg-neutral-800/50 border border-white/10 text-white rounded-xl p-3 focus:border-rose-500" value="Sammy Albon" placeholder="Sammy Albon" autocomplete="name" />
             </div>
             <div>
               <label for="jobTitle" class="block text-xs font-medium text-white/50 mb-2">Job Title</label>
-              <input id="jobTitle" name="jobTitle" type="text" class="field-input" value="Co-Founder" placeholder="Co-Founder" autocomplete="organization-title" />
+              <input id="jobTitle" name="jobTitle" type="text" class="field-input bg-neutral-800/50 border border-white/10 text-white rounded-xl p-3 focus:border-rose-500" value="Co-Founder" placeholder="Co-Founder" autocomplete="organization-title" />
             </div>
             <div>
               <label for="directEmail" class="block text-xs font-medium text-white/50 mb-2">Direct Email</label>
-              <input id="directEmail" name="directEmail" type="email" class="field-input" value="sammy@redthread.co" placeholder="you@redthread.co" autocomplete="email" />
+              <input id="directEmail" name="directEmail" type="email" class="field-input bg-neutral-800/50 border border-white/10 text-white rounded-xl p-3 focus:border-rose-500" value="sammy@redthread.co" placeholder="you@redthread.co" autocomplete="email" />
             </div>
             <div>
               <label for="directPhone" class="block text-xs font-medium text-white/50 mb-2">Direct Phone</label>
-              <input id="directPhone" name="directPhone" type="tel" class="field-input" value="+44 7703 434 557" placeholder="+44 …" autocomplete="tel" />
+              <input id="directPhone" name="directPhone" type="tel" class="field-input bg-neutral-800/50 border border-white/10 text-white rounded-xl p-3 focus:border-rose-500" value="+44 7703 434 557" placeholder="+44 …" autocomplete="tel" />
             </div>
           </form>
         </section>
 
-        <!-- Right: Preview + Copy -->
-        <section class="space-y-4">
-          <div class="flex items-center justify-between gap-3">
-            <h2 class="text-sm font-semibold text-white">Live preview</h2>
-            <span class="text-[11px] text-white/35">As seen in a light email client</span>
+        <!-- Right bento: Live Preview & Action -->
+        <section class="bg-neutral-900/60 border border-white/10 rounded-2xl p-6 shadow-2xl backdrop-blur-xl flex flex-col h-full">
+          <div class="flex items-center justify-between gap-3 mb-4">
+            <h2 class="text-lg font-semibold text-white">Live Preview</h2>
+            <span class="text-[11px] text-white/40 text-right">As seen in light email client</span>
           </div>
 
-          <div class="preview-card p-6 sm:p-8 min-h-[168px] flex items-center">
+          <div class="bg-white rounded-xl p-6 border border-neutral-200 mb-6 flex-1 flex items-start min-h-0">
             <div id="signaturePreview" class="w-full"></div>
           </div>
 
           <button
             type="button"
             id="copyBtn"
-            class="copy-btn w-full inline-flex items-center justify-center gap-2 rounded-full px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-pink-500/20"
+            class="bg-gradient-to-r from-pink-500 via-rose-600 to-rose-500 text-white font-semibold py-3 rounded-xl hover:opacity-95 transition-all shadow-lg shadow-rose-500/20 w-full"
           >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
-              <path d="M10.5 5.5V4A1.5 1.5 0 0 0 9 2.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5" stroke="currentColor" stroke-width="1.5"/>
-            </svg>
             Copy Signature
           </button>
 
-          <p class="text-[11px] text-white/35 leading-relaxed text-center md:text-left">
-            Copies formatted HTML — paste directly into Gmail’s signature editor (not as plain text).
+          <p class="mt-3 text-[11px] text-white/40 leading-relaxed">
+            Copies formatted HTML — paste directly into Gmail's signature editor.
           </p>
         </section>
       </div>
@@ -189,6 +157,14 @@
       const FONT = 'sans-serif';
       const CHARCOAL = '#1d1d1f';
       const SLATE = '#6e6e73';
+      const LINK_COLOR = '#1d1d1f';
+      const BULLET = '<span style="color: #6e6e73; font-family: sans-serif; font-size: 11px;">&nbsp;&bull;&nbsp;</span>';
+
+      const COMPANY_LINKS = {
+        website: 'https://redthread.co',
+        linkedin: 'https://www.linkedin.com/company/redthreadagency',
+        instagram: 'https://www.instagram.com/red_thread_agency/'
+      };
 
       function escapeHtml(value) {
         return String(value)
@@ -203,9 +179,9 @@
         return escapeHtml(value).replace(/`/g, '&#96;');
       }
 
-      /** Gmail blue-link defense: matching <a> + inner <span> with !important */
       function protectedLink(href, label, color) {
-        const style = 'color: ' + color + ' !important; text-decoration: none !important; font-family: sans-serif;';
+        const c = color || LINK_COLOR;
+        const style = 'color: ' + c + ' !important; text-decoration: none !important; font-family: sans-serif;';
         return (
           '<a href="' + escapeAttr(href) + '" style="' + style + '">' +
             '<span style="' + style + '">' + escapeHtml(label) + '</span>' +
@@ -226,30 +202,37 @@
         const phoneRow = rawPhone
           ? (
               '<tr><td style="padding:0 0 1px 0; font-family:' + FONT + '; font-size:12px; font-weight:400; line-height:1.4; color:' + SLATE + ';">' +
-                protectedLink(telHref(rawPhone), rawPhone, SLATE) +
+                protectedLink(telHref(rawPhone), rawPhone, LINK_COLOR) +
               '</td></tr>'
             )
           : '';
+
+        const linksRow =
+          protectedLink(COMPANY_LINKS.website, 'redthread.co', LINK_COLOR) +
+          BULLET +
+          protectedLink(COMPANY_LINKS.linkedin, 'LinkedIn', LINK_COLOR) +
+          BULLET +
+          protectedLink(COMPANY_LINKS.instagram, 'Instagram', LINK_COLOR);
 
         return (
           '<table width="420" cellpadding="0" cellspacing="0" border="0" role="presentation" style="max-width:420px; width:100%; border-collapse:collapse; border-spacing:0; font-family:' + FONT + ';">' +
             '<tr>' +
               '<td valign="top" style="padding:0; vertical-align:top;">' +
-                '<img src="https://redthread.co/logo-gradient.gif" width="32" height="28" style="display:block; width:32px; height:28px; border:0; margin-bottom:6px;" alt="Red Thread Icon">' +
+                '<img src="https://redthread.co/logo-gradient.gif" width="32" height="28" style="display:block; width:32px; height:28px; border:0; margin-bottom:4px;" alt="Red Thread Icon">' +
                 '<img src="https://redthread.co/logo-text-black.png" width="70" height="11" style="display:block; width:70px; height:11px; border:0;" alt="Red Thread">' +
               '</td>' +
               '<td width="25" valign="top" style="width:25px; padding:0 12px; border-left:1px solid #E5E5E5; vertical-align:top; font-size:0; line-height:0;">&nbsp;</td>' +
               '<td valign="top" style="padding:0; vertical-align:top;">' +
                 '<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse; border-spacing:0; font-family:' + FONT + ';">' +
-                  '<tr><td style="padding:0 0 1px 0; font-family:' + FONT + '; font-size:13px; font-weight:bold; line-height:1.35; color:' + CHARCOAL + ';">' + safeName + '</td></tr>' +
-                  '<tr><td style="padding:0 0 1px 0; font-family:' + FONT + '; font-size:12px; font-weight:400; line-height:1.35; color:' + SLATE + ';">' + safeTitle + '</td></tr>' +
-                  '<tr><td style="padding:0 0 6px 0; font-family:' + FONT + '; font-size:12px; font-weight:600; line-height:1.35; color:' + CHARCOAL + ';">Red Thread Creative Ltd</td></tr>' +
-                  '<tr><td style="padding:0 0 1px 0; font-family:' + FONT + '; font-size:12px; font-weight:400; line-height:1.4; color:' + CHARCOAL + ';">' +
-                    protectedLink('mailto:' + rawEmail, rawEmail, CHARCOAL) +
+                  '<tr><td style="padding:0; font-family:' + FONT + '; font-size:14px; font-weight:bold; line-height:1.2; color:' + CHARCOAL + ';">' + safeName + '</td></tr>' +
+                  '<tr><td style="padding:0; font-family:' + FONT + '; font-size:12px; font-weight:400; line-height:1.3; color:' + SLATE + ';">' + safeTitle + '</td></tr>' +
+                  '<tr><td style="padding:0; font-family:' + FONT + '; font-size:12px; font-weight:600; line-height:1.3; color:' + CHARCOAL + ';">Red Thread Creative Ltd</td></tr>' +
+                  '<tr><td style="padding:6px 0 1px 0; font-family:' + FONT + '; font-size:12px; font-weight:400; line-height:1.4; color:' + CHARCOAL + ';">' +
+                    protectedLink('mailto:' + rawEmail, rawEmail, LINK_COLOR) +
                   '</td></tr>' +
                   phoneRow +
-                  '<tr><td style="padding:0; font-family:' + FONT + '; font-size:12px; font-weight:400; line-height:1.4; color:' + CHARCOAL + ';">' +
-                    protectedLink('https://redthread.co', 'redthread.co', CHARCOAL) +
+                  '<tr><td style="padding:4px 0 0 0; font-family:' + FONT + '; font-size:11px; font-weight:400; line-height:1.4; color:' + SLATE + ';">' +
+                    linksRow +
                   '</td></tr>' +
                 '</table>' +
               '</td>' +
@@ -304,11 +287,11 @@
         else alert('Could not copy automatically. Please select the signature preview and copy manually.');
       }
 
+      const inputs = [nameInput, titleInput, emailInput, phoneInput];
       ['keyup', 'change', 'input'].forEach(function (evt) {
-        nameInput.addEventListener(evt, updatePreview);
-        titleInput.addEventListener(evt, updatePreview);
-        emailInput.addEventListener(evt, updatePreview);
-        phoneInput.addEventListener(evt, updatePreview);
+        inputs.forEach(function (el) {
+          el.addEventListener(evt, updatePreview);
+        });
       });
 
       copyBtn.addEventListener('click', copySignature);
