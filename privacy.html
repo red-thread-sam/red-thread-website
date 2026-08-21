@@ -73,22 +73,22 @@
   <!-- Razor-thin dynamic header (borderless) -->
   <header id="mainHeader" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-none text-neutral-900">
     <nav class="relative max-w-7xl mx-auto px-3.5 sm:px-6 h-10 sm:h-11 flex items-center justify-between gap-2">
-      <a href="index.html" class="flex items-center shrink-0">
+      <a href="/" class="flex items-center shrink-0">
         <img id="navLogo" src="logo-black.png" alt="Red Thread" class="h-3.5 sm:h-4 w-auto object-contain transition-opacity duration-300">
       </a>
 
       <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-7 text-[12px] font-normal tracking-[-0.01em] font-['SF_Pro_Text',-apple-system,BlinkMacSystemFont,'Helvetica_Neue',sans-serif]">
-        <a href="tech.html" class="nav-link text-neutral-900/80 hover:text-black transition-colors">Our Tech</a>
-        <a href="index.html#case-studies" class="nav-link text-neutral-900/80 hover:text-black transition-colors">Our Work</a>
+        <a href="/tech" class="nav-link text-neutral-900/80 hover:text-black transition-colors">Our Tech</a>
+        <a href="/#case-studies" class="nav-link text-neutral-900/80 hover:text-black transition-colors">Our Work</a>
       </div>
 
       <div class="flex items-center shrink-0">
-        <a id="navCtaMobile" href="index.html#contact-faq" class="sm:hidden flex items-center justify-center w-6 h-6 rounded-full bg-neutral-950 text-white transition-all" aria-label="Let's chat">
+        <a id="navCtaMobile" href="/#contact-faq" class="sm:hidden flex items-center justify-center w-6 h-6 rounded-full bg-neutral-950 text-white transition-all" aria-label="Let's chat">
           <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.2L4 17.2V4h16v12z"/>
           </svg>
         </a>
-        <a id="navCtaDesktop" href="index.html#contact-faq" class="hidden sm:inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-neutral-950 text-white font-bold text-[11px] hover:bg-neutral-800 transition-all">
+        <a id="navCtaDesktop" href="/#contact-faq" class="hidden sm:inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-neutral-950 text-white font-bold text-[11px] hover:bg-neutral-800 transition-all">
           Let's chat.
         </a>
       </div>
@@ -257,9 +257,9 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-6 text-neutral-600 pb-1">
-          <a href="tech.html" class="text-neutral-600 hover:text-black transition-colors">Our Tech</a>
-          <a href="privacy.html" class="text-neutral-600 hover:text-black transition-colors" aria-current="page">Privacy policy</a>
-          <a href="terms.html" class="text-neutral-600 hover:text-black transition-colors">Terms of service</a>
+          <a href="/tech" class="text-neutral-600 hover:text-black transition-colors">Our Tech</a>
+          <a href="/privacy" class="text-neutral-600 hover:text-black transition-colors" aria-current="page">Privacy policy</a>
+          <a href="/terms" class="text-neutral-600 hover:text-black transition-colors">Terms of service</a>
           <div class="flex items-center gap-4">
             <a
               href="https://www.linkedin.com/company/redthreadagency"
@@ -302,8 +302,8 @@
     if (!header || !logo) return;
 
     const path = window.location.pathname || '';
-    const isHomepage = (path.endsWith('index.html') || path === '/' || path.endsWith('/') || path === '')
-      && !/tech\.html|privacy\.html|terms\.html/.test(path);
+    const isHomepage = (path === '/' || path === '' || path.endsWith('/index.html') || path.endsWith('/index'))
+      && !/\/(tech|privacy|terms|signature)(\.html)?\/?$/.test(path);
 
     function linkClasses(theme, el) {
       const isHow = (el.getAttribute('href') || '').includes('how-it-works');
@@ -359,7 +359,7 @@
 
 <div id="cookie-banner" class="fixed bottom-6 right-6 z-50 max-w-sm bg-neutral-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-5 shadow-2xl hidden">
   <p class="text-xs text-neutral-300 leading-relaxed mb-3">
-    We use essential cookies to analyse traffic and optimise your experience. Read our <a href="privacy.html" class="text-neutral-300 hover:text-white underline decoration-neutral-500">Privacy Policy</a>.
+    We use essential cookies to analyse traffic and optimise your experience. Read our <a href="/privacy" class="text-neutral-300 hover:text-white underline decoration-neutral-500">Privacy Policy</a>.
   </p>
   <div class="flex items-center gap-2">
     <button type="button" id="accept-cookies" class="px-4 py-1.5 bg-white text-black text-xs font-medium rounded-full hover:bg-neutral-200 transition-all">Accept</button>
