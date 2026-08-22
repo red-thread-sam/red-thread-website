@@ -887,9 +887,9 @@
 
     <div class="sticky top-0 left-0 w-full h-screen overflow-hidden flex items-center justify-center z-10" style="isolation: isolate; backface-visibility: hidden; transform-style: preserve-3d; -webkit-font-smoothing: antialiased;">
 
-      <video id="hero-video" autoplay loop muted playsinline data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
+      <video id="hero-video" autoplay loop muted playsinline preload="auto" poster="Content/Hero/showreel-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
 
-        <source src="https://testcs.co.uk/redthread/wp-content/uploads/2026/07/Showreel-v3-1.mp4" type="video/mp4">
+        <source src="Content/Hero/showreel.mp4" type="video/mp4">
 
       </video>
 
@@ -2528,6 +2528,22 @@
     // C. Hero Zoom Engine (One-Way Open)
 
     let heroFullyOpened = false;
+
+    // Ensure hero showreel starts (autoplay can fail until a user gesture / readyState)
+    (function ensureHeroVideoPlayback() {
+      const heroVideo = document.getElementById('hero-video');
+      if (!heroVideo) return;
+      const tryPlay = () => {
+        heroVideo.muted = true;
+        const p = heroVideo.play();
+        if (p && typeof p.catch === 'function') p.catch(() => {});
+      };
+      if (heroVideo.readyState >= 2) tryPlay();
+      else heroVideo.addEventListener('canplay', tryPlay, { once: true });
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && heroVideo.paused) tryPlay();
+      });
+    })();
 
 
 
