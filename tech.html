@@ -144,11 +144,18 @@
     #stackCarouselTrack {
       -webkit-overflow-scrolling: touch;
       overscroll-behavior-x: contain;
-      scroll-padding-inline: 1rem;
+      scroll-padding-inline: 1.25rem;
+      /* Never use CSS scroll-smooth here — it fights touch/drag and snaps back */
+      scroll-behavior: auto;
     }
 
-    /* Mobile / tablet: native horizontal swipe (no scroll-hijacking) */
+    /* Mobile / tablet: horizontal swipe + arrow helpers */
     @media (max-width: 768px) {
+      /* Clip on this section blocks nested touch scrolling on WebKit */
+      #engine-orbit {
+        overflow-x: visible !important;
+      }
+
       #stackCarouselTrack {
         display: flex !important;
         flex-wrap: nowrap !important;
@@ -156,6 +163,10 @@
         overflow-y: hidden !important;
         -webkit-overflow-scrolling: touch;
         scroll-snap-type: x mandatory;
+        scroll-behavior: auto !important;
+        /* Vertical page scroll stays native; JS owns horizontal drag */
+        touch-action: pan-y;
+        cursor: grab;
         gap: 16px;
         padding: 24px 20px;
         max-width: none !important;
@@ -163,12 +174,21 @@
         grid-template-columns: none !important;
       }
 
+      #stackCarouselTrack.is-dragging {
+        cursor: grabbing;
+        scroll-snap-type: none;
+        user-select: none;
+      }
+
       #stackCarouselTrack > .bento-card {
-        flex: 0 0 85% !important;
-        width: 85% !important;
-        max-width: 85% !important;
-        min-width: 0 !important;
+        flex: 0 0 85vw !important;
+        width: 85vw !important;
+        max-width: 85vw !important;
+        min-width: 85vw !important;
         scroll-snap-align: center;
+        scroll-snap-stop: always;
+        /* Avoid sticky-hover scale fighting the drag gesture */
+        transform: none !important;
       }
     }
 
@@ -461,7 +481,7 @@
             <h3 class="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-8 pr-4 sm:pr-0">Our Proprietary Stack.</h3>
           </div>
 
-          <div id="stackCarouselTrack" class="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden py-4 pl-4 pr-4 md:max-w-7xl md:mx-auto md:grid md:grid-cols-2 md:overflow-visible md:snap-none md:px-8 md:pr-8 md:gap-4 lg:grid-cols-4 lg:gap-5">
+          <div id="stackCarouselTrack" class="flex gap-4 overflow-x-auto snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden py-4 pl-4 pr-4 md:max-w-7xl md:mx-auto md:grid md:grid-cols-2 md:overflow-visible md:snap-none md:px-8 md:pr-8 md:gap-4 lg:grid-cols-4 lg:gap-5">
 
             <!-- Fred AI — Electric Rose -->
             <div class="bento-card w-[85%] min-h-[560px] flex-shrink-0 snap-center md:w-full md:min-w-0 md:snap-align-none bg-neutral-900/80 backdrop-blur-xl rounded-[28px] border border-white/10 shadow-2xl shadow-black/90 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.015] border-t-rose-500/30 hover:border-rose-500/50">
@@ -885,16 +905,42 @@
       if (!track) return;
 
       // Fork UX via matchMedia (no GSAP pin/hijack on this page):
-      // - mobile (≤768px): native overflow-x swipe + arrow helpers
+      // - mobile (≤768px): drag/swipe + arrow helpers
       // - desktop (≥769px): static CSS grid only
       const mqMobile = window.matchMedia('(max-width: 768px)');
 
-      function getScrollAmount() {
-        const firstCard = track.querySelector('.bento-card') || track.firstElementChild;
-        if (!firstCard) return 320;
-        const styles = window.getComputedStyle(track);
-        const gap = parseFloat(styles.columnGap || styles.gap) || 16;
-        return firstCard.offsetWidth + gap;
+      function cardList() {
+        return Array.from(track.querySelectorAll(':scope > .bento-card'));
+      }
+
+      function clampScroll(left) {
+        const max = Math.max(0, track.scrollWidth - track.clientWidth);
+        return Math.min(max, Math.max(0, left));
+      }
+
+      function nearestCardIndex() {
+        const cards = cardList();
+        if (!cards.length) return 0;
+        const center = track.scrollLeft + track.clientWidth / 2;
+        let best = 0;
+        let bestDist = Infinity;
+        cards.forEach((card, i) => {
+          const c = card.offsetLeft + card.offsetWidth / 2;
+          const d = Math.abs(c - center);
+          if (d < bestDist) {
+            bestDist = d;
+            best = i;
+          }
+        });
+        return best;
+      }
+
+      function scrollToCard(index, behavior) {
+        const cards = cardList();
+        if (!cards.length) return;
+        const card = cards[Math.max(0, Math.min(cards.length - 1, index))];
+        const target = card.offsetLeft - (track.clientWidth - card.offsetWidth) / 2;
+        track.scrollTo({ left: clampScroll(target), behavior: behavior || 'smooth' });
       }
 
       function updateArrowStates() {
@@ -925,15 +971,72 @@
       if (prevBtn) {
         prevBtn.addEventListener('click', () => {
           if (!mqMobile.matches) return;
-          track.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+          scrollToCard(nearestCardIndex() - 1, 'smooth');
         });
       }
       if (nextBtn) {
         nextBtn.addEventListener('click', () => {
           if (!mqMobile.matches) return;
-          track.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+          scrollToCard(nearestCardIndex() + 1, 'smooth');
         });
       }
+
+      // Pointer drag: reliable on real devices and DevTools (native overflow swipe was snapping back)
+      let pointerId = null;
+      let startX = 0;
+      let startY = 0;
+      let startScroll = 0;
+      let axis = null;
+      let didDrag = false;
+
+      function endDrag(e) {
+        if (pointerId === null || (e && e.pointerId !== pointerId)) return;
+        try {
+          if (e && track.hasPointerCapture(pointerId)) track.releasePointerCapture(pointerId);
+        } catch (_) { /* ignore */ }
+        pointerId = null;
+        track.classList.remove('is-dragging');
+        if (didDrag && axis === 'x') scrollToCard(nearestCardIndex(), 'smooth');
+        axis = null;
+        didDrag = false;
+        updateArrowStates();
+      }
+
+      track.addEventListener('pointerdown', (e) => {
+        if (!mqMobile.matches || e.button !== 0) return;
+        pointerId = e.pointerId;
+        startX = e.clientX;
+        startY = e.clientY;
+        startScroll = track.scrollLeft;
+        axis = null;
+        didDrag = false;
+      });
+
+      track.addEventListener('pointermove', (e) => {
+        if (pointerId === null || e.pointerId !== pointerId) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+
+        if (!axis) {
+          if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+          axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+          if (axis === 'y') {
+            // Let the page scroll vertically
+            pointerId = null;
+            return;
+          }
+          track.classList.add('is-dragging');
+          try { track.setPointerCapture(pointerId); } catch (_) { /* ignore */ }
+        }
+
+        if (axis !== 'x') return;
+        e.preventDefault();
+        didDrag = true;
+        track.scrollLeft = clampScroll(startScroll - dx);
+      }, { passive: false });
+
+      track.addEventListener('pointerup', endDrag);
+      track.addEventListener('pointercancel', endDrag);
 
       track.addEventListener('scroll', updateArrowStates, { passive: true });
       window.addEventListener('resize', updateArrowStates, { passive: true });
