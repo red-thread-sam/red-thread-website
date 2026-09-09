@@ -124,6 +124,7 @@
       width: min(100%, 720px);
       aspect-ratio: 1 / 1;
       max-height: min(72vh, 640px);
+      max-height: min(72dvh, 640px);
       margin-inline: auto;
     }
 
@@ -146,9 +147,36 @@
       scroll-padding-inline: 1rem;
     }
 
-    @media (min-width: 640px) {
+    /* Mobile / tablet: native horizontal swipe (no scroll-hijacking) */
+    @media (max-width: 768px) {
+      #stackCarouselTrack {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        gap: 16px;
+        padding: 24px 20px;
+        max-width: none !important;
+        margin-inline: 0 !important;
+        grid-template-columns: none !important;
+      }
+
+      #stackCarouselTrack > .bento-card {
+        flex: 0 0 85% !important;
+        width: 85% !important;
+        max-width: 85% !important;
+        min-width: 0 !important;
+        scroll-snap-align: center;
+      }
+    }
+
+    /* Desktop: static grid — no pin / horizontal scroll tween */
+    @media (min-width: 769px) {
       #stackCarouselTrack {
         scroll-padding-inline: 0;
+        overflow: visible;
       }
     }
 
@@ -323,6 +351,7 @@
     @media (min-width: 768px) {
       #heroScrollPin.hero-static-flow #heroLockupPanel {
         height: 78vh !important;
+        height: 78dvh !important;
       }
       #heroScrollPin.hero-static-flow #manifestoReveal {
         padding: 5.5rem 3rem 6.5rem !important;
@@ -362,7 +391,7 @@
 
     <!-- 1. HERO — sticky scrub first; after play, flattens to lockup + manifesto stack -->
     <section id="heroScrollPin" data-theme="light" data-header-theme="light" class="h-[170vh] relative z-10 bg-white pointer-events-none">
-      <div id="heroViewport" class="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center bg-white">
+      <div id="heroViewport" class="sticky top-0 h-screen h-[100dvh] w-full overflow-hidden flex items-center justify-center bg-white">
         <div id="heroLockupPanel" class="absolute inset-0 w-full h-full">
           <canvas id="heroWaveformCanvas" class="absolute inset-0 w-full h-full pointer-events-none z-20 opacity-90" aria-hidden="true"></canvas>
           <div id="heroHeadline" class="absolute inset-0 z-30 flex items-center justify-center pointer-events-none px-6 will-change-transform">
@@ -401,7 +430,7 @@
     </section>
 
     <!-- 2b. ORBITAL ECOSYSTEM + PROPRIETARY STACK -->
-    <section id="engine-orbit" data-theme="dark" data-header-theme="dark" class="relative z-20 bg-black text-white py-20 sm:py-28 lg:py-32 overflow-hidden">
+    <section id="engine-orbit" data-theme="dark" data-header-theme="dark" class="relative z-20 bg-black text-white py-20 sm:py-28 lg:py-32 overflow-x-clip">
       <!-- Continuous particle field behind Orbit + Proprietary Stack -->
       <canvas id="techBackgroundCanvas" class="absolute top-0 left-0 w-full pointer-events-none z-0 opacity-80" aria-hidden="true"></canvas>
       <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-[#EC4899]/10 via-[#8B5CF6]/10 to-transparent blur-[160px] pointer-events-none rounded-full z-0"></div>
@@ -432,10 +461,10 @@
             <h3 class="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-8 pr-4 sm:pr-0">Our Proprietary Stack.</h3>
           </div>
 
-          <div id="stackCarouselTrack" class="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden py-4 pl-4 pr-4 sm:max-w-7xl sm:mx-auto sm:grid sm:grid-cols-2 sm:overflow-visible sm:snap-none sm:px-8 sm:pr-8 sm:gap-4 lg:grid-cols-4 lg:gap-5">
+          <div id="stackCarouselTrack" class="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden py-4 pl-4 pr-4 md:max-w-7xl md:mx-auto md:grid md:grid-cols-2 md:overflow-visible md:snap-none md:px-8 md:pr-8 md:gap-4 lg:grid-cols-4 lg:gap-5">
 
             <!-- Fred AI — Electric Rose -->
-            <div class="bento-card w-[85vw] sm:w-full min-h-[560px] flex-shrink-0 sm:min-w-0 snap-start sm:snap-align-none bg-neutral-900/80 backdrop-blur-xl rounded-[28px] border border-white/10 shadow-2xl shadow-black/90 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.015] border-t-rose-500/30 hover:border-rose-500/50">
+            <div class="bento-card w-[85%] min-h-[560px] flex-shrink-0 snap-center md:w-full md:min-w-0 md:snap-align-none bg-neutral-900/80 backdrop-blur-xl rounded-[28px] border border-white/10 shadow-2xl shadow-black/90 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.015] border-t-rose-500/30 hover:border-rose-500/50">
               <div class="p-6 sm:p-7 flex flex-col">
                 <svg class="w-12 h-12 text-rose-500 mb-4 block flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
                 <span class="text-xs font-semibold tracking-wider text-rose-400 mb-3 block">01 | Fred AI</span>
@@ -450,7 +479,7 @@
             </div>
 
             <!-- ThreadOS — Hot Magenta -->
-            <div class="bento-card w-[85vw] sm:w-full min-h-[560px] flex-shrink-0 sm:min-w-0 snap-start sm:snap-align-none bg-neutral-900/80 backdrop-blur-xl rounded-[28px] border border-white/10 shadow-2xl shadow-black/90 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.015] border-t-pink-500/30 hover:border-pink-500/50">
+            <div class="bento-card w-[85%] min-h-[560px] flex-shrink-0 snap-center md:w-full md:min-w-0 md:snap-align-none bg-neutral-900/80 backdrop-blur-xl rounded-[28px] border border-white/10 shadow-2xl shadow-black/90 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.015] border-t-pink-500/30 hover:border-pink-500/50">
               <div class="p-6 sm:p-7 flex flex-col">
                 <img src="Content/Tech/thread-logo-e00199.png" alt="" class="threados-logo-mask" width="48" height="48" decoding="async" aria-hidden="true" onerror="this.onerror=null;this.src='Content/Tech/thread-logo.png';">
                 <span class="text-xs font-semibold tracking-wider text-pink-400 mb-3 block">02 | ThreadOS™</span>
@@ -465,7 +494,7 @@
             </div>
 
             <!-- Attention Engine — Vivid Fuchsia -->
-            <div class="bento-card w-[85vw] sm:w-full min-h-[560px] flex-shrink-0 sm:min-w-0 snap-start sm:snap-align-none bg-neutral-900/80 backdrop-blur-xl rounded-[28px] border border-white/10 shadow-2xl shadow-black/90 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.015] border-t-fuchsia-500/30 hover:border-fuchsia-500/50">
+            <div class="bento-card w-[85%] min-h-[560px] flex-shrink-0 snap-center md:w-full md:min-w-0 md:snap-align-none bg-neutral-900/80 backdrop-blur-xl rounded-[28px] border border-white/10 shadow-2xl shadow-black/90 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.015] border-t-fuchsia-500/30 hover:border-fuchsia-500/50">
               <div class="p-6 sm:p-7 flex flex-col">
                 <svg class="w-12 h-12 text-fuchsia-400 mb-4 block flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
                 <span class="text-xs font-semibold tracking-wider text-fuchsia-400 mb-3 block">03 | Attention Engine™</span>
@@ -480,7 +509,7 @@
             </div>
 
             <!-- Continuous Optimisation — Electric Purple -->
-            <div class="bento-card w-[85vw] sm:w-full min-h-[560px] flex-shrink-0 sm:min-w-0 snap-start sm:snap-align-none bg-neutral-900/80 backdrop-blur-xl rounded-[28px] border border-white/10 shadow-2xl shadow-black/90 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.015] border-t-purple-500/30 hover:border-purple-500/50">
+            <div class="bento-card w-[85%] min-h-[560px] flex-shrink-0 snap-center md:w-full md:min-w-0 md:snap-align-none bg-neutral-900/80 backdrop-blur-xl rounded-[28px] border border-white/10 shadow-2xl shadow-black/90 flex flex-col justify-between overflow-hidden transition-all duration-300 hover:scale-[1.015] border-t-purple-500/30 hover:border-purple-500/50">
               <div class="p-6 sm:p-7 flex flex-col">
                 <svg class="w-12 h-12 text-purple-400 mb-4 block flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                 <span class="text-xs font-semibold tracking-wider text-purple-400 mb-3 block">04 | Continuous Optimisation</span>
@@ -500,7 +529,7 @@
 
           </div>
 
-            <div class="mt-6 pr-4 pl-4 max-w-7xl mx-auto flex items-center justify-end gap-3 sm:hidden">
+            <div class="mt-6 pr-4 pl-4 max-w-7xl mx-auto flex items-center justify-end gap-3 md:hidden">
               <button id="prevStackBtn" type="button" aria-label="Previous" class="w-11 h-11 rounded-full border border-white/10 bg-neutral-900 text-white flex items-center justify-center hover:bg-neutral-800 transition-all shadow-md">&larr;</button>
               <button id="nextStackBtn" type="button" aria-label="Next" class="w-11 h-11 rounded-full border border-white/10 bg-neutral-900 text-white flex items-center justify-center hover:bg-neutral-800 transition-all shadow-md">&rarr;</button>
             </div>
@@ -618,9 +647,13 @@
 
       function resize() {
         const rect = stage.getBoundingClientRect();
+        const nextW = Math.max(1, Math.round(rect.width || canvas.offsetWidth));
+        const nextH = Math.max(1, Math.round(rect.height || canvas.offsetHeight));
+        // ignoreMobileResize: skip thrash when mobile browser chrome shows/hides
+        if (w > 0 && Math.abs(nextW - w) < 2 && Math.abs(nextH - h) < 48) return;
         dpr = Math.min(window.devicePixelRatio || 1, 2);
-        w = Math.max(1, Math.round(rect.width || canvas.offsetWidth));
-        h = Math.max(1, Math.round(rect.height || canvas.offsetHeight));
+        w = nextW;
+        h = nextH;
         cx = w / 2;
         cy = h / 2;
         canvas.width = Math.round(w * dpr);
@@ -851,10 +884,13 @@
       const nextBtn = document.getElementById('nextStackBtn');
       if (!track) return;
 
-      const mqCarousel = window.matchMedia('(max-width: 639px)');
+      // Fork UX via matchMedia (no GSAP pin/hijack on this page):
+      // - mobile (≤768px): native overflow-x swipe + arrow helpers
+      // - desktop (≥769px): static CSS grid only
+      const mqMobile = window.matchMedia('(max-width: 768px)');
 
       function getScrollAmount() {
-        const firstCard = track.firstElementChild;
+        const firstCard = track.querySelector('.bento-card') || track.firstElementChild;
         if (!firstCard) return 320;
         const styles = window.getComputedStyle(track);
         const gap = parseFloat(styles.columnGap || styles.gap) || 16;
@@ -862,9 +898,15 @@
       }
 
       function updateArrowStates() {
-        if (!mqCarousel.matches) {
-          if (prevBtn) prevBtn.style.opacity = '0';
-          if (nextBtn) nextBtn.style.opacity = '0';
+        if (!mqMobile.matches) {
+          if (prevBtn) {
+            prevBtn.style.opacity = '0';
+            prevBtn.style.pointerEvents = 'none';
+          }
+          if (nextBtn) {
+            nextBtn.style.opacity = '0';
+            nextBtn.style.pointerEvents = 'none';
+          }
           return;
         }
         const maxScroll = track.scrollWidth - track.clientWidth;
@@ -882,20 +924,21 @@
 
       if (prevBtn) {
         prevBtn.addEventListener('click', () => {
-          if (!mqCarousel.matches) return;
+          if (!mqMobile.matches) return;
           track.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
         });
       }
       if (nextBtn) {
         nextBtn.addEventListener('click', () => {
-          if (!mqCarousel.matches) return;
+          if (!mqMobile.matches) return;
           track.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
         });
       }
 
       track.addEventListener('scroll', updateArrowStates, { passive: true });
-      window.addEventListener('resize', updateArrowStates);
-      if (mqCarousel.addEventListener) mqCarousel.addEventListener('change', updateArrowStates);
+      window.addEventListener('resize', updateArrowStates, { passive: true });
+      if (mqMobile.addEventListener) mqMobile.addEventListener('change', updateArrowStates);
+      else if (mqMobile.addListener) mqMobile.addListener(updateArrowStates);
       updateArrowStates();
     })();
 
