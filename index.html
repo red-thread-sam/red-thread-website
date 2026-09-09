@@ -422,12 +422,34 @@
 
       perspective-origin: 50% 50%;
 
+      backface-visibility: hidden;
+
+      -webkit-backface-visibility: hidden;
+
     }
 
-    #hw-deck {
+    #hw-sticky {
+
+      backface-visibility: hidden;
+
+      -webkit-backface-visibility: hidden;
 
       transform-style: preserve-3d;
+
+    }
+
+    #hw-deck,
+    .phone-fan-container {
+
+      transform-style: preserve-3d;
+
       transform-origin: center center;
+
+      backface-visibility: hidden;
+
+      -webkit-backface-visibility: hidden;
+
+      will-change: transform;
 
     }
 
@@ -441,13 +463,16 @@
         overflow-x: clip;
       }
       /* Contain paint so GPU layers don't thrash while scrolling the sticky fan */
-      .hw-card {
-        contain: layout style;
+      .hw-card,
+      .phone-card {
+        contain: layout style paint;
         backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
       }
     }
 
-    .hw-card {
+    .hw-card,
+    .phone-card {
 
       will-change: transform;
 
@@ -455,8 +480,19 @@
 
       backface-visibility: hidden;
 
+      -webkit-backface-visibility: hidden;
+
       transform-origin: center center;
+
       flex-shrink: 0;
+
+      transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+    }
+
+    .phone-card.fan-instant {
+
+      transition: none !important;
 
     }
 
@@ -964,16 +1000,16 @@
 
   <!-- 03. HARDWARE GALLERY (Phone Fan-Out Showcase) -->
 
-  <section id="phoneShowcaseSection" data-theme="dark" data-header-theme="dark" class="relative h-[250vh] bg-neutral-950 text-white z-10 overflow-x-clip">
+  <section id="phoneShowcaseSection" data-theme="dark" data-header-theme="dark" class="relative h-[100dvh] min-h-[100dvh] bg-neutral-950 text-white z-10 overflow-x-clip">
 
-    <!-- Sticky Viewport Wrapper — height locked in JS on mobile to avoid URL-bar vh jitter -->
-    <div id="hw-sticky" class="sticky top-0 h-[100dvh] w-full flex items-center justify-center overflow-hidden z-10 hardware-stage-perspective">
+    <!-- Static full-viewport stage — unfolds once via IntersectionObserver -->
+    <div id="hw-sticky" class="relative h-full w-full flex items-center justify-center overflow-hidden z-10 hardware-stage-perspective">
 
       <!-- Inner Phone Fan Container -->
       <div id="hw-deck" class="phone-fan-container relative w-full max-w-6xl mx-auto flex items-center justify-center h-[520px] sm:h-[620px]">
 
           <!-- Phone 1: screen1.mov -->
-          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:10;">
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform p-2.5" style="z-index:10;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/screen1-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/screen1.mp4" type="video/mp4"/></video>
@@ -981,7 +1017,7 @@
           </div>
 
           <!-- Phone 2: screen2.mov -->
-          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:20;">
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform p-2.5" style="z-index:20;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/screen2-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/screen2.mp4" type="video/mp4"/></video>
@@ -989,7 +1025,7 @@
           </div>
 
           <!-- Phone 3: video7.mov -->
-          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:30;">
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform p-2.5" style="z-index:30;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/video7-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/video7.mp4" type="video/mp4"/></video>
@@ -997,7 +1033,7 @@
           </div>
 
           <!-- Phone 4: screen3.mov -->
-          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:40;">
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform p-2.5" style="z-index:40;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/screen3-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/screen3.mp4" type="video/mp4"/></video>
@@ -1005,7 +1041,7 @@
           </div>
 
           <!-- Phone 5: video9.mov -->
-          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:50;">
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform p-2.5" style="z-index:50;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/video9-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/video9.mp4" type="video/mp4"/></video>
@@ -1013,7 +1049,7 @@
           </div>
 
           <!-- Phone 6 (Center Hero): pic 8 resized.jpg -->
-          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:60;">
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform p-2.5" style="z-index:60;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <img
@@ -1029,7 +1065,7 @@
           </div>
 
           <!-- Phone 7: Screen4.mov -->
-          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:50;">
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform p-2.5" style="z-index:50;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/Screen4-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/Screen4.mp4" type="video/mp4"/></video>
@@ -1037,7 +1073,7 @@
           </div>
 
           <!-- Phone 8: video10.mov -->
-          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:40;">
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform p-2.5" style="z-index:40;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/video10-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/video10.mp4" type="video/mp4"/></video>
@@ -1045,7 +1081,7 @@
           </div>
 
           <!-- Phone 9: screen5.mov -->
-          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:30;">
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform p-2.5" style="z-index:30;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/screen5-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/screen5.mp4" type="video/mp4"/></video>
@@ -1053,7 +1089,7 @@
           </div>
 
           <!-- Phone 10: video11.mov -->
-          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:20;">
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform p-2.5" style="z-index:20;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/video11-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/video11.mp4" type="video/mp4"/></video>
@@ -1061,7 +1097,7 @@
           </div>
 
           <!-- Phone 11: video6.mov -->
-          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform transition-none p-2.5" style="z-index:10;">
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform p-2.5" style="z-index:10;">
             <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
             <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
               <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/video6-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/video6.mp4" type="video/mp4"/></video>
@@ -1078,7 +1114,7 @@
 
   <!-- 04. BRAND PROOF -->
 
-  <section id="section-brands" data-theme="light" data-header-theme="light" class="relative z-20 bg-white -mt-[100vh] shadow-[0_-30px_60px_rgba(0,0,0,0.35)] text-neutral-950 py-16 sm:py-24 px-4 sm:px-8 border-t border-neutral-100">
+  <section id="section-brands" data-theme="light" data-header-theme="light" class="relative z-20 bg-white shadow-[0_-20px_40px_rgba(0,0,0,0.12)] text-neutral-950 py-16 sm:py-24 px-4 sm:px-8 border-t border-neutral-100">
 
     <div class="max-w-7xl mx-auto px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
 
@@ -2679,40 +2715,64 @@
       });
     })();
 
-    (function initBulletproofPhoneFanout() {
+    (function initIntersectionPhoneFanout() {
       const section = document.getElementById('phoneShowcaseSection');
       if (!section) return;
 
-      const sticky = document.getElementById('hw-sticky') || section.querySelector('.sticky');
-      let isTicking = false;
-      let layoutWidth = window.innerWidth;
-      let layoutVh = window.innerHeight;
-      let lastProgressKey = '';
-      let mediaWarmed = false;
+      const phoneCards = Array.from(section.querySelectorAll('.phone-card'));
+      if (!phoneCards.length) return;
 
-      function lockMobileLayoutMetrics(force) {
-        const w = window.innerWidth;
-        const h = window.innerHeight;
-        const widthChanged = Math.abs(w - layoutWidth) > 2;
-        if (!force && !widthChanged) return;
-        layoutWidth = w;
-        layoutVh = h;
-        // Pin pixel heights so mobile URL-bar show/hide does not rewrite 250vh mid-scroll
-        if (w < 768) {
-          section.style.height = `${Math.round(layoutVh * 2.5)}px`;
-          if (sticky) sticky.style.height = `${layoutVh}px`;
-        } else {
-          section.style.height = '';
-          if (sticky) sticky.style.height = '';
-        }
+      let mediaWarmed = false;
+      let hasUnfolded = false;
+      let videoIo = null;
+
+      function isMobileLayout() {
+        return window.innerWidth < 768;
       }
 
-      lockMobileLayoutMetrics(true);
+      function poseCards(progress, instant) {
+        const isMobile = isMobileLayout();
+        const eased = Math.sin(Math.max(0, Math.min(1, progress)) * (Math.PI / 2));
+        const centerIndex = (phoneCards.length - 1) / 2;
+
+        phoneCards.forEach((card) => {
+          if (instant) card.classList.add('fan-instant');
+          else card.classList.remove('fan-instant');
+        });
+
+        if (instant) {
+          // Force style flush so the next open pose can transition
+          void section.offsetWidth;
+        }
+
+        phoneCards.forEach((card, index) => {
+          const offset = index - centerIndex;
+          let transform;
+          if (isMobile) {
+            const baseScale = 1 - (eased * 0.28);
+            const cardScale = Math.round(baseScale * (1 - Math.abs(offset) * 0.06) * 1000) / 1000;
+            const xSpread = Math.round(offset * (eased * 48));
+            const rotation = Math.round(offset * (eased * 3.5) * 100) / 100;
+            transform = `translate(-50%, -50%) translate3d(${xSpread}px, 0, 0) scale(${cardScale}) rotate(${rotation}deg)`;
+          } else {
+            const xSpread = Math.round(offset * (eased * 165));
+            const rotation = Math.round(offset * (eased * 5) * 100) / 100;
+            transform = `translate(-50%, -50%) translate3d(${xSpread}px, 0, 0) rotate(${rotation}deg)`;
+          }
+          card.style.transform = transform;
+          card.style.opacity = '1';
+          card.style.zIndex = String(10 - Math.abs(Math.round(offset)));
+        });
+
+        if (instant) {
+          void section.offsetWidth;
+          phoneCards.forEach((card) => card.classList.remove('fan-instant'));
+        }
+      }
 
       function warmPhoneMedia() {
         if (mediaWarmed) return;
         mediaWarmed = true;
-        // Kick off downloads only when the fan is about to enter view
         section.querySelectorAll('video.phone-media').forEach((video) => {
           if (video.dataset.warmed === '1') return;
           video.dataset.warmed = '1';
@@ -2721,6 +2781,41 @@
         });
       }
 
+      function syncVideos(play) {
+        const centerIndex = (phoneCards.length - 1) / 2;
+        const mobile = isMobileLayout();
+        phoneCards.forEach((card, index) => {
+          const video = card.querySelector('video.phone-media');
+          if (!video) return;
+          const offset = Math.abs(index - centerIndex);
+          const shouldPlay = play && (!mobile || offset <= 2.5);
+          if (shouldPlay) {
+            video.muted = true;
+            if (video.paused) video.play().catch(() => {});
+          } else if (!video.paused) {
+            video.pause();
+          }
+        });
+      }
+
+      function unfold() {
+        if (hasUnfolded) return;
+        hasUnfolded = true;
+        warmPhoneMedia();
+        // Ensure stacked pose is committed without transition, then fan open over 1.2s
+        poseCards(0, true);
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            poseCards(1, false);
+            syncVideos(true);
+          });
+        });
+      }
+
+      // Closed stack on load
+      poseCards(0, true);
+
+      // Warm media slightly before the section enters view
       if ('IntersectionObserver' in window) {
         const warmObserver = new IntersectionObserver(
           (entries) => {
@@ -2732,102 +2827,54 @@
           { rootMargin: '400px 0px' }
         );
         warmObserver.observe(section);
-      } else {
-        warmPhoneMedia();
-      }
 
-      function updateFanout() {
-        const rect = section.getBoundingClientRect();
-        const isMobile = layoutWidth < 768;
-        const progressVh = isMobile ? layoutVh : window.innerHeight;
+        // One-shot unfold at ~50% visibility (also snap-open if scrolled past without hitting 0.5)
+        const fanObserver = new IntersectionObserver(
+          (entries) => {
+            if (hasUnfolded) return;
+            const entry = entries[0];
+            if (!entry) return;
 
-        // Warm slightly early even without IO support / if IO missed
-        if (!mediaWarmed && rect.top < window.innerHeight + 500 && rect.bottom > -200) {
-          warmPhoneMedia();
-        }
-
-        let progress = 0;
-        if (rect.top <= 0) {
-          const scrollOffset = Math.abs(rect.top);
-          // FRONT-LOADED TIMELINE:
-          // - Reaches 100% full spread within 0.9 vh of scroll distance
-          // - Holds 100% open while user scrolls through the remaining runway before the white curtain arrives
-          progress = Math.min(scrollOffset / (progressVh * 0.9), 1.0);
-        }
-
-        const easedProgress = Math.sin(progress * (Math.PI / 2));
-        const phoneCards = section.querySelectorAll('.phone-card');
-        const centerIndex = (phoneCards.length - 1) / 2;
-        const progressKey = `${isMobile ? 1 : 0}:${(easedProgress * 1000) | 0}`;
-
-        // Skip redundant style writes (reduces mobile compositor jitter)
-        if (progressKey !== lastProgressKey) {
-          lastProgressKey = progressKey;
-
-          phoneCards.forEach((card, index) => {
-            const offset = index - centerIndex;
-
-            if (isMobile) {
-              // Mobile receding camera (1.0 down to 0.72) + tight fan-out — round for subpixel stability
-              const baseScale = 1 - (easedProgress * 0.28);
-              const cardScale = Math.round(baseScale * (1 - Math.abs(offset) * 0.06) * 1000) / 1000;
-              const xSpread = Math.round(offset * (easedProgress * 48));
-              const rotation = Math.round(offset * (easedProgress * 3.5) * 100) / 100;
-
-              card.style.transform = `translate(-50%, -50%) translate3d(${xSpread}px, 0, 0) scale(${cardScale}) rotate(${rotation}deg)`;
-              card.style.opacity = '1';
-              card.style.zIndex = String(10 - Math.abs(Math.round(offset)));
-            } else {
-              const xSpread = Math.round(offset * (easedProgress * 165));
-              const rotation = Math.round(offset * (easedProgress * 5) * 100) / 100;
-
-              card.style.transform = `translate(-50%, -50%) translate3d(${xSpread}px, 0, 0) rotate(${rotation}deg)`;
-              card.style.opacity = '1';
-              card.style.zIndex = String(10 - Math.abs(Math.round(offset)));
+            if (entry.intersectionRatio >= 0.5) {
+              fanObserver.unobserve(section);
+              fanObserver.disconnect();
+              unfold();
+              return;
             }
-          });
-        }
 
-        // Play when section is active; pause off-screen / far side phones on mobile
-        const inView = rect.bottom > 0 && rect.top < window.innerHeight;
-        phoneCards.forEach((card, index) => {
-          const video = card.querySelector('video.phone-media');
-          if (!video) return;
-          const offset = Math.abs(index - centerIndex);
-          const shouldPlay = inView && progress > 0.02 && (!isMobile || offset <= 2.5);
-          if (shouldPlay) {
-            video.muted = true;
-            if (video.paused) video.play().catch(() => {});
-          } else if (!video.paused) {
-            video.pause();
-          }
-        });
+            // Fast scroll past the block — lock fully open instantly
+            if (entry.boundingClientRect.bottom < 0) {
+              fanObserver.unobserve(section);
+              fanObserver.disconnect();
+              hasUnfolded = true;
+              warmPhoneMedia();
+              poseCards(1, true);
+            }
+          },
+          { threshold: [0, 0.5] }
+        );
+        fanObserver.observe(section);
 
-        isTicking = false;
+        // Keep videos playing only while the static stage is on screen
+        videoIo = new IntersectionObserver(
+          (entries) => {
+            const visible = entries.some((e) => e.isIntersecting);
+            if (hasUnfolded) syncVideos(visible);
+          },
+          { threshold: 0.15 }
+        );
+        videoIo.observe(section);
+      } else {
+        // Fallback: unfold once after a short delay
+        warmPhoneMedia();
+        unfold();
       }
 
-      function onScroll() {
-        if (!isTicking) {
-          requestAnimationFrame(updateFanout);
-          isTicking = true;
-        }
-      }
-
-      function onResize() {
-        lockMobileLayoutMetrics(false);
-        lastProgressKey = '';
-        onScroll();
-      }
-
-      window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', onResize, { passive: true });
-      window.addEventListener('orientationchange', () => {
-        layoutWidth = -1;
-        lockMobileLayoutMetrics(true);
-        lastProgressKey = '';
-        onScroll();
-      });
-      updateFanout();
+      // Recompute locked open pose on resize (stays fully fanned once unfolded)
+      window.addEventListener('resize', () => {
+        if (hasUnfolded) poseCards(1, true);
+        else poseCards(0, true);
+      }, { passive: true });
     })();
 
     // Creator carousel: fade portraits in once decoded (avoids black empty shells)
