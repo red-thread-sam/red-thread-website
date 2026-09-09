@@ -511,11 +511,9 @@
 
 
     .imax-card {
-      will-change: transform;
-      transform-style: preserve-3d;
+      transform: translateZ(0);
       backface-visibility: hidden;
-      /* Instant transforms for the IMAX curve; soft shadow only */
-      transition: box-shadow 0.3s ease !important;
+      transition: none !important;
       background-color: #e8e8ea;
     }
 
@@ -532,6 +530,26 @@
     #imax-track {
       will-change: transform;
       transition: none !important;
+      transform: translate3d(0, 0, 0);
+    }
+
+    #imax-stage {
+      overflow: hidden;
+      contain: layout paint;
+      /* Soft edge fade — no per-card 3D work */
+      -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+      mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+    }
+
+    #creators-section {
+      overflow-x: clip;
+    }
+
+    /* Mobile: reserve stage height so lazy images can't shift the page */
+    @media (max-width: 639px) {
+      #imax-stage {
+        min-height: calc(min(72vw, 300px) * 4 / 3 + 4rem);
+      }
     }
 
 
@@ -1638,18 +1656,17 @@
     </p>
   </div>
 
-  <div id="imax-stage" class="w-screen max-w-[100vw] relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] overflow-x-hidden px-0 py-8 sm:w-full sm:max-w-none sm:left-auto sm:right-auto sm:ml-0 sm:mr-0 sm:px-8 sm:py-12 no-scrollbar" style="perspective: 1200px; perspective-origin: 50% 50%;">
+  <div id="imax-stage" class="relative w-full overflow-hidden px-0 py-8 sm:px-8 sm:py-12 no-scrollbar">
     <div
       id="imax-track"
-      class="flex gap-3 sm:gap-6 items-center w-max cursor-grab active:cursor-grabbing select-none will-change-transform"
-      style="transform-style: preserve-3d;"
+      class="flex gap-3 sm:gap-6 items-center w-max select-none will-change-transform"
     >
 
       <!-- Card 01: Courtney -->
       <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/courtney.webp" alt="Courtney Daniella Jesse" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/courtney.avif';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
-        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
+        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/70 border border-white/10">
           <p class="text-center text-xs font-semibold text-white truncate w-full">Courtney Daniella Jesse</p>
         </div>
       </div>
@@ -1658,7 +1675,7 @@
       <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/josh.webp" alt="Josh Oyinsan" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/josh.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
-        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
+        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/70 border border-white/10">
           <p class="text-center text-xs font-semibold text-white truncate w-full">Josh Oyinsan</p>
         </div>
       </div>
@@ -1667,7 +1684,7 @@
       <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/helen.webp" alt="Helen Anderson" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/helen.jpeg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
-        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
+        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/70 border border-white/10">
           <p class="text-center text-xs font-semibold text-white truncate w-full">Helen Anderson</p>
         </div>
       </div>
@@ -1676,7 +1693,7 @@
       <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/fu-izzy-resized.webp" alt="Fu Izzy" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/fu-izzy-resized.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
-        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
+        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/70 border border-white/10">
           <p class="text-center text-xs font-semibold text-white truncate w-full">Fu Izzy</p>
         </div>
       </div>
@@ -1685,7 +1702,7 @@
       <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/roseandrosie.webp" alt="Rose and Rosie" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/roseandrosie.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
-        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
+        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/70 border border-white/10">
           <p class="text-center text-xs font-semibold text-white truncate w-full">Rose and Rosie</p>
         </div>
       </div>
@@ -1694,7 +1711,7 @@
       <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/charlessy.webp" alt="Charlessy" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/charlessy.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
-        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
+        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/70 border border-white/10">
           <p class="text-center text-xs font-semibold text-white truncate w-full">Charlessy</p>
         </div>
       </div>
@@ -1703,7 +1720,7 @@
       <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/hayls.webp" alt="Hayls World" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/hayls.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
-        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
+        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/70 border border-white/10">
           <p class="text-center text-xs font-semibold text-white truncate w-full">Hayls World</p>
         </div>
       </div>
@@ -1712,7 +1729,7 @@
       <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/Craign-and-aimee.webp" alt="Craig & Aimee" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/Craign-and-aimee.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
-        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
+        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/70 border border-white/10">
           <p class="text-center text-xs font-semibold text-white truncate w-full">Craig & Aimee</p>
         </div>
       </div>
@@ -1721,7 +1738,7 @@
       <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/hermione.webp" alt="Hermione Chantal" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/hermione.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
-        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
+        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/70 border border-white/10">
           <p class="text-center text-xs font-semibold text-white truncate w-full">Hermione Chantal</p>
         </div>
       </div>
@@ -1730,7 +1747,7 @@
       <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/george.webp" alt="George Alexander" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/george.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
-        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
+        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/70 border border-white/10">
           <p class="text-center text-xs font-semibold text-white truncate w-full">George Alexander</p>
         </div>
       </div>
@@ -1739,7 +1756,7 @@
       <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/clickfortaz.webp" alt="Taz Alam" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/clickfortaz.jpg';"/>
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
-        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15">
+        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/70 border border-white/10">
           <p class="text-center text-xs font-semibold text-white truncate w-full">Taz Alam</p>
         </div>
       </div>
@@ -3348,123 +3365,118 @@
 
 
   <script>
-    (function initZeroJoltIMAXLoop() {
+    (function initCreatorMarquee() {
       const track = document.getElementById('imax-track');
       const stage = document.getElementById('imax-stage');
       if (!track || !stage) return;
 
-      // 1. Triple card items for an infinite render buffer
+      // Duplicate once for seamless loop (2 sets — not 3)
       if (!track.dataset.cloned) {
-        const originalCards = Array.from(track.children);
-        originalCards.forEach(card => card.classList.add('imax-card'));
+        const originals = Array.from(track.children);
+        originals.forEach((card) => track.appendChild(card.cloneNode(true)));
+        track.dataset.cloned = 'true';
 
-        // Set 2
-        originalCards.forEach(card => track.appendChild(card.cloneNode(true)));
-        // Set 3
-        originalCards.forEach(card => track.appendChild(card.cloneNode(true)));
-
-        track.dataset.cloned = "true";
+        // Fade-in listeners for any newly cloned portraits
+        track.querySelectorAll('img.creator-portrait').forEach((img) => {
+          const mark = () => img.classList.add('is-loaded');
+          if (img.complete && img.naturalWidth > 0) mark();
+          else {
+            img.addEventListener('load', mark, { once: true });
+            img.addEventListener('error', mark, { once: true });
+          }
+        });
       }
 
       let scrollPos = 0;
-      let cardWidth = 0;
-      let gap = 0;
-      let step = 0;
-      let singleSetWidth = 0;
-      let numOriginalCards = 0;
+      let setWidth = 0;
       let lastTime = performance.now();
+      let rafId = 0;
+      let running = false;
+      let inView = false;
+      let lastMeasuredWidth = 0;
 
-      // Desktop ~2.7px/frame @ 60fps. Mobile is slower relative to wider cards.
-      const DESKTOP_PX_PER_SEC = 162;
+      const DESKTOP_PX_PER_SEC = 84;
+      const MOBILE_PX_PER_SEC = 63;
 
-      function isMobileViewport() {
+      function isMobile() {
         return window.innerWidth < 640;
       }
 
-      function speedPxPerSec() {
-        if (!isMobileViewport()) return DESKTOP_PX_PER_SEC;
-        // ~1.6s to cross one card (2x previous mobile glide)
-        return Math.max(96, step * 0.62);
+      function measure() {
+        const widthProbe = stage.clientWidth || window.innerWidth;
+        if (lastMeasuredWidth > 0 && Math.abs(widthProbe - lastMeasuredWidth) < 2) return;
+        lastMeasuredWidth = widthProbe;
+
+        const cards = track.children;
+        const half = Math.floor(cards.length / 2);
+        if (half < 1) return;
+
+        // Width of one original set = distance from card[0] to card[half]
+        const a = cards[0].offsetLeft;
+        const b = cards[half].offsetLeft;
+        setWidth = Math.max(1, b - a);
       }
 
-      function measureGeometry() {
-        const cards = track.querySelectorAll('.imax-card');
-        if (cards.length === 0) return;
-
-        numOriginalCards = cards.length / 3;
-        const firstCard = cards[0];
-        const secondCard = cards[1];
-
-        cardWidth = firstCard.offsetWidth;
-
-        // Calculate exact gap between items
-        if (secondCard) {
-          gap = secondCard.offsetLeft - (firstCard.offsetLeft + cardWidth);
-        } else {
-          gap = 32; // fallback
-        }
-
-        step = cardWidth + gap;
-        singleSetWidth = step * numOriginalCards;
+      function paint() {
+        track.style.transform = `translate3d(${(-scrollPos).toFixed(2)}px, 0, 0)`;
       }
 
-      measureGeometry();
-      window.addEventListener('resize', measureGeometry);
-      window.addEventListener('load', measureGeometry);
+      function tick(now) {
+        rafId = 0;
+        if (!running || !inView) return;
 
-      function animate(now) {
-        const dt = Math.min(0.05, (now - lastTime) / 1000); // clamp frame hitches
+        const dt = Math.min(0.05, (now - lastTime) / 1000);
         lastTime = now;
 
-        if (singleSetWidth > 0) {
-          scrollPos += speedPxPerSec() * dt;
-          if (scrollPos >= singleSetWidth) {
-            scrollPos %= singleSetWidth;
-          }
-
-          // GPU Accelerated Track Translation
-          track.style.transform = `translate3d(-${scrollPos}px, 0, 0)`;
-
-          // PURE MATH 3D CURVE (Zero getBoundingClientRect layout thrashing)
-          const stageWidth = stage.clientWidth || window.innerWidth;
-          const stageCenter = stageWidth / 2;
-          const cards = track.children;
-          const mobile = isMobileViewport();
-
-          // Softer mobile curve = less "pop" as each card hits center
-          const rotAmt = mobile ? -9 : -18;
-          const scaleAmt = mobile ? 0.045 : 0.1;
-          const zAmt = mobile ? 36 : 90;
-          const opacAmt = mobile ? 0.1 : 0.2;
-          const clampLimit = mobile ? 1.5 : 1.35;
-
-          for (let i = 0; i < cards.length; i++) {
-            const card = cards[i];
-
-            // Calculate card's exact X position relative to viewport center purely with math
-            const cardLeftOnStage = (i * step) - scrollPos;
-            const cardCenterOnStage = cardLeftOnStage + (cardWidth / 2);
-
-            const distFromCenter = (cardCenterOnStage - stageCenter) / (stageWidth / 2);
-            const clampedDist = Math.max(-clampLimit, Math.min(clampLimit, distFromCenter));
-
-            // Quadratic falloff through center avoids the sharp |x| kink that reads as a snap
-            const softAbs = clampedDist * clampedDist;
-
-            const rotateY = clampedDist * rotAmt;
-            const scale = 1 - softAbs * scaleAmt;
-            const translateZ = -softAbs * zAmt;
-            const opacity = 1 - softAbs * opacAmt;
-
-            card.style.transform = `rotateY(${rotateY}deg) translateZ(${translateZ}px) scale(${scale})`;
-            card.style.opacity = Math.max(mobile ? 0.55 : 0.45, opacity);
-          }
+        if (setWidth > 0) {
+          const speed = isMobile() ? MOBILE_PX_PER_SEC : DESKTOP_PX_PER_SEC;
+          scrollPos += speed * dt;
+          if (scrollPos >= setWidth) scrollPos -= setWidth;
+          paint();
         }
 
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(tick);
       }
 
-      requestAnimationFrame(animate);
+      function start() {
+        if (running) return;
+        running = true;
+        lastTime = performance.now();
+        if (!rafId) rafId = requestAnimationFrame(tick);
+      }
+
+      function stop() {
+        running = false;
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = 0;
+        }
+      }
+
+      measure();
+      paint();
+      window.addEventListener('resize', () => {
+        lastMeasuredWidth = 0;
+        measure();
+      }, { passive: true });
+      window.addEventListener('load', () => {
+        lastMeasuredWidth = 0;
+        measure();
+      });
+
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(
+          (entries) => {
+            inView = entries.some((e) => e.isIntersecting && e.intersectionRatio > 0);
+            if (inView) start();
+            else stop();
+          },
+          { threshold: [0, 0.15, 0.35], rootMargin: '0px' }
+        ).observe(stage);
+      } else {
+        inView = true;
+        start();
+      }
     })();
   </script>
 
