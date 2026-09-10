@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en-GB" class="bg-black font-sans overflow-x-clip">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Message received | Red Thread</title>
+  <link rel="icon" type="image/svg+xml" href="Content/Brand%20Logos/thread-icon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            terminalDark: '#1D1D1F',
+            appleGraphite: '#111113',
+            bentoDark: '#1D1D1F',
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #000000;
+      color: #ffffff;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
+      letter-spacing: -0.015em;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1 {
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
+      font-weight: 600;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      text-wrap: balance;
+    }
+
+    p {
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: -0.01em;
+    }
+
+    .home-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 24px;
+      background: transparent;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 0.75rem 1.35rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      text-decoration: none;
+      transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .home-pill:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .home-pill:active {
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body class="bg-black text-white antialiased">
+  <main class="min-h-screen min-h-[100dvh] w-full flex items-center justify-center px-6">
+    <div class="flex flex-col items-center text-center gap-3 sm:gap-3.5 max-w-md">
+      <h1 class="text-4xl sm:text-5xl md:text-6xl text-white">
+        Message received.
+      </h1>
+      <p class="text-base sm:text-lg text-neutral-400">
+        We will be in touch shortly.
+      </p>
+      <div class="pt-5 sm:pt-6">
+        <a href="index.html" class="home-pill">Return to home</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
