@@ -1,0 +1,1720 @@
+<!DOCTYPE html>
+<html lang="en-GB" class="bg-neutral-950 text-neutral-950 font-sans">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Tech | Red Thread</title>
+  <link rel="icon" type="image/svg+xml" href="Content/Brand%20Logos/thread-icon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        screens: {
+          'xs': '390px',
+          'sm': '640px',
+          'md': '768px',
+          'lg': '1024px',
+          'xl': '1280px',
+          '2xl': '1536px',
+        },
+        extend: {
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'Inter', 'sans-serif'],
+            mono: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'Inter', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    body, button, input, textarea, select {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", sans-serif;
+      letter-spacing: -0.015em;
+      -webkit-font-smoothing: antialiased;
+    }
+    html {
+      background-color: #0a0a0a !important;
+    }
+    body {
+      background-color: #0a0a0a !important;
+      color: #0a0a0a;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", sans-serif;
+      letter-spacing: -0.015em;
+      margin: 0;
+      padding: 0;
+      min-height: 0;
+    }
+    /* Keep section header lockups on the shared face */
+    h1, h2, h3, h4, #mainHeader {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", sans-serif;
+    }
+    /* Apple HIG line-spacing system */
+    h1, h2 {
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    h3, h4 {
+      line-height: 1.375; /* leading-snug */
+      letter-spacing: 0;
+    }
+    p, li, body {
+      line-height: 1.5; /* leading-relaxed */
+    }
+    #mainHeader .nav-link {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      line-height: normal;
+    }
+
+    @keyframes fluidGradientSweep {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .fluid-gradient-text {
+      background: linear-gradient(120deg, #FF0066 0%, #E00199 25%, #8B5CF6 50%, #E00199 75%, #FF0066 100%);
+      background-size: 250% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      animation: fluidGradientSweep 6s ease-in-out infinite;
+      display: inline-block;
+    }
+
+    @keyframes stackGradientSweep {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .animate-gradient {
+      animation: stackGradientSweep 5s ease-in-out infinite;
+    }
+
+    .threados-logo-mask {
+      display: block;
+      width: 3rem;
+      height: 3rem;
+      margin-bottom: 1rem;
+      flex-shrink: 0;
+      object-fit: contain;
+    }
+
+    #orbitCanvasStage {
+      position: relative;
+      width: min(100%, 720px);
+      aspect-ratio: 1 / 1;
+      max-height: min(72vh, 640px);
+      max-height: min(72dvh, 640px);
+      margin-inline: auto;
+    }
+
+    #orbitCanvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    /* Apple HIG dark bento material */
+    .bento-card {
+      will-change: transform;
+    }
+
+    #stackCarouselViewport {
+      width: 100%;
+    }
+
+    #stackCarouselTrack {
+      overscroll-behavior-x: contain;
+    }
+
+    /* Mobile / tablet: transform carousel (no nested overflow-x — Chrome was cancelling touch) */
+    @media (max-width: 768px) {
+      #engine-orbit {
+        overflow-x: visible !important;
+      }
+
+      #stackCarouselViewport {
+        overflow: hidden;
+        touch-action: pan-y;
+        padding: 8px 0 4px;
+      }
+
+      #stackCarouselTrack {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        gap: 16px;
+        width: max-content;
+        max-width: none !important;
+        margin-inline: 0 !important;
+        padding: 16px 0;
+        overflow: visible !important;
+        grid-template-columns: none !important;
+        will-change: transform;
+        transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      #stackCarouselTrack.is-dragging {
+        transition: none !important;
+        user-select: none;
+      }
+
+      #stackCarouselTrack > .bento-card {
+        flex: 0 0 82vw !important;
+        width: 82vw !important;
+        max-width: 82vw !important;
+        min-width: 82vw !important;
+        transform: none !important;
+      }
+    }
+
+    /* Desktop: static grid — no pin / horizontal scroll tween */
+    @media (min-width: 769px) {
+      #stackCarouselViewport {
+        overflow: visible;
+      }
+
+      #stackCarouselTrack {
+        transform: none !important;
+        transition: none !important;
+      }
+    }
+
+    @keyframes mesh-blob-drift {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(12%, -10%) scale(1.12); }
+      66% { transform: translate(-8%, 8%) scale(0.92); }
+    }
+    .mesh-blob {
+      will-change: transform;
+      animation: mesh-blob-drift 12s ease-in-out infinite;
+    }
+    .mesh-blob-b { animation-duration: 15s; animation-direction: reverse; }
+    .mesh-blob-c { animation-duration: 18s; animation-delay: -4s; }
+
+    p {
+      text-wrap: pretty;
+    }
+    h1, h2, h3, h4 {
+      text-wrap: balance;
+    }
+    .spring-pill {
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .spring-pill:active {
+      transform: scale(0.94);
+    }
+
+    /* ==========================================
+       MOBILE-ONLY ISOLATED OVERRIDES (< 768px)
+       Zero effect on desktop screen sizes
+       ========================================== */
+    @media (max-width: 767px) {
+      /* overflow-x: clip — hidden on ancestors breaks position:sticky on mobile */
+      html, body {
+        overflow-x: clip !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+      }
+
+      main,
+      #heroScrollPin {
+        overflow: visible !important;
+      }
+
+      /* Hero sticky track + pinned viewport */
+      #heroScrollPin {
+        height: 220vh !important; /* Gives touch-scrolling enough runway to render the 3D zoom */
+        position: relative !important;
+      }
+
+      #heroViewport {
+        position: sticky !important;
+        top: 0 !important;
+        height: 100dvh !important;
+        overflow: hidden !important;
+        z-index: 10 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+
+      /* Headline lock-up — absolute inside sticky viewport (scrolls with section) */
+      #heroHeadline {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        position: absolute !important;
+        inset: 0 !important;
+        height: 100% !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+        padding-left: 1.25rem !important;
+        padding-right: 1.25rem !important;
+        text-align: center !important;
+        transform-origin: center center !important;
+        max-width: none !important;
+        z-index: 30 !important;
+      }
+
+      #heroHeadline h1 {
+        font-size: 1.55rem !important;
+        line-height: 1.2 !important;
+        text-align: center !important;
+      }
+
+      #heroHeadline span {
+        white-space: normal !important;
+      }
+
+      /* Section 1.5 = single in-sticky #manifestoReveal (no duplicate DOM) */
+      #manifestoReveal {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        justify-content: center !important;
+        min-height: auto !important;
+        padding: 5rem 1.25rem !important;
+        overflow: visible !important;
+        opacity: 0; /* JS drives reveal during passthrough */
+      }
+
+      #manifestoReveal .grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 2rem !important;
+      }
+
+      #manifestoReveal .lg\:col-span-6:first-child {
+        width: 100% !important;
+        display: block !important;
+      }
+
+      #manifestoReveal h2 {
+        font-size: 2.1rem !important;
+        line-height: 1.15 !important;
+        text-align: left !important;
+      }
+
+      #manifestoReveal p {
+        font-size: 1rem !important;
+        line-height: 1.6 !important;
+      }
+    }
+
+    @media (min-width: 640px) and (max-width: 767px) {
+      #heroHeadline h1 {
+        font-size: 1.85rem !important;
+      }
+    }
+
+    /* After first play: lockup + manifesto become normal stacked sections (organic scroll) */
+    #heroScrollPin.hero-static-flow {
+      height: auto !important;
+    }
+    #heroScrollPin.hero-static-flow #heroViewport {
+      position: relative !important;
+      top: auto !important;
+      height: auto !important;
+      overflow: visible !important;
+      display: block !important;
+    }
+    #heroScrollPin.hero-static-flow #heroLockupPanel {
+      position: relative !important;
+      inset: auto !important;
+      /* Shorter than a full viewport so return-scroll isn't a long empty runway */
+      height: 72vh !important;
+      height: 72dvh !important;
+      width: 100% !important;
+      overflow: hidden !important;
+    }
+    #heroScrollPin.hero-static-flow #heroHeadline {
+      opacity: 1 !important;
+      filter: none !important;
+      transform: none !important;
+    }
+    #heroScrollPin.hero-static-flow #manifestoReveal {
+      position: relative !important;
+      inset: auto !important;
+      min-height: 0 !important;
+      height: auto !important;
+      opacity: 1 !important;
+      transform: none !important;
+      z-index: 1 !important;
+      /* Content-sized — no full-viewport spacer between lockup and orbit */
+      padding: 4.5rem 1.5rem 5.5rem !important;
+      display: flex !important;
+      align-items: center !important;
+    }
+
+    @media (min-width: 768px) {
+      #heroScrollPin.hero-static-flow #heroLockupPanel {
+        height: 78vh !important;
+        height: 78dvh !important;
+      }
+      #heroScrollPin.hero-static-flow #manifestoReveal {
+        padding: 5.5rem 3rem 6.5rem !important;
+      }
+    }
+
+  </style>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="font-sans bg-neutral-950 text-neutral-950 antialiased overflow-x-clip">
+
+  <!-- Razor-thin dynamic header (borderless) — under particles, above hero bg -->
+  <header id="mainHeader" class="fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-white/70 backdrop-blur-2xl backdrop-saturate-150 border-none text-neutral-900">
+    <nav class="relative max-w-7xl mx-auto px-3.5 sm:px-6 h-12 sm:h-14 flex items-center justify-between gap-2">
+      <a href="/" class="flex items-center shrink-0">
+        <img id="navLogo" src="logo-black.png" alt="Red Thread" class="h-3.5 sm:h-4 w-auto object-contain transition-opacity duration-300">
+      </a>
+
+      <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-7 text-[12px] font-normal tracking-[-0.01em] font-['SF_Pro_Text',-apple-system,BlinkMacSystemFont,'Helvetica_Neue',sans-serif]">
+        <a href="/tech" class="nav-link text-neutral-900/80 hover:text-black transition-colors" aria-current="page">Our Tech</a>
+        <a href="/#case-studies" class="nav-link text-neutral-900/80 hover:text-black transition-colors">Our Work</a>
+      </div>
+
+      <div class="flex items-center shrink-0">
+        <a id="navCtaMobile" href="/#contact-faq" class="sm:hidden flex items-center justify-center w-6 h-6 rounded-full bg-neutral-950 text-white transition-all" aria-label="Let's chat">
+          <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.2L4 17.2V4h16v12z"/>
+          </svg>
+        </a>
+        <a id="navCtaDesktop" href="/#contact-faq" class="hidden sm:inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-neutral-950 text-white font-bold text-[11px] hover:bg-neutral-800 transition-all">
+          Let's chat.
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="bg-white">
+
+    <!-- 1. HERO — sticky scrub first; after play, flattens to lockup + manifesto stack -->
+    <section id="heroScrollPin" data-theme="light" data-header-theme="light" class="h-[170vh] relative z-10 bg-white pointer-events-none">
+      <div id="heroViewport" class="sticky top-0 h-screen h-[100dvh] w-full overflow-hidden flex items-center justify-center bg-white">
+        <div id="heroLockupPanel" class="absolute inset-0 w-full h-full">
+          <canvas id="heroWaveformCanvas" class="absolute inset-0 w-full h-full pointer-events-none z-20 opacity-90" aria-hidden="true"></canvas>
+          <div id="heroHeadline" class="absolute inset-0 z-30 flex items-center justify-center pointer-events-none px-6 will-change-transform">
+            <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold text-neutral-950 tracking-tight leading-[1.15] text-center max-w-5xl">
+              <span class="block md:whitespace-nowrap mb-1 sm:mb-2">Data meets culture.</span>
+              <span class="block md:whitespace-nowrap">Software meets scale.</span>
+            </h1>
+          </div>
+        </div>
+        <!-- Manifesto appears THROUGH the particle field during first scrub -->
+        <div id="manifestoReveal" class="absolute inset-0 z-[1] flex items-center justify-center px-4 sm:px-8 pointer-events-none will-change-[opacity,transform]" style="opacity:0">
+          <div class="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            <!-- Left Column: Balanced 2-Line Title -->
+            <div class="lg:col-span-6">
+              <span class="text-xs font-medium tracking-wider text-neutral-400 mb-3 block">
+                Our technology stack
+              </span>
+              <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-neutral-900 leading-[1.1]">
+                Less guesswork.<br>
+                <span class="text-neutral-500">Measurable commercial impact.</span>
+              </h1>
+            </div>
+
+            <!-- Right Column: Matched Vertical Paragraph Block -->
+            <div class="lg:col-span-6 space-y-6">
+              <p class="text-base sm:text-lg text-neutral-600 leading-relaxed [text-wrap:pretty]">
+                We didn’t build technology to replace creator instinct; we built it to prove its value. We got frustrated watching global brands treat creator campaigns as chaotic, siloed tactics.
+              </p>
+              <p class="text-base sm:text-lg text-neutral-600 leading-relaxed [text-wrap:pretty]">
+                By combining predictive measurement with absolute operational precision, our software ensures creator marketing sits at the head table alongside traditional PR, media, and creative.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2b. ORBITAL ECOSYSTEM + PROPRIETARY STACK -->
+    <section id="engine-orbit" data-theme="dark" data-header-theme="dark" class="relative z-20 bg-black text-white py-20 sm:py-28 lg:py-32 overflow-x-clip">
+      <!-- Continuous particle field behind Orbit + Proprietary Stack -->
+      <canvas id="techBackgroundCanvas" class="absolute top-0 left-0 w-full pointer-events-none z-0 opacity-80" aria-hidden="true"></canvas>
+      <div class="relative z-10 w-full">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+          <div class="max-w-4xl mx-auto px-4 sm:px-8 text-center">
+            <span class="text-xs font-medium tracking-wider text-neutral-400 mb-4 block">
+              Proprietary software ecosystem
+            </span>
+            <h2 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-none">
+              ThreadOS™ &amp; Beyond.
+            </h2>
+            <p class="text-xl sm:text-3xl !font-medium mt-4 max-w-2xl mx-auto leading-snug [text-wrap:balance]">
+              <span class="text-neutral-400">Engineered for predictable performance.</span>
+            </p>
+          </div>
+
+          <!-- Pure synchronized hero orbit (no labels) -->
+          <div id="orbitCanvasStage" class="mt-12 sm:mt-16 relative">
+            <canvas id="orbitCanvas" aria-hidden="true"></canvas>
+          </div>
+        </div>
+
+        <!-- Apple-style bento: title gutter matches card 1; track full-bleeds so cards scroll to viewport edge -->
+        <div class="mt-20 sm:mt-28 w-full">
+          <div class="max-w-7xl mx-auto pl-4 sm:px-8">
+            <h3 class="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-8 pr-4 sm:pr-0">Our Proprietary Stack.</h3>
+          </div>
+
+          <div id="stackCarouselViewport" class="w-full">
+          <div id="stackCarouselTrack" class="flex gap-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden py-4 pl-4 pr-4 md:max-w-7xl md:mx-auto md:grid md:grid-cols-2 md:overflow-visible md:snap-none md:px-8 md:pr-8 md:gap-4 lg:grid-cols-4 lg:gap-5">
+
+            <!-- Fred AI — Electric Rose -->
+            <div class="bg-white/5 backdrop-blur-2xl backdrop-saturate-150 border border-white/10 hover:border-white/20 shadow-2xl transition-all duration-500 bento-card w-[85%] min-h-[560px] flex-shrink-0 snap-center md:w-full md:min-w-0 md:snap-align-none rounded-[28px] flex flex-col justify-between overflow-hidden hover:scale-[1.015]">
+              <div class="p-8 sm:p-10">
+                <i class="ph-light ph-cpu text-3xl sm:text-4xl text-white mb-4 block flex-shrink-0"></i>
+                <span class="text-xs font-semibold tracking-wider text-neutral-400 mb-3 block">01 | Fred AI</span>
+                <h4 class="text-xl sm:text-2xl font-bold text-white tracking-tight mb-3 leading-snug [text-wrap:balance]">Your context-aware campaign co-pilot.</h4>
+                <p class="text-sm text-neutral-400 leading-relaxed [text-wrap:pretty]">
+                  Custom-built to strip friction out of every brief. Fred AI acts as an active co-pilot designed to identify real-time performance bottlenecks and streamline complex workflows, driving absolute operational precision from casting to final payment.
+                </p>
+              </div>
+              <div class="h-48 relative flex items-center justify-center overflow-hidden w-full">
+                <canvas id="fredNeuralCanvas" class="absolute inset-0 w-full h-full block pointer-events-none" aria-hidden="true"></canvas>
+              </div>
+            </div>
+
+            <!-- ThreadOS — Hot Magenta -->
+            <div class="bg-white/5 backdrop-blur-2xl backdrop-saturate-150 border border-white/10 hover:border-white/20 shadow-2xl transition-all duration-500 bento-card w-[85%] min-h-[560px] flex-shrink-0 snap-center md:w-full md:min-w-0 md:snap-align-none rounded-[28px] flex flex-col justify-between overflow-hidden hover:scale-[1.015]">
+              <div class="p-8 sm:p-10">
+                <i class="ph-light ph-intersect text-3xl sm:text-4xl text-white mb-4 block flex-shrink-0"></i>
+                <span class="text-xs font-semibold tracking-wider text-neutral-400 mb-3 block">02 | ThreadOS™</span>
+                <h4 class="text-xl sm:text-2xl font-bold text-white tracking-tight mb-3 leading-snug [text-wrap:balance]">End-to-end campaign management.</h4>
+                <p class="text-sm text-neutral-400 leading-relaxed [text-wrap:pretty]">
+                  Our proprietary platform, built from the ground up and tested daily on live briefs across global markets and verticals. Manages shortlisting, vetting, contracting, negotiations, content approvals, and real-time reporting in one system.
+                </p>
+              </div>
+              <div class="h-48 relative flex items-center justify-center overflow-hidden w-full"><div class="absolute w-[80%] h-24 bg-white/5 backdrop-blur-md rounded-xl border border-white/20 shadow-2xl -translate-x-4 -translate-y-2"></div><div class="absolute w-[65%] h-20 bg-white/10 backdrop-blur-2xl rounded-lg border border-white/30 translate-x-8 translate-y-6 flex items-start p-4"><div class="flex gap-1.5"><div class="w-1.5 h-1.5 rounded-full bg-white/20"></div><div class="w-1.5 h-1.5 rounded-full bg-white/20"></div></div></div></div>
+            </div>
+
+            <!-- Attention Engine — Vivid Fuchsia -->
+            <div class="bg-white/5 backdrop-blur-2xl backdrop-saturate-150 border border-white/10 hover:border-white/20 shadow-2xl transition-all duration-500 bento-card w-[85%] min-h-[560px] flex-shrink-0 snap-center md:w-full md:min-w-0 md:snap-align-none rounded-[28px] flex flex-col justify-between overflow-hidden hover:scale-[1.015]">
+              <div class="p-8 sm:p-10">
+                <i class="ph-light ph-waveform text-3xl sm:text-4xl text-white mb-4 block flex-shrink-0"></i>
+                <span class="text-xs font-semibold tracking-wider text-neutral-400 mb-3 block">03 | Attention Engine™</span>
+                <h4 class="text-xl sm:text-2xl font-bold text-white tracking-tight mb-3 leading-snug [text-wrap:balance]">Predictive media modelling.</h4>
+                <p class="text-sm text-neutral-400 leading-relaxed [text-wrap:pretty]">
+                  Our proprietary forecasting tool built to remove the guesswork. By mapping subcultures and analysing historical data, it accurately forecasts campaign benchmarks before a contract is signed, ensuring creator activity drives real commercial impact.
+                </p>
+              </div>
+              <div class="h-48 relative flex items-end justify-center w-full overflow-hidden px-6 pb-6"><canvas id="animatedTrendCanvas" class="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true"></canvas></div>
+            </div>
+
+            <!-- Continuous Optimisation — Electric Purple -->
+            <div class="bg-white/5 backdrop-blur-2xl backdrop-saturate-150 border border-white/10 hover:border-white/20 shadow-2xl transition-all duration-500 bento-card w-[85%] min-h-[560px] flex-shrink-0 snap-center md:w-full md:min-w-0 md:snap-align-none rounded-[28px] flex flex-col justify-between overflow-hidden hover:scale-[1.015]">
+              <div class="p-8 sm:p-10">
+                <i class="ph-light ph-arrows-clockwise text-3xl sm:text-4xl text-white mb-4 block flex-shrink-0"></i>
+                <span class="text-xs font-semibold tracking-wider text-neutral-400 mb-3 block">04 | Continuous Optimisation</span>
+                <h4 class="text-xl sm:text-2xl font-bold text-white tracking-tight mb-3 leading-snug [text-wrap:balance]">Smarter with every campaign.</h4>
+                <p class="text-sm text-neutral-400 leading-relaxed [text-wrap:pretty]">
+                  We get smarter the longer we work together. Continuous feedback loops refine our strategy on every brief, ensuring we deliver better results and a smoother experience for creators, our team, and client partners.
+                </p>
+              </div>
+              <div class="h-48 relative flex items-center justify-center overflow-hidden w-full"><div class="absolute w-24 h-24 rounded-full border-[1px] border-white/10 border-t-white/60 border-r-white/60 animate-[spin_4s_linear_infinite]"></div><div class="absolute w-16 h-16 rounded-full border-[1px] border-white/10 border-b-white/50 animate-[spin_3s_linear_infinite_reverse]"></div><div class="absolute w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,1)]"></div></div>
+            </div>
+
+          </div>
+          </div>
+
+            <div class="mt-6 pr-4 pl-4 max-w-7xl mx-auto flex items-center justify-end gap-3 md:hidden">
+              <button id="prevStackBtn" type="button" aria-label="Previous" class="w-11 h-11 rounded-full border border-white/10 bg-neutral-900 text-white flex items-center justify-center hover:bg-neutral-800 transition-all shadow-md">&larr;</button>
+              <button id="nextStackBtn" type="button" aria-label="Next" class="w-11 h-11 rounded-full border border-white/10 bg-neutral-900 text-white flex items-center justify-center hover:bg-neutral-800 transition-all shadow-md">&rarr;</button>
+            </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Apple Keynote Closing CTA -->
+    <section id="closing-cta" data-theme="light" data-header-theme="light" class="w-full bg-white py-24 sm:py-32 relative text-center border-t border-neutral-200 overflow-hidden z-20">
+      <div class="max-w-4xl mx-auto px-4 sm:px-8 relative z-10">
+        <span class="text-xs font-medium tracking-wider text-neutral-400 mb-4 block">
+          Next-gen influencer marketing
+        </span>
+
+        <h2 class="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-neutral-900 leading-tight [text-wrap:balance]">
+          Ready to scale with software,<br>
+          <span class="fluid-gradient-text">not spreadsheets?</span>
+        </h2>
+
+        <p class="text-base sm:text-lg text-neutral-600 max-w-xl mx-auto mt-4 mb-8 leading-relaxed [text-wrap:pretty]">
+          Get in touch to see how ThreadOS™ and Fred AI transform how global brands run creator campaigns.
+        </p>
+
+        <a href="/#contact-faq"
+           class="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-neutral-950 text-white text-sm font-semibold hover:bg-neutral-800 transition-all duration-300 shadow-lg group">
+          <span>Get in touch</span>
+          <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+          </svg>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Light footer — continuous with white CTA above -->
+  <footer data-header-theme="light" class="bg-white border-t border-neutral-200/80 py-12 px-4 sm:px-8 text-neutral-600 text-xs w-full relative z-20">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+        <div class="flex flex-col items-start gap-3 ml-0 pl-0">
+          <img src="logo-black.png" alt="Red Thread" class="h-8 w-auto object-contain block ml-0" loading="lazy" decoding="async" />
+          <p class="text-neutral-500">&copy; 2026 Red Thread Agency Ltd. All rights reserved.</p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-6 text-neutral-600 pb-1">
+          <a href="/tech" class="text-neutral-600 hover:text-black transition-colors" aria-current="page">Our Tech</a>
+          <a href="/privacy" class="text-neutral-600 hover:text-black transition-colors">Privacy policy</a>
+          <a href="/terms" class="text-neutral-600 hover:text-black transition-colors">Terms of service</a>
+          <div class="flex items-center gap-4">
+            <a
+              href="https://www.linkedin.com/company/redthreadagency"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Red Thread on LinkedIn"
+              class="text-neutral-600 hover:text-black transition-colors"
+            >
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+              </svg>
+            </a>
+            <a
+              href="https://www.instagram.com/red_thread_agency/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Red Thread on Instagram"
+              class="text-neutral-600 hover:text-black transition-colors"
+            >
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function initPureHeroOrbit() {
+      const canvas = document.getElementById('orbitCanvas');
+      const stage = document.getElementById('orbitCanvasStage');
+      if (!canvas || !stage) return;
+      const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
+      if (!ctx) return;
+
+      let w = 0;
+      let h = 0;
+      let cx = 0;
+      let cy = 0;
+      let dpr = 1;
+      let syncAngle = 0;
+      let running = false;
+      let animationFrameId = 0;
+
+      const particleCount = 600;
+      const particles = [];
+      const colors = ['#e11d48', '#c026d3', '#ec4899', '#8b5cf6', '#ffffff'];
+
+      function initParticles() {
+        particles.length = 0;
+        const maxRadius = Math.min(w, h) * 0.42;
+
+        for (let i = 0; i < particleCount; i++) {
+          const band = Math.pow(Math.random(), 0.8);
+          const radius = 25 + band * maxRadius;
+          const angle = Math.random() * Math.PI * 2;
+          const speed = (0.002 + (1 - radius / maxRadius) * 0.003);
+          const size = Math.random() < 0.15 ? Math.random() * 2 + 1.2 : Math.random() * 1.2 + 0.4;
+          const alpha = Math.random() * 0.5 + 0.2;
+          const color = colors[Math.floor(Math.random() * colors.length)];
+
+          particles.push({ radius, angle, speed, size, alpha, color });
+        }
+      }
+
+      function resize() {
+        const rect = stage.getBoundingClientRect();
+        const nextW = Math.max(1, Math.round(rect.width || canvas.offsetWidth));
+        const nextH = Math.max(1, Math.round(rect.height || canvas.offsetHeight));
+        // ignoreMobileResize: skip thrash when mobile browser chrome shows/hides
+        if (w > 0 && Math.abs(nextW - w) < 2 && Math.abs(nextH - h) < 48) return;
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        w = nextW;
+        h = nextH;
+        cx = w / 2;
+        cy = h / 2;
+        canvas.width = Math.round(w * dpr);
+        canvas.height = Math.round(h * dpr);
+        canvas.style.width = w + 'px';
+        canvas.style.height = h + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        initParticles();
+      }
+
+      function draw() {
+        if (!w || !h) {
+          running = false;
+          return;
+        }
+
+        ctx.clearRect(0, 0, w, h);
+
+        // Single locked velocity for all 4 hero nodes
+        syncAngle += 0.006;
+
+        const maxR = Math.min(w, h) * 0.38;
+        const rings = [maxR * 0.35, maxR * 0.58, maxR * 0.8, maxR * 1.0];
+
+        // Soft core glow
+        const coreGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxR * 0.22);
+        coreGrad.addColorStop(0, 'rgba(225,29,72,0.2)');
+        coreGrad.addColorStop(0.55, 'rgba(192,38,211,0.1)');
+        coreGrad.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = coreGrad;
+        ctx.beginPath();
+        ctx.arc(cx, cy, maxR * 0.22, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 1. Concentric Wireframe Orbit Rings
+        rings.forEach((r, idx) => {
+          ctx.beginPath();
+          ctx.arc(cx, cy, r, 0, Math.PI * 2);
+          ctx.strokeStyle = 'rgba(255, 255, 255, ' + (0.06 + idx * 0.02) + ')';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        });
+
+        // 2. Swarm Particles
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          p.angle += p.speed;
+          const px = cx + Math.cos(p.angle) * p.radius;
+          const py = cy + Math.sin(p.angle) * p.radius;
+
+          ctx.beginPath();
+          ctx.arc(px, py, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = p.alpha;
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1.0;
+
+        // 3. 4 Larger Synchronized Hero Particles (Locked Orbit Period)
+        const heroColors = ['#e11d48', '#c026d3', '#ec4899', '#8b5cf6'];
+
+        rings.forEach((r, idx) => {
+          // Locked 90-degree quarter shifts
+          const angle = syncAngle + (idx * (Math.PI / 2));
+          const nx = cx + Math.cos(angle) * r;
+          const ny = cy + Math.sin(angle) * r;
+
+          ctx.beginPath();
+          ctx.arc(nx, ny, 7, 0, Math.PI * 2);
+          ctx.fillStyle = heroColors[idx];
+          ctx.shadowColor = heroColors[idx];
+          ctx.shadowBlur = 18;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        });
+
+        animationFrameId = requestAnimationFrame(draw);
+      }
+
+      function stop() {
+        running = false;
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = 0;
+        }
+      }
+
+      function ensureRunning() {
+        resize();
+        if (!running) {
+          running = true;
+          animationFrameId = requestAnimationFrame(draw);
+        }
+      }
+
+      window.addEventListener('resize', ensureRunning, { passive: true });
+      if (typeof ResizeObserver !== 'undefined') {
+        new ResizeObserver(ensureRunning).observe(stage);
+      }
+      if (typeof IntersectionObserver !== 'undefined') {
+        new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) ensureRunning();
+            else stop();
+          });
+        }, { threshold: 0.05 }).observe(stage);
+      }
+
+      ensureRunning();
+    })();
+
+    (function initTechBackgroundField() {
+      const section = document.getElementById('engine-orbit');
+      const canvas = document.getElementById('techBackgroundCanvas');
+      if (!section || !canvas) return;
+      const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
+      if (!ctx) return;
+
+      let w = 0;
+      let h = 0;
+      let dpr = 1;
+      let running = false;
+      let rafId = 0;
+      const particles = [];
+      // Match orbit hero particle palette (rose / fuchsia / magenta / purple)
+      const colors = ['#e11d48', '#c026d3', '#ec4899', '#8b5cf6'];
+
+      function particleBudget() {
+        const area = Math.max(1, w * h);
+        return Math.min(264, Math.max(108, Math.round((area / 14000) * 1.2)));
+      }
+
+      function initParticles() {
+        const count = particleBudget();
+        particles.length = 0;
+        for (let i = 0; i < count; i++) {
+          particles.push({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            vx: (Math.random() - 0.5) * 0.22,
+            vy: -0.08 - Math.random() * 0.18,
+            size: Math.random() * 1.6 + 0.4,
+            alpha: 0.12 + Math.random() * 0.28,
+            color: colors[Math.floor(Math.random() * colors.length)]
+          });
+        }
+      }
+
+      function resize() {
+        const cssW = Math.max(1, Math.round(section.clientWidth || section.offsetWidth));
+        const cssH = Math.max(1, Math.round(section.scrollHeight || section.offsetHeight));
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        w = cssW;
+        h = cssH;
+        canvas.width = Math.round(cssW * dpr);
+        canvas.height = Math.round(cssH * dpr);
+        canvas.style.width = cssW + 'px';
+        canvas.style.height = cssH + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        initParticles();
+      }
+
+      function draw() {
+        if (!running || !w || !h) return;
+        ctx.clearRect(0, 0, w, h);
+
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+
+          if (p.y < -8) {
+            p.y = h + 8;
+            p.x = Math.random() * w;
+          } else if (p.y > h + 8) {
+            p.y = -8;
+            p.x = Math.random() * w;
+          }
+          if (p.x < -8) p.x = w + 8;
+          else if (p.x > w + 8) p.x = -8;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = p.alpha;
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+
+        rafId = requestAnimationFrame(draw);
+      }
+
+      function stop() {
+        running = false;
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = 0;
+        }
+      }
+
+      function ensureRunning() {
+        resize();
+        if (!running) {
+          running = true;
+          rafId = requestAnimationFrame(draw);
+        }
+      }
+
+      window.addEventListener('resize', ensureRunning, { passive: true });
+      if (typeof ResizeObserver !== 'undefined') {
+        new ResizeObserver(ensureRunning).observe(section);
+      }
+      if (typeof IntersectionObserver !== 'undefined') {
+        new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) ensureRunning();
+            else stop();
+          });
+        }, { threshold: 0.02 }).observe(section);
+      }
+
+      ensureRunning();
+    })();
+
+    (function initStackCarouselPhysics() {
+      const viewport = document.getElementById('stackCarouselViewport');
+      const track = document.getElementById('stackCarouselTrack');
+      const prevBtn = document.getElementById('prevStackBtn');
+      const nextBtn = document.getElementById('nextStackBtn');
+      if (!viewport || !track) return;
+
+      // Mobile: transform carousel (touch + arrows). Desktop: CSS grid only.
+      const mqMobile = window.matchMedia('(max-width: 768px)');
+      const GAP = 16;
+      const EDGE_PAD = 20;
+
+      let index = 0;
+      let dragX = 0;
+      let startX = 0;
+      let startY = 0;
+      let axis = null; // null | 'x' | 'y'
+      let active = false;
+      let dragging = false;
+
+      function cards() {
+        return Array.from(track.querySelectorAll(':scope > .bento-card'));
+      }
+
+      function stepWidth() {
+        const list = cards();
+        if (!list.length) return viewport.clientWidth;
+        return list[0].offsetWidth + GAP;
+      }
+
+      function maxIndex() {
+        return Math.max(0, cards().length - 1);
+      }
+
+      function offsetFor(i, extraDx) {
+        return EDGE_PAD - (i * stepWidth()) + (extraDx || 0);
+      }
+
+      function paint(extraDx, animate) {
+        if (!mqMobile.matches) {
+          track.style.transform = '';
+          track.classList.remove('is-dragging');
+          return;
+        }
+        if (animate === false) track.classList.add('is-dragging');
+        else track.classList.remove('is-dragging');
+        track.style.transform = `translate3d(${offsetFor(index, extraDx || 0)}px, 0, 0)`;
+      }
+
+      function goTo(next, animate) {
+        index = Math.max(0, Math.min(maxIndex(), next));
+        paint(0, animate !== false);
+        updateArrowStates();
+      }
+
+      function updateArrowStates() {
+        if (!mqMobile.matches) {
+          if (prevBtn) {
+            prevBtn.style.opacity = '0';
+            prevBtn.style.pointerEvents = 'none';
+          }
+          if (nextBtn) {
+            nextBtn.style.opacity = '0';
+            nextBtn.style.pointerEvents = 'none';
+          }
+          return;
+        }
+        if (prevBtn) {
+          prevBtn.style.opacity = index <= 0 ? '0.3' : '1';
+          prevBtn.style.pointerEvents = index <= 0 ? 'none' : 'auto';
+        }
+        if (nextBtn) {
+          nextBtn.style.opacity = index >= maxIndex() ? '0.3' : '1';
+          nextBtn.style.pointerEvents = index >= maxIndex() ? 'none' : 'auto';
+        }
+      }
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+          if (!mqMobile.matches) return;
+          goTo(index - 1, true);
+        });
+      }
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          if (!mqMobile.matches) return;
+          goTo(index + 1, true);
+        });
+      }
+
+      function onStart(clientX, clientY) {
+        if (!mqMobile.matches) return;
+        active = true;
+        dragging = false;
+        axis = null;
+        startX = clientX;
+        startY = clientY;
+        dragX = 0;
+      }
+
+      function onMove(clientX, clientY, event) {
+        if (!active || !mqMobile.matches) return;
+        const dx = clientX - startX;
+        const dy = clientY - startY;
+
+        if (!axis) {
+          if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
+          axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+          if (axis === 'y') {
+            // Vertical page scroll — abandon horizontal gesture
+            active = false;
+            return;
+          }
+          dragging = true;
+        }
+
+        if (axis !== 'x') return;
+        if (event) event.preventDefault();
+        dragX = dx;
+        // Rubber-band slightly past ends
+        if ((index === 0 && dx > 0) || (index === maxIndex() && dx < 0)) {
+          dragX = dx * 0.35;
+        }
+        paint(dragX, false);
+      }
+
+      function onEnd() {
+        if (!active) return;
+        active = false;
+        if (!dragging || axis !== 'x') {
+          dragging = false;
+          axis = null;
+          return;
+        }
+        const threshold = Math.min(72, stepWidth() * 0.22);
+        let next = index;
+        if (dragX <= -threshold) next = index + 1;
+        else if (dragX >= threshold) next = index - 1;
+        dragging = false;
+        axis = null;
+        dragX = 0;
+        goTo(next, true);
+      }
+
+      // Touch events are more reliable than pointer on Chrome Android for this pattern
+      viewport.addEventListener('touchstart', (e) => {
+        if (e.touches.length !== 1) return;
+        onStart(e.touches[0].clientX, e.touches[0].clientY);
+      }, { passive: true });
+
+      viewport.addEventListener('touchmove', (e) => {
+        if (e.touches.length !== 1) return;
+        onMove(e.touches[0].clientX, e.touches[0].clientY, e);
+      }, { passive: false });
+
+      viewport.addEventListener('touchend', onEnd, { passive: true });
+      viewport.addEventListener('touchcancel', () => {
+        active = false;
+        dragging = false;
+        axis = null;
+        dragX = 0;
+        paint(0, true);
+        updateArrowStates();
+      }, { passive: true });
+
+      // Mouse drag for DevTools device mode
+      viewport.addEventListener('pointerdown', (e) => {
+        if (!mqMobile.matches || e.pointerType === 'touch' || e.button !== 0) return;
+        onStart(e.clientX, e.clientY);
+        viewport.setPointerCapture(e.pointerId);
+      });
+      viewport.addEventListener('pointermove', (e) => {
+        if (!mqMobile.matches || e.pointerType === 'touch' || !active) return;
+        onMove(e.clientX, e.clientY, e);
+      });
+      viewport.addEventListener('pointerup', (e) => {
+        if (e.pointerType === 'touch') return;
+        onEnd();
+      });
+      viewport.addEventListener('pointercancel', (e) => {
+        if (e.pointerType === 'touch') return;
+        active = false;
+        dragging = false;
+        axis = null;
+        dragX = 0;
+        paint(0, true);
+      });
+
+      function syncLayout() {
+        if (!mqMobile.matches) {
+          index = 0;
+          track.style.transform = '';
+          track.classList.remove('is-dragging');
+        } else {
+          paint(0, false);
+          // Force a frame then animate-ready state
+          requestAnimationFrame(() => paint(0, true));
+        }
+        updateArrowStates();
+      }
+
+      window.addEventListener('resize', syncLayout, { passive: true });
+      if (mqMobile.addEventListener) mqMobile.addEventListener('change', syncLayout);
+      else if (mqMobile.addListener) mqMobile.addListener(syncLayout);
+      window.addEventListener('load', syncLayout);
+      syncLayout();
+    })();
+
+    (function initStaticRoseNeuralNet() {
+      const canvas = document.getElementById('fredNeuralCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      let w = 0;
+      let h = 0;
+      let nodes = [];
+      let rafId = 0;
+      let running = false;
+      const nodeCount = 22;
+
+      function initNodes() {
+        nodes = [];
+        for (let i = 0; i < nodeCount; i++) {
+          nodes.push({
+            x: (0.1 + Math.random() * 0.8) * w,
+            y: (0.1 + Math.random() * 0.8) * h,
+            radius: Math.random() * 2 + 1.5,
+            phase: Math.random() * Math.PI * 2,
+            pulseSpeed: 0.02 + Math.random() * 0.03
+          });
+        }
+      }
+
+      function resize() {
+        const rect = canvas.getBoundingClientRect();
+        const cssW = Math.max(1, Math.round(rect.width || canvas.offsetWidth));
+        const cssH = Math.max(1, Math.round(rect.height || canvas.offsetHeight));
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.round(cssW * dpr);
+        canvas.height = Math.round(cssH * dpr);
+        canvas.style.width = cssW + 'px';
+        canvas.style.height = cssH + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        w = cssW;
+        h = cssH;
+        initNodes();
+      }
+
+      function draw() {
+        if (!running) return;
+        ctx.clearRect(0, 0, w, h);
+
+        // Fixed strands with electric-rose light pulses (nodes never move)
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+            const dist = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
+            if (dist < 110) {
+              const pulse = (Math.sin(nodes[i].phase + dist * 0.02) + 1) / 2;
+              ctx.beginPath();
+              ctx.moveTo(nodes[i].x, nodes[i].y);
+              ctx.lineTo(nodes[j].x, nodes[j].y);
+              ctx.strokeStyle = 'rgba(255, 255, 255, ' + (0.05 + pulse * 0.15) + ')';
+              ctx.lineWidth = 0.8 + pulse * 0.6;
+              ctx.stroke();
+            }
+          }
+        }
+
+        // Static nodes with rose glow pulses only
+        nodes.forEach((node) => {
+          node.phase += node.pulseSpeed;
+          const glow = (Math.sin(node.phase) + 1) / 2;
+
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, node.radius + glow * 1.2, 0, Math.PI * 2);
+          ctx.fillStyle = glow > 0.6 ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.3)';
+          ctx.shadowColor = 'rgba(255, 255, 255, 0.4)';
+          ctx.shadowBlur = glow * 12;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+
+          // Occasional brighter core spark
+          if (glow > 0.85) {
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, node.radius * 0.45, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+          }
+        });
+
+        rafId = requestAnimationFrame(draw);
+      }
+
+      function start() {
+        resize();
+        if (!running) {
+          running = true;
+          rafId = requestAnimationFrame(draw);
+        }
+      }
+
+      function stop() {
+        running = false;
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = 0;
+        }
+      }
+
+      window.addEventListener('resize', resize);
+      if (typeof IntersectionObserver !== 'undefined') {
+        new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) start();
+            else stop();
+          });
+        }, { threshold: 0.05 }).observe(canvas);
+      } else {
+        start();
+      }
+      start();
+    })();
+
+    (function initHeroPinnedScroll() {
+      const pinTrack = document.getElementById('heroScrollPin');
+      const heroViewport = document.getElementById('heroViewport');
+      const heroLockupPanel = document.getElementById('heroLockupPanel');
+      const heroHeadline = document.getElementById('heroHeadline');
+      const waveCanvas = document.getElementById('heroWaveformCanvas');
+      const manifestoReveal = document.getElementById('manifestoReveal');
+      const mqMobile = window.matchMedia('(max-width: 767px)');
+
+      let targetProgress = 0;
+      let currentProgress = 0;
+      let heroPlayedOnce = false;
+      let heroStaticFlow = false;
+      let lastRawProgress = 0;
+      let time = 0;
+      let width = 0;
+      let height = 0;
+      let running = false;
+      let rafId = 0;
+
+      function readScrollProgress() {
+        if (!pinTrack || heroStaticFlow) return 0;
+        const rect = pinTrack.getBoundingClientRect();
+        if (mqMobile.matches) {
+          const scrollableDistance = pinTrack.offsetHeight - window.innerHeight;
+          if (scrollableDistance <= 0) return 0;
+          return Math.min(1, Math.max(0, (-rect.top) / scrollableDistance));
+        }
+        const viewH = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+        const maxScroll = pinTrack.offsetHeight - viewH;
+        if (maxScroll <= 0) return 0;
+        return Math.min(1, Math.max(0, (-rect.top) / maxScroll));
+      }
+
+      function applyStaticLayout() {
+        pinTrack.style.overflowAnchor = 'none';
+        if (document.documentElement) document.documentElement.style.overflowAnchor = 'none';
+        pinTrack.classList.add('hero-static-flow');
+        pinTrack.style.setProperty('height', 'auto', 'important');
+        if (heroViewport) {
+          heroViewport.style.position = 'relative';
+          heroViewport.style.height = 'auto';
+          heroViewport.style.overflow = 'visible';
+          heroViewport.style.display = 'block';
+        }
+        if (heroLockupPanel) {
+          heroLockupPanel.style.position = 'relative';
+          heroLockupPanel.style.inset = 'auto';
+          heroLockupPanel.style.height = '';
+          heroLockupPanel.style.overflow = 'hidden';
+        }
+        if (heroHeadline) {
+          heroHeadline.style.transform = 'scale(1) translateZ(0)';
+          heroHeadline.style.filter = 'blur(0px)';
+          heroHeadline.style.opacity = '1';
+        }
+        if (manifestoReveal) {
+          manifestoReveal.style.position = 'relative';
+          manifestoReveal.style.inset = 'auto';
+          manifestoReveal.style.opacity = '1';
+          manifestoReveal.style.transform = 'none';
+          manifestoReveal.style.minHeight = '';
+          manifestoReveal.style.height = 'auto';
+        }
+      }
+
+      // Flatten sticky scrub → stacked lockup + manifesto.
+      // mode: 'offscreen' (user already in orbit) | 'onscreen' (scrolling back up to lockup)
+      function finalizeHeroToStaticFlow(mode) {
+        if (heroStaticFlow || !pinTrack || !manifestoReveal) return;
+        heroStaticFlow = true;
+        heroPlayedOnce = true;
+
+        const orbit = document.getElementById('engine-orbit');
+        const useOffscreen = mode === 'offscreen' ||
+          (pinTrack.getBoundingClientRect().bottom <= 0);
+
+        if (useOffscreen) {
+          // Convert while the pin is fully above the viewport — anchor orbit so
+          // shrinking the runway doesn't yank section 3.
+          const anchorBefore = orbit ? orbit.getBoundingClientRect().top : 0;
+          if (waveCanvas) waveCanvas.style.visibility = 'hidden';
+          applyStaticLayout();
+          if (orbit) {
+            const anchorAfter = orbit.getBoundingClientRect().top;
+            const delta = anchorAfter - anchorBefore;
+            if (Math.abs(delta) > 0.5) window.scrollBy(0, delta);
+          }
+        } else {
+          // Convert while manifesto is still on screen (user scrolling up).
+          const manifestoBefore = manifestoReveal.getBoundingClientRect().top;
+          const orbitBefore = orbit ? orbit.getBoundingClientRect().top : 0;
+          if (waveCanvas) waveCanvas.style.visibility = 'hidden';
+          applyStaticLayout();
+
+          const manifestoAfter = manifestoReveal.getBoundingClientRect().top;
+          const mDelta = manifestoAfter - manifestoBefore;
+          if (Math.abs(mDelta) > 0.5) window.scrollBy(0, mDelta);
+
+          if (orbit) {
+            const orbitAfter = orbit.getBoundingClientRect().top;
+            const orbitGap = orbitBefore - orbitAfter;
+            if (orbitGap > 1) {
+              let spacer = document.getElementById('heroOrbitSpacer');
+              if (!spacer) {
+                spacer = document.createElement('div');
+                spacer.id = 'heroOrbitSpacer';
+                spacer.setAttribute('aria-hidden', 'true');
+                spacer.style.cssText = 'width:100%;margin:0;padding:0;pointer-events:none;';
+                pinTrack.appendChild(spacer);
+              }
+              spacer.style.height = Math.round(orbitGap) + 'px';
+            }
+          }
+        }
+
+        targetProgress = 0;
+        currentProgress = 0;
+        resizeCanvas();
+        requestAnimationFrame(function () {
+          if (waveCanvas) waveCanvas.style.visibility = 'visible';
+        });
+      }
+
+      function updateTargetProgress() {
+        if (heroStaticFlow) return;
+
+        const raw = readScrollProgress();
+
+        if (!heroPlayedOnce) {
+          targetProgress = raw;
+          if (raw >= 0.92) {
+            heroPlayedOnce = true;
+            targetProgress = 1;
+            currentProgress = 1;
+          }
+          lastRawProgress = raw;
+          return;
+        }
+
+        // First play done: keep sticky manifesto locked — do NOT flatten yet.
+        // Flattening mid-view is what yanked orbit into place.
+        targetProgress = 1;
+        currentProgress = 1;
+
+        // Only flatten when the user starts scrolling back up toward the lockup.
+        if (raw < lastRawProgress - 0.02 && raw < 0.97) {
+          finalizeHeroToStaticFlow('onscreen');
+        }
+        lastRawProgress = raw;
+      }
+
+      window.addEventListener('scroll', updateTargetProgress, { passive: true });
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', updateTargetProgress, { passive: true });
+      }
+      window.addEventListener('resize', updateTargetProgress, { passive: true });
+      updateTargetProgress();
+
+      const ctx = waveCanvas ? waveCanvas.getContext('2d', { alpha: true, desynchronized: true }) : null;
+
+      const numParticles = mqMobile.matches ? 900 : 1600;
+      const particles = [];
+      const colors = [
+        { r: 255, g: 0, b: 102 },
+        { r: 224, g: 0, b: 153 },
+        { r: 192, g: 0, b: 255 },
+        { r: 99, g: 102, b: 241 }
+      ];
+
+      for (let i = 0; i < numParticles; i++) {
+        const mobileAmp = mqMobile.matches;
+        particles.push({
+          xRatio: Math.random(),
+          waveOffset: Math.random() * Math.PI * 2,
+          speed: 0.006 + Math.random() * 0.012,
+          amplitude: mobileAmp ? (70 + Math.random() * 120) : (120 + Math.random() * 220),
+          size: mobileAmp ? (1.6 + Math.random() * 3.2) : (2.2 + Math.random() * 4.2),
+          yDrift: (Math.random() - 0.5) * (mobileAmp ? 40 : 60)
+        });
+      }
+
+      function resizeCanvas() {
+        if (!waveCanvas) return false;
+        const bounds = (heroStaticFlow && heroLockupPanel)
+          ? heroLockupPanel.getBoundingClientRect()
+          : { width: window.innerWidth, height: window.innerHeight };
+        const cssW = Math.max(1, Math.round(bounds.width));
+        const cssH = Math.max(1, Math.round(bounds.height));
+        if (cssW < 2 || cssH < 2) {
+          width = 0;
+          height = 0;
+          return false;
+        }
+        if (mqMobile.matches) {
+          const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+          width = waveCanvas.width = Math.round(cssW * dpr);
+          height = waveCanvas.height = Math.round(cssH * dpr);
+        } else {
+          width = waveCanvas.width = Math.round(cssW * 2);
+          height = waveCanvas.height = Math.round(cssH * 2);
+        }
+        waveCanvas.style.width = cssW + 'px';
+        waveCanvas.style.height = cssH + 'px';
+        return true;
+      }
+
+      function setHeroOverlayVisible(visible) {
+        const v = visible ? 'visible' : 'hidden';
+        if (waveCanvas) waveCanvas.style.visibility = v;
+        if (heroHeadline) heroHeadline.style.visibility = v;
+      }
+
+      function renderHero() {
+        const isMobile = window.innerWidth < 768;
+        const mobile = mqMobile.matches;
+
+        if (heroStaticFlow) {
+          currentProgress = 0;
+        } else if (heroPlayedOnce) {
+          currentProgress = 1;
+          targetProgress = 1;
+        } else {
+          const lerpFactor = isMobile ? 0.18 : 0.08;
+          currentProgress += (targetProgress - currentProgress) * lerpFactor;
+          if (currentProgress >= 0.92) {
+            currentProgress = 1;
+            targetProgress = 1;
+            heroPlayedOnce = true;
+          }
+        }
+
+        if (!heroStaticFlow) {
+          if (heroHeadline) {
+            const scaleFactor = mobile ? 48 : 110;
+            const blurFactor = mobile ? 18 : 35;
+            const scale = 1 + Math.pow(currentProgress, 2.5) * scaleFactor;
+            const blur = Math.pow(currentProgress, 1.8) * blurFactor;
+            const headlineOpacity = Math.max(0, 1 - Math.pow(currentProgress, 1.35) * 1.15);
+            heroHeadline.style.transform = 'scale(' + scale.toFixed(3) + ') translateZ(0)';
+            heroHeadline.style.filter = 'blur(' + blur.toFixed(2) + 'px)';
+            heroHeadline.style.opacity = headlineOpacity.toFixed(3);
+          }
+
+          if (manifestoReveal) {
+            const revealStart = mobile ? 0.12 : 0.18;
+            const revealSpan = mobile ? 0.38 : 0.42;
+            const reveal = Math.min(1, Math.max(0, (currentProgress - revealStart) / revealSpan));
+            const ease = reveal * reveal * (3 - 2 * reveal);
+            manifestoReveal.style.opacity = ease.toFixed(3);
+            manifestoReveal.style.transform = 'scale(' + (0.97 + ease * 0.03).toFixed(3) + ')';
+          }
+        }
+
+        if (ctx && waveCanvas && width && height) {
+          ctx.clearRect(0, 0, width, height);
+          const centerX = width / 2;
+          const centerY = height / 2;
+          time += 0.012;
+          const scaleMultiplier = 1 + Math.pow(currentProgress, 2.0) * (mobile ? 10.0 : 14.0);
+          const explosion = Math.pow(currentProgress, 2.0) * (mobile ? 28.0 : 35.0);
+          const basePush = Math.pow(currentProgress, 2.5) * Math.hypot(width, height) * (mobile ? 0.9 : 0.85);
+
+          if (mobile) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(0, 0, width, height);
+            ctx.clip();
+          }
+
+          for (let i = 0; i < numParticles; i++) {
+            const p = particles[i];
+            const pxBase = p.xRatio * width;
+            const freq = 0.0012;
+            const primaryWave = Math.sin(pxBase * freq + time + p.waveOffset) * p.amplitude;
+            const secondaryWave = Math.cos(pxBase * freq * 1.8 - time * 0.7) * (p.amplitude * 0.45);
+
+            let py = centerY + primaryWave + secondaryWave + p.yDrift;
+            let px = pxBase;
+
+            if (currentProgress > 0) {
+              const dx = px - centerX;
+              const dy = py - centerY;
+              const dist = Math.hypot(dx, dy) || 0.001;
+              const nx = dx / dist;
+              const ny = dy / dist;
+              px += dx * explosion + nx * basePush;
+              py += dy * explosion + ny * basePush;
+            }
+
+            const colorProgress = p.xRatio * (colors.length - 1);
+            const colorIndex = Math.floor(colorProgress);
+            const nextColorIndex = Math.min(colorIndex + 1, colors.length - 1);
+            const factor = colorProgress - colorIndex;
+            const c1 = colors[colorIndex];
+            const c2 = colors[nextColorIndex];
+            const r = Math.round(c1.r + (c2.r - c1.r) * factor);
+            const g = Math.round(c1.g + (c2.g - c1.g) * factor);
+            const b = Math.round(c1.b + (c2.b - c1.b) * factor);
+
+            const edgeAlpha = Math.sin(p.xRatio * Math.PI);
+            const alpha = Math.max(0.2, edgeAlpha * 0.95);
+            const currentSize = p.size * 1.5 * scaleMultiplier;
+
+            if (mobile) {
+              if (px + currentSize < 0 || px - currentSize > width ||
+                  py + currentSize < 0 || py - currentSize > height) {
+                continue;
+              }
+            }
+
+            ctx.beginPath();
+            ctx.arc(px, py, currentSize, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+            ctx.fill();
+          }
+
+          if (mobile) ctx.restore();
+        }
+
+        rafId = requestAnimationFrame(renderHero);
+      }
+
+      function stop() {
+        running = false;
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = 0;
+        }
+      }
+
+      function ensureRunning() {
+        resizeCanvas();
+        setHeroOverlayVisible(true);
+        if (!running) {
+          running = true;
+          rafId = requestAnimationFrame(renderHero);
+        }
+      }
+
+      if (typeof ResizeObserver !== 'undefined' && pinTrack) {
+        new ResizeObserver(ensureRunning).observe(pinTrack);
+      } else {
+        window.addEventListener('resize', ensureRunning);
+      }
+
+      if (typeof IntersectionObserver !== 'undefined' && pinTrack) {
+        new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              ensureRunning();
+            } else {
+              // Left for orbit: flatten offscreen so return-scroll is organic,
+              // without a mid-manifesto layout jump into section 3.
+              if (heroPlayedOnce && !heroStaticFlow) {
+                finalizeHeroToStaticFlow('offscreen');
+              }
+              stop();
+            }
+          });
+        }, { threshold: 0 }).observe(pinTrack);
+      }
+
+      ensureRunning();
+    })();
+  </script>
+
+
+
+
+<script>
+  (function setupDynamicHeader() {
+    const header = document.getElementById('mainHeader');
+    const logo = document.getElementById('navLogo');
+    const links = document.querySelectorAll('.nav-link');
+    const ctaDesktop = document.getElementById('navCtaDesktop');
+    const ctaMobile = document.getElementById('navCtaMobile');
+    if (!header || !logo) return;
+
+    const path = window.location.pathname || '';
+    const isHomepage = (path === '/' || path === '' || path.endsWith('/index.html') || path.endsWith('/index'))
+      && !/\/(tech|privacy|terms|signature)(\.html)?\/?$/.test(path);
+
+    function linkClasses(theme, el) {
+      const isHow = (el.getAttribute('href') || '').includes('how-it-works');
+      const hide = isHow ? 'hidden sm:inline-block ' : '';
+      const base = 'nav-link ' + hide + 'text-[12px] font-normal tracking-[-0.01em] transition-colors ';
+      if (theme === 'light') {
+        return base + 'text-neutral-900/80 hover:text-black';
+      }
+      return base + 'text-white/80 hover:text-white';
+    }
+
+    function updateHeader() {
+      const atLanding = window.scrollY < 1;
+      const sections = document.querySelectorAll('[data-header-theme]');
+      let currentTheme = isHomepage ? 'dark' : 'light';
+      sections.forEach((sec) => {
+        const rect = sec.getBoundingClientRect();
+        if (rect.top <= 25 && rect.bottom >= 25) {
+          currentTheme = sec.getAttribute('data-header-theme') || currentTheme;
+        }
+      });
+
+      if (isHomepage && atLanding) {
+        // Fully invisible until the user scrolls past 1px
+        header.className = 'fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-transparent backdrop-blur-none border-none text-white opacity-0 pointer-events-none';
+        logo.src = 'logo-white.png';
+        links.forEach((l) => { l.className = linkClasses('dark', l); });
+        if (ctaDesktop) ctaDesktop.className = 'hidden sm:inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-white text-neutral-950 font-bold text-[11px] hover:bg-neutral-200 transition-all';
+        if (ctaMobile) ctaMobile.className = 'sm:hidden flex items-center justify-center w-6 h-6 rounded-full bg-white text-neutral-950 transition-all';
+        return;
+      }
+
+      if (currentTheme === 'light') {
+        header.className = 'fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-white/70 backdrop-blur-2xl backdrop-saturate-150 border-none text-neutral-900 opacity-100 pointer-events-auto';
+        logo.src = 'logo-black.png';
+        links.forEach((l) => { l.className = linkClasses('light', l); });
+        if (ctaDesktop) ctaDesktop.className = 'hidden sm:inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-neutral-950 text-white font-bold text-[11px] hover:bg-neutral-800 transition-all';
+        if (ctaMobile) ctaMobile.className = 'sm:hidden flex items-center justify-center w-6 h-6 rounded-full bg-neutral-950 text-white transition-all';
+      } else {
+        header.className = 'fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-neutral-950/70 backdrop-blur-2xl backdrop-saturate-150 border-none text-white opacity-100 pointer-events-auto';
+        logo.src = 'logo-white.png';
+        links.forEach((l) => { l.className = linkClasses('dark', l); });
+        if (ctaDesktop) ctaDesktop.className = 'hidden sm:inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-white text-neutral-950 font-bold text-[11px] hover:bg-neutral-200 transition-all';
+        if (ctaMobile) ctaMobile.className = 'sm:hidden flex items-center justify-center w-6 h-6 rounded-full bg-white text-neutral-950 transition-all';
+      }
+    }
+
+    window.addEventListener('scroll', updateHeader, { passive: true });
+    window.addEventListener('resize', updateHeader, { passive: true });
+    updateHeader();
+  })();
+</script>
+
+<div id="cookie-banner" class="fixed bottom-6 right-6 z-50 max-w-sm bg-neutral-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-5 shadow-2xl hidden">
+  <p class="text-xs text-neutral-300 leading-relaxed mb-3">
+    We use essential cookies to analyse traffic and optimise your experience. Read our <a href="/privacy" class="text-neutral-300 hover:text-white underline decoration-neutral-500">Privacy Policy</a>.
+  </p>
+  <div class="flex items-center gap-2">
+    <button type="button" id="accept-cookies" class="px-4 py-1.5 bg-white text-black text-xs font-medium rounded-full hover:bg-neutral-200 transition-all">Accept</button>
+    <button type="button" id="decline-cookies" class="px-4 py-1.5 bg-white/10 text-white text-xs font-medium rounded-full hover:bg-white/20 transition-all">Decline</button>
+  </div>
+</div>
+<script>
+  (function initCookieBanner() {
+    const banner = document.getElementById('cookie-banner');
+    if (!banner) return;
+    if (!localStorage.getItem('cookieConsent')) {
+      banner.classList.remove('hidden');
+    }
+    document.getElementById('accept-cookies')?.addEventListener('click', () => {
+      localStorage.setItem('cookieConsent', 'accepted');
+      banner.classList.add('hidden');
+    });
+    document.getElementById('decline-cookies')?.addEventListener('click', () => {
+      localStorage.setItem('cookieConsent', 'declined');
+      banner.classList.add('hidden');
+    });
+  })();
+</script>
+<script>
+  (function initAnimatedTrendCanvas() {
+    const canvas = document.getElementById('animatedTrendCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let width = 0, height = 0, time = 0;
+
+    function resize() {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = rect.width; height = rect.height;
+      canvas.width = width * dpr; canvas.height = height * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, width, height);
+      time += 0.02;
+
+      const bars = 8;
+      const barWidth = (width - 40) / bars - 4;
+
+      // Draw Bars
+      for(let i=0; i<bars; i++) {
+        const targetHeight = height * 0.2 + (i / bars) * (height * 0.4);
+        const animatedHeight = targetHeight * (Math.sin(time + i * 0.4) * 0.15 + 0.85);
+        ctx.fillStyle = 'rgba(255,255,255,0.05)';
+        ctx.beginPath();
+        ctx.roundRect(20 + i * (barWidth + 4), height - animatedHeight - 20, barWidth, animatedHeight, 4);
+        ctx.fill();
+      }
+
+      // Draw sweeping line
+      ctx.beginPath();
+      for(let x=20; x<=width-20; x+=2) {
+        const normX = (x-20) / (width-40);
+        const yBase = height - 20 - (normX * height * 0.45);
+        const yWave = Math.sin(normX * Math.PI * 2 - time * 2) * 8;
+        if(x===20) ctx.moveTo(x, yBase + yWave);
+        else ctx.lineTo(x, yBase + yWave);
+      }
+      ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      requestAnimationFrame(draw);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    requestAnimationFrame(draw);
+  })();
+</script>
+
+</body>
+</html>
