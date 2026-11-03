@@ -192,25 +192,14 @@
     }
 
     .fluid-gradient-text {
-      background: linear-gradient(
-        120deg,
-        #FF0066 0%,
-        #E00199 25%,
-        #8B5CF6 50%,
-        #E00199 75%,
-        #FF0066 100%
-      );
+      background: linear-gradient(120deg, #FF0066 0%, #E00199 25%, #8B5CF6 50%, #E00199 75%, #FF0066 100%);
       background-size: 250% auto;
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
+      color: transparent;
       animation: fluidGradientSweep 6s ease-in-out infinite;
       display: inline-block;
-      font-weight: 800;
-      /* Keep descenders (g, y, p) visible under background-clip */
-      padding-bottom: 0.15em;
-      line-height: 1.2;
-      overflow: visible;
     }
 
 
@@ -269,6 +258,11 @@
 
     .how-it-works-track.is-dragging > * {
       pointer-events: none;
+    }
+
+    #process-title {
+      line-height: 1.2;
+      padding-bottom: 0.5rem;
     }
 
 
@@ -511,10 +505,18 @@
 
 
     .imax-card {
-      transform: translateZ(0);
-      backface-visibility: hidden;
-      transition: none !important;
+      scroll-snap-align: center;
       background-color: #e8e8ea;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15);
+      transform: scale(0.85);
+      opacity: 0.4;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+      backface-visibility: hidden;
+    }
+
+    .imax-card.is-active {
+      transform: scale(1);
+      opacity: 1;
     }
 
     .imax-card img.creator-portrait {
@@ -528,6 +530,7 @@
     }
 
     #imax-track {
+      scroll-snap-type: x mandatory;
       will-change: transform;
       transition: none !important;
       transform: translate3d(0, 0, 0);
@@ -536,9 +539,6 @@
     #imax-stage {
       overflow: hidden;
       contain: layout paint;
-      /* Soft edge fade — no per-card 3D work */
-      -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
-      mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
     }
 
     #creators-section {
@@ -569,7 +569,7 @@
       pointer-events: none;
     }
 
-    #deck-accordion .accordion-card[data-index="0"] > .case-study-bg {
+    #deck-accordion .accordion-card[data-index="1"] > .case-study-bg {
       object-position: center 22%;
     }
 
@@ -901,6 +901,7 @@
 
   </style>
 
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 
 <body class="bg-black text-white font-sans antialiased overflow-x-clip">
@@ -909,7 +910,7 @@
 
   <!-- Razor-thin dynamic header (borderless) -->
   <header id="mainHeader" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent border-none text-white opacity-0 pointer-events-none">
-    <nav class="relative max-w-7xl mx-auto px-3.5 sm:px-6 h-10 sm:h-11 flex items-center justify-between gap-2">
+    <nav class="relative max-w-7xl mx-auto px-3.5 sm:px-6 h-12 sm:h-14 flex items-center justify-between gap-2">
       <a href="/" class="flex items-center shrink-0">
         <img id="navLogo" src="logo-white.png" alt="Red Thread" class="h-3.5 sm:h-4 w-auto object-contain transition-opacity duration-300">
       </a>
@@ -956,8 +957,8 @@
             <!-- Opaque white = black overlay; black type = transparent holes to the video -->
             <rect x="0" y="0" width="100%" height="100%" fill="white" />
             <svg x="0" y="0" width="100%" height="100%" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet">
-              <text x="500" y="197.5" text-anchor="middle" fill="black" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', Inter, sans-serif" font-weight="900" font-size="70" letter-spacing="-3">Creator culture.</text>
-              <text x="500" y="302.5" text-anchor="middle" fill="black" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', Inter, sans-serif" font-weight="900" font-size="70" letter-spacing="-3">Commercial scale.</text>
+              <text x="500" y="197.5" text-anchor="middle" fill="black" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', Inter, sans-serif" font-weight="400" font-size="70" letter-spacing="-1">Creator-powered.</text>
+              <text x="500" y="302.5" text-anchor="middle" fill="black" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', Inter, sans-serif" font-weight="400" font-size="70" letter-spacing="-1">Commercial impact.</text>
             </svg>
           </mask>
         </defs>
@@ -1027,50 +1028,33 @@
       <div id="hw-deck" class="phone-fan-container relative w-full max-w-6xl mx-auto flex items-center justify-center h-[520px] sm:h-[620px]">
 
           <!-- Phone 1: screen1.mov -->
-          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform p-2.5" style="z-index:10;">
-            <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
-            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
-              <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/screen1-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/screen1.mp4" type="video/mp4"/></video>
-            </div>
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] overflow-hidden border border-white/20 shadow-[0_30px_80px_rgba(0,0,0,0.9)] rounded-[32px] sm:rounded-[40px] transform-gpu will-change-transform" style="z-index:10;">
+            <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/screen1-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/screen1.mp4" type="video/mp4"/></video>
           </div>
 
           <!-- Phone 2: screen2.mov -->
-          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform p-2.5" style="z-index:20;">
-            <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
-            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
-              <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/screen2-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/screen2.mp4" type="video/mp4"/></video>
-            </div>
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] overflow-hidden border border-white/20 shadow-[0_30px_80px_rgba(0,0,0,0.9)] rounded-[32px] sm:rounded-[40px] transform-gpu will-change-transform" style="z-index:20;">
+            <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/screen2-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/screen2.mp4" type="video/mp4"/></video>
           </div>
 
           <!-- Phone 3: video7.mov -->
-          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform p-2.5" style="z-index:30;">
-            <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
-            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
-              <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/video7-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/video7.mp4" type="video/mp4"/></video>
-            </div>
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] overflow-hidden border border-white/20 shadow-[0_30px_80px_rgba(0,0,0,0.9)] rounded-[32px] sm:rounded-[40px] transform-gpu will-change-transform" style="z-index:30;">
+            <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/video7-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/video7.mp4" type="video/mp4"/></video>
           </div>
 
           <!-- Phone 4: screen3.mov -->
-          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform p-2.5" style="z-index:40;">
-            <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
-            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
-              <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/screen3-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/screen3.mp4" type="video/mp4"/></video>
-            </div>
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] overflow-hidden border border-white/20 shadow-[0_30px_80px_rgba(0,0,0,0.9)] rounded-[32px] sm:rounded-[40px] transform-gpu will-change-transform" style="z-index:40;">
+            <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/screen3-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/screen3.mp4" type="video/mp4"/></video>
           </div>
 
           <!-- Phone 5: video9.mov -->
-          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform p-2.5" style="z-index:50;">
-            <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
-            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
-              <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/video9-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/video9.mp4" type="video/mp4"/></video>
-            </div>
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] overflow-hidden border border-white/20 shadow-[0_30px_80px_rgba(0,0,0,0.9)] rounded-[32px] sm:rounded-[40px] transform-gpu will-change-transform" style="z-index:50;">
+            <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/video9-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/video9.mp4" type="video/mp4"/></video>
           </div>
 
           <!-- Phone 6 (Center Hero): pic 8 resized.jpg -->
-          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform p-2.5" style="z-index:60;">
-            <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
-            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
-              <img
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] overflow-hidden border border-white/20 shadow-[0_30px_80px_rgba(0,0,0,0.9)] rounded-[32px] sm:rounded-[40px] transform-gpu will-change-transform" style="z-index:60;">
+            <img
                 src="Content/Phone mockups/Compressed/pic 8 resized.webp"
                 alt="Creator Campaign"
                 class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"
@@ -1079,47 +1063,31 @@
                 fetchpriority="low"
                 onerror="this.onerror=null; this.src='Content/Phone mockups/Compressed/pic 8 resized.jpg';"
               />
-            </div>
           </div>
 
           <!-- Phone 7: Screen4.mov -->
-          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform p-2.5" style="z-index:50;">
-            <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
-            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
-              <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/Screen4-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/Screen4.mp4" type="video/mp4"/></video>
-            </div>
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] overflow-hidden border border-white/20 shadow-[0_30px_80px_rgba(0,0,0,0.9)] rounded-[32px] sm:rounded-[40px] transform-gpu will-change-transform" style="z-index:50;">
+            <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/Screen4-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/Screen4.mp4" type="video/mp4"/></video>
           </div>
 
           <!-- Phone 8: video10.mov -->
-          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform p-2.5" style="z-index:40;">
-            <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
-            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
-              <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/video10-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/video10.mp4" type="video/mp4"/></video>
-            </div>
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] overflow-hidden border border-white/20 shadow-[0_30px_80px_rgba(0,0,0,0.9)] rounded-[32px] sm:rounded-[40px] transform-gpu will-change-transform" style="z-index:40;">
+            <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/video10-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/video10.mp4" type="video/mp4"/></video>
           </div>
 
           <!-- Phone 9: screen5.mov -->
-          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform p-2.5" style="z-index:30;">
-            <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
-            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
-              <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/screen5-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/screen5.mp4" type="video/mp4"/></video>
-            </div>
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] overflow-hidden border border-white/20 shadow-[0_30px_80px_rgba(0,0,0,0.9)] rounded-[32px] sm:rounded-[40px] transform-gpu will-change-transform" style="z-index:30;">
+            <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/screen5-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/screen5.mp4" type="video/mp4"/></video>
           </div>
 
           <!-- Phone 10: video11.mov -->
-          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform p-2.5" style="z-index:20;">
-            <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
-            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
-              <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/video11-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/video11.mp4" type="video/mp4"/></video>
-            </div>
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] overflow-hidden border border-white/20 shadow-[0_30px_80px_rgba(0,0,0,0.9)] rounded-[32px] sm:rounded-[40px] transform-gpu will-change-transform" style="z-index:20;">
+            <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/video11-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/video11.mp4" type="video/mp4"/></video>
           </div>
 
           <!-- Phone 11: video6.mov -->
-          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] rounded-[32px] sm:rounded-[44px] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.85)] bg-neutral-900 overflow-hidden transform-gpu will-change-transform p-2.5" style="z-index:10;">
-            <div class="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-black rounded-full z-30"></div>
-            <div class="w-full h-full bg-neutral-900 rounded-[2.2rem] overflow-hidden relative">
-              <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/video6-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/video6.mp4" type="video/mp4"/></video>
-            </div>
+          <div class="hw-card phone-card absolute left-1/2 top-1/2 w-[220px] h-[464px] sm:w-[260px] sm:h-[549px] md:w-[280px] md:h-[591px] lg:w-[300px] lg:h-[633px] overflow-hidden border border-white/20 shadow-[0_30px_80px_rgba(0,0,0,0.9)] rounded-[32px] sm:rounded-[40px] transform-gpu will-change-transform" style="z-index:10;">
+            <video muted loop playsinline preload="none" poster="Content/Phone mockups/Compressed/web/video6-poster.webp" data-inline-media class="absolute inset-0 w-full h-full object-cover phone-media z-0 pointer-events-none"><source src="Content/Phone%20mockups/Compressed/web/video6.mp4" type="video/mp4"/></video>
           </div>
 
       </div>
@@ -1182,9 +1150,10 @@
 
   <!-- 05. CAPABILITIES BENTO WITH INTERACTIVE MICRO-WIDGETS & SCRIMS -->
 
-  <section id="tech-bento" data-theme="dark" data-header-theme="dark" class="w-full bg-[#111113] text-white pt-36 pb-24 relative z-20">
+  <section id="tech-bento" data-theme="dark" data-header-theme="dark" class="w-full bg-[#111113] text-white pt-36 pb-24 relative z-20 overflow-hidden">
+    <canvas id="bentoStarfield" class="absolute inset-0 w-full h-full z-0 pointer-events-none" aria-hidden="true"></canvas>
 
-    <div class="max-w-7xl mx-auto px-6 mb-8 sm:mb-16">
+    <div class="max-w-7xl mx-auto px-6 mb-8 sm:mb-16 relative z-10">
       <h2 class="text-3xl sm:text-5xl font-bold tracking-tight text-white leading-tight [text-wrap:balance]">
         Culture, meet commerce.
       </h2>
@@ -1196,23 +1165,19 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10 max-w-7xl mx-auto px-6">
 
       <!-- ThreadOS Hero Card (Condensed) -->
-      <div class="col-span-1 md:col-span-2 bg-black border border-white/10 rounded-[28px] p-5 sm:p-6 relative overflow-hidden flex flex-col justify-between group min-h-[270px] sm:min-h-[280px] hover:border-white/20 transition-all duration-300">
-
-        <!-- Particle Canvas Layer -->
+      <div class="bento-card bg-white/5 backdrop-blur-2xl backdrop-saturate-150 border border-white/10 hover:border-white/20 shadow-2xl transition-all duration-500 col-span-1 md:col-span-2 rounded-[28px] p-8 sm:p-10 relative overflow-hidden flex flex-col justify-between group min-h-[270px] sm:min-h-[280px]">
         <canvas id="threadosCanvas" class="absolute inset-0 w-full h-full pointer-events-none z-0" aria-hidden="true"></canvas>
-
-        <!-- Content + CTA share full content width so copy right-edge locks to button -->
         <div class="relative z-10 w-full flex flex-col justify-between flex-1 min-h-0">
           <div class="w-full">
+            <i class="ph-light ph-intersect text-3xl sm:text-4xl text-white mb-4 block"></i>
             <span class="text-xs font-medium tracking-wider text-neutral-400 mb-1.5 block">Proprietary technology</span>
             <h3 class="text-xl sm:text-2xl font-bold tracking-tight text-white leading-snug mb-2 [text-wrap:balance]">
               The centralised campaign operating system.
             </h3>
             <p class="text-xs sm:text-sm text-neutral-400 leading-relaxed w-full [text-wrap:pretty]">
-              We engineered an end-to-end ecosystem for ourselves, our clients, and our creators. ThreadOS™ handles shortlisting, compliance, and payments in one central hub. It features Fred AI – our context-aware campaign co-pilot designed to identify real-time bottlenecks and streamline complex workflows.
+              End-to-end execution. Shortlisting, vetting, contracting, and payments handled in one frictionless workspace.
             </p>
           </div>
-
           <div class="mt-5 flex justify-end w-full">
             <a href="/tech" class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/15 text-white text-xs font-medium px-3.5 py-2 rounded-full transition-all duration-300 backdrop-blur-md hover:scale-105">
               Explore our tech <span aria-hidden="true">&rarr;</span>
@@ -1222,19 +1187,19 @@
       </div>
 
       <!-- Precision Creator Matchmaking -->
-      <div class="md:col-span-1 border border-white/10 bg-black rounded-[28px] p-5 sm:p-6 relative overflow-hidden flex flex-col justify-between group min-h-[270px] sm:min-h-[280px] hover:border-white/20 transition-all duration-300">
+      <div class="bento-card bg-white/5 backdrop-blur-2xl backdrop-saturate-150 border border-white/10 hover:border-white/20 shadow-2xl transition-all duration-500 md:col-span-1 rounded-[28px] p-8 sm:p-10 relative overflow-hidden flex flex-col justify-between group min-h-[270px] sm:min-h-[280px]">
         <div class="z-10 relative">
+          <i class="ph-light ph-users-three text-3xl sm:text-4xl text-white mb-4 block"></i>
           <span class="text-xs font-medium tracking-wider text-neutral-400 mb-1.5 block">Audience-first matchmaking</span>
           <h3 class="text-xl sm:text-2xl font-bold tracking-tight text-white leading-snug mb-2 [text-wrap:balance]">
             No rosters. Zero talent bias.
           </h3>
           <p class="text-xs sm:text-sm text-neutral-400 leading-relaxed [text-wrap:pretty]">
-            We don't manage creators, so your media plan is never limited to an in-house list. We take a pure audience-first approach&nbsp;&ndash;&nbsp;mapping your target personas to identify trusted voices wherever they live, whichever language they speak, and whichever platform they dominate. Careful, human-led, AI-assisted vetting ensures complete brand safety at every step.
+            No rosters. Zero talent bias. We map real audience data to identify trusted voices, backed by human-led vetting for complete brand safety.
           </p>
         </div>
 
-        <!-- Radar + avatars: single centered bottom unit -->
-        <div class="absolute inset-x-0 bottom-0 h-48 overflow-hidden flex justify-center items-end pointer-events-none z-10">
+        <div class="absolute inset-x-0 bottom-0 h-48 overflow-hidden flex justify-center items-end pointer-events-none z-10 opacity-40">
           <div class="relative w-[360px] h-[180px]">
             <canvas id="radarDomeCanvas" class="absolute left-1/2 bottom-[-180px] -translate-x-1/2 w-[360px] h-[360px] pointer-events-none" aria-hidden="true"></canvas>
 
@@ -1247,52 +1212,47 @@
             </div>
           </div>
         </div>
-
-        <!-- Spacer so copy doesn't collide with absolute radar -->
         <div class="h-40 shrink-0" aria-hidden="true"></div>
       </div>
 
       <!-- Attention Engine™ -->
-      <div class="md:col-span-1 border border-white/10 bg-black rounded-[28px] p-6 sm:p-8 relative overflow-hidden flex flex-col justify-between group min-h-[300px] hover:border-white/20 transition-all duration-300">
+      <div class="bento-card bg-white/5 backdrop-blur-2xl backdrop-saturate-150 border border-white/10 hover:border-white/20 shadow-2xl transition-all duration-500 md:col-span-1 rounded-[28px] p-8 sm:p-10 relative overflow-hidden flex flex-col justify-between group min-h-[300px]">
         <div class="z-10 relative">
+          <i class="ph-light ph-waveform text-3xl sm:text-4xl text-white mb-4 block"></i>
           <span class="text-xs font-medium tracking-wider text-neutral-400 mb-1.5 block">Forecasting &amp; measurement</span>
           <h3 class="text-xl sm:text-2xl font-bold tracking-tight text-white leading-snug mb-3 [text-wrap:balance]">
             Attention Engine™
           </h3>
           <p class="text-sm text-neutral-400 leading-relaxed [text-wrap:pretty]">
-            Strip the guesswork out of creator marketing before a brief is even signed. Our proprietary engine maps subcultures and analyses historical data to forecast campaign benchmarks. It tracks high-intent engagements from click-throughs to checkout, compounding in intelligence with every campaign.
+            Predictive media modelling. Strip the guesswork out of forecasting. Track high-intent clicks and compound intelligence with every campaign.
           </p>
         </div>
-
-        <!-- Static Multi-Color Analytics Chart -->
-        <div class="relative w-full h-28 mt-4 z-10">
+        <div class="relative w-full h-28 mt-4 z-10 opacity-60">
           <canvas id="retentionWaveCanvas" class="w-full h-full" aria-hidden="true"></canvas>
         </div>
       </div>
 
       <!-- Paid Whitelisting & Scaling -->
-      <div class="md:col-span-1 border border-white/10 bg-black rounded-[28px] p-6 sm:p-8 relative overflow-hidden flex flex-col justify-between group min-h-[300px] hover:border-white/20 transition-all duration-300">
+      <div class="bento-card bg-white/5 backdrop-blur-2xl backdrop-saturate-150 border border-white/10 hover:border-white/20 shadow-2xl transition-all duration-500 md:col-span-1 rounded-[28px] p-8 sm:p-10 relative overflow-hidden flex flex-col justify-between group min-h-[300px]">
         <div class="z-10 relative">
+          <i class="ph-light ph-trend-up text-3xl sm:text-4xl text-white mb-4 block"></i>
           <span class="text-xs font-medium tracking-wider text-neutral-400 mb-1.5 block">Paid social amplification</span>
           <h3 class="text-xl sm:text-2xl font-bold tracking-tight text-white leading-snug mb-3 [text-wrap:balance]">
             Paid scaling &amp; performance media.
           </h3>
-          <p class="text-sm text-neutral-400 leading-relaxed max-w-xs [text-wrap:pretty]">
-            Turn organic creator hits into high-performing ad assets. Our dedicated paid social team manages the complete lifecycle&nbsp;&ndash;&nbsp;from forecasting and usage licensing to deploying, testing, and scaling creator assets directly inside your ad accounts.
+          <p class="text-sm text-neutral-400 leading-relaxed [text-wrap:pretty]">
+            Turn organic hits into high-performing ad assets with dedicated paid social management and seamless usage licensing.
           </p>
         </div>
-
-        <!-- Static Tapered Mesh Canvas -->
         <div class="absolute inset-0 w-full h-full pointer-events-none z-0">
           <canvas id="staticMeshCanvas" class="w-full h-full opacity-35" aria-hidden="true"></canvas>
         </div>
       </div>
 
       <!-- Shoppable Streaming -->
-      <div class="md:col-span-1 bg-black border border-white/10 rounded-[28px] p-6 sm:p-8 flex flex-col justify-between overflow-hidden hover:border-white/20 transition-all duration-300 relative group min-h-[380px]">
-        <div class="absolute -top-16 -right-16 w-48 h-48 bg-rose-500/10 rounded-full blur-2xl pointer-events-none group-hover:bg-rose-500/20 transition-all duration-500" aria-hidden="true"></div>
-
+      <div class="bento-card bg-white/5 backdrop-blur-2xl backdrop-saturate-150 border border-white/10 hover:border-white/20 shadow-2xl transition-all duration-500 md:col-span-1 rounded-[28px] p-8 sm:p-10 flex flex-col justify-between overflow-hidden relative group min-h-[380px]">
         <div class="relative z-10">
+          <i class="ph-light ph-broadcast text-3xl sm:text-4xl text-white mb-4 block"></i>
           <span class="text-xs font-medium tracking-wider text-neutral-400 mb-1.5 block">
             Shoppable streaming
           </span>
@@ -1305,7 +1265,7 @@
         </div>
 
         <!-- Abstract Stream Chat Feed -->
-        <div class="mt-6 relative h-36 w-full overflow-hidden pointer-events-none [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]" aria-hidden="true">
+        <div class="mt-6 relative h-36 w-full overflow-hidden pointer-events-none opacity-40 [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]" aria-hidden="true">
           <div class="absolute left-3.5 top-0 bottom-0 w-px bg-white/10 z-0"></div>
 
           <div class="flex flex-col gap-3 animate-live-chat-seamless">
@@ -1390,42 +1350,6 @@
         </div>
       </div>
 
-      <!-- Global Reach & Resonance -->
-      <div class="md:col-span-3 bg-black border border-white/10 rounded-[28px] p-8 sm:p-12 relative overflow-hidden flex items-center justify-between min-h-[320px] hover:border-white/20 transition-all duration-300 group">
-
-        <!-- Star field -->
-        <div class="global-starfield absolute inset-0 z-0 pointer-events-none" aria-hidden="true"></div>
-
-        <!-- Right-aligned Earth as horizon -->
-        <div class="absolute right-0 top-0 bottom-0 w-full md:w-[55%] pointer-events-none overflow-hidden hidden md:block z-[1]" aria-hidden="true">
-          <img
-            src="Content/usage-bento.webp"
-            alt=""
-            class="absolute right-0 bottom-0 w-[130%] max-w-none h-auto translate-x-[8%] translate-y-[42%] rotate-180 opacity-95 group-hover:translate-y-[38%] transition-transform duration-700 ease-out"
-            loading="lazy"
-            decoding="async"
-          />
-          <!-- Fade into card / stars on the left edge -->
-          <div class="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-black via-black/70 to-transparent"></div>
-          <!-- Soft blend above the limb into the starfield -->
-          <div class="absolute inset-x-0 top-0 h-1/3 bg-gradient-to-b from-black/50 to-transparent"></div>
-        </div>
-
-        <!-- Soft black fade behind copy for legibility -->
-        <div class="absolute inset-y-0 left-0 w-full md:w-[55%] z-[2] pointer-events-none bg-gradient-to-r from-black via-black/80 to-transparent" aria-hidden="true"></div>
-
-        <div class="max-w-xl relative z-10 pr-4 md:pr-8">
-          <span class="text-xs font-medium tracking-wider text-neutral-400 mb-1.5 block">Global capability</span>
-          <h3 class="text-2xl sm:text-4xl font-bold text-white tracking-tight mb-4 [text-wrap:balance]">
-            Global reach, local resonance.
-          </h3>
-          <p class="text-sm sm:text-base text-neutral-400 leading-relaxed [text-wrap:pretty]">
-            We operate across 30+ international markets, ensuring your brand weaves seamlessly into distinct cultural dialects, everywhere. Always on, always compliant, and always optimised&nbsp;&ndash;&nbsp;we make international expansion feel native to local feeds.
-          </p>
-        </div>
-
-      </div>
-
     </div>
 
   </section>
@@ -1440,7 +1364,7 @@
 
     <div class="max-w-7xl mx-auto px-6 sm:px-8 mb-10">
 
-      <h2 id="process-title" class="text-3xl sm:text-5xl font-bold tracking-tight text-neutral-900 leading-tight [text-wrap:balance]">How it works.</h2>
+      <h2 id="process-title" class="text-3xl sm:text-5xl font-bold tracking-tight text-neutral-900 leading-normal pb-2 [text-wrap:balance]">How it works.</h2>
 
       <p class="text-base sm:text-lg text-neutral-600 mt-3 leading-relaxed max-w-xl [text-wrap:pretty]">How we take a campaign from initial audience mapping through to launch, measurement, and ongoing refinement.</p>
 
@@ -1458,12 +1382,11 @@
       <div class="w-[360px] sm:w-[440px] md:w-[480px] shrink-0 flex-shrink-0 transition-transform duration-300 hover:-translate-y-0.5 bg-[#f4f4f6] rounded-[24px] p-8 sm:p-9 flex flex-col justify-between min-h-[320px] sm:min-h-[340px]">
 
         <div>
-          <span class="text-xs font-medium tracking-wider text-neutral-400 mb-2 block">01 | Strategy</span>
           <h3 class="text-xl sm:text-2xl font-bold text-neutral-900 mb-2 leading-snug [text-wrap:balance]">Creative strategy</h3>
           <p class="text-sm text-neutral-600 leading-relaxed [text-wrap:pretty]">We map social data and cultural signals to find where real attention lives. Human intuition meets machine precision to craft concepts that move audiences and build lasting brand equity.</p>
         </div>
 
-        <div class="mt-auto pt-6"><svg class="w-9 h-9 sm:w-10 sm:h-10" fill="none" viewBox="0 0 24 24"><defs><linearGradient id="red-thread-gradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff2a5f"/><stop offset="100%" stop-color="#e000ff"/></linearGradient></defs><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg></div>
+        <div class="mt-auto pt-6"><i class="ph-light ph-brain text-3xl sm:text-4xl text-neutral-900"></i></div>
 
       </div>
 
@@ -1472,12 +1395,11 @@
       <div class="w-[360px] sm:w-[440px] md:w-[480px] shrink-0 flex-shrink-0 transition-transform duration-300 hover:-translate-y-0.5 bg-[#f4f4f6] rounded-[24px] p-8 sm:p-9 flex flex-col justify-between min-h-[320px] sm:min-h-[340px]">
 
         <div>
-          <span class="text-xs font-medium tracking-wider text-neutral-400 mb-2 block">02 | Activation</span>
           <h3 class="text-xl sm:text-2xl font-bold text-neutral-900 mb-2 leading-snug [text-wrap:balance]">Creator activation</h3>
           <p class="text-sm text-neutral-600 leading-relaxed [text-wrap:pretty]">End-to-end execution inside our operating system, ThreadOS™. Shortlisting, vetting, contracting, content approvals, and payments&nbsp;&ndash;&nbsp;handled in one frictionless workspace.</p>
         </div>
 
-        <div class="mt-auto pt-6"><svg class="w-9 h-9 sm:w-10 sm:h-10" fill="none" viewBox="0 0 24 24"><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+        <div class="mt-auto pt-6"><i class="ph-light ph-rocket text-3xl sm:text-4xl text-neutral-900"></i></div>
 
       </div>
 
@@ -1486,12 +1408,11 @@
       <div class="w-[360px] sm:w-[440px] md:w-[480px] shrink-0 flex-shrink-0 transition-transform duration-300 hover:-translate-y-0.5 bg-[#f4f4f6] rounded-[24px] p-8 sm:p-9 flex flex-col justify-between min-h-[320px] sm:min-h-[340px]">
 
         <div>
-          <span class="text-xs font-medium tracking-wider text-neutral-400 mb-2 block">03 | Amplification</span>
           <h3 class="text-xl sm:text-2xl font-bold text-neutral-900 mb-2 leading-snug [text-wrap:balance]">Paid social amplification</h3>
           <p class="text-sm text-neutral-600 leading-relaxed [text-wrap:pretty]">Turn organic hits into paid scale. We secure native creator account access, usage licensing, and rights&nbsp;&ndash;&nbsp;transforming high-performing content into scaled ad assets.</p>
         </div>
 
-        <div class="mt-auto pt-6"><svg class="w-9 h-9 sm:w-10 sm:h-10" fill="none" viewBox="0 0 24 24"><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m3 11 18-5v12L3 13v-2zm0 0h-1a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h1m8 2v4a2 2 0 0 1-2 2H8a1 1 0 0 1-1-1v-5"/></svg></div>
+        <div class="mt-auto pt-6"><i class="ph-light ph-megaphone text-3xl sm:text-4xl text-neutral-900"></i></div>
 
       </div>
 
@@ -1500,12 +1421,11 @@
       <div class="w-[360px] sm:w-[440px] md:w-[480px] shrink-0 flex-shrink-0 transition-transform duration-300 hover:-translate-y-0.5 bg-[#f4f4f6] rounded-[24px] p-8 sm:p-9 flex flex-col justify-between min-h-[320px] sm:min-h-[340px]">
 
         <div>
-          <span class="text-xs font-medium tracking-wider text-neutral-400 mb-2 block">04 | Intelligence</span>
           <h3 class="text-xl sm:text-2xl font-bold text-neutral-900 mb-2 leading-snug [text-wrap:balance]">Measurement &amp; analytics</h3>
           <p class="text-sm text-neutral-600 leading-relaxed [text-wrap:pretty]">Track real-time engagement and buyer actions through Attention Engine™. Remove guesswork with predictive forecasting and clear visibility on every pound of spend.</p>
         </div>
 
-        <div class="mt-auto pt-6"><svg class="w-9 h-9 sm:w-10 sm:h-10" fill="none" viewBox="0 0 24 24"><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+        <div class="mt-auto pt-6"><i class="ph-light ph-chart-line-up text-3xl sm:text-4xl text-neutral-900"></i></div>
 
       </div>
 
@@ -1514,12 +1434,11 @@
       <div class="w-[360px] sm:w-[440px] md:w-[480px] shrink-0 flex-shrink-0 transition-transform duration-300 hover:-translate-y-0.5 bg-[#f4f4f6] rounded-[24px] p-8 sm:p-9 flex flex-col justify-between min-h-[320px] sm:min-h-[340px]">
 
         <div>
-          <span class="text-xs font-medium tracking-wider text-neutral-400 mb-2 block">05 | Optimisation</span>
           <h3 class="text-xl sm:text-2xl font-bold text-neutral-900 mb-2 leading-snug [text-wrap:balance]">Smarter every time</h3>
           <p class="text-sm text-neutral-600 leading-relaxed [text-wrap:pretty]">Every campaign makes the next one smarter. Performance data feeds directly back into Fred AI, constantly sharpening our creator targeting and stretching your budget further.</p>
         </div>
 
-        <div class="mt-auto pt-6"><svg class="w-9 h-9 sm:w-10 sm:h-10" fill="none" viewBox="0 0 24 24"><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12z"/><path stroke="url(#red-thread-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg></div>
+        <div class="mt-auto pt-6"><i class="ph-light ph-arrows-clockwise text-3xl sm:text-4xl text-neutral-900"></i></div>
 
       </div>
 
@@ -1584,54 +1503,45 @@
         <!-- Pins: zero-size origin at artwork % (dot centered on origin; label floats right). -->
         <!-- Los Angeles -->
         <div class="absolute top-[36%] left-[13.2%] z-10 w-0 h-0">
-          <span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex w-2.5 h-2.5 sm:w-2 sm:h-2">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-500 opacity-75 sm:hidden"></span>
-            <span class="relative inline-flex w-full h-full rounded-full bg-pink-500"></span>
-          </span>
-          <span class="hidden sm:inline-block absolute left-0 top-0 -translate-y-1/2 ml-2.5 px-2.5 py-1 rounded-full bg-neutral-900/90 border border-white/10 text-xs font-semibold text-white shadow-lg whitespace-nowrap">LOS ANGELES</span>
+          <span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span></span>
+          <span class="hidden sm:inline-block absolute left-0 top-0 -translate-y-1/2 ml-3 px-2.5 py-1 rounded-full bg-neutral-900/90 border border-white/10 text-xs font-semibold text-white shadow-lg whitespace-nowrap">LOS ANGELES</span>
         </div>
 
         <!-- New York -->
         <div class="absolute top-[29%] left-[24.3%] z-10 w-0 h-0">
-          <span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex w-2.5 h-2.5 sm:w-2 sm:h-2">
-            <span class="relative inline-flex w-full h-full rounded-full bg-pink-500"></span>
-          </span>
-          <span class="hidden sm:inline-block absolute left-0 top-0 -translate-y-1/2 ml-2.5 px-2.5 py-1 rounded-full bg-neutral-900/90 border border-white/10 text-xs font-semibold text-white shadow-lg whitespace-nowrap">NEW YORK</span>
+          <span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span></span>
+          <span class="hidden sm:inline-block absolute left-0 top-0 -translate-y-1/2 ml-3 px-2.5 py-1 rounded-full bg-neutral-900/90 border border-white/10 text-xs font-semibold text-white shadow-lg whitespace-nowrap">NEW YORK</span>
         </div>
 
         <!-- London -->
         <div class="absolute top-[19%] left-[45.5%] z-10 w-0 h-0">
-          <span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex w-2.5 h-2.5 sm:w-2 sm:h-2">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-500 opacity-75 sm:hidden"></span>
-            <span class="relative inline-flex w-full h-full rounded-full bg-pink-500"></span>
-          </span>
-          <span class="hidden sm:inline-block absolute left-0 top-0 -translate-y-1/2 ml-2.5 px-2.5 py-1 rounded-full bg-neutral-900/90 border border-white/10 text-xs font-semibold text-white shadow-lg whitespace-nowrap">LONDON</span>
+          <span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span></span>
+          <span class="hidden sm:inline-block absolute left-0 top-0 -translate-y-1/2 ml-3 px-2.5 py-1 rounded-full bg-neutral-900/90 border border-white/10 text-xs font-semibold text-white shadow-lg whitespace-nowrap">LONDON</span>
         </div>
 
         <!-- Lisbon -->
         <div class="absolute top-[29%] left-[43.5%] z-10 w-0 h-0">
-          <span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex w-2.5 h-2.5 sm:w-2 sm:h-2">
-            <span class="relative inline-flex w-full h-full rounded-full bg-pink-500"></span>
-          </span>
-          <span class="hidden sm:inline-block absolute left-0 top-0 -translate-y-1/2 ml-2.5 px-2.5 py-1 rounded-full bg-neutral-900/90 border border-white/10 text-xs font-semibold text-white shadow-lg whitespace-nowrap">LISBON</span>
+          <span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span></span>
+          <span class="hidden sm:inline-block absolute left-0 top-0 -translate-y-1/2 ml-3 px-2.5 py-1 rounded-full bg-neutral-900/90 border border-white/10 text-xs font-semibold text-white shadow-lg whitespace-nowrap">LISBON</span>
         </div>
 
         <!-- Basel -->
         <div class="absolute top-[23.4%] left-[47.2%] z-10 w-0 h-0">
-          <span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex w-2.5 h-2.5 sm:w-2 sm:h-2">
-            <span class="relative inline-flex w-full h-full rounded-full bg-pink-500"></span>
-          </span>
-          <span class="hidden sm:inline-block absolute left-0 top-0 -translate-y-1/2 ml-2.5 px-2.5 py-1 rounded-full bg-neutral-900/90 border border-white/10 text-xs font-semibold text-white shadow-lg whitespace-nowrap">BASEL</span>
+          <span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span></span>
+          <span class="hidden sm:inline-block absolute left-0 top-0 -translate-y-1/2 ml-3 px-2.5 py-1 rounded-full bg-neutral-900/90 border border-white/10 text-xs font-semibold text-white shadow-lg whitespace-nowrap">BASEL</span>
         </div>
 
         <!-- Singapore -->
         <div class="absolute top-[57.8%] left-[75.5%] z-10 w-0 h-0">
-          <span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex w-2.5 h-2.5 sm:w-2 sm:h-2">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-500 opacity-75 sm:hidden"></span>
-            <span class="relative inline-flex w-full h-full rounded-full bg-pink-500"></span>
-          </span>
-          <span class="hidden sm:inline-block absolute left-0 top-0 -translate-y-1/2 ml-2.5 px-2.5 py-1 rounded-full bg-neutral-900/90 border border-white/10 text-xs font-semibold text-white shadow-lg whitespace-nowrap">SINGAPORE</span>
+          <span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span></span>
+          <span class="hidden sm:inline-block absolute left-0 top-0 -translate-y-1/2 ml-3 px-2.5 py-1 rounded-full bg-neutral-900/90 border border-white/10 text-xs font-semibold text-white shadow-lg whitespace-nowrap">SINGAPORE</span>
         </div>
+
+        <!-- Miami -->
+        <div class="absolute top-[38%] left-[23%] z-10 w-0 h-0"><span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span></span><span class="hidden sm:inline-block absolute left-0 top-0 -translate-y-1/2 ml-3 px-2.5 py-1 rounded-full bg-neutral-900/90 border border-white/10 text-xs font-semibold text-white shadow-lg whitespace-nowrap">MIAMI</span></div>
+
+        <!-- São Paulo -->
+        <div class="absolute top-[68%] left-[32%] z-10 w-0 h-0"><span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span></span><span class="hidden sm:inline-block absolute left-0 top-0 -translate-y-1/2 ml-3 px-2.5 py-1 rounded-full bg-neutral-900/90 border border-white/10 text-xs font-semibold text-white shadow-lg whitespace-nowrap">SÃO PAULO</span></div>
 
       </div>
 
@@ -1659,105 +1569,94 @@
   <div id="imax-stage" class="relative w-full overflow-hidden px-0 py-8 sm:px-8 sm:py-12 no-scrollbar">
     <div
       id="imax-track"
-      class="flex gap-3 sm:gap-6 items-center w-max select-none will-change-transform"
+      class="flex gap-4 sm:gap-8 items-center w-max select-none will-change-transform"
     >
 
       <!-- Card 01: Courtney -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/courtney.webp" alt="Courtney Daniella Jesse" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/courtney.avif';"/>
-        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
-        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/70 border border-white/10">
-          <p class="text-center text-xs font-semibold text-white truncate w-full">Courtney Daniella Jesse</p>
+        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
+          <p class="text-xs font-semibold text-white whitespace-nowrap">Courtney Daniella Jesse</p>
         </div>
       </div>
 
       <!-- Card 02: Josh -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/josh.webp" alt="Josh Oyinsan" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/josh.jpg';"/>
-        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
-        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/70 border border-white/10">
-          <p class="text-center text-xs font-semibold text-white truncate w-full">Josh Oyinsan</p>
+        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
+          <p class="text-xs font-semibold text-white whitespace-nowrap">Josh Oyinsan</p>
         </div>
       </div>
 
       <!-- Card 03: Helen -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/helen.webp" alt="Helen Anderson" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/helen.jpeg';"/>
-        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
-        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/70 border border-white/10">
-          <p class="text-center text-xs font-semibold text-white truncate w-full">Helen Anderson</p>
+        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
+          <p class="text-xs font-semibold text-white whitespace-nowrap">Helen Anderson</p>
         </div>
       </div>
 
       <!-- Card 04: Fu -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/fu-izzy-resized.webp" alt="Fu Izzy" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/fu-izzy-resized.jpg';"/>
-        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
-        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/70 border border-white/10">
-          <p class="text-center text-xs font-semibold text-white truncate w-full">Fu Izzy</p>
+        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
+          <p class="text-xs font-semibold text-white whitespace-nowrap">Fu Izzy</p>
         </div>
       </div>
 
       <!-- Card 05: Rose -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/roseandrosie.webp" alt="Rose and Rosie" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/roseandrosie.jpg';"/>
-        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
-        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/70 border border-white/10">
-          <p class="text-center text-xs font-semibold text-white truncate w-full">Rose and Rosie</p>
+        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
+          <p class="text-xs font-semibold text-white whitespace-nowrap">Rose and Rosie</p>
         </div>
       </div>
 
       <!-- Card 06: Charlessy -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/charlessy.webp" alt="Charlessy" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/charlessy.jpg';"/>
-        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
-        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/70 border border-white/10">
-          <p class="text-center text-xs font-semibold text-white truncate w-full">Charlessy</p>
+        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
+          <p class="text-xs font-semibold text-white whitespace-nowrap">Charlessy</p>
         </div>
       </div>
 
       <!-- Card 07: Hayls World -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/hayls.webp" alt="Hayls World" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/hayls.jpg';"/>
-        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
-        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/70 border border-white/10">
-          <p class="text-center text-xs font-semibold text-white truncate w-full">Hayls World</p>
+        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
+          <p class="text-xs font-semibold text-white whitespace-nowrap">Hayls World</p>
         </div>
       </div>
 
       <!-- Card 08: Craig & Aimee -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/Craign-and-aimee.webp" alt="Craig & Aimee" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/Craign-and-aimee.jpg';"/>
-        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
-        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/70 border border-white/10">
-          <p class="text-center text-xs font-semibold text-white truncate w-full">Craig & Aimee</p>
+        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
+          <p class="text-xs font-semibold text-white whitespace-nowrap">Craig & Aimee</p>
         </div>
       </div>
 
       <!-- Card 09: Hermione Chantal -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/hermione.webp" alt="Hermione Chantal" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/hermione.jpg';"/>
-        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
-        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/70 border border-white/10">
-          <p class="text-center text-xs font-semibold text-white truncate w-full">Hermione Chantal</p>
+        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
+          <p class="text-xs font-semibold text-white whitespace-nowrap">Hermione Chantal</p>
         </div>
       </div>
 
       <!-- Card 10: George Alexander -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/george.webp" alt="George Alexander" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/george.jpg';"/>
-        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
-        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/70 border border-white/10">
-          <p class="text-center text-xs font-semibold text-white truncate w-full">George Alexander</p>
+        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
+          <p class="text-xs font-semibold text-white whitespace-nowrap">George Alexander</p>
         </div>
       </div>
 
       <!-- Card 11: Taz Alam -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-lg shadow-black/5">
+      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/clickfortaz.webp" alt="Taz Alam" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/clickfortaz.jpg';"/>
-        <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none z-10"></div>
-        <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-center py-2.5 px-3 rounded-2xl bg-black/70 border border-white/10">
-          <p class="text-center text-xs font-semibold text-white truncate w-full">Taz Alam</p>
+        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
+          <p class="text-xs font-semibold text-white whitespace-nowrap">Taz Alam</p>
         </div>
       </div>
 
@@ -1788,8 +1687,46 @@
       <!-- Accordion Canvas Stage (mobile: snap carousel / md+: image peeks) -->
       <div id="deck-accordion" class="flex gap-4 sm:gap-8 overflow-x-auto md:overflow-hidden snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden py-4 px-5 -mx-5 md:mx-0 md:px-0 w-screen max-w-none relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] md:w-full md:max-w-full md:left-auto md:right-auto md:ml-0 md:mr-0 h-auto md:h-[620px] lg:h-[680px] select-none items-stretch">
 
-        <!-- Card 01: Movember -->
+        <!-- Card 01: Gamma -->
         <div class="accordion-card is-active w-[85vw] max-w-[380px] flex-shrink-0 snap-center aspect-[4/5] min-h-[520px] md:aspect-auto md:h-auto md:min-h-0 md:max-w-4xl md:snap-align-none rounded-3xl md:rounded-[32px] overflow-hidden relative cursor-pointer transition-all duration-500" data-index="0">
+          <img src="Content/Case Studies/gamma.jpeg" alt="Gamma Case Study" class="case-study-bg absolute inset-0 w-full h-full object-cover pointer-events-none" loading="eager" decoding="async"/>
+          <img src="Content/jellyfish.png" class="absolute -right-12 top-12 w-64 h-auto object-contain z-10 opacity-90 pointer-events-none mix-blend-screen" alt="" aria-hidden="true" />
+          <div class="case-study-scrim absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent z-10 pointer-events-none"></div>
+
+          <div class="case-brand-logo absolute top-8 left-8 sm:top-10 sm:left-10 z-30 flex items-center h-12 mix-blend-screen">
+            <img src="Content/Brand Logos/gamma.webp" alt="Gamma" class="h-9 sm:h-11 w-auto object-contain grayscale contrast-[100] invert" loading="eager" decoding="async"/>
+          </div>
+
+          <div class="collapsed-content opacity-0 pointer-events-none absolute inset-y-0 left-0 right-0 flex items-center justify-center z-20">
+            <span class="text-xs font-semibold tracking-widest text-white/90 [writing-mode:vertical-lr] rotate-180 whitespace-nowrap">Gamma</span>
+          </div>
+
+          <div class="expanded-content opacity-100 absolute inset-0 w-full h-full pointer-events-auto transition-opacity duration-300 delay-300 ease-in z-20">
+            <div class="case-mobile-panel">
+              <button type="button" class="case-view-more-btn" aria-expanded="false" aria-label="View more">^</button>
+              <div class="case-expanded-body w-full h-full flex flex-col md:flex-row justify-between items-end p-8 md:p-12 relative z-10">
+                <div class="case-copy max-w-xl md:w-[58%] flex flex-col justify-end">
+                  <h3 class="text-2xl sm:text-3xl font-bold text-white mb-1.5 leading-snug [text-wrap:balance]">Overcoming legacy friction.</h3>
+                  <p class="text-base sm:text-lg font-semibold text-neutral-200 mt-2">Generating massive brand exposure and deep trust for AI presentation software.</p>
+                  <p class="text-sm text-neutral-300 mt-3 leading-relaxed max-w-xl [text-wrap:pretty]">We deployed our Attention Engine™ framework to focus entirely on deep viewer retention. By integrating Gamma seamlessly into creators' existing workflows within the 'Personal Development' vertical, we delivered unscripted, real-world validation at scale.</p>
+                </div>
+                <div class="case-metrics flex gap-3 items-stretch flex-shrink-0 md:ml-auto">
+                  <div class="px-4 py-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 flex flex-col justify-center">
+                    <span class="text-xl font-bold text-white tabular-nums">1.8m</span>
+                    <span class="text-[10px] sm:text-xs font-semibold text-neutral-300 tracking-wider">Views Delivered</span>
+                  </div>
+                  <div class="px-4 py-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 flex flex-col justify-center">
+                    <span class="text-xl font-bold text-white tabular-nums">21m</span>
+                    <span class="text-[10px] sm:text-xs font-semibold text-neutral-300 tracking-wider">Minutes of watchtime</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 02: Movember -->
+        <div class="accordion-card is-inactive w-[85vw] max-w-[380px] flex-shrink-0 snap-center aspect-[4/5] min-h-[520px] md:aspect-auto md:h-auto md:min-h-0 md:max-w-4xl md:snap-align-none rounded-3xl md:rounded-[32px] overflow-hidden relative cursor-pointer transition-all duration-500" data-index="1">
           <img src="Content/Case Studies/movember-resized.webp" alt="Movember Case Study" class="case-study-bg absolute inset-0 w-full h-full object-cover pointer-events-none" loading="lazy" decoding="async"/>
           <div class="case-study-scrim absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/50 to-transparent z-10 pointer-events-none"></div>
           <div class="case-top-fade absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-black/70 via-black/30 to-transparent pointer-events-none z-10"></div>
@@ -1828,7 +1765,7 @@
         </div>
 
         <!-- Card 02: Tourism Ireland -->
-        <div class="accordion-card is-inactive w-[85vw] max-w-[380px] flex-shrink-0 snap-center aspect-[4/5] min-h-[520px] md:aspect-auto md:h-auto md:min-h-0 md:max-w-none md:snap-align-none rounded-3xl md:rounded-[32px] overflow-hidden relative cursor-pointer transition-all duration-500" data-index="1">
+        <div class="accordion-card is-inactive w-[85vw] max-w-[380px] flex-shrink-0 snap-center aspect-[4/5] min-h-[520px] md:aspect-auto md:h-auto md:min-h-0 md:max-w-none md:snap-align-none rounded-3xl md:rounded-[32px] overflow-hidden relative cursor-pointer transition-all duration-500" data-index="2">
           <img src="Content/Case Studies/ireland.webp" alt="Tourism Ireland" class="case-study-bg absolute inset-0 w-full h-full object-cover object-center pointer-events-none" loading="lazy" decoding="async"/>
           <div class="case-study-scrim absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/50 to-transparent z-10 pointer-events-none"></div>
           <div class="case-top-fade absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-black/70 via-black/30 to-transparent pointer-events-none z-10"></div>
@@ -1867,7 +1804,7 @@
         </div>
 
         <!-- Card 03: Volvic -->
-        <div class="accordion-card is-inactive w-[85vw] max-w-[380px] flex-shrink-0 snap-center aspect-[4/5] min-h-[520px] md:aspect-auto md:h-auto md:min-h-0 md:max-w-none md:snap-align-none rounded-3xl md:rounded-[32px] overflow-hidden relative cursor-pointer transition-all duration-500" data-index="2">
+        <div class="accordion-card is-inactive w-[85vw] max-w-[380px] flex-shrink-0 snap-center aspect-[4/5] min-h-[520px] md:aspect-auto md:h-auto md:min-h-0 md:max-w-none md:snap-align-none rounded-3xl md:rounded-[32px] overflow-hidden relative cursor-pointer transition-all duration-500" data-index="3">
           <img src="Content/Case Studies/volvic.webp" alt="Volvic" class="case-study-bg absolute inset-0 w-full h-full object-cover object-center pointer-events-none" loading="lazy" decoding="async"/>
           <div class="case-study-scrim absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/50 to-transparent z-10 pointer-events-none"></div>
           <div class="case-top-fade absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-black/70 via-black/30 to-transparent pointer-events-none z-10"></div>
@@ -1981,7 +1918,7 @@
     <div class="max-w-7xl mx-auto px-6 sm:px-8 pb-20 border-b border-white/10 text-center">
       <h2 id="philosophy-title" class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight text-balance">
         Creator instinct, amplified by proprietary tech. <br class="hidden sm:inline"/>
-        <span class="fluid-gradient-text pb-1">Built on proof, not promises.</span>
+        <span class="fluid-gradient-text">Built on proof, not promises.</span>
       </h2>
     </div>
   </section>
@@ -2711,7 +2648,7 @@
     (function randomizePhoneShowcaseMedia() {
       const deck = document.getElementById('hw-deck');
       if (!deck) return;
-      const frames = Array.from(deck.querySelectorAll('.phone-card > div.w-full.h-full'));
+      const frames = Array.from(deck.querySelectorAll('.phone-card'));
       const payloads = frames
         .map((frame) => frame.querySelector('.phone-media'))
         .filter(Boolean);
@@ -3396,8 +3333,8 @@
       let inView = false;
       let lastMeasuredWidth = 0;
 
-      const DESKTOP_PX_PER_SEC = 84;
-      const MOBILE_PX_PER_SEC = 63;
+      const DESKTOP_PX_PER_SEC = 168;
+      const MOBILE_PX_PER_SEC = 126;
 
       function isMobile() {
         return window.innerWidth < 640;
@@ -3436,7 +3373,27 @@
           paint();
         }
 
+        updateCenteredCard();
         rafId = requestAnimationFrame(tick);
+      }
+
+      function updateCenteredCard() {
+        const stageRect = stage.getBoundingClientRect();
+        const mid = stageRect.left + stageRect.width / 2;
+        const cards = track.children;
+        let best = null;
+        let bestDist = Infinity;
+        for (let i = 0; i < cards.length; i++) {
+          const rect = cards[i].getBoundingClientRect();
+          const dist = Math.abs(rect.left + rect.width / 2 - mid);
+          if (dist < bestDist) {
+            bestDist = dist;
+            best = cards[i];
+          }
+        }
+        for (let i = 0; i < cards.length; i++) {
+          cards[i].classList.toggle('is-active', cards[i] === best);
+        }
       }
 
       function start() {
@@ -3474,10 +3431,19 @@
           },
           { threshold: [0, 0.15, 0.35], rootMargin: '0px' }
         ).observe(stage);
+
+        const centeredCardObserver = new IntersectionObserver(() => updateCenteredCard(), {
+          root: stage,
+          rootMargin: '0px -35% 0px -35%',
+          threshold: [0.4, 0.6, 0.8]
+        });
+        Array.from(track.children).forEach((card) => centeredCardObserver.observe(card));
       } else {
         inView = true;
         start();
       }
+
+      updateCenteredCard();
     })();
   </script>
 
@@ -3769,13 +3735,13 @@
       }
 
       if (currentTheme === 'light') {
-        header.className = 'fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-none text-neutral-900 opacity-100 pointer-events-auto';
+        header.className = 'fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/70 backdrop-blur-2xl backdrop-saturate-150 border-none text-neutral-900 opacity-100 pointer-events-auto';
         logo.src = 'logo-black.png';
         links.forEach((l) => { l.className = linkClasses('light', l); });
         if (ctaDesktop) ctaDesktop.className = 'hidden sm:inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-neutral-950 text-white font-bold text-[11px] hover:bg-neutral-800 transition-all';
         if (ctaMobile) ctaMobile.className = 'sm:hidden flex items-center justify-center w-6 h-6 rounded-full bg-neutral-950 text-white transition-all';
       } else {
-        header.className = 'fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-neutral-950/80 backdrop-blur-md border-none text-white opacity-100 pointer-events-auto';
+        header.className = 'fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-neutral-950/70 backdrop-blur-2xl backdrop-saturate-150 border-none text-white opacity-100 pointer-events-auto';
         logo.src = 'logo-white.png';
         links.forEach((l) => { l.className = linkClasses('dark', l); });
         if (ctaDesktop) ctaDesktop.className = 'hidden sm:inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-white text-neutral-950 font-bold text-[11px] hover:bg-neutral-200 transition-all';
@@ -3824,6 +3790,86 @@
       localStorage.setItem('cookieConsent', 'declined');
       banner.classList.add('hidden');
     });
+  })();
+</script>
+
+<script>
+  (function initBentoStarfield() {
+    const canvas = document.getElementById('bentoStarfield');
+    const section = document.getElementById('tech-bento');
+    if (!canvas || !section) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let width = 0;
+    let height = 0;
+    let dpr = 1;
+    let stars = [];
+    let shooting = null;
+    let nextShot = 1200;
+
+    function makeStars() {
+      stars = Array.from({ length: 600 }, () => {
+        let radius = Math.random() * 1.05 + 0.25;
+        return { x: Math.random() * width, y: Math.random() * height, r: radius, a: 0.4 + Math.random() * 0.5, v: radius * 0.15 };
+      });
+    }
+
+    function resize() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = Math.max(1, section.clientWidth);
+      height = Math.max(1, section.clientHeight);
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      makeStars();
+    }
+
+    function frame(time) {
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, width, height);
+      for (const star of stars) {
+        star.y -= star.v;
+        if (star.y < 0) { star.y = height; star.x = Math.random() * width; }
+        ctx.fillStyle = 'rgba(255,255,255,' + star.a.toFixed(3) + ')';
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      if (!shooting && time > nextShot) {
+        shooting = {
+          x: Math.random() * width * 0.65,
+          y: Math.random() * height * 0.35,
+          vx: 7 + Math.random() * 5,
+          vy: -(2.2 + Math.random() * 2.4),
+          life: 1
+        };
+      }
+
+      if (shooting) {
+        ctx.strokeStyle = 'rgba(255,255,255,' + shooting.life.toFixed(3) + ')';
+        ctx.lineWidth = 1.15;
+        ctx.beginPath();
+        ctx.moveTo(shooting.x, shooting.y);
+        ctx.lineTo(shooting.x - shooting.vx * 15, shooting.y - shooting.vy * 15);
+        ctx.stroke();
+        shooting.x += shooting.vx;
+        shooting.y += shooting.vy;
+        shooting.life -= 0.018;
+        if (shooting.life <= 0 || shooting.x > width + 40 || shooting.y < -40) {
+          shooting = null;
+          nextShot = time + 1000 + Math.random() * 2000;
+        }
+      }
+
+      requestAnimationFrame(frame);
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    if ('ResizeObserver' in window) new ResizeObserver(resize).observe(section);
+    requestAnimationFrame(frame);
   })();
 </script>
 

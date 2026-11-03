@@ -27,6 +27,22 @@
     }
   </script>
   <style>
+        @keyframes fluidGradientSweep {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+.fluid-gradient-text {
+      background: linear-gradient(120deg, #FF0066 0%, #E00199 25%, #8B5CF6 50%, #E00199 75%, #FF0066 100%);
+      background-size: 250% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      animation: fluidGradientSweep 6s ease-in-out infinite;
+      display: inline-block;
+    }
     body {
       margin: 0;
       padding: 0;
@@ -67,12 +83,13 @@
       line-height: normal;
     }
   </style>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body class="bg-white text-neutral-900 antialiased min-h-screen flex flex-col">
 
   <!-- Razor-thin dynamic header (borderless) -->
-  <header id="mainHeader" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-none text-neutral-900">
-    <nav class="relative max-w-7xl mx-auto px-3.5 sm:px-6 h-10 sm:h-11 flex items-center justify-between gap-2">
+  <header id="mainHeader" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/70 backdrop-blur-2xl backdrop-saturate-150 border-none text-neutral-900">
+    <nav class="relative max-w-7xl mx-auto px-3.5 sm:px-6 h-12 sm:h-14 flex items-center justify-between gap-2">
       <a href="/" class="flex items-center shrink-0">
         <img id="navLogo" src="logo-black.png" alt="Red Thread" class="h-3.5 sm:h-4 w-auto object-contain transition-opacity duration-300">
       </a>
@@ -96,16 +113,16 @@
   </header>
 
   <!-- MAIN CONTENT -->
-  <main data-header-theme="light" class="flex-1 pt-10 sm:pt-11">
+  <main data-header-theme="light" class="flex-1 pt-24">
     <article class="max-w-3xl mx-auto px-6 py-16 md:py-24">
 
       <!-- PAGE HEADER -->
       <header class="border-b border-neutral-200 pb-8">
-        <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight mb-4 bg-gradient-to-r from-[#FF0066] to-[#C000FF] bg-clip-text text-transparent pb-[0.18em] leading-[1.15] overflow-visible">
+        <h1 class="fluid-gradient-text text-5xl sm:text-7xl font-extrabold tracking-tight mb-4">
           How we handle your data.
         </h1>
         <p class="text-xs tracking-widest text-neutral-400">Effective date: August 2026</p>
-        <p class="bg-neutral-50 border border-neutral-200 p-6 rounded-2xl text-neutral-700 font-medium italic my-6">
+        <p class="bg-[#f5f5f7] border-none rounded-3xl p-8 text-neutral-700 font-medium italic my-6">
           "The short version: We treat your data with the same respect we expect for our own. Transparently, securely, and with zero fluff. We don't sell data, and we only collect what's necessary to run campaigns, partner with creators, and deliver exceptional work."
         </p>
       </header>
@@ -337,13 +354,13 @@
       }
 
       if (currentTheme === 'light') {
-        header.className = 'fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-none text-neutral-900 opacity-100 pointer-events-auto';
+        header.className = 'fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/70 backdrop-blur-2xl backdrop-saturate-150 border-none text-neutral-900 opacity-100 pointer-events-auto';
         logo.src = 'logo-black.png';
         links.forEach((l) => { l.className = linkClasses('light', l); });
         if (ctaDesktop) ctaDesktop.className = 'hidden sm:inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-neutral-950 text-white font-bold text-[11px] hover:bg-neutral-800 transition-all';
         if (ctaMobile) ctaMobile.className = 'sm:hidden flex items-center justify-center w-6 h-6 rounded-full bg-neutral-950 text-white transition-all';
       } else {
-        header.className = 'fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-neutral-950/80 backdrop-blur-md border-none text-white opacity-100 pointer-events-auto';
+        header.className = 'fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-neutral-950/70 backdrop-blur-2xl backdrop-saturate-150 border-none text-white opacity-100 pointer-events-auto';
         logo.src = 'logo-white.png';
         links.forEach((l) => { l.className = linkClasses('dark', l); });
         if (ctaDesktop) ctaDesktop.className = 'hidden sm:inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-white text-neutral-950 font-bold text-[11px] hover:bg-neutral-200 transition-all';
