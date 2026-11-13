@@ -359,19 +359,29 @@
       .animate-live-chat-seamless { animation: none; }
     }
 
-    /* Brand logos: compact mobile sizing only — desktop inline heights untouched */
-    @media (max-width: 639px) {
-      /* Pure white canvas so baked-in white logo pads blend away */
-      #section-brands,
-      #section-brands #logos-section {
-        background-color: #ffffff !important;
-      }
-      #section-brands .brand-logo-img {
-        height: auto !important;
-        max-height: 1.75rem; /* max-h-7 */
-        width: auto;
-        object-fit: contain;
-      }
+    /* Brand logos: even grid, no CSS filters (filters paint a white box around transparent PNGs) */
+    #section-brands,
+    #section-brands #logos-section { background-color: #ffffff; }
+    #section-brands .brand-logo-img {
+      display: block;
+      width: auto;
+      height: auto;
+      max-height: 1.75rem;
+      max-width: 5.25rem;
+      object-fit: contain;
+      opacity: .78;
+      /* no CSS filter — filters paint a white plate behind transparent PNGs.
+         multiply alone dissolves any remaining white pads into the white section. */
+      filter: none !important;
+      mix-blend-mode: multiply;
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+    @media (min-width: 640px) {
+      #section-brands .brand-logo-img { max-height: 2rem; max-width: 6.5rem; }
+    }
+    @media (min-width: 768px) {
+      #section-brands .brand-logo-img { max-height: 2.25rem; max-width: 7.5rem; }
     }
 
     /* ==========================================
@@ -971,7 +981,49 @@
     @keyframes howFloat { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-1px); } }
     @keyframes howFlow { to { stroke-dashoffset:-22.1; } }
     @keyframes howPulse { 0%,100% { opacity:.55; } 50% { opacity:1; } }
+    @media (max-width: 767px) { #heroGlow { filter: blur(22px) saturate(1.3) !important; } }
     @media (prefers-reduced-motion: reduce) { #how-it-works .how-ring, #how-it-works .how-float, #how-it-works .how-flow, #how-it-works .how-pulse { animation:none; } }
+
+    /* How it works — mobile: sticky stack so each step locks, then the next card reveals over it */
+    @media (max-width: 767px) {
+      #how-it-works { --how-card-h: min(560px, calc(100svh - 5.5rem)); }
+      #how-it-works .how-stack { gap: 0 !important; }
+      #how-it-works .how-card {
+        position: sticky;
+        top: 5.25rem;
+        z-index: 2;
+        margin-bottom: 18vh;
+        height: var(--how-card-h);
+      }
+      #how-it-works .how-card:last-child { margin-bottom: 0; }
+      #how-it-works .how-device {
+        position: absolute !important;
+        left: 0 !important;
+        right: 0 !important;
+        top: auto !important;
+        bottom: 0 !important;
+        height: 58% !important;
+      }
+      #how-it-works .how-laptop-frame {
+        width: 112% !important;
+        left: -6% !important;
+        top: 0 !important;
+      }
+      #how-it-works .how-copy {
+        position: relative;
+        z-index: 10;
+        background: linear-gradient(to bottom, rgba(255,255,255,.55) 55%, rgba(255,255,255,0));
+        padding-bottom: 1.25rem !important;
+      }
+      #how-it-works .how-copy h3 { font-size: clamp(1.75rem, 8vw, 2.35rem) !important; }
+      #how-it-works .how-copy p { font-size: 0.98rem !important; }
+      /* Attention Engine phone: tighter crop, centred orb, hide outcome pills */
+      #attention-engine .ae-chips-row { display: none !important; }
+      #attention-engine .ae-view {
+        -webkit-mask-image: linear-gradient(to right, transparent 0, #000 4%, #000 96%, transparent 100%);
+        mask-image: linear-gradient(to right, transparent 0, #000 4%, #000 96%, transparent 100%);
+      }
+    }
 
     /* Attention Engine: one 2D scene (fibre curves + comet pulses) feeding a WebGL glass lens; glass chips receive the output */
     #attention-engine .ae-view { position: relative; width: 100%; overflow: hidden; -webkit-mask-image: linear-gradient(to right, transparent 0, #000 8%, #000 94%, transparent 100%); mask-image: linear-gradient(to right, transparent 0, #000 8%, #000 94%, transparent 100%); }
@@ -1000,6 +1052,7 @@
     #attention-engine .ae-chips-row .ae-chips { position: static; width: auto; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 4px; transform: none; }
     #attention-engine .ae-chips-row .ae-chip { height: 40px; padding: 0 11px 0 6px; font-size: 13px; border-radius: 13px; gap: 6px; }
     #attention-engine .ae-chips-row .ae-chip i { width: 26px; height: 26px; font-size: 15px; }
+    @media (max-width: 639px) { #attention-engine .ae-chips-row .ae-chip { height: 34px; padding: 0 10px 0 5px; font-size: 12px; border-radius: 12px; gap: 5px; } #attention-engine .ae-chips-row .ae-chip i { width: 22px; height: 22px; font-size: 13px; } #attention-engine .ae-chips-row .ae-chips { margin-top: 0; } }
   </style>
 
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -1008,6 +1061,7 @@
 </head>
 
 <body class="bg-white text-neutral-900 font-sans antialiased overflow-x-clip">
+  <div id="svhProbe" aria-hidden="true" style="position:fixed;left:0;top:0;width:0;height:100svh;visibility:hidden;pointer-events:none"></div>
 
 
 
@@ -1411,32 +1465,27 @@
       </p>
     </div>
 
-    <div id="logos-section" class="mt-12 flex flex-col items-center gap-8 md:gap-12">
-      <div class="flex flex-wrap md:flex-nowrap justify-center items-center gap-8 md:gap-12 max-w-7xl mx-auto">
-
-          <img src="Content/Brand Logos/bbc.png" alt="BBC" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-8 w-auto object-contain mix-blend-multiply filter grayscale contrast-125 opacity-70 hover:opacity-100 transition-opacity mx-auto" />
-          <img src="Content/Brand Logos/brit-awards.svg" alt="Brit Awards" loading="lazy" decoding="async" class="brand-logo-img h-9 sm:h-10 w-auto object-contain mix-blend-multiply filter grayscale contrast-125 opacity-70 hover:opacity-100 transition-opacity mx-auto" />
-          <img src="Content/Brand Logos/disney.png" alt="Disney" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-8 w-auto object-contain mix-blend-multiply filter grayscale contrast-125 opacity-70 hover:opacity-100 transition-opacity mx-auto" />
-          <img src="Content/Brand Logos/dr-pepper.png" alt="Dr Pepper" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-8 w-auto object-contain mix-blend-multiply filter grayscale contrast-125 opacity-70 hover:opacity-100 transition-opacity mx-auto" />
-          <img src="Content/Brand Logos/gamma.webp" alt="Gamma" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-8 w-auto object-contain mix-blend-multiply filter grayscale contrast-125 opacity-70 hover:opacity-100 transition-opacity mx-auto" />
-          <img src="Content/Brand Logos/google.png" alt="Google" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-8 w-auto object-contain mix-blend-multiply filter grayscale contrast-125 opacity-70 hover:opacity-100 transition-opacity mx-auto" />
-          <img src="Content/Brand Logos/lego.png" alt="Lego" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-8 w-auto object-contain mix-blend-multiply filter grayscale contrast-125 opacity-70 hover:opacity-100 transition-opacity mx-auto" />
-          <img src="Content/Brand Logos/lexus.png" alt="Lexus" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-8 w-auto object-contain mix-blend-multiply filter grayscale contrast-125 opacity-70 hover:opacity-100 transition-opacity mx-auto" />
-          <img src="Content/Brand Logos/major-league-baseball.png" alt="MLB" loading="lazy" decoding="async" class="brand-logo-img h-9 sm:h-10 w-auto object-contain mix-blend-multiply filter grayscale contrast-125 opacity-70 hover:opacity-100 transition-opacity mx-auto" />
-        </div>
-      <div class="flex flex-wrap md:flex-nowrap justify-center items-center gap-8 md:gap-12 max-w-7xl mx-auto">
-          <img src="Content/Brand Logos/lynx.svg" alt="Lynx" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-8 w-auto max-w-[7rem] object-contain mix-blend-multiply filter grayscale contrast-125 opacity-70 hover:opacity-100 transition-opacity mx-auto" />
-          <img src="Content/Brand Logos/mcdonalds.png" alt="McDonalds" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-8 w-auto object-contain mix-blend-multiply filter grayscale contrast-125 opacity-70 hover:opacity-100 transition-opacity mx-auto" />
-          <img src="Content/Brand Logos/movember.png" alt="Movember" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-8 w-auto object-contain mix-blend-multiply filter grayscale contrast-125 opacity-70 hover:opacity-100 transition-opacity mx-auto" />
-          <img src="Content/Brand Logos/O2.png" alt="O2" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-8 w-auto object-contain mix-blend-multiply filter grayscale contrast-125 opacity-70 hover:opacity-100 transition-opacity mx-auto" />
-          <img src="Content/Brand Logos/oracle_red_bull_racing.webp" alt="Oracle Red Bull Racing" loading="lazy" decoding="async" class="brand-logo-img h-5 sm:h-6 w-auto object-contain mix-blend-multiply filter grayscale contrast-125 opacity-70 hover:opacity-100 transition-opacity mx-auto" />
-          <img src="Content/Brand Logos/paramount.svg" alt="Paramount" loading="lazy" decoding="async" class="brand-logo-img h-5 sm:h-6 w-auto object-contain mix-blend-multiply filter grayscale contrast-125 opacity-70 hover:opacity-100 transition-opacity mx-auto" />
-          <img src="Content/Brand Logos/Pfizer.svg" alt="Pfizer" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-8 w-auto object-contain mix-blend-multiply filter grayscale contrast-125 opacity-70 hover:opacity-100 transition-opacity mx-auto" />
-          <img src="Content/Brand Logos/porsche.webp" alt="Porsche" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-8 w-auto object-contain mix-blend-multiply filter grayscale contrast-125 opacity-70 hover:opacity-100 transition-opacity mx-auto" />
-          <img src="Content/Brand Logos/tourism-ireland.webp" alt="Tourism Ireland" loading="lazy" decoding="async" class="brand-logo-img h-5 sm:h-6 w-auto object-contain mix-blend-multiply filter grayscale contrast-125 opacity-70 hover:opacity-100 transition-opacity mx-auto" />
-          <img src="Content/Brand Logos/Uefa.webp" alt="UEFA" loading="lazy" decoding="async" class="brand-logo-img h-7 sm:h-8 w-auto object-contain mix-blend-multiply filter grayscale contrast-125 opacity-70 hover:opacity-100 transition-opacity mx-auto" />
-          <img src="Content/Brand Logos/Universal_Pictures_logo.svg" alt="Universal Pictures" loading="lazy" decoding="async" class="brand-logo-img h-9 sm:h-10 w-auto object-contain mix-blend-multiply filter grayscale contrast-125 opacity-70 hover:opacity-100 transition-opacity mx-auto" />
-      </div>
+    <div id="logos-section" class="mt-12 grid grid-cols-4 md:grid-cols-10 gap-x-3 gap-y-8 md:gap-x-8 md:gap-y-12 items-center justify-items-center w-full max-w-lg md:max-w-6xl mx-auto px-1 sm:px-2">
+          <img src="Content/Brand Logos/bbc.png" alt="BBC" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/brit-awards.svg" alt="Brit Awards" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/disney-t.png?v=2" alt="Disney" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/dr-pepper.png" alt="Dr Pepper" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/gamma-t.png?v=2" alt="Gamma" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/google.png" alt="Google" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/lego.png" alt="Lego" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/lexus.png" alt="Lexus" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/lynx.svg" alt="Lynx" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/mcdonalds.png" alt="McDonalds" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/major-league-baseball.png" alt="MLB" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/movember.png" alt="Movember" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/O2.png" alt="O2" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/oracle_red_bull_racing-t.png?v=2" alt="Oracle Red Bull Racing" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/paramount.svg" alt="Paramount" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/Pfizer.svg" alt="Pfizer" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/porsche.webp" alt="Porsche" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/tourism-ireland.webp" alt="Tourism Ireland" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/uefa-t.png?v=2" alt="UEFA" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/Universal_Pictures_logo.svg" alt="Universal Pictures" loading="lazy" decoding="async" class="brand-logo-img" />
     </div>
 
   </section>
@@ -1605,23 +1654,23 @@
     </div>
 
     <!-- Plain vertical flow: every card scrolls all the way off the screen as the next one arrives -->
-    <div class="max-w-[1472px] mx-auto px-4 flex flex-col gap-8">
+    <div class="how-stack max-w-[1472px] mx-auto px-4 flex flex-col gap-8">
 
       <!-- STEP 1 -->
       <article class="how-card relative w-full h-[var(--how-card-h)] rounded-3xl">
         <!-- Everything inside is clipped to the card. The card scrolls normally and carries its text; the laptop inside never moves. -->
         <div class="how-clip absolute inset-0 flex flex-col md:flex-row" style="background:radial-gradient(circle at 75% 100%,rgba(120,150,255,.42),rgba(120,150,255,.2) 12%,rgba(120,150,255,0) 58%),#E6EDFC">
-          <div class="relative z-10 w-full md:w-1/3 px-7 pt-9 md:py-[clamp(2rem,5.6vw,5rem)] md:pl-[clamp(2rem,5.6vw,5rem)] md:pr-0 flex flex-col md:justify-center md:h-full">
+          <div class="how-copy relative z-10 w-full md:w-1/3 px-7 pt-9 md:py-[clamp(2rem,5.6vw,5rem)] md:pl-[clamp(2rem,5.6vw,5rem)] md:pr-0 flex flex-col md:justify-center md:h-full">
             <span class="text-base font-semibold tracking-[-0.01em] text-[#1f2025]/60 mb-3 block">Step 01</span>
             <h3 class="text-[clamp(2.25rem,4.45vw,4rem)] font-semibold tracking-[-0.03em] leading-none text-[#1f2025] mb-2 [text-wrap:balance]">Creative strategy</h3>
             <p class="text-[clamp(1.0625rem,1.67vw,1.5rem)] font-normal tracking-normal leading-[1.3] text-[#1f2025]/60 max-w-[34rem] [text-wrap:pretty]">We map social data and cultural signals to find where real attention lives. Human intuition meets machine precision to craft concepts that move audiences and build lasting brand equity.</p>
           </div>
 
           <!-- Laptop: position:fixed on desktop (identical spot in every card), so it never moves; each card's clipped window wipes across it and reveals its own dashboard. Travels with the card on phones. -->
-          <div class="how-device fixed left-0 right-0 top-[calc((100svh-var(--how-card-h))/2)] h-[var(--how-card-h)] max-md:!absolute max-md:!inset-0 max-md:!h-full pointer-events-none" aria-hidden="true">
-            <div class="max-w-[1472px] mx-auto px-4 max-md:!px-0 h-full">
+          <div class="how-device fixed left-0 right-0 top-[calc((100svh-var(--how-card-h))/2)] h-[var(--how-card-h)] pointer-events-none" aria-hidden="true">
+            <div class="max-w-[1472px] mx-auto px-4 h-full">
               <div class="relative h-full">
-                <div class="absolute w-[118%] left-[-9%] top-[52%] md:w-[64%] md:left-[40%] md:top-[5%]">
+                <div class="how-laptop-frame absolute w-[118%] left-[-9%] top-[52%] md:w-[64%] md:left-[40%] md:top-[5%]">
                   <img src="Content/macbook-mockup-black.png" alt="" class="relative w-full h-auto z-10 drop-shadow-2xl" draggable="false">
                   <!-- Screen: measured from the PNG cutout (+0.15% overscan under the bezel); container-query units keep the dashboard proportional -->
                   <div class="absolute top-[2.4%] left-[10.1%] w-[79.8%] h-[85.6%] bg-white z-0 overflow-hidden [container-type:inline-size]">
@@ -1655,17 +1704,17 @@
       <article class="how-card relative w-full h-[var(--how-card-h)] rounded-3xl">
         <!-- Everything inside is clipped to the card. The card scrolls normally and carries its text; the laptop inside never moves. -->
         <div class="how-clip absolute inset-0 flex flex-col md:flex-row" style="background:radial-gradient(circle at 75% 100%,rgba(80,160,235,.42),rgba(80,160,235,.2) 12%,rgba(80,160,235,0) 58%),#E3EEFB">
-          <div class="relative z-10 w-full md:w-1/3 px-7 pt-9 md:py-[clamp(2rem,5.6vw,5rem)] md:pl-[clamp(2rem,5.6vw,5rem)] md:pr-0 flex flex-col md:justify-center md:h-full">
+          <div class="how-copy relative z-10 w-full md:w-1/3 px-7 pt-9 md:py-[clamp(2rem,5.6vw,5rem)] md:pl-[clamp(2rem,5.6vw,5rem)] md:pr-0 flex flex-col md:justify-center md:h-full">
             <span class="text-base font-semibold tracking-[-0.01em] text-[#1f2025]/60 mb-3 block">Step 02</span>
             <h3 class="text-[clamp(2.25rem,4.45vw,4rem)] font-semibold tracking-[-0.03em] leading-none text-[#1f2025] mb-2 [text-wrap:balance]">Creator activation</h3>
             <p class="text-[clamp(1.0625rem,1.67vw,1.5rem)] font-normal tracking-normal leading-[1.3] text-[#1f2025]/60 max-w-[34rem] [text-wrap:pretty]">End-to-end execution inside our operating system, ThreadOS™. Shortlisting, vetting, contracting, content approvals, and payments — handled in one frictionless workspace.</p>
           </div>
 
           <!-- Laptop: position:fixed on desktop (identical spot in every card), so it never moves; each card's clipped window wipes across it and reveals its own dashboard. Travels with the card on phones. -->
-          <div class="how-device fixed left-0 right-0 top-[calc((100svh-var(--how-card-h))/2)] h-[var(--how-card-h)] max-md:!absolute max-md:!inset-0 max-md:!h-full pointer-events-none" aria-hidden="true">
-            <div class="max-w-[1472px] mx-auto px-4 max-md:!px-0 h-full">
+          <div class="how-device fixed left-0 right-0 top-[calc((100svh-var(--how-card-h))/2)] h-[var(--how-card-h)] pointer-events-none" aria-hidden="true">
+            <div class="max-w-[1472px] mx-auto px-4 h-full">
               <div class="relative h-full">
-                <div class="absolute w-[118%] left-[-9%] top-[52%] md:w-[64%] md:left-[40%] md:top-[5%]">
+                <div class="how-laptop-frame absolute w-[118%] left-[-9%] top-[52%] md:w-[64%] md:left-[40%] md:top-[5%]">
                   <img src="Content/macbook-mockup-black.png" alt="" class="relative w-full h-auto z-10 drop-shadow-2xl" draggable="false">
                   <!-- Screen: measured from the PNG cutout (+0.15% overscan under the bezel); container-query units keep the dashboard proportional -->
                   <div class="absolute top-[2.4%] left-[10.1%] w-[79.8%] h-[85.6%] bg-white z-0 overflow-hidden [container-type:inline-size]">
@@ -1700,17 +1749,17 @@
       <article class="how-card relative w-full h-[var(--how-card-h)] rounded-3xl">
         <!-- Everything inside is clipped to the card. The card scrolls normally and carries its text; the laptop inside never moves. -->
         <div class="how-clip absolute inset-0 flex flex-col md:flex-row" style="background:radial-gradient(circle at 75% 100%,rgba(120,125,245,.42),rgba(120,125,245,.2) 12%,rgba(120,125,245,0) 58%),#E8E9FB">
-          <div class="relative z-10 w-full md:w-1/3 px-7 pt-9 md:py-[clamp(2rem,5.6vw,5rem)] md:pl-[clamp(2rem,5.6vw,5rem)] md:pr-0 flex flex-col md:justify-center md:h-full">
+          <div class="how-copy relative z-10 w-full md:w-1/3 px-7 pt-9 md:py-[clamp(2rem,5.6vw,5rem)] md:pl-[clamp(2rem,5.6vw,5rem)] md:pr-0 flex flex-col md:justify-center md:h-full">
             <span class="text-base font-semibold tracking-[-0.01em] text-[#1f2025]/60 mb-3 block">Step 03</span>
             <h3 class="text-[clamp(2.25rem,4.45vw,4rem)] font-semibold tracking-[-0.03em] leading-none text-[#1f2025] mb-2 [text-wrap:balance]">Paid social amplification</h3>
             <p class="text-[clamp(1.0625rem,1.67vw,1.5rem)] font-normal tracking-normal leading-[1.3] text-[#1f2025]/60 max-w-[34rem] [text-wrap:pretty]">Turn organic hits into paid scale. We secure native creator account access, usage licensing, and rights — transforming high-performing content into scaled ad assets.</p>
           </div>
 
           <!-- Laptop: position:fixed on desktop (identical spot in every card), so it never moves; each card's clipped window wipes across it and reveals its own dashboard. Travels with the card on phones. -->
-          <div class="how-device fixed left-0 right-0 top-[calc((100svh-var(--how-card-h))/2)] h-[var(--how-card-h)] max-md:!absolute max-md:!inset-0 max-md:!h-full pointer-events-none" aria-hidden="true">
-            <div class="max-w-[1472px] mx-auto px-4 max-md:!px-0 h-full">
+          <div class="how-device fixed left-0 right-0 top-[calc((100svh-var(--how-card-h))/2)] h-[var(--how-card-h)] pointer-events-none" aria-hidden="true">
+            <div class="max-w-[1472px] mx-auto px-4 h-full">
               <div class="relative h-full">
-                <div class="absolute w-[118%] left-[-9%] top-[52%] md:w-[64%] md:left-[40%] md:top-[5%]">
+                <div class="how-laptop-frame absolute w-[118%] left-[-9%] top-[52%] md:w-[64%] md:left-[40%] md:top-[5%]">
                   <img src="Content/macbook-mockup-black.png" alt="" class="relative w-full h-auto z-10 drop-shadow-2xl" draggable="false">
                   <!-- Screen: measured from the PNG cutout (+0.15% overscan under the bezel); container-query units keep the dashboard proportional -->
                   <div class="absolute top-[2.4%] left-[10.1%] w-[79.8%] h-[85.6%] bg-white z-0 overflow-hidden [container-type:inline-size]">
@@ -1754,17 +1803,17 @@
       <article class="how-card relative w-full h-[var(--how-card-h)] rounded-3xl">
         <!-- Everything inside is clipped to the card. The card scrolls normally and carries its text; the laptop inside never moves. -->
         <div class="how-clip absolute inset-0 flex flex-col md:flex-row" style="background:radial-gradient(circle at 75% 100%,rgba(150,130,245,.42),rgba(150,130,245,.2) 12%,rgba(150,130,245,0) 58%),#ECE8FB">
-          <div class="relative z-10 w-full md:w-1/3 px-7 pt-9 md:py-[clamp(2rem,5.6vw,5rem)] md:pl-[clamp(2rem,5.6vw,5rem)] md:pr-0 flex flex-col md:justify-center md:h-full">
+          <div class="how-copy relative z-10 w-full md:w-1/3 px-7 pt-9 md:py-[clamp(2rem,5.6vw,5rem)] md:pl-[clamp(2rem,5.6vw,5rem)] md:pr-0 flex flex-col md:justify-center md:h-full">
             <span class="text-base font-semibold tracking-[-0.01em] text-[#1f2025]/60 mb-3 block">Step 04</span>
             <h3 class="text-[clamp(2.25rem,4.45vw,4rem)] font-semibold tracking-[-0.03em] leading-none text-[#1f2025] mb-2 [text-wrap:balance]">Measurement &amp; analytics</h3>
             <p class="text-[clamp(1.0625rem,1.67vw,1.5rem)] font-normal tracking-normal leading-[1.3] text-[#1f2025]/60 max-w-[34rem] [text-wrap:pretty]">Track real-time engagement and buyer actions through Attention Engine™. Remove guesswork with predictive forecasting and clear visibility on every pound of spend.</p>
           </div>
 
           <!-- Laptop: position:fixed on desktop (identical spot in every card), so it never moves; each card's clipped window wipes across it and reveals its own dashboard. Travels with the card on phones. -->
-          <div class="how-device fixed left-0 right-0 top-[calc((100svh-var(--how-card-h))/2)] h-[var(--how-card-h)] max-md:!absolute max-md:!inset-0 max-md:!h-full pointer-events-none" aria-hidden="true">
-            <div class="max-w-[1472px] mx-auto px-4 max-md:!px-0 h-full">
+          <div class="how-device fixed left-0 right-0 top-[calc((100svh-var(--how-card-h))/2)] h-[var(--how-card-h)] pointer-events-none" aria-hidden="true">
+            <div class="max-w-[1472px] mx-auto px-4 h-full">
               <div class="relative h-full">
-                <div class="absolute w-[118%] left-[-9%] top-[52%] md:w-[64%] md:left-[40%] md:top-[5%]">
+                <div class="how-laptop-frame absolute w-[118%] left-[-9%] top-[52%] md:w-[64%] md:left-[40%] md:top-[5%]">
                   <img src="Content/macbook-mockup-black.png" alt="" class="relative w-full h-auto z-10 drop-shadow-2xl" draggable="false">
                   <!-- Screen: measured from the PNG cutout (+0.15% overscan under the bezel); container-query units keep the dashboard proportional -->
                   <div class="absolute top-[2.4%] left-[10.1%] w-[79.8%] h-[85.6%] bg-white z-0 overflow-hidden [container-type:inline-size]">
@@ -1799,17 +1848,17 @@
       <article class="how-card relative w-full h-[var(--how-card-h)] rounded-3xl">
         <!-- Everything inside is clipped to the card. The card scrolls normally and carries its text; the laptop inside never moves. -->
         <div class="how-clip absolute inset-0 flex flex-col md:flex-row" style="background:radial-gradient(circle at 75% 100%,rgba(175,125,240,.42),rgba(175,125,240,.2) 12%,rgba(175,125,240,0) 58%),#F0E8FA">
-          <div class="relative z-10 w-full md:w-1/3 px-7 pt-9 md:py-[clamp(2rem,5.6vw,5rem)] md:pl-[clamp(2rem,5.6vw,5rem)] md:pr-0 flex flex-col md:justify-center md:h-full">
+          <div class="how-copy relative z-10 w-full md:w-1/3 px-7 pt-9 md:py-[clamp(2rem,5.6vw,5rem)] md:pl-[clamp(2rem,5.6vw,5rem)] md:pr-0 flex flex-col md:justify-center md:h-full">
             <span class="text-base font-semibold tracking-[-0.01em] text-[#1f2025]/60 mb-3 block">Step 05</span>
             <h3 class="text-[clamp(2.25rem,4.45vw,4rem)] font-semibold tracking-[-0.03em] leading-none text-[#1f2025] mb-2 [text-wrap:balance]">Smarter every time</h3>
             <p class="text-[clamp(1.0625rem,1.67vw,1.5rem)] font-normal tracking-normal leading-[1.3] text-[#1f2025]/60 max-w-[34rem] [text-wrap:pretty]">Every campaign makes the next one smarter. Performance data feeds directly back into Fred AI, constantly sharpening our creator targeting and stretching your budget further.</p>
           </div>
 
           <!-- Laptop: position:fixed on desktop (identical spot in every card), so it never moves; each card's clipped window wipes across it and reveals its own dashboard. Travels with the card on phones. -->
-          <div class="how-device fixed left-0 right-0 top-[calc((100svh-var(--how-card-h))/2)] h-[var(--how-card-h)] max-md:!absolute max-md:!inset-0 max-md:!h-full pointer-events-none" aria-hidden="true">
-            <div class="max-w-[1472px] mx-auto px-4 max-md:!px-0 h-full">
+          <div class="how-device fixed left-0 right-0 top-[calc((100svh-var(--how-card-h))/2)] h-[var(--how-card-h)] pointer-events-none" aria-hidden="true">
+            <div class="max-w-[1472px] mx-auto px-4 h-full">
               <div class="relative h-full">
-                <div class="absolute w-[118%] left-[-9%] top-[52%] md:w-[64%] md:left-[40%] md:top-[5%]">
+                <div class="how-laptop-frame absolute w-[118%] left-[-9%] top-[52%] md:w-[64%] md:left-[40%] md:top-[5%]">
                   <img src="Content/macbook-mockup-black.png" alt="" class="relative w-full h-auto z-10 drop-shadow-2xl" draggable="false">
                   <!-- Screen: measured from the PNG cutout (+0.15% overscan under the bezel); container-query units keep the dashboard proportional -->
                   <div class="absolute top-[2.4%] left-[10.1%] w-[79.8%] h-[85.6%] bg-white z-0 overflow-hidden [container-type:inline-size]">
@@ -2600,20 +2649,30 @@
       const texCtx = texCv.getContext('2d');
       function layout() {
         const w = Math.max(280, el.clientWidth);
-        let x0, vw, m;
-        if (w >= 1100) { m = 'stage'; x0 = 0; vw = W; s = w / W; }
-        else if (w >= 640) { m = 'row'; x0 = 150; vw = 1100; s = w / vw; }
-        else { m = 'row'; x0 = 480; vw = 650; s = w / vw; }
+        let x0, vw, m, yOff = 0, viewH;
+        if (w >= 1100) { m = 'stage'; x0 = 0; vw = W; s = w / W; viewH = H; }
+        else if (w >= 640) { m = 'row'; x0 = 150; vw = 1100; s = w / vw; viewH = H; }
+        else {
+          /* phones: tight window centred on the glass, slightly taller scale, hide the outcome pills */
+          m = 'phone'; vw = 400; x0 = CX - vw / 2 - 36; s = w / vw; viewH = 320; yOff = (H - viewH) / 2;   /* -36 shifts the orb right in the frame so left-side input fibres don't make it look off-centre */
+        }
         dpr = Math.min(window.devicePixelRatio || 1, 2);
         if (m !== mode) {
           mode = m;
-          buildOutputs(m === 'stage' ? 1108 : 1400, m === 'stage');
-          (m === 'stage' ? stage : chipsRow).appendChild(chipsWrap);
+          buildOutputs(m === 'stage' ? 1108 : (m === 'phone' ? CX + 8 : 1400), m === 'stage');
+          if (m === 'phone') {
+            chipsWrap.style.display = 'none';
+            if (chipsRow) chipsRow.style.display = 'none';
+          } else {
+            chipsWrap.style.display = '';
+            if (chipsRow) chipsRow.style.display = '';
+            (m === 'stage' ? stage : chipsRow).appendChild(chipsWrap);
+          }
         }
-        view.style.height = (H * s) + 'px';
-        sceneCv.style.width = (W * s) + 'px'; sceneCv.style.height = (H * s) + 'px'; sceneCv.style.left = (-x0 * s) + 'px';
+        view.style.height = (viewH * s) + 'px';
+        sceneCv.style.width = (W * s) + 'px'; sceneCv.style.height = (H * s) + 'px'; sceneCv.style.left = (-x0 * s) + 'px'; sceneCv.style.top = (-yOff * s) + 'px';
         sceneCv.width = Math.round(W * s * dpr); sceneCv.height = Math.round(H * s * dpr);
-        stage.style.transform = 'translate(' + (-x0 * s) + 'px,0) scale(' + s + ')';
+        stage.style.transform = 'translate(' + (-x0 * s) + 'px,' + (-yOff * s) + 'px) scale(' + s + ')';
         glw = Math.min(1280, Math.round(REGION * s * dpr));
         if (three) three.resize(glw);
       }
@@ -4575,9 +4634,14 @@
     const g = { T0: 0, H: 0, W: 0, R: 28, from: 0.72, peak: 1, topPeak: 0, y0: 0, yB: 1, tilt: 10, textTop: 0, textH: 0, pinTop: 112, hold: 0 };
     let lastW = -1, lastH = -1;
 
+    // Small-viewport height: unlike innerHeight it does NOT change when a phone's browser toolbar collapses while scrolling,
+    // so the hero geometry is never re-measured (and the sky never rebuilt) mid-scroll.
+    const svhProbe = document.getElementById('svhProbe');
+    const stableVh = function () { return (svhProbe && svhProbe.offsetHeight) || window.innerHeight || 800; };
+
     function measure() {
       const mobile = window.innerWidth < 768;
-      const vh = window.innerHeight || 800;
+      const vh = stableVh();
       g.T0 = vh;   // the screen starts just below the first viewport, in stage coordinates (the stage is pinned at the top of the viewport)
       g.H = laptop.offsetHeight;
       const baseW = laptop.offsetWidth;
@@ -4593,7 +4657,7 @@
       g.vh = vh;
       g.hold = reduce ? 0 : Math.round(vh * (mobile ? 0.7 : 0.9));   // scroll distance the finished screen stays put, so it can be watched
       g.heroH = heroEl ? heroEl.offsetHeight : 0;
-      lastW = window.innerWidth; lastH = window.innerHeight;
+      lastW = window.innerWidth; lastH = stableVh();
       // Size the sky so its white edge lands halfway down the screen in its final position
       g.K = 0.4;
       const wend = reduce ? g.T0 + g.H * 0.5 : (g.topPeak + 0.5 * g.peak * g.H) + g.yB * (1 - g.K);
@@ -4696,7 +4760,7 @@
     let cur = window.scrollY || 0, raf = 0, last = 0;
     function frame(now) {
       const target = window.scrollY || window.pageYOffset || 0;
-      if (lastW !== window.innerWidth || lastH !== window.innerHeight) measure();
+      if (lastW !== window.innerWidth || lastH !== stableVh()) measure();
       const dt = Math.min(64, now - (last || now)); last = now;
       const k = 1; // no follow-lag: the laptop is a pure function of scroll, so it can never trail behind the page and overlap the laurels
       cur += (target - cur) * k;
@@ -4752,7 +4816,13 @@
     // Scroll behaviour per layer. v = on-screen speed relative to the page while the laptop rises, m = after it has landed (1 = moves with the page)
     const LAYERS = { bg: { v: .12, m: .5 }, mid: { v: .62, m: 1 } };
     const sky = () => window.__heroSky || { K: .4, Sf: (window.innerHeight || 800) * .95, Wend: cv.clientHeight, reduce: false };
-    const shift = (L, s, S) => { const sc = Math.min(s, S.Sf), ex = Math.max(0, s - S.Sf); return -(L.v - (1 - S.K)) * sc - (L.m - 1) * ex; };
+    const shift = (L, s, S) => {
+      const mobile = w > 0 && w < 768;
+      const v = (L === LAYERS.mid && mobile) ? .28 : L.v;   /* phones: less mid-layer shear so constellations don't shoot across the sky */
+      const m = (L === LAYERS.mid && mobile) ? .85 : L.m;
+      const sc = Math.min(s, S.Sf), ex = Math.max(0, s - S.Sf);
+      return -(v - (1 - S.K)) * sc - (m - 1) * ex;
+    };
 
     let w = 0, h = 0, dpr = 1, bg = [], mid = [], edges = [];
     function build() {
@@ -4760,18 +4830,18 @@
       if (!w || !h) return;
       dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
-      const r = rng((Math.random() * 4294967296) >>> 0), S = sky(), small = w < 768, SC = clamp(w / 1440, .6, 1.15);
+      const r = rng(20261113), S = sky(), small = w < 768, SC = clamp(w / 1440, .6, 1.15);
       const range = (L) => { const o = shift(L, S.reduce ? 0 : S.Sf, S); return [Math.min(0, -o), Math.max(h, h - o)]; };   // spawn band so the layer still covers the sky at the end of the scroll
       bg = []; mid = []; edges = [];
 
       // Far layer: tiny, dim, slow
       let [lo, hi] = range(LAYERS.bg);
       const nBg = Math.min(small ? 570 : 1800, Math.round(w * (hi - lo) / 1130));
-      for (let i = 0; i < nBg; i++) { const big = r() < .2; bg.push({ x: r() * w, y: lo + r() * (hi - lo), r: big ? .9 + r() * .5 : .45 + r() * .5, a: big ? .5 + r() * .3 : .22 + r() * .32, f: .03 + r() * .04, ph: r() * 6.283, amp: 2 + r() * 3, br: r() < .3, per: 7 + r() * 8 }); }
+      for (let i = 0; i < nBg; i++) { const big = r() < .2; bg.push({ x: r() * w, y: lo + r() * (hi - lo), r: big ? .9 + r() * .5 : .45 + r() * .5, a: big ? .5 + r() * .3 : .22 + r() * .32, f: .03 + r() * .04, ph: r() * 6.283, amp: small ? (.4 + r() * .6) : (2 + r() * 3), br: r() < .3, per: 7 + r() * 8 }); }
 
       // Mid layer: crisp constellations
       [lo, hi] = range(LAYERS.mid);
-      const nCl = small ? 5 : 10, centres = [], minD = w * (small ? .3 : .105);
+      const nCl = small ? 4 : 10, centres = [], minD = w * (small ? .34 : .105);
       for (let guard = 0; centres.length < nCl && guard < 400; guard++) {
         const cx = (.05 + r() * .9) * w, cy = lo + (.03 + r() * .9) * (hi - lo);
         if (centres.some((p) => Math.hypot(p[0] - cx, p[1] - cy) < minD)) continue;
@@ -4781,7 +4851,7 @@
         const n = 8 + Math.floor(r() * 5), spread = (55 + r() * 85) * SC, mem = [];
         for (let i = 0; i < n; i++) {
           const z = .25 + r() * .75;
-          const nd = { x: ce[0] + gauss(r) * spread * 1.4, y: ce[1] + gauss(r) * spread, z, c: ci, r: .9 + z * 1.5, base: .3 + z * .42, act: r() < .45, per: 5 + r() * 5, ph: r() * 6.283, tint: 0, amp: (3 + z * 8) * SC, f: .06 + r() * .08 };
+          const nd = { x: ce[0] + gauss(r) * spread * 1.4, y: ce[1] + gauss(r) * spread, z, c: ci, r: .9 + z * 1.5, base: .3 + z * .42, act: r() < .45, per: 5 + r() * 5, ph: r() * 6.283, tint: 0, amp: (small ? (.4 + z * 1.2) : (3 + z * 8)) * SC, f: .06 + r() * .08 };
           mem.push(nd); mid.push(nd);
         }
         mem.forEach((a) => mem.map((b) => [b, Math.hypot(a.x - b.x, a.y - b.y)]).filter((p) => p[0] !== a).sort((p, q) => p[1] - q[1]).slice(0, 1).forEach((p) => {
