@@ -27,85 +27,56 @@
     }
   </script>
   <style>
-        @keyframes fluidGradientSweep {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-.fluid-gradient-text {
-      background: linear-gradient(120deg, #FF0066 0%, #E00199 25%, #8B5CF6 50%, #E00199 75%, #FF0066 100%);
-      background-size: 250% auto;
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      color: transparent;
-      animation: fluidGradientSweep 6s ease-in-out infinite;
-      display: inline-block;
-    }
     body {
       margin: 0;
-      padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", sans-serif;
-      letter-spacing: -0.015em;
+      letter-spacing: -0.011em;
       -webkit-font-smoothing: antialiased;
       background-color: #ffffff;
-      color: #171717;
-      line-height: 1.5; /* Apple body leading-relaxed */
+      color: #1f2025;
+      line-height: 1.5;
     }
-    /* Apple HIG line-spacing system */
-    h1, h2 {
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-    }
-    h3, h4 {
-      line-height: 1.375; /* leading-snug */
-      letter-spacing: 0;
-    }
-    p, li {
-      line-height: 1.5; /* leading-relaxed */
-      text-wrap: pretty;
-    }
-    h1, h2, h3, h4 {
-      text-wrap: balance;
-    }
-    .spring-pill {
-      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    .spring-pill:active {
-      transform: scale(0.94);
-    }
+    h1, h2, h3, h4 { text-wrap: balance; }
+    p, li { text-wrap: pretty; }
     #mainHeader .nav-link {
+      white-space: nowrap;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
-      font-size: 12px;
-      font-weight: 400;
-      letter-spacing: -0.01em;
-      line-height: normal;
+      font-size: 16px;
+      font-weight: 500;
+      letter-spacing: 0;
+      line-height: 1.4;
     }
-  </style>
+    @media (max-width: 639px) { #mainHeader .nav-link { font-size: 14px; } }
+    @media (max-width: 399px) { #mainHeader nav { padding-left: 16px; padding-right: 16px; } #mainHeader .nav-link { font-size: 13px; } }
+    #legal-toc a { display: block; padding: .35rem 0 .35rem .9rem; border-left: 1px solid rgba(0,0,0,.08); font-size: 13px; line-height: 1.35; color: rgba(31,32,37,.5); transition: color .2s, border-color .2s; }
+    #legal-toc a:hover { color: rgba(31,32,37,.85); }
+    #legal-toc a.is-active { color: #1f2025; border-left-color: #1f2025; font-weight: 500; }
+    </style>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body class="bg-white text-neutral-900 antialiased min-h-screen flex flex-col">
 
-  <!-- Razor-thin dynamic header (borderless) -->
-  <header id="mainHeader" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/70 backdrop-blur-2xl backdrop-saturate-150 border-none text-neutral-900">
-    <nav class="relative max-w-7xl mx-auto px-3.5 sm:px-6 h-12 sm:h-14 flex items-center justify-between gap-2">
-      <a href="/" class="flex items-center shrink-0">
-        <img id="navLogo" src="logo-black.png" alt="Red Thread" class="h-3.5 sm:h-4 w-auto object-contain transition-opacity duration-300">
+  <!-- Floating pill navigation (matches index) -->
+  <header id="mainHeader" class="fixed top-0 left-0 right-0 z-50 pointer-events-none">
+    <nav class="pointer-events-auto relative max-w-4xl mx-auto mt-4 px-6 h-14 bg-white/80 backdrop-blur-md rounded-full border border-neutral-200/60 shadow-sm flex items-center justify-between gap-2 text-neutral-900">
+      <a href="index.html" class="flex items-center shrink-0">
+        <img id="navLogo" src="logo-black.png" alt="Red Thread" class="h-4 sm:h-5 w-auto object-contain">
       </a>
 
-      <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-7 text-[12px] font-normal tracking-[-0.01em] font-['SF_Pro_Text',-apple-system,BlinkMacSystemFont,'Helvetica_Neue',sans-serif]">
-        <a href="/tech" class="nav-link text-neutral-900/80 hover:text-black transition-colors">Our Tech</a>
-        <a href="/#case-studies" class="nav-link text-neutral-900/80 hover:text-black transition-colors">Our Work</a>
+      <div class="flex flex-1 justify-center sm:flex-none sm:absolute sm:left-1/2 sm:-translate-x-1/2 items-center gap-4 sm:gap-10 font-['SF_Pro_Text',-apple-system,BlinkMacSystemFont,'Helvetica_Neue',sans-serif]">
+        <a href="about.html" class="nav-link text-neutral-900 hover:text-neutral-500 transition-colors">About</a>
+        <a href="tech.html" class="nav-link text-neutral-900 hover:text-neutral-500 transition-colors">Our Tech</a>
+        <a href="index.html#how-it-works" class="nav-link hidden sm:inline-block text-neutral-900 hover:text-neutral-500 transition-colors">How It Works</a>
+        <a href="index.html#case-studies" class="nav-link text-neutral-900 hover:text-neutral-500 transition-colors">Our Work</a>
       </div>
 
       <div class="flex items-center shrink-0">
-        <a id="navCtaMobile" href="/#contact-faq" class="sm:hidden flex items-center justify-center w-6 h-6 rounded-full bg-neutral-950 text-white transition-all" aria-label="Let's chat">
+        <a id="navCtaMobile" href="index.html#contact-faq" class="sm:hidden flex items-center justify-center w-6 h-6 rounded-full bg-neutral-900 text-white shadow-none active:scale-95 transition-all" aria-label="Let's chat">
           <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.2L4 17.2V4h16v12z"/>
           </svg>
         </a>
-        <a id="navCtaDesktop" href="/#contact-faq" class="hidden sm:inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-neutral-950 text-white font-bold text-[11px] hover:bg-neutral-800 transition-all">
+        <a id="navCtaDesktop" href="index.html#contact-faq" class="hidden sm:inline-flex items-center justify-center px-4 py-2 rounded-full bg-neutral-900 text-white font-medium text-[16px] leading-[1.4] tracking-normal hover:bg-neutral-800 transition-all">
           Let's chat.
         </a>
       </div>
@@ -113,69 +84,71 @@
   </header>
 
   <!-- MAIN CONTENT -->
-  <main data-header-theme="light" class="flex-1 pt-24">
-    <article class="max-w-3xl mx-auto px-6 py-16 md:py-24">
+  <main data-header-theme="light" class="flex-1 pt-28">
+    <div class="max-w-5xl mx-auto px-6 py-12 md:py-20 lg:grid lg:grid-cols-[12.5rem_minmax(0,1fr)] lg:gap-16">
+    <aside class="hidden lg:block"><nav id="legal-toc" aria-label="On this page" class="sticky top-28"></nav></aside>
+    <article class="w-full max-w-3xl">
 
       <!-- PAGE HEADER -->
-      <header class="border-b border-neutral-200 pb-8">
-        <h1 class="fluid-gradient-text text-5xl sm:text-7xl font-extrabold tracking-tight mb-4">
+      <header class="pb-10">
+        <h1 class="text-[clamp(2.5rem,5.5vw,4.25rem)] font-semibold tracking-[-0.03em] leading-[1.02] text-[#1f2025] mb-4">
           How we handle your data.
         </h1>
-        <p class="text-xs tracking-widest text-neutral-400">Effective date: August 2026</p>
-        <p class="bg-[#f5f5f7] border-none rounded-3xl p-8 text-neutral-700 font-medium italic my-6">
+        <p class="text-sm text-[#1f2025]/50">Effective date: August 2026</p>
+        <p class="bg-[#F5F5F7] rounded-[24px] p-7 sm:p-8 text-[#1f2025]/75 text-[17px] leading-[1.5] mt-8">
           "The short version: We treat your data with the same respect we expect for our own. Transparently, securely, and with zero fluff. We don't sell data, and we only collect what's necessary to run campaigns, partner with creators, and deliver exceptional work."
         </p>
       </header>
 
       <!-- SECTION 1 -->
-      <section>
-        <h2 class="text-2xl font-bold text-neutral-900 tracking-tight mt-10 mb-4">1. Who We Are &amp; How To Contact Us</h2>
-        <p class="text-neutral-600 leading-relaxed text-sm sm:text-base mb-4">This Privacy Policy applies to <strong class="text-neutral-900">Red Thread Creative Ltd</strong> (referred to as "Red Thread", "we", "us", or "our").</p>
-        <div class="bg-neutral-50 border border-neutral-200 p-6 rounded-2xl space-y-2 text-sm text-neutral-800">
+      <section class="py-10 border-t border-black/[0.08] scroll-mt-28">
+        <h2 class="text-[1.5rem] sm:text-[1.75rem] font-semibold tracking-[-0.025em] leading-[1.15] text-[#1f2025] mb-5">1. Who We Are &amp; How To Contact Us</h2>
+        <p class="text-[#1f2025]/65 leading-[1.65] text-[15px] sm:text-base mb-4">This Privacy Policy applies to <strong class="text-neutral-900">Red Thread Creative Ltd</strong> (referred to as "Red Thread", "we", "us", or "our").</p>
+        <div class="bg-[#F5F5F7] p-6 rounded-[20px] space-y-2 text-sm text-[#1f2025]/80">
           <p><strong class="text-neutral-900">Company Registration Number:</strong> 16771805</p>
           <p><strong class="text-neutral-900">Registered Address:</strong> 93 Alexandra Drive, Surbiton, KT5 9AE, United Kingdom</p>
-          <p><strong class="text-neutral-900">Data Privacy Contact:</strong> <a href="mailto:hello@redthread.co" class="text-[#FF0066] font-medium hover:text-[#C000FF] transition-colors underline">hello@redthread.co</a></p>
+          <p><strong class="text-neutral-900">Data Privacy Contact:</strong> <a href="mailto:hello@redthread.co" class="text-[#1f2025] font-medium underline decoration-black/25 underline-offset-4 hover:decoration-black/60 transition-colors">hello@redthread.co</a></p>
         </div>
-        <p class="text-neutral-600 leading-relaxed text-sm sm:text-base mt-4">Under UK Data Protection Law (including UK GDPR and the Data Protection Act 2018), Red Thread Creative Ltd acts as the <strong class="text-neutral-900">Data Controller</strong> for personal information processed under this policy.</p>
+        <p class="text-[#1f2025]/65 leading-[1.65] text-[15px] sm:text-base mt-4">Under UK Data Protection Law (including UK GDPR and the Data Protection Act 2018), Red Thread Creative Ltd acts as the <strong class="text-neutral-900">Data Controller</strong> for personal information processed under this policy.</p>
       </section>
 
       <!-- SECTION 2 -->
-      <section>
-        <h2 class="text-2xl font-bold text-neutral-900 tracking-tight mt-10 mb-4">2. The Information We Collect</h2>
+      <section class="py-10 border-t border-black/[0.08] scroll-mt-28">
+        <h2 class="text-[1.5rem] sm:text-[1.75rem] font-semibold tracking-[-0.025em] leading-[1.15] text-[#1f2025] mb-5">2. The Information We Collect</h2>
         <div class="space-y-6">
           <div class="space-y-2">
-            <h3 class="font-semibold text-neutral-900 text-sm sm:text-base">A. Brands, Clients &amp; Business Partners</h3>
-            <p class="text-neutral-600 leading-relaxed text-sm sm:text-base"><strong class="text-neutral-800">Personal &amp; Professional Details:</strong> Name, job title, work email address, phone number, and company name when you make an enquiry, request a proposal, or partner with us.</p>
-            <p class="text-neutral-600 leading-relaxed text-sm sm:text-base"><strong class="text-neutral-800">Financial Data:</strong> Billing addresses, bank details, and transaction histories required to process contracts and invoices.</p>
+            <h3 class="font-semibold text-[#1f2025] text-base sm:text-lg tracking-[-0.01em]">A. Brands, Clients &amp; Business Partners</h3>
+            <p class="text-[#1f2025]/65 leading-[1.65] text-[15px] sm:text-base"><strong class="text-neutral-800">Personal &amp; Professional Details:</strong> Name, job title, work email address, phone number, and company name when you make an enquiry, request a proposal, or partner with us.</p>
+            <p class="text-[#1f2025]/65 leading-[1.65] text-[15px] sm:text-base"><strong class="text-neutral-800">Financial Data:</strong> Billing addresses, bank details, and transaction histories required to process contracts and invoices.</p>
           </div>
           <div class="space-y-2">
-            <h3 class="font-semibold text-neutral-900 text-sm sm:text-base">B. Creators, Influencers &amp; Talent</h3>
-            <p class="text-neutral-600 leading-relaxed text-sm sm:text-base"><strong class="text-neutral-800">Profile &amp; Contact Data:</strong> Name, email address, phone number, location, representation details, and shipping address (for campaign product deliveries).</p>
-            <p class="text-neutral-600 leading-relaxed text-sm sm:text-base"><strong class="text-neutral-800">Social Media &amp; Performance Data:</strong> Public handles, audience demographics, follower counts, engagement metrics, and content links submitted directly by you or via public platform APIs (Meta, YouTube, TikTok).</p>
-            <p class="text-neutral-600 leading-relaxed text-sm sm:text-base"><strong class="text-neutral-800">Financial &amp; Compliance Data:</strong> Bank details, tax IDs, and signed agreements required for campaign contracting and payout.</p>
+            <h3 class="font-semibold text-[#1f2025] text-base sm:text-lg tracking-[-0.01em]">B. Creators, Influencers &amp; Talent</h3>
+            <p class="text-[#1f2025]/65 leading-[1.65] text-[15px] sm:text-base"><strong class="text-neutral-800">Profile &amp; Contact Data:</strong> Name, email address, phone number, location, representation details, and shipping address (for campaign product deliveries).</p>
+            <p class="text-[#1f2025]/65 leading-[1.65] text-[15px] sm:text-base"><strong class="text-neutral-800">Social Media &amp; Performance Data:</strong> Public handles, audience demographics, follower counts, engagement metrics, and content links submitted directly by you or via public platform APIs (Meta, YouTube, TikTok).</p>
+            <p class="text-[#1f2025]/65 leading-[1.65] text-[15px] sm:text-base"><strong class="text-neutral-800">Financial &amp; Compliance Data:</strong> Bank details, tax IDs, and signed agreements required for campaign contracting and payout.</p>
           </div>
           <div class="space-y-2">
-            <h3 class="font-semibold text-neutral-900 text-sm sm:text-base">C. Website Visitors</h3>
-            <p class="text-neutral-600 leading-relaxed text-sm sm:text-base"><strong class="text-neutral-800">Technical Data:</strong> IP address, browser type/version, time zone, operating system, and interaction patterns (pages viewed, click paths).</p>
+            <h3 class="font-semibold text-[#1f2025] text-base sm:text-lg tracking-[-0.01em]">C. Website Visitors</h3>
+            <p class="text-[#1f2025]/65 leading-[1.65] text-[15px] sm:text-base"><strong class="text-neutral-800">Technical Data:</strong> IP address, browser type/version, time zone, operating system, and interaction patterns (pages viewed, click paths).</p>
           </div>
         </div>
       </section>
 
       <!-- SECTION 3: TABLE -->
-      <section>
-        <h2 class="text-2xl font-bold text-neutral-900 tracking-tight mt-10 mb-4">3. How &amp; Why We Use Your Data (Legal Grounds)</h2>
-        <p class="text-neutral-600 leading-relaxed text-sm sm:text-base">Under UK GDPR, we must have a lawful basis to process your information. Here is how we apply it:</p>
+      <section class="py-10 border-t border-black/[0.08] scroll-mt-28">
+        <h2 class="text-[1.5rem] sm:text-[1.75rem] font-semibold tracking-[-0.025em] leading-[1.15] text-[#1f2025] mb-5">3. How &amp; Why We Use Your Data (Legal Grounds)</h2>
+        <p class="text-[#1f2025]/65 leading-[1.65] text-[15px] sm:text-base">Under UK GDPR, we must have a lawful basis to process your information. Here is how we apply it:</p>
 
-        <div class="overflow-x-auto rounded-2xl border border-neutral-200 my-6 shadow-sm">
+        <div class="overflow-x-auto rounded-[20px] border border-black/[0.08] my-6">
           <table class="w-full text-left">
-            <thead class="bg-neutral-100 border-b border-neutral-200 text-neutral-900 font-bold uppercase text-xs tracking-wider">
+            <thead class="bg-[#F5F5F7] border-b border-black/[0.06] text-[#1f2025]/60 font-medium text-xs tracking-[0.02em]">
               <tr>
                 <th class="p-4 text-xs sm:text-sm">Purpose / Activity</th>
                 <th class="p-4 text-xs sm:text-sm">Data Types</th>
                 <th class="p-4 text-xs sm:text-sm">Legal Ground (UK GDPR)</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-neutral-100 bg-white text-neutral-700">
+            <tbody class="divide-y divide-black/[0.06] bg-white text-[#1f2025]/75">
               <tr>
                 <td class="p-4 text-xs sm:text-sm font-medium text-neutral-900">Responding to brand enquiries &amp; pitches</td>
                 <td class="p-4 text-xs sm:text-sm">Contact &amp; Business Data</td>
@@ -212,22 +185,22 @@
       </section>
 
       <!-- SECTION 4 -->
-      <section>
-        <h2 class="text-2xl font-bold text-neutral-900 tracking-tight mt-10 mb-4">4. Social Media Platform Data &amp; APIs</h2>
-        <p class="text-neutral-600 leading-relaxed text-sm sm:text-base mb-4">When reviewing creator metrics for brand campaigns, we process public social media activity in strict compliance with platform developer policies:</p>
-        <ul class="list-disc pl-5 space-y-2 text-neutral-600 leading-relaxed text-sm sm:text-base">
+      <section class="py-10 border-t border-black/[0.08] scroll-mt-28">
+        <h2 class="text-[1.5rem] sm:text-[1.75rem] font-semibold tracking-[-0.025em] leading-[1.15] text-[#1f2025] mb-5">4. Social Media Platform Data &amp; APIs</h2>
+        <p class="text-[#1f2025]/65 leading-[1.65] text-[15px] sm:text-base mb-4">When reviewing creator metrics for brand campaigns, we process public social media activity in strict compliance with platform developer policies:</p>
+        <ul class="list-disc marker:text-neutral-300 pl-5 space-y-2 text-[#1f2025]/65 leading-[1.65] text-[15px] sm:text-base">
           <li><strong class="text-neutral-800">Meta API (Instagram/Facebook):</strong> Public profile info and campaign analytics are processed in accordance with Meta's Data Policy.</li>
-          <li><strong class="text-neutral-800">YouTube API Services:</strong> Processed in line with the <a href="https://www.google.com/policies/privacy" target="_blank" rel="noopener noreferrer" class="text-[#FF0066] font-medium hover:text-[#C000FF] transition-colors underline">Google Privacy Policy</a>. You can revoke access via Google Security Settings at any time.</li>
+          <li><strong class="text-neutral-800">YouTube API Services:</strong> Processed in line with the <a href="https://www.google.com/policies/privacy" target="_blank" rel="noopener noreferrer" class="text-[#1f2025] font-medium underline decoration-black/25 underline-offset-4 hover:decoration-black/60 transition-colors">Google Privacy Policy</a>. You can revoke access via Google Security Settings at any time.</li>
           <li><strong class="text-neutral-800">TikTok &amp; Other Platforms:</strong> Metrics are processed solely for campaign vetting and performance reporting.</li>
         </ul>
       </section>
 
       <!-- SECTION 5 -->
-      <section>
-        <h2 class="text-2xl font-bold text-neutral-900 tracking-tight mt-10 mb-4">5. Sharing Your Data</h2>
-        <p class="text-neutral-600 leading-relaxed text-sm sm:text-base mb-4"><strong class="text-neutral-900">We do not sell, rent, or trade your personal data. Ever.</strong></p>
-        <p class="text-neutral-600 leading-relaxed text-sm sm:text-base mb-4">We only share information with vetted service providers who help us operate:</p>
-        <ul class="list-disc pl-5 space-y-2 text-neutral-600 leading-relaxed text-sm sm:text-base">
+      <section class="py-10 border-t border-black/[0.08] scroll-mt-28">
+        <h2 class="text-[1.5rem] sm:text-[1.75rem] font-semibold tracking-[-0.025em] leading-[1.15] text-[#1f2025] mb-5">5. Sharing Your Data</h2>
+        <p class="text-[#1f2025]/65 leading-[1.65] text-[15px] sm:text-base mb-4"><strong class="text-neutral-900">We do not sell, rent, or trade your personal data. Ever.</strong></p>
+        <p class="text-[#1f2025]/65 leading-[1.65] text-[15px] sm:text-base mb-4">We only share information with vetted service providers who help us operate:</p>
+        <ul class="list-disc marker:text-neutral-300 pl-5 space-y-2 text-[#1f2025]/65 leading-[1.65] text-[15px] sm:text-base">
           <li><strong class="text-neutral-800">Cloud Infrastructure:</strong> Secure hosting, communication, and project platforms (Vercel, Google Workspace, Slack).</li>
           <li><strong class="text-neutral-800">Financial Advisors:</strong> Accountants and auditors for UK tax compliance.</li>
           <li><strong class="text-neutral-800">Brand Clients (For Creators):</strong> Sharing public handles and audience stats for campaign approval.</li>
@@ -236,36 +209,37 @@
       </section>
 
       <!-- SECTION 6 -->
-      <section>
-        <h2 class="text-2xl font-bold text-neutral-900 tracking-tight mt-10 mb-4">6. International Data Transfers</h2>
-        <p class="text-neutral-600 leading-relaxed text-sm sm:text-base">When cloud software processes data outside the UK or EEA, we ensure protection through UK Adequacy Decisions, standard contractual clauses (SCCs), or the UK International Data Transfer Agreement (IDTA).</p>
+      <section class="py-10 border-t border-black/[0.08] scroll-mt-28">
+        <h2 class="text-[1.5rem] sm:text-[1.75rem] font-semibold tracking-[-0.025em] leading-[1.15] text-[#1f2025] mb-5">6. International Data Transfers</h2>
+        <p class="text-[#1f2025]/65 leading-[1.65] text-[15px] sm:text-base">When cloud software processes data outside the UK or EEA, we ensure protection through UK Adequacy Decisions, standard contractual clauses (SCCs), or the UK International Data Transfer Agreement (IDTA).</p>
       </section>
 
       <!-- SECTION 7 -->
-      <section>
-        <h2 class="text-2xl font-bold text-neutral-900 tracking-tight mt-10 mb-4">7. Security &amp; Data Retention</h2>
-        <p class="text-neutral-600 leading-relaxed text-sm sm:text-base">We enforce encrypted storage, HTTPS, access control, and two-factor authentication across all agency systems. We retain client and creator contract records for up to <strong class="text-neutral-900">6 years</strong> following campaign completion to fulfil UK tax rules.</p>
+      <section class="py-10 border-t border-black/[0.08] scroll-mt-28">
+        <h2 class="text-[1.5rem] sm:text-[1.75rem] font-semibold tracking-[-0.025em] leading-[1.15] text-[#1f2025] mb-5">7. Security &amp; Data Retention</h2>
+        <p class="text-[#1f2025]/65 leading-[1.65] text-[15px] sm:text-base">We enforce encrypted storage, HTTPS, access control, and two-factor authentication across all agency systems. We retain client and creator contract records for up to <strong class="text-neutral-900">6 years</strong> following campaign completion to fulfil UK tax rules.</p>
       </section>
 
       <!-- SECTION 8 -->
-      <section>
-        <h2 class="text-2xl font-bold text-neutral-900 tracking-tight mt-10 mb-4">8. Your Legal Rights (UK GDPR)</h2>
-        <p class="text-neutral-600 leading-relaxed text-sm sm:text-base mb-4">You have the right to access, rectify, delete, or restrict processing of your personal data. To exercise your rights, email us at <a href="mailto:hello@redthread.co" class="text-[#FF0066] font-medium hover:text-[#C000FF] transition-colors underline">hello@redthread.co</a>. We respond within one calendar month.</p>
-        <p class="text-neutral-600 leading-relaxed text-sm sm:text-base">You also have the right to lodge a complaint with the UK regulator: <strong class="text-neutral-900">Information Commissioner's Office (ICO)</strong> at <a href="https://ico.org.uk" target="_blank" rel="noopener noreferrer" class="text-[#FF0066] font-medium hover:text-[#C000FF] transition-colors underline">ico.org.uk</a>.</p>
+      <section class="py-10 border-t border-black/[0.08] scroll-mt-28">
+        <h2 class="text-[1.5rem] sm:text-[1.75rem] font-semibold tracking-[-0.025em] leading-[1.15] text-[#1f2025] mb-5">8. Your Legal Rights (UK GDPR)</h2>
+        <p class="text-[#1f2025]/65 leading-[1.65] text-[15px] sm:text-base mb-4">You have the right to access, rectify, delete, or restrict processing of your personal data. To exercise your rights, email us at <a href="mailto:hello@redthread.co" class="text-[#1f2025] font-medium underline decoration-black/25 underline-offset-4 hover:decoration-black/60 transition-colors">hello@redthread.co</a>. We respond within one calendar month.</p>
+        <p class="text-[#1f2025]/65 leading-[1.65] text-[15px] sm:text-base">You also have the right to lodge a complaint with the UK regulator: <strong class="text-neutral-900">Information Commissioner's Office (ICO)</strong> at <a href="https://ico.org.uk" target="_blank" rel="noopener noreferrer" class="text-[#1f2025] font-medium underline decoration-black/25 underline-offset-4 hover:decoration-black/60 transition-colors">ico.org.uk</a>.</p>
       </section>
 
       <!-- SECTION 9 -->
-      <section class="border-t border-neutral-200 pt-8 mt-10">
-        <h2 class="text-2xl font-bold text-neutral-900 tracking-tight mt-0 mb-4">9. Cookies &amp; Policy Updates</h2>
-        <p class="text-neutral-600 leading-relaxed text-sm sm:text-base mb-4">We use essential cookies for site functionality and basic performance analytics. You can adjust your browser settings to block cookies at any time.</p>
-        <p class="text-neutral-600 leading-relaxed text-sm sm:text-base">We review this policy periodically. Updates are published directly to this page.</p>
+      <section class="py-10 border-t border-black/[0.08] scroll-mt-28">
+        <h2 class="text-[1.5rem] sm:text-[1.75rem] font-semibold tracking-[-0.025em] leading-[1.15] text-[#1f2025] mb-5">9. Cookies &amp; Policy Updates</h2>
+        <p class="text-[#1f2025]/65 leading-[1.65] text-[15px] sm:text-base mb-4">We use essential cookies for site functionality and basic performance analytics. You can adjust your browser settings to block cookies at any time.</p>
+        <p class="text-[#1f2025]/65 leading-[1.65] text-[15px] sm:text-base">We review this policy periodically. Updates are published directly to this page.</p>
       </section>
 
     </article>
+    </div>
   </main>
 
   <!-- Light footer — matches tech.html -->
-  <footer data-header-theme="light" class="bg-white border-t border-neutral-200/80 py-12 px-4 sm:px-8 text-neutral-600 text-xs w-full relative z-20 mt-auto">
+  <footer data-header-theme="light" class="bg-[#F5F5F7] py-12 px-4 sm:px-8 text-neutral-600 text-xs w-full relative z-20 mt-auto">
     <div class="max-w-7xl mx-auto">
       <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div class="flex flex-col items-start gap-3 ml-0 pl-0">
@@ -274,9 +248,10 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-6 text-neutral-600 pb-1">
-          <a href="/tech" class="text-neutral-600 hover:text-black transition-colors">Our Tech</a>
-          <a href="/privacy" class="text-neutral-600 hover:text-black transition-colors" aria-current="page">Privacy policy</a>
-          <a href="/terms" class="text-neutral-600 hover:text-black transition-colors">Terms of service</a>
+          <a href="about.html" class="text-neutral-600 hover:text-black transition-colors">About</a>
+          <a href="tech.html" class="text-neutral-600 hover:text-black transition-colors">Our Tech</a>
+          <a href="privacy.html" class="text-neutral-600 hover:text-black transition-colors" aria-current="page">Privacy policy</a>
+          <a href="terms.html" class="text-neutral-600 hover:text-black transition-colors">Terms of service</a>
           <div class="flex items-center gap-4">
             <a
               href="https://www.linkedin.com/company/redthreadagency"
@@ -310,73 +285,30 @@
 
 
 <script>
-  (function setupDynamicHeader() {
-    const header = document.getElementById('mainHeader');
-    const logo = document.getElementById('navLogo');
-    const links = document.querySelectorAll('.nav-link');
-    const ctaDesktop = document.getElementById('navCtaDesktop');
-    const ctaMobile = document.getElementById('navCtaMobile');
-    if (!header || !logo) return;
-
-    const path = window.location.pathname || '';
-    const isHomepage = (path === '/' || path === '' || path.endsWith('/index.html') || path.endsWith('/index'))
-      && !/\/(tech|privacy|terms|signature)(\.html)?\/?$/.test(path);
-
-    function linkClasses(theme, el) {
-      const isHow = (el.getAttribute('href') || '').includes('how-it-works');
-      const hide = isHow ? 'hidden sm:inline-block ' : '';
-      const base = 'nav-link ' + hide + 'text-[12px] font-normal tracking-[-0.01em] transition-colors ';
-      if (theme === 'light') {
-        return base + 'text-neutral-900/80 hover:text-black';
-      }
-      return base + 'text-white/80 hover:text-white';
+  (function initLegalToc() {
+    const toc = document.getElementById('legal-toc');
+    const heads = Array.from(document.querySelectorAll('article section > h2'));
+    if (!toc || !heads.length) return;
+    heads.forEach((h, i) => {
+      h.id = h.id || ('s' + (i + 1));
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent.replace(/^\s*\d+\.\s*/, '');
+      toc.appendChild(a);
+    });
+    const links = Array.from(toc.querySelectorAll('a'));
+    function onScroll() {
+      let cur = 0;
+      heads.forEach((h, i) => { if (h.getBoundingClientRect().top < 160) cur = i; });
+      links.forEach((l, i) => l.classList.toggle('is-active', i === cur));
     }
-
-    function updateHeader() {
-      const atLanding = window.scrollY < 1;
-      const sections = document.querySelectorAll('[data-header-theme]');
-      let currentTheme = isHomepage ? 'dark' : 'light';
-      sections.forEach((sec) => {
-        const rect = sec.getBoundingClientRect();
-        if (rect.top <= 25 && rect.bottom >= 25) {
-          currentTheme = sec.getAttribute('data-header-theme') || currentTheme;
-        }
-      });
-
-      if (isHomepage && atLanding) {
-        // Fully invisible until the user scrolls past 1px
-        header.className = 'fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent backdrop-blur-none border-none text-white opacity-0 pointer-events-none';
-        logo.src = 'logo-white.png';
-        links.forEach((l) => { l.className = linkClasses('dark', l); });
-        if (ctaDesktop) ctaDesktop.className = 'hidden sm:inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-white text-neutral-950 font-bold text-[11px] hover:bg-neutral-200 transition-all';
-        if (ctaMobile) ctaMobile.className = 'sm:hidden flex items-center justify-center w-6 h-6 rounded-full bg-white text-neutral-950 transition-all';
-        return;
-      }
-
-      if (currentTheme === 'light') {
-        header.className = 'fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/70 backdrop-blur-2xl backdrop-saturate-150 border-none text-neutral-900 opacity-100 pointer-events-auto';
-        logo.src = 'logo-black.png';
-        links.forEach((l) => { l.className = linkClasses('light', l); });
-        if (ctaDesktop) ctaDesktop.className = 'hidden sm:inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-neutral-950 text-white font-bold text-[11px] hover:bg-neutral-800 transition-all';
-        if (ctaMobile) ctaMobile.className = 'sm:hidden flex items-center justify-center w-6 h-6 rounded-full bg-neutral-950 text-white transition-all';
-      } else {
-        header.className = 'fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-neutral-950/70 backdrop-blur-2xl backdrop-saturate-150 border-none text-white opacity-100 pointer-events-auto';
-        logo.src = 'logo-white.png';
-        links.forEach((l) => { l.className = linkClasses('dark', l); });
-        if (ctaDesktop) ctaDesktop.className = 'hidden sm:inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-white text-neutral-950 font-bold text-[11px] hover:bg-neutral-200 transition-all';
-        if (ctaMobile) ctaMobile.className = 'sm:hidden flex items-center justify-center w-6 h-6 rounded-full bg-white text-neutral-950 transition-all';
-      }
-    }
-
-    window.addEventListener('scroll', updateHeader, { passive: true });
-    window.addEventListener('resize', updateHeader, { passive: true });
-    updateHeader();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
   })();
 </script>
-
 <div id="cookie-banner" class="fixed bottom-6 right-6 z-50 max-w-sm bg-neutral-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-5 shadow-2xl hidden">
   <p class="text-xs text-neutral-300 leading-relaxed mb-3">
-    We use essential cookies to analyse traffic and optimise your experience. Read our <a href="/privacy" class="text-neutral-300 hover:text-white underline decoration-neutral-500">Privacy Policy</a>.
+    We use essential cookies to analyse traffic and optimise your experience. Read our <a href="privacy.html" class="text-neutral-300 hover:text-white underline decoration-neutral-500">Privacy Policy</a>.
   </p>
   <div class="flex items-center gap-2">
     <button type="button" id="accept-cookies" class="px-4 py-1.5 bg-white text-black text-xs font-medium rounded-full hover:bg-neutral-200 transition-all">Accept</button>

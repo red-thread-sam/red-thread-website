@@ -64,12 +64,15 @@
       line-height: 1.5; /* leading-relaxed */
     }
     #mainHeader .nav-link {
+      white-space: nowrap;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
-      font-size: 12px;
-      font-weight: 400;
-      letter-spacing: -0.01em;
-      line-height: normal;
+      font-size: 16px;
+      font-weight: 500;
+      letter-spacing: 0;
+      line-height: 1.4;
     }
+    @media (max-width: 639px) { #mainHeader .nav-link { font-size: 14px; } }
+    @media (max-width: 399px) { #mainHeader nav { padding-left: 16px; padding-right: 16px; } #mainHeader .nav-link { font-size: 13px; } }
 
     @keyframes fluidGradientSweep {
       0% { background-position: 0% 50%; }
@@ -117,11 +120,35 @@
     }
 
     #orbitCanvas {
+      position: absolute; /* out of flow: the stage height comes from its aspect-ratio only, never from a stale canvas size */
+      left: 0;
+      top: 0;
       display: block;
       width: 100%;
       height: 100%;
       pointer-events: none;
     }
+
+    /* Orbit: glass core (WebGL, circular-masked), a front layer for dots that pass in front of it, and glass label chips */
+    #orbitGL { position: absolute; display: block; pointer-events: none; visibility: hidden; }
+    #orbitGL.on { visibility: visible; }
+    #orbitFront { position: absolute; left: 0; top: 0; display: block; pointer-events: none; }
+    #orbitChips { position: absolute; inset: 0; pointer-events: none; }
+    .orbit-orb-fb { display: none; position: absolute; border-radius: 50%; pointer-events: none;
+      background: radial-gradient(circle at 34% 28%, rgba(255,255,255,.34), rgba(255,255,255,.07) 38%, rgba(20,21,27,.45) 74%);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.22), inset 0 -14px 26px -14px rgba(255,120,160,.4), 0 0 70px rgba(255,104,134,.16);
+      -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+    #orbitCanvasStage.orbit-nogl .orbit-orb-fb { display: block; }
+    #orbitCanvasStage.orbit-nogl #orbitGL { display: none; }
+    .orbit-chip { --rgb: 255,104,134; position: absolute; left: 0; top: 0; display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 15px 0 6px; border-radius: 14px;
+      font-size: 13px; font-weight: 500; letter-spacing: -.01em; white-space: nowrap; color: rgba(255,255,255,.9); opacity: 0; will-change: transform, opacity;
+      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.035)), rgba(20,21,27,.55);
+      border: 1px solid rgba(var(--rgb), .34);
+      box-shadow: inset 0 1px 0 rgba(var(--rgb), .24), inset 0 -10px 18px -14px rgba(0,0,0,.6), 0 14px 30px -14px rgba(0,0,0,.75), 0 0 26px rgba(var(--rgb), .12);
+      -webkit-backdrop-filter: blur(18px) saturate(1.5); backdrop-filter: blur(18px) saturate(1.5); }
+    .orbit-chip i { flex: none; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; background: rgba(var(--rgb), .14);
+      box-shadow: inset 0 0 0 1px rgba(var(--rgb), .34), inset 0 1px 0 rgba(255,255,255,.14); font-size: 15px; color: rgb(var(--rgb)); }
+    @media (max-width: 639px) { .orbit-chip { height: 32px; font-size: 11.5px; padding: 0 12px 0 5px; gap: 6px; border-radius: 12px; } .orbit-chip i { width: 22px; height: 22px; font-size: 13px; } }
 
     /* Apple HIG dark bento material */
     .bento-card {
@@ -213,183 +240,36 @@
       transform: scale(0.94);
     }
 
-    /* ==========================================
-       MOBILE-ONLY ISOLATED OVERRIDES (< 768px)
-       Zero effect on desktop screen sizes
-       ========================================== */
     @media (max-width: 767px) {
-      /* overflow-x: clip — hidden on ancestors breaks position:sticky on mobile */
-      html, body {
-        overflow-x: clip !important;
-        width: 100% !important;
-        max-width: 100vw !important;
-      }
-
-      main,
-      #heroScrollPin {
-        overflow: visible !important;
-      }
-
-      /* Hero sticky track + pinned viewport */
-      #heroScrollPin {
-        height: 220vh !important; /* Gives touch-scrolling enough runway to render the 3D zoom */
-        position: relative !important;
-      }
-
-      #heroViewport {
-        position: sticky !important;
-        top: 0 !important;
-        height: 100dvh !important;
-        overflow: hidden !important;
-        z-index: 10 !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-      }
-
-      /* Headline lock-up — absolute inside sticky viewport (scrolls with section) */
-      #heroHeadline {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-        position: absolute !important;
-        inset: 0 !important;
-        height: 100% !important;
-        width: 100% !important;
-        margin: 0 auto !important;
-        padding-left: 1.25rem !important;
-        padding-right: 1.25rem !important;
-        text-align: center !important;
-        transform-origin: center center !important;
-        max-width: none !important;
-        z-index: 30 !important;
-      }
-
-      #heroHeadline h1 {
-        font-size: 1.55rem !important;
-        line-height: 1.2 !important;
-        text-align: center !important;
-      }
-
-      #heroHeadline span {
-        white-space: normal !important;
-      }
-
-      /* Section 1.5 = single in-sticky #manifestoReveal (no duplicate DOM) */
-      #manifestoReveal {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: stretch !important;
-        justify-content: center !important;
-        min-height: auto !important;
-        padding: 5rem 1.25rem !important;
-        overflow: visible !important;
-        opacity: 0; /* JS drives reveal during passthrough */
-      }
-
-      #manifestoReveal .grid {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 2rem !important;
-      }
-
-      #manifestoReveal .lg\:col-span-6:first-child {
-        width: 100% !important;
-        display: block !important;
-      }
-
-      #manifestoReveal h2 {
-        font-size: 2.1rem !important;
-        line-height: 1.15 !important;
-        text-align: left !important;
-      }
-
-      #manifestoReveal p {
-        font-size: 1rem !important;
-        line-height: 1.6 !important;
-      }
+      html, body { overflow-x: clip !important; width: 100% !important; max-width: 100vw !important; }
     }
-
-    @media (min-width: 640px) and (max-width: 767px) {
-      #heroHeadline h1 {
-        font-size: 1.85rem !important;
-      }
-    }
-
-    /* After first play: lockup + manifesto become normal stacked sections (organic scroll) */
-    #heroScrollPin.hero-static-flow {
-      height: auto !important;
-    }
-    #heroScrollPin.hero-static-flow #heroViewport {
-      position: relative !important;
-      top: auto !important;
-      height: auto !important;
-      overflow: visible !important;
-      display: block !important;
-    }
-    #heroScrollPin.hero-static-flow #heroLockupPanel {
-      position: relative !important;
-      inset: auto !important;
-      /* Shorter than a full viewport so return-scroll isn't a long empty runway */
-      height: 72vh !important;
-      height: 72dvh !important;
-      width: 100% !important;
-      overflow: hidden !important;
-    }
-    #heroScrollPin.hero-static-flow #heroHeadline {
-      opacity: 1 !important;
-      filter: none !important;
-      transform: none !important;
-    }
-    #heroScrollPin.hero-static-flow #manifestoReveal {
-      position: relative !important;
-      inset: auto !important;
-      min-height: 0 !important;
-      height: auto !important;
-      opacity: 1 !important;
-      transform: none !important;
-      z-index: 1 !important;
-      /* Content-sized — no full-viewport spacer between lockup and orbit */
-      padding: 4.5rem 1.5rem 5.5rem !important;
-      display: flex !important;
-      align-items: center !important;
-    }
-
-    @media (min-width: 768px) {
-      #heroScrollPin.hero-static-flow #heroLockupPanel {
-        height: 78vh !important;
-        height: 78dvh !important;
-      }
-      #heroScrollPin.hero-static-flow #manifestoReveal {
-        padding: 5.5rem 3rem 6.5rem !important;
-      }
-    }
-
-  </style>
+    </style>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
 </head>
 <body class="font-sans bg-neutral-950 text-neutral-950 antialiased overflow-x-clip">
 
-  <!-- Razor-thin dynamic header (borderless) — under particles, above hero bg -->
-  <header id="mainHeader" class="fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-white/70 backdrop-blur-2xl backdrop-saturate-150 border-none text-neutral-900">
-    <nav class="relative max-w-7xl mx-auto px-3.5 sm:px-6 h-12 sm:h-14 flex items-center justify-between gap-2">
-      <a href="/" class="flex items-center shrink-0">
-        <img id="navLogo" src="logo-black.png" alt="Red Thread" class="h-3.5 sm:h-4 w-auto object-contain transition-opacity duration-300">
+  <!-- Floating pill navigation (matches index) -->
+  <header id="mainHeader" class="fixed top-0 left-0 right-0 z-40 pointer-events-none">
+    <nav class="pointer-events-auto relative max-w-4xl mx-auto mt-4 px-6 h-14 bg-white/80 backdrop-blur-md rounded-full border border-neutral-200/60 shadow-sm flex items-center justify-between gap-2 text-neutral-900">
+      <a href="index.html" class="flex items-center shrink-0">
+        <img id="navLogo" src="logo-black.png" alt="Red Thread" class="h-4 sm:h-5 w-auto object-contain">
       </a>
 
-      <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-7 text-[12px] font-normal tracking-[-0.01em] font-['SF_Pro_Text',-apple-system,BlinkMacSystemFont,'Helvetica_Neue',sans-serif]">
-        <a href="/tech" class="nav-link text-neutral-900/80 hover:text-black transition-colors" aria-current="page">Our Tech</a>
-        <a href="/#case-studies" class="nav-link text-neutral-900/80 hover:text-black transition-colors">Our Work</a>
+      <div class="flex flex-1 justify-center sm:flex-none sm:absolute sm:left-1/2 sm:-translate-x-1/2 items-center gap-4 sm:gap-10 font-['SF_Pro_Text',-apple-system,BlinkMacSystemFont,'Helvetica_Neue',sans-serif]">
+        <a href="about.html" class="nav-link text-neutral-900 hover:text-neutral-500 transition-colors">About</a>
+        <a href="tech.html" class="nav-link text-neutral-900 hover:text-neutral-500 transition-colors" aria-current="page">Our Tech</a>
+        <a href="index.html#how-it-works" class="nav-link hidden sm:inline-block text-neutral-900 hover:text-neutral-500 transition-colors">How It Works</a>
+        <a href="index.html#case-studies" class="nav-link text-neutral-900 hover:text-neutral-500 transition-colors">Our Work</a>
       </div>
 
       <div class="flex items-center shrink-0">
-        <a id="navCtaMobile" href="/#contact-faq" class="sm:hidden flex items-center justify-center w-6 h-6 rounded-full bg-neutral-950 text-white transition-all" aria-label="Let's chat">
+        <a id="navCtaMobile" href="index.html#contact-faq" class="sm:hidden flex items-center justify-center w-6 h-6 rounded-full bg-neutral-900 text-white shadow-none active:scale-95 transition-all" aria-label="Let's chat">
           <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.2L4 17.2V4h16v12z"/>
           </svg>
         </a>
-        <a id="navCtaDesktop" href="/#contact-faq" class="hidden sm:inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-neutral-950 text-white font-bold text-[11px] hover:bg-neutral-800 transition-all">
+        <a id="navCtaDesktop" href="index.html#contact-faq" class="hidden sm:inline-flex items-center justify-center px-4 py-2 rounded-full bg-neutral-900 text-white font-medium text-[16px] leading-[1.4] tracking-normal hover:bg-neutral-800 transition-all">
           Let's chat.
         </a>
       </div>
@@ -398,174 +278,216 @@
 
   <main class="bg-white">
 
-    <!-- 1. HERO — sticky scrub first; after play, flattens to lockup + manifesto stack -->
-    <section id="heroScrollPin" data-theme="light" data-header-theme="light" class="h-[170vh] relative z-10 bg-white pointer-events-none">
-      <div id="heroViewport" class="sticky top-0 h-screen h-[100dvh] w-full overflow-hidden flex items-center justify-center bg-white">
-        <div id="heroLockupPanel" class="absolute inset-0 w-full h-full">
-          <canvas id="heroWaveformCanvas" class="absolute inset-0 w-full h-full pointer-events-none z-20 opacity-90" aria-hidden="true"></canvas>
-          <div id="heroHeadline" class="absolute inset-0 z-30 flex items-center justify-center pointer-events-none px-6 will-change-transform">
-            <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold text-neutral-950 tracking-tight leading-[1.15] text-center max-w-5xl">
-              <span class="block md:whitespace-nowrap mb-1 sm:mb-2">Data meets culture.</span>
-              <span class="block md:whitespace-nowrap">Software meets scale.</span>
-            </h1>
+    <!-- 1. HERO: a ribbon of fine particles on white. On load they start scattered and settle into the ribbon in under 2s, then flow. Normal scrolling: nothing zooms, pins or moves with the scroll. -->
+    <section id="hero" data-theme="light" data-header-theme="light" class="relative z-10 bg-white overflow-hidden" aria-labelledby="hero-title">
+      <div class="relative h-[100svh] flex items-center justify-center px-5 sm:px-8">
+        <canvas id="heroParticles" class="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true"></canvas>
+        <h1 id="hero-title" class="relative z-10 w-fit mx-auto -mt-[12svh] text-center text-[#1f2025] font-semibold tracking-[-0.035em] leading-[1.06] text-[clamp(2.25rem,6.2vw,5.5rem)]">
+          <span class="block md:whitespace-nowrap">Data meets culture.</span>
+          <span class="block md:whitespace-nowrap">Software meets scale.</span>
+        </h1>
+      </div>
+
+      <!-- Manifesto: ordinary content straight below -->
+      <div id="manifesto" class="relative px-4 sm:px-8 pt-8 sm:pt-12 pb-24 sm:pb-32">
+        <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          <!-- Left Column: Balanced 2-Line Title -->
+          <div class="lg:col-span-6">
+            <h2 class="text-[clamp(2rem,4.4vw,3.75rem)] font-semibold tracking-[-0.03em] text-[#1f2025] leading-[1.04]">
+              Less guesswork.<br>
+              <span class="text-[#1f2025]/45">Measurable commercial impact.</span>
+            </h2>
+          </div>
+
+          <!-- Right Column: Matched Vertical Paragraph Block -->
+          <div class="lg:col-span-6 space-y-6">
+            <p class="text-[clamp(1.0625rem,1.4vw,1.375rem)] text-[#1f2025]/60 leading-[1.35] [text-wrap:pretty]">
+              We didn’t build technology to replace creator instinct; we built it to prove its value. We got frustrated watching global brands treat creator campaigns as chaotic, siloed tactics.
+            </p>
+            <p class="text-[clamp(1.0625rem,1.4vw,1.375rem)] text-[#1f2025]/60 leading-[1.35] [text-wrap:pretty]">
+              By combining predictive measurement with absolute operational precision, our software ensures creator marketing sits at the head table alongside traditional PR, media, and creative.
+            </p>
           </div>
         </div>
-        <!-- Manifesto appears THROUGH the particle field during first scrub -->
-        <div id="manifestoReveal" class="absolute inset-0 z-[1] flex items-center justify-center px-4 sm:px-8 pointer-events-none will-change-[opacity,transform]" style="opacity:0">
-          <div class="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-            <!-- Left Column: Balanced 2-Line Title -->
-            <div class="lg:col-span-6">
-              <span class="text-xs font-medium tracking-wider text-neutral-400 mb-3 block">
-                Our technology stack
-              </span>
-              <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-neutral-900 leading-[1.1]">
-                Less guesswork.<br>
-                <span class="text-neutral-500">Measurable commercial impact.</span>
-              </h1>
-            </div>
-
-            <!-- Right Column: Matched Vertical Paragraph Block -->
-            <div class="lg:col-span-6 space-y-6">
-              <p class="text-base sm:text-lg text-neutral-600 leading-relaxed [text-wrap:pretty]">
-                We didn’t build technology to replace creator instinct; we built it to prove its value. We got frustrated watching global brands treat creator campaigns as chaotic, siloed tactics.
-              </p>
-              <p class="text-base sm:text-lg text-neutral-600 leading-relaxed [text-wrap:pretty]">
-                By combining predictive measurement with absolute operational precision, our software ensures creator marketing sits at the head table alongside traditional PR, media, and creative.
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     </section>
 
     <!-- 2b. ORBITAL ECOSYSTEM + PROPRIETARY STACK -->
-    <section id="engine-orbit" data-theme="dark" data-header-theme="dark" class="relative z-20 bg-black text-white py-20 sm:py-28 lg:py-32 overflow-x-clip">
+    <section id="engine-orbit" data-theme="dark" data-header-theme="dark" class="relative z-20 bg-[#1f2025] rounded-[32px] md:rounded-[40px] text-white py-20 sm:py-28 lg:py-32 overflow-x-clip">
       <!-- Continuous particle field behind Orbit + Proprietary Stack -->
       <canvas id="techBackgroundCanvas" class="absolute top-0 left-0 w-full pointer-events-none z-0 opacity-80" aria-hidden="true"></canvas>
       <div class="relative z-10 w-full">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
           <div class="max-w-4xl mx-auto px-4 sm:px-8 text-center">
-            <span class="text-xs font-medium tracking-wider text-neutral-400 mb-4 block">
-              Proprietary software ecosystem
-            </span>
-            <h2 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-none">
+            <h2 class="text-[clamp(2.5rem,5vw,4rem)] font-semibold tracking-[-0.03em] text-white leading-none">
               ThreadOS™ &amp; Beyond.
             </h2>
-            <p class="text-xl sm:text-3xl !font-medium mt-4 max-w-2xl mx-auto leading-snug [text-wrap:balance]">
-              <span class="text-neutral-400">Engineered for predictable performance.</span>
+            <p class="text-[clamp(1.125rem,1.4vw,1.5rem)] font-normal mt-4 max-w-2xl mx-auto leading-[1.3] [text-wrap:balance]">
+              <span class="text-white/60">Engineered for predictable performance.</span>
             </p>
           </div>
 
           <!-- Pure synchronized hero orbit (no labels) -->
           <div id="orbitCanvasStage" class="mt-12 sm:mt-16 relative">
             <canvas id="orbitCanvas" aria-hidden="true"></canvas>
+            <div id="orbitOrbFb" class="orbit-orb-fb" aria-hidden="true"></div>
+            <canvas id="orbitGL" aria-hidden="true"></canvas>
+            <canvas id="orbitFront" aria-hidden="true"></canvas>
+            <div id="orbitChips" aria-hidden="true">
+              <div class="orbit-chip" style="--rgb:255,104,134"><i class="ph-light ph-intersect"></i><span>ThreadOS&trade;</span></div>
+              <div class="orbit-chip" style="--rgb:222,122,236"><i class="ph-light ph-cpu"></i><span>Fred AI</span></div>
+              <div class="orbit-chip" style="--rgb:152,128,255"><i class="ph-light ph-waveform"></i><span>Attention Engine&trade;</span></div>
+              <div class="orbit-chip" style="--rgb:104,166,255"><i class="ph-light ph-arrows-clockwise"></i><span class="sm:hidden">Optimisation</span><span class="hidden sm:inline">Continuous Optimisation</span></div>
+            </div>
           </div>
         </div>
 
-        <!-- Apple-style bento: title gutter matches card 1; track full-bleeds so cards scroll to viewport edge -->
+        <!-- Bento: asymmetric tiles, tinted like "How it works" -->
         <div class="mt-20 sm:mt-28 w-full">
-          <div class="max-w-7xl mx-auto pl-4 sm:px-8">
-            <h3 class="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-8 pr-4 sm:pr-0">Our Proprietary Stack.</h3>
+          <div class="max-w-[1472px] mx-auto px-4 text-center">
+            <h3 class="text-[clamp(1.75rem,3vw,2.5rem)] font-semibold tracking-[-0.03em] leading-[1.05] text-white mb-8 [text-wrap:balance]">Our Proprietary Stack.</h3>
           </div>
 
           <div id="stackCarouselViewport" class="w-full">
-          <div id="stackCarouselTrack" class="flex gap-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden py-4 pl-4 pr-4 md:max-w-7xl md:mx-auto md:grid md:grid-cols-2 md:overflow-visible md:snap-none md:px-8 md:pr-8 md:gap-4 lg:grid-cols-4 lg:gap-5">
+          <div id="stackCarouselTrack" class="flex gap-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden py-4 pl-4 pr-4 md:max-w-[1472px] md:mx-auto md:grid md:grid-cols-2 md:overflow-visible md:snap-none md:px-4 md:gap-5 lg:grid-cols-12 lg:gap-5">
 
-            <!-- Fred AI — Electric Rose -->
-            <div class="bg-white/5 backdrop-blur-2xl backdrop-saturate-150 border border-white/10 hover:border-white/20 shadow-2xl transition-all duration-500 bento-card w-[85%] min-h-[560px] flex-shrink-0 snap-center md:w-full md:min-w-0 md:snap-align-none rounded-[28px] flex flex-col justify-between overflow-hidden hover:scale-[1.015]">
-              <div class="p-8 sm:p-10">
-                <i class="ph-light ph-cpu text-3xl sm:text-4xl text-white mb-4 block flex-shrink-0"></i>
-                <span class="text-xs font-semibold tracking-wider text-neutral-400 mb-3 block">01 | Fred AI</span>
-                <h4 class="text-xl sm:text-2xl font-bold text-white tracking-tight mb-3 leading-snug [text-wrap:balance]">Your context-aware campaign co-pilot.</h4>
-                <p class="text-sm text-neutral-400 leading-relaxed [text-wrap:pretty]">
-                  Custom-built to strip friction out of every brief. Fred AI acts as an active co-pilot designed to identify real-time performance bottlenecks and streamline complex workflows, driving absolute operational precision from casting to final payment.
-                </p>
+            <div class="bento-card md:col-span-2 lg:col-span-12 lg:flex-row lg:min-h-[440px] w-[85%] min-h-[520px] flex-shrink-0 snap-center md:w-full md:min-w-0 md:snap-align-none rounded-[32px] flex flex-col overflow-hidden relative shadow-[0_1px_2px_rgba(0,0,0,0.12)]" style="background:radial-gradient(circle at 80% 100%,rgba(150,130,255,.4),rgba(150,130,255,.18) 12%,rgba(150,130,255,0) 58%),#E8E9FB">
+              <div class="relative z-10 p-8 sm:p-10 lg:w-[42%] lg:flex lg:flex-col lg:justify-center">
+                <i class="ph-light ph-intersect text-[28px] text-[#1f2025] mb-5 block" aria-hidden="true"></i>
+                <span class="text-base font-semibold tracking-[-0.01em] text-[#1f2025]/60 mb-3 block">01 | ThreadOS™</span>
+                <h4 class="text-[clamp(1.5rem,2.2vw,2.25rem)] font-semibold tracking-[-0.03em] leading-[1.05] text-[#1f2025] mb-3 [text-wrap:balance]">End-to-end campaign management.</h4>
+                <p class="text-[15px] sm:text-base leading-[1.4] text-[#1f2025]/60 [text-wrap:pretty]">Our proprietary platform, built from the ground up and tested daily on live briefs across global markets and verticals. Manages shortlisting, vetting, contracting, negotiations, content approvals, and real-time reporting in one system.</p>
               </div>
-              <div class="h-48 relative flex items-center justify-center overflow-hidden w-full">
-                <canvas id="fredNeuralCanvas" class="absolute inset-0 w-full h-full block pointer-events-none" aria-hidden="true"></canvas>
+              <div class="relative flex-1 min-h-[320px] px-6 pb-8 pt-2 sm:px-10 lg:py-10 flex items-center justify-center">
+                <div class="absolute inset-x-[15%] bottom-6 h-40 rounded-full blur-3xl opacity-25 pointer-events-none" style="background:linear-gradient(90deg,#EC4899,#F43F5E)" aria-hidden="true"></div>
+                <div class="relative w-full max-w-[460px] rounded-[24px] bg-white/60 backdrop-blur-xl border border-white shadow-[0_1px_2px_rgba(16,16,24,0.04),0_18px_40px_-18px_rgba(16,16,24,0.22)] p-4 space-y-2.5">
+                  <div class="px-1 pb-1">
+                    <div class="flex items-center justify-between"><span class="text-[12px] font-semibold text-[#1f2025]">Campaign pipeline</span><span class="text-[11px] text-[#1f2025]/45">Live</span></div>
+                    <div class="mt-2.5 h-px w-full bg-[#1f2025]/10"><div class="h-px w-[62%]" style="background:linear-gradient(90deg,#EC4899,#F43F5E)"></div></div>
+                  </div>
+                  <div class="flex items-center gap-3 rounded-[14px] bg-white/70 border border-white px-3.5 py-3"><i class="ph-light ph-user-focus text-[20px] text-[#1f2025]/70" aria-hidden="true"></i><span class="text-[13px] font-medium text-[#1f2025]">Shortlisting</span><span class="ml-auto inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium bg-white/70 text-[#1f2025]/55"><i class="ph-light ph-check text-[14px]" aria-hidden="true"></i>Done</span></div><div class="flex items-center gap-3 rounded-[14px] bg-white/70 border border-white px-3.5 py-3"><i class="ph-light ph-shield-check text-[20px] text-[#1f2025]/70" aria-hidden="true"></i><span class="text-[13px] font-medium text-[#1f2025]">Vetting</span><span class="ml-auto inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium bg-white/70 text-[#1f2025]/55"><i class="ph-light ph-check text-[14px]" aria-hidden="true"></i>Done</span></div><div class="flex items-center gap-3 rounded-[14px] bg-white/70 border border-white px-3.5 py-3"><i class="ph-light ph-file-text text-[20px] text-[#1f2025]/70" aria-hidden="true"></i><span class="text-[13px] font-medium text-[#1f2025]">Contracting</span><span class="ml-auto inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium bg-[#F43F5E]/10 text-[#E5336D]"><span class="w-1.5 h-1.5 rounded-full animate-pulse" style="background:linear-gradient(90deg,#EC4899,#F43F5E)"></span>In progress</span></div><div class="flex items-center gap-3 rounded-[14px] bg-white/70 border border-white px-3.5 py-3"><i class="ph-light ph-credit-card text-[20px] text-[#1f2025]/70" aria-hidden="true"></i><span class="text-[13px] font-medium text-[#1f2025]">Payments</span><span class="ml-auto inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium bg-white/50 text-[#1f2025]/40">Queued</span></div>
+                </div>
+                <div class="hidden lg:flex absolute left-[2%] top-[14%] items-center gap-3 rounded-[16px] bg-white/60 backdrop-blur-xl border border-white shadow-[0_1px_2px_rgba(16,16,24,0.04),0_18px_40px_-18px_rgba(16,16,24,0.22)] pl-3 pr-4 py-2.5"><span class="w-8 h-8 rounded-full bg-white border border-white flex items-center justify-center"><i class="ph-light ph-check-circle text-[17px] text-[#E5336D]" aria-hidden="true"></i></span><span class="leading-tight"><span class="block text-[12px] font-semibold text-[#1f2025]">Content approved</span><span class="block text-[11px] text-[#1f2025]/50">Just now</span></span></div>
+                <div class="hidden lg:flex absolute right-[4%] bottom-[10%] items-center gap-3 rounded-[16px] bg-white/60 backdrop-blur-xl border border-white shadow-[0_1px_2px_rgba(16,16,24,0.04),0_18px_40px_-18px_rgba(16,16,24,0.22)] pl-3 pr-4 py-2.5"><span class="w-8 h-8 rounded-full bg-white border border-white flex items-center justify-center"><i class="ph-light ph-credit-card text-[17px] text-[#E5336D]" aria-hidden="true"></i></span><span class="leading-tight"><span class="block text-[12px] font-semibold text-[#1f2025]">Payment scheduled</span><span class="block text-[11px] text-[#1f2025]/50">Net 30</span></span></div>
               </div>
             </div>
 
-            <!-- ThreadOS — Hot Magenta -->
-            <div class="bg-white/5 backdrop-blur-2xl backdrop-saturate-150 border border-white/10 hover:border-white/20 shadow-2xl transition-all duration-500 bento-card w-[85%] min-h-[560px] flex-shrink-0 snap-center md:w-full md:min-w-0 md:snap-align-none rounded-[28px] flex flex-col justify-between overflow-hidden hover:scale-[1.015]">
-              <div class="p-8 sm:p-10">
-                <i class="ph-light ph-intersect text-3xl sm:text-4xl text-white mb-4 block flex-shrink-0"></i>
-                <span class="text-xs font-semibold tracking-wider text-neutral-400 mb-3 block">02 | ThreadOS™</span>
-                <h4 class="text-xl sm:text-2xl font-bold text-white tracking-tight mb-3 leading-snug [text-wrap:balance]">End-to-end campaign management.</h4>
-                <p class="text-sm text-neutral-400 leading-relaxed [text-wrap:pretty]">
-                  Our proprietary platform, built from the ground up and tested daily on live briefs across global markets and verticals. Manages shortlisting, vetting, contracting, negotiations, content approvals, and real-time reporting in one system.
-                </p>
+            <div class="bento-card lg:col-span-4 lg:min-h-[560px] w-[85%] min-h-[520px] flex-shrink-0 snap-center md:w-full md:min-w-0 md:snap-align-none rounded-[32px] flex flex-col overflow-hidden relative shadow-[0_1px_2px_rgba(0,0,0,0.12)]" style="background:radial-gradient(circle at 70% 100%,rgba(120,150,255,.42),rgba(120,150,255,.2) 12%,rgba(120,150,255,0) 58%),#E6EDFC">
+              <div class="relative z-10 p-8 sm:p-10 ">
+                <i class="ph-light ph-cpu text-[28px] text-[#1f2025] mb-5 block" aria-hidden="true"></i>
+                <span class="text-base font-semibold tracking-[-0.01em] text-[#1f2025]/60 mb-3 block">02 | Fred AI</span>
+                <h4 class="text-[clamp(1.5rem,2.2vw,2.25rem)] font-semibold tracking-[-0.03em] leading-[1.05] text-[#1f2025] mb-3 [text-wrap:balance]">Your context-aware campaign co-pilot.</h4>
+                <p class="text-[15px] sm:text-base leading-[1.4] text-[#1f2025]/60 [text-wrap:pretty]">Custom-built to strip friction out of every brief. Fred AI acts as an active co-pilot designed to identify real-time performance bottlenecks and streamline complex workflows, driving absolute operational precision from casting to final payment.</p>
               </div>
-              <div class="h-48 relative flex items-center justify-center overflow-hidden w-full"><div class="absolute w-[80%] h-24 bg-white/5 backdrop-blur-md rounded-xl border border-white/20 shadow-2xl -translate-x-4 -translate-y-2"></div><div class="absolute w-[65%] h-20 bg-white/10 backdrop-blur-2xl rounded-lg border border-white/30 translate-x-8 translate-y-6 flex items-start p-4"><div class="flex gap-1.5"><div class="w-1.5 h-1.5 rounded-full bg-white/20"></div><div class="w-1.5 h-1.5 rounded-full bg-white/20"></div></div></div></div>
+              <div class="relative mt-auto px-5 pb-5 sm:px-6 sm:pb-6 pt-2">
+                <div class="absolute inset-x-10 bottom-0 h-28 rounded-full blur-3xl opacity-25 pointer-events-none" style="background:linear-gradient(90deg,#EC4899,#F43F5E)" aria-hidden="true"></div>
+                <div class="relative rounded-[22px] bg-white/60 backdrop-blur-xl border border-white shadow-[0_1px_2px_rgba(16,16,24,0.04),0_18px_40px_-18px_rgba(16,16,24,0.22)] p-4 h-[252px] flex flex-col justify-between">
+                  <div class="flex items-center gap-2 px-0.5">
+                    <span class="w-5 h-5 rounded-full" style="background:linear-gradient(90deg,#EC4899,#F43F5E)"></span>
+                    <span class="text-[12px] font-semibold text-[#1f2025]">Fred</span>
+                    <span class="ml-auto flex items-center gap-1.5 text-[11px] text-[#1f2025]/45"><span class="w-1.5 h-1.5 rounded-full bg-[#1f2025]/30"></span>Monitoring</span>
+                  </div>
+                  <div class="ml-auto max-w-[85%] rounded-[14px] rounded-br-[4px] bg-white/80 border border-white px-3 py-2 text-[12px] leading-snug text-[#1f2025]">Where are we losing time on this brief?</div>
+                  <div class="max-w-[92%] rounded-[14px] rounded-bl-[4px] bg-white/60 border border-white px-3 py-2.5 text-[12px] leading-snug text-[#1f2025]/80">Contracting is the bottleneck. Three creators are still awaiting signature.
+                    <div class="flex gap-2 mt-2.5">
+                      <span class="inline-flex items-center rounded-full bg-[#1f2025] text-white px-3 py-1 text-[11px] font-medium">Send reminder</span>
+                      <span class="inline-flex items-center rounded-full bg-white/80 border border-white text-[#1f2025]/60 px-3 py-1 text-[11px] font-medium">View</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <!-- Attention Engine — Vivid Fuchsia -->
-            <div class="bg-white/5 backdrop-blur-2xl backdrop-saturate-150 border border-white/10 hover:border-white/20 shadow-2xl transition-all duration-500 bento-card w-[85%] min-h-[560px] flex-shrink-0 snap-center md:w-full md:min-w-0 md:snap-align-none rounded-[28px] flex flex-col justify-between overflow-hidden hover:scale-[1.015]">
-              <div class="p-8 sm:p-10">
-                <i class="ph-light ph-waveform text-3xl sm:text-4xl text-white mb-4 block flex-shrink-0"></i>
-                <span class="text-xs font-semibold tracking-wider text-neutral-400 mb-3 block">03 | Attention Engine™</span>
-                <h4 class="text-xl sm:text-2xl font-bold text-white tracking-tight mb-3 leading-snug [text-wrap:balance]">Predictive media modelling.</h4>
-                <p class="text-sm text-neutral-400 leading-relaxed [text-wrap:pretty]">
-                  Our proprietary forecasting tool built to remove the guesswork. By mapping subcultures and analysing historical data, it accurately forecasts campaign benchmarks before a contract is signed, ensuring creator activity drives real commercial impact.
-                </p>
+            <div class="bento-card lg:col-span-4 lg:min-h-[560px] w-[85%] min-h-[520px] flex-shrink-0 snap-center md:w-full md:min-w-0 md:snap-align-none rounded-[32px] flex flex-col overflow-hidden relative shadow-[0_1px_2px_rgba(0,0,0,0.12)]" style="background:radial-gradient(circle at 70% 100%,rgba(120,170,255,.4),rgba(120,170,255,.18) 12%,rgba(120,170,255,0) 58%),#E3EEFB">
+              <div class="relative z-10 p-8 sm:p-10 ">
+                <i class="ph-light ph-waveform text-[28px] text-[#1f2025] mb-5 block" aria-hidden="true"></i>
+                <span class="text-base font-semibold tracking-[-0.01em] text-[#1f2025]/60 mb-3 block">03 | Attention Engine™</span>
+                <h4 class="text-[clamp(1.5rem,2.2vw,2.25rem)] font-semibold tracking-[-0.03em] leading-[1.05] text-[#1f2025] mb-3 [text-wrap:balance]">Predictive media modelling.</h4>
+                <p class="text-[15px] sm:text-base leading-[1.4] text-[#1f2025]/60 [text-wrap:pretty]">Our proprietary forecasting tool built to remove the guesswork. By mapping subcultures and analysing historical data, it accurately forecasts campaign benchmarks before a contract is signed, ensuring creator activity drives real commercial impact.</p>
               </div>
-              <div class="h-48 relative flex items-end justify-center w-full overflow-hidden px-6 pb-6"><canvas id="animatedTrendCanvas" class="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true"></canvas></div>
+              <div class="relative mt-auto px-5 pb-5 sm:px-6 sm:pb-6 pt-2">
+                <div class="absolute inset-x-10 bottom-0 h-28 rounded-full blur-3xl opacity-25 pointer-events-none" style="background:linear-gradient(90deg,#EC4899,#F43F5E)" aria-hidden="true"></div>
+                <div class="relative rounded-[22px] bg-white/60 backdrop-blur-xl border border-white shadow-[0_1px_2px_rgba(16,16,24,0.04),0_18px_40px_-18px_rgba(16,16,24,0.22)] p-4 h-[252px] flex flex-col">
+                  <div class="flex items-center justify-between px-0.5">
+                    <span class="text-[12px] font-semibold text-[#1f2025]">Predicted performance</span>
+                    <span class="rounded-full bg-white/80 border border-white px-2.5 py-0.5 text-[11px] text-[#1f2025]/55">Pre-contract</span>
+                  </div>
+                  <div class="relative flex-1 min-h-0 my-3">
+                  <svg viewBox="0 0 300 130" preserveAspectRatio="none" class="absolute inset-0 w-full h-full block" fill="none" aria-hidden="true">
+                    <defs>
+                      <linearGradient id="aeLine" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#EC4899"/><stop offset="1" stop-color="#F43F5E"/></linearGradient>
+                      <linearGradient id="aeFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F43F5E" stop-opacity=".14"/><stop offset="1" stop-color="#F43F5E" stop-opacity="0"/></linearGradient>
+                    </defs>
+                    <g stroke="#1f2025" stroke-opacity=".08" stroke-width="1" vector-effect="non-scaling-stroke"><path d="M0 20H300M0 50H300M0 80H300M0 110H300"/></g>
+                    <path d="M0 98C30 94 52 84 82 76S130 62 160 52V130H0Z" fill="url(#aeFill)"/>
+                    <path d="M0 98C30 94 52 84 82 76S130 62 160 52" stroke="url(#aeLine)" stroke-width="1.5" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+                    <path d="M160 52C190 42 222 32 250 24S288 14 300 10" stroke="url(#aeLine)" stroke-opacity=".55" stroke-width="1.5" stroke-dasharray="3 4" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+                    <path d="M160 6V124" stroke="#1f2025" stroke-opacity=".18" stroke-width="1" stroke-dasharray="2 3" vector-effect="non-scaling-stroke"/>
+                  </svg>
+                  <span class="absolute w-2.5 h-2.5 rounded-full bg-white border-[1.5px] border-[#F43F5E]" style="left:53.333%;top:40%;transform:translate(-50%,-50%)" aria-hidden="true"></span>
+                  </div>
+                  <div class="flex items-center justify-between px-0.5 text-[11px] text-[#1f2025]/45"><span>Historical</span><span class="flex items-center gap-1.5"><span class="inline-block w-3 border-t border-dashed border-[#F43F5E]/70"></span>Forecast benchmark</span></div>
+                </div>
+              </div>
             </div>
 
-            <!-- Continuous Optimisation — Electric Purple -->
-            <div class="bg-white/5 backdrop-blur-2xl backdrop-saturate-150 border border-white/10 hover:border-white/20 shadow-2xl transition-all duration-500 bento-card w-[85%] min-h-[560px] flex-shrink-0 snap-center md:w-full md:min-w-0 md:snap-align-none rounded-[28px] flex flex-col justify-between overflow-hidden hover:scale-[1.015]">
-              <div class="p-8 sm:p-10">
-                <i class="ph-light ph-arrows-clockwise text-3xl sm:text-4xl text-white mb-4 block flex-shrink-0"></i>
-                <span class="text-xs font-semibold tracking-wider text-neutral-400 mb-3 block">04 | Continuous Optimisation</span>
-                <h4 class="text-xl sm:text-2xl font-bold text-white tracking-tight mb-3 leading-snug [text-wrap:balance]">Smarter with every campaign.</h4>
-                <p class="text-sm text-neutral-400 leading-relaxed [text-wrap:pretty]">
-                  We get smarter the longer we work together. Continuous feedback loops refine our strategy on every brief, ensuring we deliver better results and a smoother experience for creators, our team, and client partners.
-                </p>
+            <div class="bento-card md:col-span-2 lg:col-span-4 lg:min-h-[560px] w-[85%] min-h-[520px] flex-shrink-0 snap-center md:w-full md:min-w-0 md:snap-align-none rounded-[32px] flex flex-col overflow-hidden relative shadow-[0_1px_2px_rgba(0,0,0,0.12)]" style="background:radial-gradient(circle at 70% 100%,rgba(170,130,240,.4),rgba(170,130,240,.18) 12%,rgba(170,130,240,0) 58%),#ECE8FB">
+              <div class="relative z-10 p-8 sm:p-10 ">
+                <i class="ph-light ph-arrows-clockwise text-[28px] text-[#1f2025] mb-5 block" aria-hidden="true"></i>
+                <span class="text-base font-semibold tracking-[-0.01em] text-[#1f2025]/60 mb-3 block">04 | Continuous Optimisation</span>
+                <h4 class="text-[clamp(1.5rem,2.2vw,2.25rem)] font-semibold tracking-[-0.03em] leading-[1.05] text-[#1f2025] mb-3 [text-wrap:balance]">Smarter with every campaign.</h4>
+                <p class="text-[15px] sm:text-base leading-[1.4] text-[#1f2025]/60 [text-wrap:pretty]">We get smarter the longer we work together. Continuous feedback loops refine our strategy on every brief, ensuring we deliver better results and a smoother experience for creators, our team, and client partners.</p>
               </div>
-              <div class="h-48 relative flex items-center justify-center overflow-hidden w-full"><div class="absolute w-24 h-24 rounded-full border-[1px] border-white/10 border-t-white/60 border-r-white/60 animate-[spin_4s_linear_infinite]"></div><div class="absolute w-16 h-16 rounded-full border-[1px] border-white/10 border-b-white/50 animate-[spin_3s_linear_infinite_reverse]"></div><div class="absolute w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,1)]"></div></div>
+              <div class="relative mt-auto px-5 pb-5 sm:px-6 sm:pb-6 pt-2">
+                <div class="absolute inset-x-10 bottom-0 h-28 rounded-full blur-3xl opacity-25 pointer-events-none" style="background:linear-gradient(90deg,#EC4899,#F43F5E)" aria-hidden="true"></div>
+                <div class="relative rounded-[22px] bg-white/60 backdrop-blur-xl border border-white shadow-[0_1px_2px_rgba(16,16,24,0.04),0_18px_40px_-18px_rgba(16,16,24,0.22)] p-4 h-[252px] flex flex-col justify-between">
+                  <div class="flex items-center justify-between px-0.5">
+                    <span class="text-[12px] font-semibold text-[#1f2025]">Creator match score</span>
+                    <span class="inline-flex items-center gap-1 rounded-full bg-white/80 border border-white px-2.5 py-0.5 text-[11px] text-[#1f2025]/55"><i class="ph-light ph-arrows-clockwise text-[12px]" aria-hidden="true"></i>Learning</span>
+                  </div>
+                  <div class="px-0.5"><div class="flex items-center justify-between text-[11px] mb-1.5"><span class="text-[#1f2025]/60">Brief 01</span><span class="font-medium text-[#1f2025]">62</span></div><div class="h-[3px] rounded-full bg-[#1f2025]/10"><div class="h-[3px] rounded-full" style="width:62%;background:linear-gradient(90deg,#EC4899,#F43F5E)"></div></div></div><div class="px-0.5"><div class="flex items-center justify-between text-[11px] mb-1.5"><span class="text-[#1f2025]/60">Brief 02</span><span class="font-medium text-[#1f2025]">74</span></div><div class="h-[3px] rounded-full bg-[#1f2025]/10"><div class="h-[3px] rounded-full" style="width:74%;background:linear-gradient(90deg,#EC4899,#F43F5E)"></div></div></div><div class="px-0.5"><div class="flex items-center justify-between text-[11px] mb-1.5"><span class="text-[#1f2025]/60">Brief 03</span><span class="font-medium text-[#1f2025]">89</span></div><div class="h-[3px] rounded-full bg-[#1f2025]/10"><div class="h-[3px] rounded-full" style="width:89%;background:linear-gradient(90deg,#EC4899,#F43F5E)"></div></div></div>
+                </div>
+              </div>
             </div>
 
           </div>
           </div>
 
             <div class="mt-6 pr-4 pl-4 max-w-7xl mx-auto flex items-center justify-end gap-3 md:hidden">
-              <button id="prevStackBtn" type="button" aria-label="Previous" class="w-11 h-11 rounded-full border border-white/10 bg-neutral-900 text-white flex items-center justify-center hover:bg-neutral-800 transition-all shadow-md">&larr;</button>
-              <button id="nextStackBtn" type="button" aria-label="Next" class="w-11 h-11 rounded-full border border-white/10 bg-neutral-900 text-white flex items-center justify-center hover:bg-neutral-800 transition-all shadow-md">&rarr;</button>
+              <button id="prevStackBtn" type="button" aria-label="Previous" class="w-11 h-11 rounded-full border border-white/10 bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-all">&larr;</button>
+              <button id="nextStackBtn" type="button" aria-label="Next" class="w-11 h-11 rounded-full border border-white/10 bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-all">&rarr;</button>
             </div>
         </div>
       </div>
     </section>
 
-    <!-- Section 4: Apple Keynote Closing CTA -->
-    <section id="closing-cta" data-theme="light" data-header-theme="light" class="w-full bg-white py-24 sm:py-32 relative text-center border-t border-neutral-200 overflow-hidden z-20">
-      <div class="max-w-4xl mx-auto px-4 sm:px-8 relative z-10">
-        <span class="text-xs font-medium tracking-wider text-neutral-400 mb-4 block">
-          Next-gen influencer marketing
-        </span>
+    <!-- Closing CTA: soft rounded panel, like the homepage contact section -->
+    <section id="closing-cta" data-theme="light" data-header-theme="light" class="w-full bg-white py-16 sm:py-24 relative z-20">
+      <div class="max-w-[1472px] mx-auto px-4">
+        <div class="rounded-[32px] md:rounded-[40px] bg-[#F5F5F7] px-6 py-20 sm:py-28 text-center">
+          <h2 class="text-[clamp(2.25rem,5vw,4rem)] font-semibold tracking-[-0.03em] text-[#1f2025] leading-[1.04] [text-wrap:balance]">
+            Ready to scale with software,<br>
+            <span class="text-[#1f2025]/45">not spreadsheets?</span>
+          </h2>
 
-        <h2 class="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-neutral-900 leading-tight [text-wrap:balance]">
-          Ready to scale with software,<br>
-          <span class="fluid-gradient-text">not spreadsheets?</span>
-        </h2>
+          <p class="text-[clamp(1.0625rem,1.4vw,1.375rem)] text-[#1f2025]/60 max-w-xl mx-auto mt-5 mb-9 leading-[1.35] [text-wrap:pretty]">
+            Get in touch to see how ThreadOS™ and Fred AI transform how global brands run creator campaigns.
+          </p>
 
-        <p class="text-base sm:text-lg text-neutral-600 max-w-xl mx-auto mt-4 mb-8 leading-relaxed [text-wrap:pretty]">
-          Get in touch to see how ThreadOS™ and Fred AI transform how global brands run creator campaigns.
-        </p>
-
-        <a href="/#contact-faq"
-           class="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-neutral-950 text-white text-sm font-semibold hover:bg-neutral-800 transition-all duration-300 shadow-lg group">
-          <span>Get in touch</span>
-          <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-          </svg>
-        </a>
+          <a href="index.html#contact-faq"
+             class="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-[#1d1d1f] text-white text-[15px] font-medium hover:bg-black active:scale-[0.99] transition-all duration-200 group">
+            <span>Get in touch</span>
+            <i class="ph-light ph-arrow-right text-xl group-hover:translate-x-0.5 transition-transform duration-300" aria-hidden="true"></i>
+          </a>
+        </div>
       </div>
     </section>
 
   </main>
 
   <!-- Light footer — continuous with white CTA above -->
-  <footer data-header-theme="light" class="bg-white border-t border-neutral-200/80 py-12 px-4 sm:px-8 text-neutral-600 text-xs w-full relative z-20">
+  <footer data-header-theme="light" class="bg-white py-12 px-4 sm:px-8 text-neutral-600 text-xs w-full relative z-20">
     <div class="max-w-7xl mx-auto">
       <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div class="flex flex-col items-start gap-3 ml-0 pl-0">
@@ -574,9 +496,10 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-6 text-neutral-600 pb-1">
-          <a href="/tech" class="text-neutral-600 hover:text-black transition-colors" aria-current="page">Our Tech</a>
-          <a href="/privacy" class="text-neutral-600 hover:text-black transition-colors">Privacy policy</a>
-          <a href="/terms" class="text-neutral-600 hover:text-black transition-colors">Terms of service</a>
+          <a href="about.html" class="text-neutral-600 hover:text-black transition-colors">About</a>
+          <a href="tech.html" class="text-neutral-600 hover:text-black transition-colors" aria-current="page">Our Tech</a>
+          <a href="privacy.html" class="text-neutral-600 hover:text-black transition-colors">Privacy policy</a>
+          <a href="terms.html" class="text-neutral-600 hover:text-black transition-colors">Terms of service</a>
           <div class="flex items-center gap-4">
             <a
               href="https://www.linkedin.com/company/redthreadagency"
@@ -607,161 +530,377 @@
   </footer>
 
   <script>
-    (function initPureHeroOrbit() {
-      const canvas = document.getElementById('orbitCanvas');
+    (function initOrbitSystem() {
       const stage = document.getElementById('orbitCanvasStage');
-      if (!canvas || !stage) return;
-      const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
-      if (!ctx) return;
+      const back = document.getElementById('orbitCanvas');
+      const front = document.getElementById('orbitFront');
+      const glCv = document.getElementById('orbitGL');
+      const chipsEl = document.getElementById('orbitChips');
+      const fb = document.getElementById('orbitOrbFb');
+      if (!stage || !back || !front || !glCv || !chipsEl) return;
+      const bctx = back.getContext('2d', { alpha: true });
+      const fctx = front.getContext('2d', { alpha: true });
+      if (!bctx || !fctx) return;
 
-      let w = 0;
-      let h = 0;
-      let cx = 0;
-      let cy = 0;
-      let dpr = 1;
-      let syncAngle = 0;
-      let running = false;
-      let animationFrameId = 0;
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const BG = '#1f2025';
+      const chipEls = Array.from(chipsEl.querySelectorAll('.orbit-chip'));
+      const chipW = [0, 0, 0, 0];
+      let chipH = 0;
 
-      const particleCount = 600;
-      const particles = [];
-      const colors = ['#e11d48', '#c026d3', '#ec4899', '#8b5cf6', '#ffffff'];
+      /* Four orbits, one per product in the stack. Each ring is tilted into its own plane (an armillary / gyroscope feel),
+         so the glass core sits at the heart of four interlocking paths. */
+      const HERO = [
+        { rgb: [255, 104, 134], r: .33, rx: 1.02, rz: -.32, sp: 1.00, ph: 0.0 },
+        { rgb: [222, 122, 236], r: .50, rx: .92, rz: -.18, sp: .78, ph: 1.571 },
+        { rgb: [152, 128, 255], r: .67, rx: .82, rz: -.04, sp: .62, ph: 3.142 },
+        { rgb: [104, 166, 255], r: .84, rx: .72, rz: .10, sp: .50, ph: 4.712 }
+      ];
+      const SWARM_RGB = [[255, 104, 134], [222, 122, 236], [152, 128, 255], [104, 166, 255], [255, 255, 255]];
 
-      function initParticles() {
-        particles.length = 0;
-        const maxRadius = Math.min(w, h) * 0.42;
+      const sprite = (rgb) => {
+        const c = document.createElement('canvas'); c.width = c.height = 64;
+        const g = c.getContext('2d'), gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+        gr.addColorStop(0, 'rgba(' + rgb + ',1)'); gr.addColorStop(.25, 'rgba(' + rgb + ',.42)'); gr.addColorStop(1, 'rgba(' + rgb + ',0)');
+        g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
+        return c;
+      };
+      HERO.forEach((h) => { h.spr = sprite(h.rgb.join(',')); h.tint = h.rgb.map((v) => Math.round(v + (255 - v) * .55)).join(','); h.rgbS = h.rgb.join(','); });
+      const sprWhite = sprite('255,255,255');
 
-        for (let i = 0; i < particleCount; i++) {
-          const band = Math.pow(Math.random(), 0.8);
-          const radius = 25 + band * maxRadius;
-          const angle = Math.random() * Math.PI * 2;
-          const speed = (0.002 + (1 - radius / maxRadius) * 0.003);
-          const size = Math.random() < 0.15 ? Math.random() * 2 + 1.2 : Math.random() * 1.2 + 0.4;
-          const alpha = Math.random() * 0.5 + 0.2;
-          const color = colors[Math.floor(Math.random() * colors.length)];
+      let W = 0, H = 0, M = 0, R0 = 0, DZ = 1, cx = 0, cy = 0, dpr = 1, SR = 0, REG = 0;
+      let running = false, raf = 0, T = 0, last = 0, three = null;
+      const texCv = document.createElement('canvas');
+      const texCtx = texCv.getContext('2d');
+      const P3 = [0, 0, 0, 0];
+      const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+      const smooth = (a, b, v) => { const t = clamp((v - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
 
-          particles.push({ radius, angle, speed, size, alpha, color });
+      /* tilt about X (towards the viewer), then roll about Z, then a mild perspective divide. z > 0 is nearer the camera. */
+      function proj(x, y, z, cX, sX, cZ, sZ) {
+        const y1 = y * cX - z * sX, z1 = y * sX + z * cX;
+        const x2 = x * cZ - y1 * sZ, y2 = x * sZ + y1 * cZ;
+        const s = DZ / (DZ - z1);
+        P3[0] = cx + x2 * s; P3[1] = cy + y2 * s; P3[2] = z1; P3[3] = s;
+      }
+
+      /* ---------- the swarm: a tilted, thin disc of dust that wraps the whole system ---------- */
+      const N = 700, swarm = [];
+      function initSwarm() {
+        swarm.length = 0;
+        for (let i = 0; i < N; i++) {
+          const rr = .2 + Math.pow(Math.random(), .85) * .7;
+          const col = SWARM_RGB[Math.floor(Math.random() * SWARM_RGB.length)];
+          swarm.push({
+            r: rr, a: Math.random() * Math.PI * 2, sp: (.10 + (1 - rr) * .24) * (.7 + Math.random() * .6),
+            h: (Math.random() + Math.random() + Math.random() - 1.5) * .09,
+            size: Math.random() < .14 ? Math.random() * 1.8 + 1.3 : Math.random() * 1.1 + .45,
+            alpha: Math.random() * .5 + .22, col: 'rgb(' + col.join(',') + ')'
+          });
         }
       }
 
-      function resize() {
-        const rect = stage.getBoundingClientRect();
-        const nextW = Math.max(1, Math.round(rect.width || canvas.offsetWidth));
-        const nextH = Math.max(1, Math.round(rect.height || canvas.offsetHeight));
-        // ignoreMobileResize: skip thrash when mobile browser chrome shows/hides
-        if (w > 0 && Math.abs(nextW - w) < 2 && Math.abs(nextH - h) < 48) return;
+      /* ---------- Three.js glass core ----------
+         Same construction as the Attention Engine drop on the home page: transmission only refracts what is inside the Three scene, so the
+         back half of the 2D scene is fed in as a backdrop plane and a circular mask hides that plane outside the sphere. */
+      const SPH = 6, WOBBLE = .035, LS = SPH / 1.5, RATIO = 150 / 220;
+      function initThree() {
+        const T3 = window.THREE;
+        if (!T3) return null;
+        try {
+          const renderer = new T3.WebGLRenderer({ canvas: glCv, alpha: true, antialias: true, powerPreference: 'default' });
+          renderer.setClearColor(0x000000, 0);
+          const scene = new T3.Scene();
+          const FOV = 24, tf = Math.tan(FOV * Math.PI / 360);
+          const want = RATIO * tf, camZ = SPH / (want / Math.sqrt(1 + want * want));
+          const camera = new T3.PerspectiveCamera(FOV, 1, .5, 600);
+          camera.position.set(0, 0, camZ);
+
+          const planeZ = -3 * LS, ph = (camZ - planeZ) * tf;
+          const backMat = new T3.MeshBasicMaterial({ toneMapped: false });
+          const plane = new T3.Mesh(new T3.PlaneGeometry(ph * 2, ph * 2), backMat);
+          plane.position.z = planeZ;
+          scene.add(plane);
+          let tex = null;
+
+          const envScene = new T3.Scene();
+          envScene.add(new T3.Mesh(new T3.SphereGeometry(20, 24, 16), new T3.MeshBasicMaterial({ color: 0x0a0b10, side: T3.BackSide })));
+          const sc = document.createElement('canvas'); sc.width = sc.height = 128;
+          const sx = sc.getContext('2d'), sg = sx.createRadialGradient(64, 64, 0, 64, 64, 64);
+          sg.addColorStop(0, '#fff'); sg.addColorStop(.35, '#9a9a9a'); sg.addColorStop(.7, '#222'); sg.addColorStop(1, '#000');
+          sx.fillStyle = sg; sx.fillRect(0, 0, 128, 128);
+          const softTex = new T3.CanvasTexture(sc);
+          const panel = (w, h, x, y, z, hex, k) => {
+            const m = new T3.Mesh(new T3.PlaneGeometry(w, h), new T3.MeshBasicMaterial({ map: softTex, color: new T3.Color(hex).multiplyScalar(k), side: T3.DoubleSide, toneMapped: false }));
+            m.position.set(x, y, z); m.lookAt(0, 0, 0); envScene.add(m);
+          };
+          const wc = document.createElement('canvas'); wc.width = 256; wc.height = 128;
+          const wx = wc.getContext('2d'); wx.fillStyle = '#000'; wx.fillRect(0, 0, 256, 128);
+          wx.filter = 'blur(9px)'; wx.fillStyle = '#fff'; wx.beginPath();
+          (wx.roundRect ? wx.roundRect(98, 8, 60, 112, 28) : wx.rect(98, 8, 60, 112)); wx.fill();
+          const winTex = new T3.CanvasTexture(wc);
+          const key = new T3.Mesh(new T3.PlaneGeometry(12, 6), new T3.MeshBasicMaterial({ map: winTex, color: new T3.Color(0xffffff).multiplyScalar(2.6), side: T3.DoubleSide, toneMapped: false }));
+          key.position.set(-6.5, 6.5, 5); key.lookAt(0, 0, 0); envScene.add(key);
+          panel(4, 12, 9, -1, 2, 0xffb8c8, 1.2);      /* coral strip, right */
+          panel(12, 4, 2, -8, 3, 0xd8dcff, .9);
+          panel(5, 8, -9, -3, 0, 0xc9b8ff, .9);       /* violet strip, left */
+          const pm = new T3.PMREMGenerator(renderer);
+          scene.environment = pm.fromScene(envScene, .03).texture;
+          pm.dispose();
+
+          const geo = new T3.IcosahedronGeometry(1, 20);
+          const pos = geo.attributes.position, base = Float32Array.from(pos.array), nrm = new Float32Array(pos.array.length);
+          geo.setAttribute('normal', new T3.BufferAttribute(nrm, 3));
+          const WK = [[1.7, .9, -1.2, .34, .0, .5], [-1.1, 2.0, .8, .27, 1.7, .3], [.7, -1.3, 2.1, .22, 3.1, .2]];
+          function deform(t, amp) {
+            const p = pos.array;
+            for (let i = 0; i < base.length; i += 3) {
+              const x = base[i], y = base[i + 1], z = base[i + 2];
+              let g = 0, gx = 0, gy = 0, gz = 0;
+              for (let k = 0; k < 3; k++) {
+                const w = WK[k], a = w[5], arg = w[0] * x + w[1] * y + w[2] * z + w[3] * t + w[4];
+                g += a * Math.sin(arg); const c = a * Math.cos(arg);
+                gx += c * w[0]; gy += c * w[1]; gz += c * w[2];
+              }
+              const rho = SPH * (1 + amp * g), d = gx * x + gy * y + gz * z, inv = amp / (1 + amp * g);
+              p[i] = x * rho; p[i + 1] = y * rho; p[i + 2] = z * rho;
+              const nx = x - (gx - d * x) * inv, ny = y - (gy - d * y) * inv, nz = z - (gz - d * z) * inv, l = 1 / Math.hypot(nx, ny, nz);
+              nrm[i] = nx * l; nrm[i + 1] = ny * l; nrm[i + 2] = nz * l;
+            }
+            pos.needsUpdate = true; geo.attributes.normal.needsUpdate = true;
+          }
+          const glass = new T3.MeshPhysicalMaterial({
+            color: 0xffffff, metalness: 0, roughness: .05, transmission: 1, ior: 1.55, thickness: 3.2,
+            clearcoat: 1, clearcoatRoughness: .3, envMapIntensity: 1.5, side: T3.FrontSide,
+            iridescence: .2, iridescenceIOR: 1.3, iridescenceThicknessRange: [120, 420]
+          });
+          const glassU = { uRim: { value: 1 }, uGain: { value: 1.7 }, uDisp: { value: .06 }, uT: { value: 0 } };
+          glass.onBeforeCompile = (sh) => {
+            Object.keys(glassU).forEach((k) => { sh.uniforms[k] = glassU[k]; });
+            const SC = T3.ShaderChunk;
+            sh.fragmentShader = 'uniform float uRim; uniform float uGain; uniform float uDisp; uniform float uT;\n' + sh.fragmentShader
+              .replace('#include <transmission_pars_fragment>', SC.transmission_pars_fragment.replace('vec4 transmittedLight = getTransmissionSample( refractionCoords, roughness, ior );',
+                `vec4 transmittedLight = getTransmissionSample( refractionCoords, roughness, ior );
+                for (int ci = 0; ci < 3; ci++) {
+                  float iorC = ior * (1.0 + uDisp * (float(ci) - 1.0));
+                  vec3 rayC = getVolumeTransmissionRay( n, v, thickness, iorC, modelMatrix );
+                  vec4 ndC = projMatrix * viewMatrix * vec4( position + rayC, 1.0 );
+                  vec4 smp = getTransmissionSample( ( ndC.xy / ndC.w + 1.0 ) * 0.5, roughness, iorC );
+                  if (ci == 0) transmittedLight.r = smp.r; else if (ci == 2) transmittedLight.b = smp.b;
+                }`))
+              .replace('#include <transmission_fragment>', SC.transmission_fragment.replace('totalDiffuse = mix( totalDiffuse, transmitted.rgb, material.transmission );',
+                'vec3 bgL = vec3(0.0137, 0.0144, 0.0185); transmitted.rgb = max(bgL + (transmitted.rgb - bgL) * uGain, vec3(0.0));\n\ttotalDiffuse = mix( totalDiffuse, transmitted.rgb, material.transmission );'))
+              .replace('#include <opaque_fragment>',
+                `if (gl_FrontFacing) {
+                  vec3 nn = normalize(normal);
+                  float f = 1.0 - clamp(dot(nn, normalize(vViewPosition)), 0.0, 1.0);
+                  float ang = 2.2 + 0.5 * sin(uT * 0.25);
+                  float a = dot(normalize(nn.xy + vec2(1e-4)), vec2(cos(ang), sin(ang)));
+                  float lit = pow(max(a, 0.0), 2.2), opp = pow(max(-a, 0.0), 2.2);
+                  float rimI = 0.38 + 0.9 * lit + 0.55 * opp;
+                  vec3 spec = vec3(0.86, 0.9, 1.0);
+                  float band = smoothstep(0.35, 0.8, f) * (1.0 - smoothstep(0.93, 1.0, f));
+                  float mask = 0.07 + 0.93 * max(lit, 0.7 * opp);
+                  float line = smoothstep(0.84, 0.975, f);
+                  outgoingLight += uRim * (spec * (pow(f, 3.2) * 0.34 * rimI + band * mask * 0.3) + mix(vec3(1.0), spec, 0.28) * line * rimI * 0.85);
+                }
+                #include <opaque_fragment>`);
+          };
+          const drop = new T3.Mesh(geo, glass);
+          drop.frustumCulled = false;
+          scene.add(drop);
+          const mag = new T3.PointLight(0xE6E3FF, 36 * LS * LS, 0, 2); mag.position.set(-3.3 * LS, 2.1 * LS, 1.6 * LS);
+          const cor = new T3.PointLight(0xFFE6EE, 30 * LS * LS, 0, 2); cor.position.set(3.3 * LS, -2.1 * LS, 1.6 * LS);
+          scene.add(mag, cor);
+
+          return {
+            resize(n) {
+              n = Math.min(Math.max(n, 64), 1024);
+              renderer.setPixelRatio(1); renderer.setSize(n, n, false);
+              texCv.width = texCv.height = n;
+              if (tex) tex.dispose();
+              tex = new T3.CanvasTexture(texCv); tex.colorSpace = T3.SRGBColorSpace;
+              tex.minFilter = tex.magFilter = T3.LinearFilter; tex.generateMipmaps = false;
+              backMat.map = tex; backMat.needsUpdate = true;
+            },
+            draw(t, pv) {
+              tex.needsUpdate = true;
+              deform(t, WOBBLE * (.7 + .3 * Math.sin(t * .5)));
+              drop.rotation.set(t * .05 + .3, t * .11, 0);
+              drop.scale.setScalar(1 + .016 * Math.sin(t * .9) + .012 * Math.sin(t * 1.7 + 1) + .02 * pv);
+              mag.intensity = cor.intensity = 13 * LS * LS * (.65 + 1.1 * pv);
+              glassU.uT.value = t; glassU.uRim.value = .85 + .5 * pv;
+              renderer.render(scene, camera);
+            }
+          };
+        } catch (err) { return null; }
+      }
+      glCv.addEventListener('webglcontextlost', (e) => { e.preventDefault(); three = null; stage.classList.add('orbit-nogl'); });
+
+      /* ---------- layout ---------- */
+      function measureChips() {
+        chipEls.forEach((c, i) => { chipW[i] = c.offsetWidth; });
+        chipH = chipEls[0] ? chipEls[0].offsetHeight : 0;
+      }
+      function resize(force) {
+        /* layout size (offset*), not getBoundingClientRect: unaffected by any ancestor transform */
+        const nw = Math.max(1, stage.offsetWidth || back.offsetWidth);
+        const nh = Math.max(1, stage.offsetHeight || back.offsetHeight);
+        if (!force && W > 0 && Math.abs(nw - W) < 2 && Math.abs(nh - H) < 48) return;
         dpr = Math.min(window.devicePixelRatio || 1, 2);
-        w = nextW;
-        h = nextH;
-        cx = w / 2;
-        cy = h / 2;
-        canvas.width = Math.round(w * dpr);
-        canvas.height = Math.round(h * dpr);
-        canvas.style.width = w + 'px';
-        canvas.style.height = h + 'px';
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        initParticles();
+        W = nw; H = nh; M = Math.min(W, H); R0 = M / 2; cx = W / 2; cy = H / 2; DZ = R0 * 3.8;
+        SR = R0 * .19; REG = Math.round(SR * 2 / RATIO);
+        [back, front].forEach((c) => {
+          c.width = Math.round(W * dpr); c.height = Math.round(H * dpr);
+          c.style.width = W + 'px'; c.style.height = H + 'px';
+        });
+        glCv.style.width = glCv.style.height = REG + 'px';
+        glCv.style.left = Math.round(cx - REG / 2) + 'px'; glCv.style.top = Math.round(cy - REG / 2) + 'px';
+        const mi = (SR * 1.087).toFixed(1) + 'px', mo = (SR * 1.107).toFixed(1) + 'px';
+        const mk = 'radial-gradient(circle at 50% 50%, #000 0, #000 ' + mi + ', transparent ' + mo + ')';
+        glCv.style.webkitMaskImage = mk; glCv.style.maskImage = mk;
+        fb.style.width = fb.style.height = (SR * 2) + 'px';
+        fb.style.left = (cx - SR) + 'px'; fb.style.top = (cy - SR) + 'px';
+        if (three) three.resize(Math.round(REG * dpr));
+        initSwarm();
+        measureChips();
       }
 
-      function draw() {
-        if (!w || !h) {
-          running = false;
-          return;
-        }
+      /* ---------- one frame ---------- */
+      function frame(dt) {
+        if (!W || !H) return;
+        T += dt;
+        const t = T;
+        for (const c of [bctx, fctx]) { c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, W, H); c.globalCompositeOperation = 'lighter'; c.lineCap = 'butt'; }
 
-        ctx.clearRect(0, 0, w, h);
+        /* atmosphere: a faint elliptical haze lying in the disc, plus light bleeding out of the glass core */
+        bctx.save();
+        bctx.translate(cx, cy); bctx.rotate(-.12); bctx.scale(1, .5);
+        let g = bctx.createRadialGradient(0, 0, 0, 0, 0, R0 * .95);
+        g.addColorStop(0, 'rgba(150,110,255,.11)'); g.addColorStop(.5, 'rgba(255,104,134,.045)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+        bctx.fillStyle = g; bctx.fillRect(-R0, -R0 * 2, R0 * 2, R0 * 4);
+        bctx.restore();
+        const br = .85 + .15 * Math.sin(t * .9);
+        g = bctx.createRadialGradient(cx, cy, 0, cx, cy, SR * 3.6);
+        g.addColorStop(0, 'rgba(255,120,150,' + (.24 * br).toFixed(3) + ')'); g.addColorStop(.35, 'rgba(190,120,255,' + (.1 * br).toFixed(3) + ')'); g.addColorStop(1, 'rgba(0,0,0,0)');
+        bctx.fillStyle = g; bctx.fillRect(cx - SR * 3.6, cy - SR * 3.6, SR * 7.2, SR * 7.2);
 
-        // Single locked velocity for all 4 hero nodes
-        syncAngle += 0.006;
+        /* rings + trails + hero dots */
+        HERO.forEach((h, hi) => {
+          const rx = h.rx + .05 * Math.sin(t * .21 + hi * 1.7), rz = h.rz + .03 * Math.sin(t * .15 + hi * 2.3);
+          const cX = Math.cos(rx), sX = Math.sin(rx), cZ = Math.cos(rz), sZ = Math.sin(rz), rad = h.r * R0;
 
-        const maxR = Math.min(w, h) * 0.38;
-        const rings = [maxR * 0.35, maxR * 0.58, maxR * 0.8, maxR * 1.0];
+          /* ring: one hairline, brighter where it swings towards the viewer */
+          const SEG = 140;
+          proj(rad, 0, 0, cX, sX, cZ, sZ);
+          let px = P3[0], py = P3[1], pz = P3[2];
+          for (let i = 1; i <= SEG; i++) {
+            const a = i / SEG * Math.PI * 2;
+            proj(Math.cos(a) * rad, Math.sin(a) * rad, 0, cX, sX, cZ, sZ);
+            const zm = (pz + P3[2]) / 2, dn = zm / rad, al = .035 + .15 * clamp(.5 + .5 * dn, 0, 1);
+            const c = zm > 0 ? fctx : bctx;
+            c.strokeStyle = 'rgba(' + h.tint + ',' + al.toFixed(3) + ')'; c.lineWidth = 1;
+            c.beginPath(); c.moveTo(px, py); c.lineTo(P3[0], P3[1]); c.stroke();
+            px = P3[0]; py = P3[1]; pz = P3[2];
+          }
 
-        // Soft core glow
-        const coreGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxR * 0.22);
-        coreGrad.addColorStop(0, 'rgba(225,29,72,0.2)');
-        coreGrad.addColorStop(0.55, 'rgba(192,38,211,0.1)');
-        coreGrad.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.fillStyle = coreGrad;
-        ctx.beginPath();
-        ctx.arc(cx, cy, maxR * 0.22, 0, Math.PI * 2);
-        ctx.fill();
+          /* hero dot with a comet trail */
+          const th = h.ph + t * .34 * h.sp;
+          proj(Math.cos(th) * rad, Math.sin(th) * rad, 0, cX, sX, cZ, sZ);
+          const hx = P3[0], hy = P3[1], hz = P3[2], hs = P3[3];
+          const TN = 44, span = 1.2;
+          px = hx; py = hy; pz = hz;
+          for (let i = 1; i <= TN; i++) {
+            const a = th - i / TN * span;
+            proj(Math.cos(a) * rad, Math.sin(a) * rad, 0, cX, sX, cZ, sZ);
+            const k = 1 - i / TN, zm = (pz + P3[2]) / 2, dA = .5 + .5 * clamp(zm / rad, -1, 1);
+            const c = zm > 0 ? fctx : bctx, wd = (.7 + 2.6 * k) * P3[3];
+            c.lineWidth = wd * 3.4; c.strokeStyle = 'rgba(' + h.rgbS + ',' + (.13 * k * k * (.45 + .55 * dA)).toFixed(3) + ')';
+            c.beginPath(); c.moveTo(px, py); c.lineTo(P3[0], P3[1]); c.stroke();
+            c.lineWidth = wd; c.strokeStyle = 'rgba(' + h.tint + ',' + (.8 * Math.pow(k, 1.6) * (.4 + .6 * dA)).toFixed(3) + ')';
+            c.beginPath(); c.moveTo(px, py); c.lineTo(P3[0], P3[1]); c.stroke();
+            px = P3[0]; py = P3[1]; pz = P3[2];
+          }
+          const dc = hz > 0 ? fctx : bctx, dd = .55 + .45 * clamp(.5 + .5 * hz / rad, 0, 1);
+          const gs = 46 * hs;
+          dc.globalAlpha = .9 * dd; dc.drawImage(h.spr, hx - gs / 2, hy - gs / 2, gs, gs);
+          const cs = 15 * hs;
+          dc.globalAlpha = dd; dc.drawImage(sprWhite, hx - cs / 2, hy - cs / 2, cs, cs);
+          dc.globalAlpha = 1;
+          dc.fillStyle = 'rgb(' + h.tint + ')'; dc.beginPath(); dc.arc(hx, hy, 3.4 * hs, 0, Math.PI * 2); dc.fill();
 
-        // 1. Concentric Wireframe Orbit Rings
-        rings.forEach((r, idx) => {
-          ctx.beginPath();
-          ctx.arc(cx, cy, r, 0, Math.PI * 2);
-          ctx.strokeStyle = 'rgba(255, 255, 255, ' + (0.06 + idx * 0.02) + ')';
-          ctx.lineWidth = 1;
-          ctx.stroke();
+          /* label chip: glides in as its dot swings to the front, and fades as it passes behind the glass */
+          const el = chipEls[hi];
+          if (el) {
+            const vis = smooth(.08, .6, hz / rad);
+            const cw = chipW[hi] || 150;
+            let tx = hx - cw * (hx / W);
+            tx = clamp(tx, 4, Math.max(4, W - cw - 4));
+            const ty = hy + 16 * hs;   /* below the dot: front-half dots sit below the core, so the label never covers the glass */
+            el.style.opacity = vis.toFixed(3);
+            el.style.transform = 'translate3d(' + tx.toFixed(1) + 'px,' + (ty - (1 - vis) * 8).toFixed(1) + 'px,0)';
+          }
         });
 
-        // 2. Swarm Particles
-        for (let i = 0; i < particles.length; i++) {
-          const p = particles[i];
-          p.angle += p.speed;
-          const px = cx + Math.cos(p.angle) * p.radius;
-          const py = cy + Math.sin(p.angle) * p.radius;
-
-          ctx.beginPath();
-          ctx.arc(px, py, p.size, 0, Math.PI * 2);
-          ctx.fillStyle = p.color;
-          ctx.globalAlpha = p.alpha;
-          ctx.fill();
+        /* swarm */
+        const sr = .9 + .04 * Math.sin(t * .17), sz = -.12 + .03 * Math.sin(t * .11);
+        const sc0 = Math.cos(sr), ss0 = Math.sin(sr), sc1 = Math.cos(sz), ss1 = Math.sin(sz);
+        for (let i = 0; i < swarm.length; i++) {
+          const p = swarm[i];
+          p.a += p.sp * dt;
+          proj(Math.cos(p.a) * p.r * R0, Math.sin(p.a) * p.r * R0, p.h * R0, sc0, ss0, sc1, ss1);
+          const z = P3[2], dn = clamp(z / (R0 * .9), -1, 1), c = z > 0 ? fctx : bctx;
+          c.globalAlpha = p.alpha * (.4 + .6 * (.5 + .5 * dn));
+          c.fillStyle = p.col;
+          c.beginPath(); c.arc(P3[0], P3[1], p.size * P3[3] * (.85 + .25 * dn), 0, Math.PI * 2); c.fill();
         }
-        ctx.globalAlpha = 1.0;
+        bctx.globalAlpha = fctx.globalAlpha = 1;
+        bctx.globalCompositeOperation = fctx.globalCompositeOperation = 'source-over';
 
-        // 3. 4 Larger Synchronized Hero Particles (Locked Orbit Period)
-        const heroColors = ['#e11d48', '#c026d3', '#ec4899', '#8b5cf6'];
-
-        rings.forEach((r, idx) => {
-          // Locked 90-degree quarter shifts
-          const angle = syncAngle + (idx * (Math.PI / 2));
-          const nx = cx + Math.cos(angle) * r;
-          const ny = cy + Math.sin(angle) * r;
-
-          ctx.beginPath();
-          ctx.arc(nx, ny, 7, 0, Math.PI * 2);
-          ctx.fillStyle = heroColors[idx];
-          ctx.shadowColor = heroColors[idx];
-          ctx.shadowBlur = 18;
-          ctx.fill();
-          ctx.shadowBlur = 0;
-        });
-
-        animationFrameId = requestAnimationFrame(draw);
-      }
-
-      function stop() {
-        running = false;
-        if (animationFrameId) {
-          cancelAnimationFrame(animationFrameId);
-          animationFrameId = 0;
+        /* feed the glass: the back half of the scene, plus a warm core light that breathes */
+        if (three) {
+          const n = texCv.width, u = n / REG, pv = .32 + .22 * Math.sin(t * .7);
+          texCtx.globalCompositeOperation = 'source-over';
+          texCtx.fillStyle = BG; texCtx.fillRect(0, 0, n, n);
+          texCtx.drawImage(back, (cx - REG / 2) * dpr, (cy - REG / 2) * dpr, REG * dpr, REG * dpr, 0, 0, n, n);
+          const ca = .1 + .22 * pv, cg = texCtx.createRadialGradient(n / 2, n / 2, 0, n / 2, n / 2, SR * .62 * u);
+          cg.addColorStop(0, 'rgba(255,214,228,' + ca.toFixed(3) + ')'); cg.addColorStop(.45, 'rgba(210,190,255,' + (ca * .3).toFixed(3) + ')'); cg.addColorStop(1, 'rgba(200,196,255,0)');
+          texCtx.globalCompositeOperation = 'lighter'; texCtx.fillStyle = cg; texCtx.fillRect(0, 0, n, n);
+          three.draw(t, pv);
         }
       }
 
+      function loop(now) {
+        if (!running) return;
+        const dt = last ? Math.min(.05, (now - last) / 1000) : .016;
+        last = now;
+        frame(dt);
+        raf = requestAnimationFrame(loop);
+      }
+      function stop() { running = false; last = 0; if (raf) { cancelAnimationFrame(raf); raf = 0; } }
       function ensureRunning() {
-        resize();
-        if (!running) {
-          running = true;
-          animationFrameId = requestAnimationFrame(draw);
-        }
+        resize(false);
+        if (reduced) { frame(0); return; }
+        if (!running) { running = true; raf = requestAnimationFrame(loop); }
       }
 
-      window.addEventListener('resize', ensureRunning, { passive: true });
-      if (typeof ResizeObserver !== 'undefined') {
-        new ResizeObserver(ensureRunning).observe(stage);
+      function boot() {
+        resize(true);
+        three = initThree();
+        if (three) { three.resize(Math.round(REG * dpr)); glCv.classList.add('on'); }
+        else stage.classList.add('orbit-nogl');
+        if (reduced) T = 6;
+        ensureRunning();
       }
+      window.addEventListener('resize', ensureRunning, { passive: true });
+      if (typeof ResizeObserver !== 'undefined') new ResizeObserver(ensureRunning).observe(stage);
       if (typeof IntersectionObserver !== 'undefined') {
         new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) ensureRunning();
-            else stop();
-          });
+          entries.forEach((entry) => { if (entry.isIntersecting) ensureRunning(); else stop(); });
         }, { threshold: 0.05 }).observe(stage);
       }
-
-      ensureRunning();
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measureChips(); });
+      if (window.THREE) boot(); else document.addEventListener('DOMContentLoaded', boot);
     })();
 
     (function initTechBackgroundField() {
@@ -1096,10 +1235,11 @@
       let nodes = [];
       let rafId = 0;
       let running = false;
-      const nodeCount = 22;
+      let nodeCount = 22;
 
       function initNodes() {
         nodes = [];
+        nodeCount = Math.max(18, Math.min(52, Math.round((w * h) / 7500)));
         for (let i = 0; i < nodeCount; i++) {
           nodes.push({
             x: (0.1 + Math.random() * 0.8) * w,
@@ -1134,12 +1274,12 @@
         for (let i = 0; i < nodes.length; i++) {
           for (let j = i + 1; j < nodes.length; j++) {
             const dist = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
-            if (dist < 110) {
+            if (dist < 120) {
               const pulse = (Math.sin(nodes[i].phase + dist * 0.02) + 1) / 2;
               ctx.beginPath();
               ctx.moveTo(nodes[i].x, nodes[i].y);
               ctx.lineTo(nodes[j].x, nodes[j].y);
-              ctx.strokeStyle = 'rgba(255, 255, 255, ' + (0.05 + pulse * 0.15) + ')';
+              ctx.strokeStyle = 'rgba(31, 32, 37, ' + (0.07 + pulse * 0.16) + ')';
               ctx.lineWidth = 0.8 + pulse * 0.6;
               ctx.stroke();
             }
@@ -1153,8 +1293,8 @@
 
           ctx.beginPath();
           ctx.arc(node.x, node.y, node.radius + glow * 1.2, 0, Math.PI * 2);
-          ctx.fillStyle = glow > 0.6 ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.3)';
-          ctx.shadowColor = 'rgba(255, 255, 255, 0.4)';
+          ctx.fillStyle = glow > 0.6 ? 'rgba(229, 51, 109, 0.95)' : 'rgba(31, 32, 37, 0.35)';
+          ctx.shadowColor = 'rgba(229, 51, 109, 0.35)';
           ctx.shadowBlur = glow * 12;
           ctx.fill();
           ctx.shadowBlur = 0;
@@ -1201,444 +1341,143 @@
       start();
     })();
 
-    (function initHeroPinnedScroll() {
-      const pinTrack = document.getElementById('heroScrollPin');
-      const heroViewport = document.getElementById('heroViewport');
-      const heroLockupPanel = document.getElementById('heroLockupPanel');
-      const heroHeadline = document.getElementById('heroHeadline');
-      const waveCanvas = document.getElementById('heroWaveformCanvas');
-      const manifestoReveal = document.getElementById('manifestoReveal');
-      const mqMobile = window.matchMedia('(max-width: 767px)');
+    /* Hero particles: ~1,900 fine dots in a flowing ribbon on white, in the brand's pink-to-indigo run. They fade out near the headline, so the words always sit on clean white.
+       On load the dots start scattered and settle into the ribbon (about 1.8s), then just flow. Not tied to scrolling. */
+    (function initHeroParticles() {
+      const cv = document.getElementById('heroParticles');
+      const host = document.getElementById('hero');
+      const title = document.getElementById('hero-title');
+      if (!cv || !host || !title) return;
+      const ctx = cv.getContext('2d');
+      if (!ctx) return;
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+      const sm = (a, b, v) => { const t = clamp((v - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+      function rng(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 
-      let targetProgress = 0;
-      let currentProgress = 0;
-      let heroPlayedOnce = false;
-      let heroStaticFlow = false;
-      let lastRawProgress = 0;
-      let time = 0;
-      let width = 0;
-      let height = 0;
-      let running = false;
-      let rafId = 0;
+      const PAL = [[255, 40, 118], [226, 34, 166], [172, 66, 244], [92, 104, 240]];
+      const colAt = (u) => { const f = u * (PAL.length - 1), i = Math.min(PAL.length - 2, Math.floor(f)), k = f - i; return PAL[i].map((v, j) => Math.round(v + (PAL[i + 1][j] - v) * k)); };
+      const DELAY = .45, DUR = 1.35;                               // intro: every dot settles within DELAY + DUR = 1.8s
 
-      function readScrollProgress() {
-        if (!pinTrack || heroStaticFlow) return 0;
-        const rect = pinTrack.getBoundingClientRect();
-        if (mqMobile.matches) {
-          const scrollableDistance = pinTrack.offsetHeight - window.innerHeight;
-          if (scrollableDistance <= 0) return 0;
-          return Math.min(1, Math.max(0, (-rect.top) / scrollableDistance));
-        }
-        const viewH = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
-        const maxScroll = pinTrack.offsetHeight - viewH;
-        if (maxScroll <= 0) return 0;
-        return Math.min(1, Math.max(0, (-rect.top) / maxScroll));
-      }
+      let w = 0, h = 0, dpr = 1, small = false, lam = 300, tx = null, P = [], sprites = [], bk = [], dots = [], out = null;
 
-      function applyStaticLayout() {
-        pinTrack.style.overflowAnchor = 'none';
-        if (document.documentElement) document.documentElement.style.overflowAnchor = 'none';
-        pinTrack.classList.add('hero-static-flow');
-        pinTrack.style.setProperty('height', 'auto', 'important');
-        if (heroViewport) {
-          heroViewport.style.position = 'relative';
-          heroViewport.style.height = 'auto';
-          heroViewport.style.overflow = 'visible';
-          heroViewport.style.display = 'block';
-        }
-        if (heroLockupPanel) {
-          heroLockupPanel.style.position = 'relative';
-          heroLockupPanel.style.inset = 'auto';
-          heroLockupPanel.style.height = '';
-          heroLockupPanel.style.overflow = 'hidden';
-        }
-        if (heroHeadline) {
-          heroHeadline.style.transform = 'scale(1) translateZ(0)';
-          heroHeadline.style.filter = 'blur(0px)';
-          heroHeadline.style.opacity = '1';
-        }
-        if (manifestoReveal) {
-          manifestoReveal.style.position = 'relative';
-          manifestoReveal.style.inset = 'auto';
-          manifestoReveal.style.opacity = '1';
-          manifestoReveal.style.transform = 'none';
-          manifestoReveal.style.minHeight = '';
-          manifestoReveal.style.height = 'auto';
-        }
-      }
+      function build() {
+        w = cv.clientWidth; h = cv.clientHeight;
+        if (!w || !h) return;
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+        small = w < 768;
+        lam = clamp(w / (small ? 1.7 : 3.2), 220, 520);
+        const cr = cv.getBoundingClientRect(), tr = title.getBoundingClientRect();
+        tx = { x0: tr.left - cr.left - 28, x1: tr.right - cr.left + 28, y0: tr.top - cr.top - 24, y1: tr.bottom - cr.top + 24 };
 
-      // Flatten sticky scrub → stacked lockup + manifesto.
-      // mode: 'offscreen' (user already in orbit) | 'onscreen' (scrolling back up to lockup)
-      function finalizeHeroToStaticFlow(mode) {
-        if (heroStaticFlow || !pinTrack || !manifestoReveal) return;
-        heroStaticFlow = true;
-        heroPlayedOnce = true;
-
-        const orbit = document.getElementById('engine-orbit');
-        const useOffscreen = mode === 'offscreen' ||
-          (pinTrack.getBoundingClientRect().bottom <= 0);
-
-        if (useOffscreen) {
-          // Convert while the pin is fully above the viewport — anchor orbit so
-          // shrinking the runway doesn't yank section 3.
-          const anchorBefore = orbit ? orbit.getBoundingClientRect().top : 0;
-          if (waveCanvas) waveCanvas.style.visibility = 'hidden';
-          applyStaticLayout();
-          if (orbit) {
-            const anchorAfter = orbit.getBoundingClientRect().top;
-            const delta = anchorAfter - anchorBefore;
-            if (Math.abs(delta) > 0.5) window.scrollBy(0, delta);
-          }
-        } else {
-          // Convert while manifesto is still on screen (user scrolling up).
-          const manifestoBefore = manifestoReveal.getBoundingClientRect().top;
-          const orbitBefore = orbit ? orbit.getBoundingClientRect().top : 0;
-          if (waveCanvas) waveCanvas.style.visibility = 'hidden';
-          applyStaticLayout();
-
-          const manifestoAfter = manifestoReveal.getBoundingClientRect().top;
-          const mDelta = manifestoAfter - manifestoBefore;
-          if (Math.abs(mDelta) > 0.5) window.scrollBy(0, mDelta);
-
-          if (orbit) {
-            const orbitAfter = orbit.getBoundingClientRect().top;
-            const orbitGap = orbitBefore - orbitAfter;
-            if (orbitGap > 1) {
-              let spacer = document.getElementById('heroOrbitSpacer');
-              if (!spacer) {
-                spacer = document.createElement('div');
-                spacer.id = 'heroOrbitSpacer';
-                spacer.setAttribute('aria-hidden', 'true');
-                spacer.style.cssText = 'width:100%;margin:0;padding:0;pointer-events:none;';
-                pinTrack.appendChild(spacer);
-              }
-              spacer.style.height = Math.round(orbitGap) + 'px';
-            }
-          }
+        sprites = [];
+        for (let i = 0; i < 12; i++) {
+          const c = colAt(i / 11), s = document.createElement('canvas'); s.width = s.height = 64;
+          const x = s.getContext('2d'), g = x.createRadialGradient(32, 32, 0, 32, 32, 32);
+          g.addColorStop(0, 'rgba(' + c.join(',') + ',.9)'); g.addColorStop(.5, 'rgba(' + c.join(',') + ',.35)'); g.addColorStop(1, 'rgba(' + c.join(',') + ',0)');
+          x.fillStyle = g; x.fillRect(0, 0, 64, 64); sprites.push(s);
         }
 
-        targetProgress = 0;
-        currentProgress = 0;
-        resizeCanvas();
-        requestAnimationFrame(function () {
-          if (waveCanvas) waveCanvas.style.visibility = 'visible';
-        });
-      }
-
-      function updateTargetProgress() {
-        if (heroStaticFlow) return;
-
-        const raw = readScrollProgress();
-
-        if (!heroPlayedOnce) {
-          targetProgress = raw;
-          if (raw >= 0.92) {
-            heroPlayedOnce = true;
-            targetProgress = 1;
-            currentProgress = 1;
-          }
-          lastRawProgress = raw;
-          return;
-        }
-
-        // First play done: keep sticky manifesto locked — do NOT flatten yet.
-        // Flattening mid-view is what yanked orbit into place.
-        targetProgress = 1;
-        currentProgress = 1;
-
-        // Only flatten when the user starts scrolling back up toward the lockup.
-        if (raw < lastRawProgress - 0.02 && raw < 0.97) {
-          finalizeHeroToStaticFlow('onscreen');
-        }
-        lastRawProgress = raw;
-      }
-
-      window.addEventListener('scroll', updateTargetProgress, { passive: true });
-      if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', updateTargetProgress, { passive: true });
-      }
-      window.addEventListener('resize', updateTargetProgress, { passive: true });
-      updateTargetProgress();
-
-      const ctx = waveCanvas ? waveCanvas.getContext('2d', { alpha: true, desynchronized: true }) : null;
-
-      const numParticles = mqMobile.matches ? 900 : 1600;
-      const particles = [];
-      const colors = [
-        { r: 255, g: 0, b: 102 },
-        { r: 224, g: 0, b: 153 },
-        { r: 192, g: 0, b: 255 },
-        { r: 99, g: 102, b: 241 }
-      ];
-
-      for (let i = 0; i < numParticles; i++) {
-        const mobileAmp = mqMobile.matches;
-        particles.push({
-          xRatio: Math.random(),
-          waveOffset: Math.random() * Math.PI * 2,
-          speed: 0.006 + Math.random() * 0.012,
-          amplitude: mobileAmp ? (70 + Math.random() * 120) : (120 + Math.random() * 220),
-          size: mobileAmp ? (1.6 + Math.random() * 3.2) : (2.2 + Math.random() * 4.2),
-          yDrift: (Math.random() - 0.5) * (mobileAmp ? 40 : 60)
-        });
-      }
-
-      function resizeCanvas() {
-        if (!waveCanvas) return false;
-        const bounds = (heroStaticFlow && heroLockupPanel)
-          ? heroLockupPanel.getBoundingClientRect()
-          : { width: window.innerWidth, height: window.innerHeight };
-        const cssW = Math.max(1, Math.round(bounds.width));
-        const cssH = Math.max(1, Math.round(bounds.height));
-        if (cssW < 2 || cssH < 2) {
-          width = 0;
-          height = 0;
-          return false;
-        }
-        if (mqMobile.matches) {
-          const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
-          width = waveCanvas.width = Math.round(cssW * dpr);
-          height = waveCanvas.height = Math.round(cssH * dpr);
-        } else {
-          width = waveCanvas.width = Math.round(cssW * 2);
-          height = waveCanvas.height = Math.round(cssH * 2);
-        }
-        waveCanvas.style.width = cssW + 'px';
-        waveCanvas.style.height = cssH + 'px';
-        return true;
-      }
-
-      function setHeroOverlayVisible(visible) {
-        const v = visible ? 'visible' : 'hidden';
-        if (waveCanvas) waveCanvas.style.visibility = v;
-        if (heroHeadline) heroHeadline.style.visibility = v;
-      }
-
-      function renderHero() {
-        const isMobile = window.innerWidth < 768;
-        const mobile = mqMobile.matches;
-
-        if (heroStaticFlow) {
-          currentProgress = 0;
-        } else if (heroPlayedOnce) {
-          currentProgress = 1;
-          targetProgress = 1;
-        } else {
-          const lerpFactor = isMobile ? 0.18 : 0.08;
-          currentProgress += (targetProgress - currentProgress) * lerpFactor;
-          if (currentProgress >= 0.92) {
-            currentProgress = 1;
-            targetProgress = 1;
-            heroPlayedOnce = true;
-          }
-        }
-
-        if (!heroStaticFlow) {
-          if (heroHeadline) {
-            const scaleFactor = mobile ? 48 : 110;
-            const blurFactor = mobile ? 18 : 35;
-            const scale = 1 + Math.pow(currentProgress, 2.5) * scaleFactor;
-            const blur = Math.pow(currentProgress, 1.8) * blurFactor;
-            const headlineOpacity = Math.max(0, 1 - Math.pow(currentProgress, 1.35) * 1.15);
-            heroHeadline.style.transform = 'scale(' + scale.toFixed(3) + ') translateZ(0)';
-            heroHeadline.style.filter = 'blur(' + blur.toFixed(2) + 'px)';
-            heroHeadline.style.opacity = headlineOpacity.toFixed(3);
-          }
-
-          if (manifestoReveal) {
-            const revealStart = mobile ? 0.12 : 0.18;
-            const revealSpan = mobile ? 0.38 : 0.42;
-            const reveal = Math.min(1, Math.max(0, (currentProgress - revealStart) / revealSpan));
-            const ease = reveal * reveal * (3 - 2 * reveal);
-            manifestoReveal.style.opacity = ease.toFixed(3);
-            manifestoReveal.style.transform = 'scale(' + (0.97 + ease * 0.03).toFixed(3) + ')';
-          }
-        }
-
-        if (ctx && waveCanvas && width && height) {
-          ctx.clearRect(0, 0, width, height);
-          const centerX = width / 2;
-          const centerY = height / 2;
-          time += 0.012;
-          const scaleMultiplier = 1 + Math.pow(currentProgress, 2.0) * (mobile ? 10.0 : 14.0);
-          const explosion = Math.pow(currentProgress, 2.0) * (mobile ? 28.0 : 35.0);
-          const basePush = Math.pow(currentProgress, 2.5) * Math.hypot(width, height) * (mobile ? 0.9 : 0.85);
-
-          if (mobile) {
-            ctx.save();
-            ctx.beginPath();
-            ctx.rect(0, 0, width, height);
-            ctx.clip();
-          }
-
-          for (let i = 0; i < numParticles; i++) {
-            const p = particles[i];
-            const pxBase = p.xRatio * width;
-            const freq = 0.0012;
-            const primaryWave = Math.sin(pxBase * freq + time + p.waveOffset) * p.amplitude;
-            const secondaryWave = Math.cos(pxBase * freq * 1.8 - time * 0.7) * (p.amplitude * 0.45);
-
-            let py = centerY + primaryWave + secondaryWave + p.yDrift;
-            let px = pxBase;
-
-            if (currentProgress > 0) {
-              const dx = px - centerX;
-              const dy = py - centerY;
-              const dist = Math.hypot(dx, dy) || 0.001;
-              const nx = dx / dist;
-              const ny = dy / dist;
-              px += dx * explosion + nx * basePush;
-              py += dy * explosion + ny * basePush;
-            }
-
-            const colorProgress = p.xRatio * (colors.length - 1);
-            const colorIndex = Math.floor(colorProgress);
-            const nextColorIndex = Math.min(colorIndex + 1, colors.length - 1);
-            const factor = colorProgress - colorIndex;
-            const c1 = colors[colorIndex];
-            const c2 = colors[nextColorIndex];
-            const r = Math.round(c1.r + (c2.r - c1.r) * factor);
-            const g = Math.round(c1.g + (c2.g - c1.g) * factor);
-            const b = Math.round(c1.b + (c2.b - c1.b) * factor);
-
-            const edgeAlpha = Math.sin(p.xRatio * Math.PI);
-            const alpha = Math.max(0.2, edgeAlpha * 0.95);
-            const currentSize = p.size * 1.5 * scaleMultiplier;
-
-            if (mobile) {
-              if (px + currentSize < 0 || px - currentSize > width ||
-                  py + currentSize < 0 || py - currentSize > height) {
-                continue;
-              }
-            }
-
-            ctx.beginPath();
-            ctx.arc(px, py, currentSize, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
-            ctx.fill();
-          }
-
-          if (mobile) ctx.restore();
-        }
-
-        rafId = requestAnimationFrame(renderHero);
-      }
-
-      function stop() {
-        running = false;
-        if (rafId) {
-          cancelAnimationFrame(rafId);
-          rafId = 0;
-        }
-      }
-
-      function ensureRunning() {
-        resizeCanvas();
-        setHeroOverlayVisible(true);
-        if (!running) {
-          running = true;
-          rafId = requestAnimationFrame(renderHero);
-        }
-      }
-
-      if (typeof ResizeObserver !== 'undefined' && pinTrack) {
-        new ResizeObserver(ensureRunning).observe(pinTrack);
-      } else {
-        window.addEventListener('resize', ensureRunning);
-      }
-
-      if (typeof IntersectionObserver !== 'undefined' && pinTrack) {
-        new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              ensureRunning();
-            } else {
-              // Left for orbit: flatten offscreen so return-scroll is organic,
-              // without a mid-manifesto layout jump into section 3.
-              if (heroPlayedOnce && !heroStaticFlow) {
-                finalizeHeroToStaticFlow('offscreen');
-              }
-              stop();
-            }
+        const r = rng(20261113), n = small ? 900 : 1900;
+        P = []; bk = []; dots = [];
+        for (let i = 0; i < n; i++) {
+          const xr = r(), isBk = r() < .06, ambient = !isBk && r() < .14, z = Math.pow(r(), .8);
+          const c = colAt(xr);
+          const lane = ((r() + r() + r()) - 1.5) / 1.5;             // roughly gaussian, -1..1
+          P.push({
+            xr, z, lane: ambient ? lane * .3 : lane, lift: ambient ? (.08 + r() * .42) * h : 0,
+            f: .08 + r() * .14, ph: r() * 6.2832, dx: 6 + r() * 22,
+            bk: isBk, ci: Math.round(xr * 11), fill: 'rgb(' + c.join(',') + ')',
+            size: isBk ? 5 + r() * 10 : (ambient ? .6 + r() * .9 : .8 + r() * 2.0),
+            a: isBk ? .14 + r() * .16 : (ambient ? .25 + r() * .3 : .55 + r() * .45),
+            cx: r() * w, cy: r() * h, sw: (r() - .5) * 2 * (small ? 60 : 120), delay: r() * DELAY
           });
-        }, { threshold: 0 }).observe(pinTrack);
+          (isBk ? bk : dots).push(i);
+        }
+        out = new Float32Array(n * 4);
       }
 
-      ensureRunning();
+      const textMask = (x, y) => {
+        if (!tx) return 1;
+        const dx = Math.max(tx.x0 - x, 0, x - tx.x1), dy = Math.max(tx.y0 - y, 0, y - tx.y1);
+        return sm(0, 110, Math.hypot(dx, dy));
+      };
+      const axisY = (s) => h * ((small ? .80 : .75) + ((small ? .70 : .60) - (small ? .80 : .75)) * Math.pow(Math.abs(s), 1.6));
+      const ampAt = (s) => h * ((small ? .03 : .035) + (small ? .04 : .075) * Math.pow(Math.abs(s), 1.2));
+
+      function draw(t, tt) {
+        if (!w) return;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, w, h);
+        const cx = w / 2, shimX = ((t * .09) % 1.5 - .25) * w, fadeIn = sm(0, .3, tt);
+        for (let i = 0; i < P.length; i++) {
+          const p = P[i];
+          const x0 = p.xr * w + Math.sin(t * p.f + p.ph) * p.dx, s = (x0 - cx) / cx, as = Math.abs(s);
+          const ph1 = (x0 - cx) / lam * 6.2832 + t * .42;
+          const am = ampAt(s);
+          const yc = axisY(s) + am * (Math.sin(ph1) + .42 * Math.cos(ph1 * 1.8 - t * .3));
+          const thick = h * (.05 + .10 * (.5 + .5 * Math.sin(x0 / (w * .2) + t * .22))) * (1 - .7 * sm(.8, 1, as));
+          const ty = yc + (p.lane + .12 * Math.sin(t * .6 + p.ph)) * thick - p.lift;
+          let X = x0, Y = ty, e = 1;
+          if (tt < DELAY + DUR) {
+            const u = clamp((tt - p.delay) / DUR, 0, 1); e = 1 - Math.pow(1 - u, 3);
+            if (e < 1) {
+              const cxp = p.cx + Math.sin(t * .9 + p.ph) * 14, cyp = p.cy + Math.cos(t * 1.1 + p.ph) * 14;
+              const dxv = x0 - cxp, dyv = ty - cyp, len = Math.hypot(dxv, dyv) || 1, sw = p.sw * Math.sin(Math.PI * e);
+              X = cxp + dxv * e - dyv / len * sw; Y = cyp + dyv * e + dxv / len * sw;
+            }
+          }
+          let a = p.a * (.45 + .55 * p.z) * (.5 + .5 * e) * fadeIn * (.25 + .75 * Math.sin(p.xr * Math.PI));
+          a *= sm(0, h * .07, Y) * (1 - sm(h * .88, h * .99, Y)) * textMask(X, Y);
+          const sh = Math.exp(-Math.pow((X - shimX) / (w * .1), 2));
+          a *= 1 + .7 * sh;
+          const k = i * 4; out[k] = X; out[k + 1] = Y; out[k + 2] = a; out[k + 3] = p.size * (1 + .2 * sh) * (.7 + .6 * p.z);
+        }
+        for (let j = 0; j < bk.length; j++) {                    // soft out-of-focus dots first, behind the fine ones
+          const i = bk[j], k = i * 4, a = out[k + 2];
+          if (a < .02) continue;
+          const r = out[k + 3];
+          ctx.globalAlpha = Math.min(.5, a); ctx.drawImage(sprites[P[i].ci], out[k] - r, out[k + 1] - r, r * 2, r * 2);
+        }
+        for (let j = 0; j < dots.length; j++) {
+          const i = dots[j], k = i * 4, a = out[k + 2];
+          if (a < .02) continue;
+          const x = out[k], y = out[k + 1], r = out[k + 3];
+          ctx.globalAlpha = Math.min(1, a); ctx.fillStyle = P[i].fill;
+          if (r < 1.1) ctx.fillRect(x - r, y - r, r * 2, r * 2); else { ctx.beginPath(); ctx.arc(x, y, r, 0, 6.2832); ctx.fill(); }
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      build();
+      let T = 3, born = 0, running = false, raf = 0, last = 0;
+      if (reduce) { draw(6, 9); }
+      else {
+        const frame = (now) => {
+          raf = 0; if (!running) return;
+          if (!born) born = now;
+          T += Math.min(.05, (now - last) / 1000); last = now;
+          draw(T, (now - born) / 1000);
+          raf = requestAnimationFrame(frame);
+        };
+        const start = () => { if (raf) return; last = performance.now(); raf = requestAnimationFrame(frame); };
+        if ('IntersectionObserver' in window) new IntersectionObserver((en) => { running = en[0].isIntersecting; if (running) start(); }, { threshold: 0 }).observe(host);
+        else { running = true; start(); }
+      }
+      let lw = cv.clientWidth, lh = cv.clientHeight;
+      const onResize = () => { if (cv.clientWidth === lw && cv.clientHeight === lh) return; lw = cv.clientWidth; lh = cv.clientHeight; build(); if (reduce) draw(6, 9); };
+      if ('ResizeObserver' in window) new ResizeObserver(onResize).observe(cv); else window.addEventListener('resize', onResize);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { build(); if (reduce) draw(6, 9); });
     })();
   </script>
 
 
 
 
-<script>
-  (function setupDynamicHeader() {
-    const header = document.getElementById('mainHeader');
-    const logo = document.getElementById('navLogo');
-    const links = document.querySelectorAll('.nav-link');
-    const ctaDesktop = document.getElementById('navCtaDesktop');
-    const ctaMobile = document.getElementById('navCtaMobile');
-    if (!header || !logo) return;
-
-    const path = window.location.pathname || '';
-    const isHomepage = (path === '/' || path === '' || path.endsWith('/index.html') || path.endsWith('/index'))
-      && !/\/(tech|privacy|terms|signature)(\.html)?\/?$/.test(path);
-
-    function linkClasses(theme, el) {
-      const isHow = (el.getAttribute('href') || '').includes('how-it-works');
-      const hide = isHow ? 'hidden sm:inline-block ' : '';
-      const base = 'nav-link ' + hide + 'text-[12px] font-normal tracking-[-0.01em] transition-colors ';
-      if (theme === 'light') {
-        return base + 'text-neutral-900/80 hover:text-black';
-      }
-      return base + 'text-white/80 hover:text-white';
-    }
-
-    function updateHeader() {
-      const atLanding = window.scrollY < 1;
-      const sections = document.querySelectorAll('[data-header-theme]');
-      let currentTheme = isHomepage ? 'dark' : 'light';
-      sections.forEach((sec) => {
-        const rect = sec.getBoundingClientRect();
-        if (rect.top <= 25 && rect.bottom >= 25) {
-          currentTheme = sec.getAttribute('data-header-theme') || currentTheme;
-        }
-      });
-
-      if (isHomepage && atLanding) {
-        // Fully invisible until the user scrolls past 1px
-        header.className = 'fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-transparent backdrop-blur-none border-none text-white opacity-0 pointer-events-none';
-        logo.src = 'logo-white.png';
-        links.forEach((l) => { l.className = linkClasses('dark', l); });
-        if (ctaDesktop) ctaDesktop.className = 'hidden sm:inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-white text-neutral-950 font-bold text-[11px] hover:bg-neutral-200 transition-all';
-        if (ctaMobile) ctaMobile.className = 'sm:hidden flex items-center justify-center w-6 h-6 rounded-full bg-white text-neutral-950 transition-all';
-        return;
-      }
-
-      if (currentTheme === 'light') {
-        header.className = 'fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-white/70 backdrop-blur-2xl backdrop-saturate-150 border-none text-neutral-900 opacity-100 pointer-events-auto';
-        logo.src = 'logo-black.png';
-        links.forEach((l) => { l.className = linkClasses('light', l); });
-        if (ctaDesktop) ctaDesktop.className = 'hidden sm:inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-neutral-950 text-white font-bold text-[11px] hover:bg-neutral-800 transition-all';
-        if (ctaMobile) ctaMobile.className = 'sm:hidden flex items-center justify-center w-6 h-6 rounded-full bg-neutral-950 text-white transition-all';
-      } else {
-        header.className = 'fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-neutral-950/70 backdrop-blur-2xl backdrop-saturate-150 border-none text-white opacity-100 pointer-events-auto';
-        logo.src = 'logo-white.png';
-        links.forEach((l) => { l.className = linkClasses('dark', l); });
-        if (ctaDesktop) ctaDesktop.className = 'hidden sm:inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-white text-neutral-950 font-bold text-[11px] hover:bg-neutral-200 transition-all';
-        if (ctaMobile) ctaMobile.className = 'sm:hidden flex items-center justify-center w-6 h-6 rounded-full bg-white text-neutral-950 transition-all';
-      }
-    }
-
-    window.addEventListener('scroll', updateHeader, { passive: true });
-    window.addEventListener('resize', updateHeader, { passive: true });
-    updateHeader();
-  })();
-</script>
-
 <div id="cookie-banner" class="fixed bottom-6 right-6 z-50 max-w-sm bg-neutral-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-5 shadow-2xl hidden">
   <p class="text-xs text-neutral-300 leading-relaxed mb-3">
-    We use essential cookies to analyse traffic and optimise your experience. Read our <a href="/privacy" class="text-neutral-300 hover:text-white underline decoration-neutral-500">Privacy Policy</a>.
+    We use essential cookies to analyse traffic and optimise your experience. Read our <a href="privacy.html" class="text-neutral-300 hover:text-white underline decoration-neutral-500">Privacy Policy</a>.
   </p>
   <div class="flex items-center gap-2">
     <button type="button" id="accept-cookies" class="px-4 py-1.5 bg-white text-black text-xs font-medium rounded-full hover:bg-neutral-200 transition-all">Accept</button>
@@ -1688,7 +1527,7 @@
       for(let i=0; i<bars; i++) {
         const targetHeight = height * 0.2 + (i / bars) * (height * 0.4);
         const animatedHeight = targetHeight * (Math.sin(time + i * 0.4) * 0.15 + 0.85);
-        ctx.fillStyle = 'rgba(255,255,255,0.05)';
+        ctx.fillStyle = 'rgba(31,32,37,0.07)';
         ctx.beginPath();
         ctx.roundRect(20 + i * (barWidth + 4), height - animatedHeight - 20, barWidth, animatedHeight, 4);
         ctx.fill();
@@ -1703,8 +1542,8 @@
         if(x===20) ctx.moveTo(x, yBase + yWave);
         else ctx.lineTo(x, yBase + yWave);
       }
-      ctx.strokeStyle = 'rgba(255,255,255,0.9)';
-      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = '#E5336D';
+      ctx.lineWidth = 2;
       ctx.stroke();
 
       requestAnimationFrame(draw);
