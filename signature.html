@@ -11,6 +11,7 @@
   <script>
     tailwind.config = {
       theme: {
+        screens: { 'xs': '390px', 'sm': '640px', 'md': '768px', 'lg': '1024px', 'xl': '1280px', '2xl': '1536px' },
         extend: {
           fontFamily: {
             sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'Inter', 'sans-serif'],
@@ -21,29 +22,34 @@
   </script>
   <style>
     body {
+      margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", Inter, sans-serif;
-      background: #0a0a0a;
+      letter-spacing: -0.011em;
+      -webkit-font-smoothing: antialiased;
+      background: #ffffff;
+      color: #1f2025;
       min-height: 100vh;
     }
+    h1, h2, h3 { text-wrap: balance; }
+    p { text-wrap: pretty; }
 
     .field-input {
       width: 100%;
-      background: rgba(38, 38, 38, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 0.75rem;
-      color: #ffffff;
+      background: #ffffff;
+      border: 1px solid rgba(31, 32, 37, 0.1);
+      border-radius: 0.875rem;
+      color: #1f2025;
       font-size: 15px;
       line-height: 1.4;
-      padding: 0.75rem;
+      padding: 0.8rem 0.9rem;
       outline: none;
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
-
-    .field-input::placeholder { color: rgba(255, 255, 255, 0.3); }
-
+    .field-input::placeholder { color: rgba(31, 32, 37, 0.3); }
+    .field-input:hover { border-color: rgba(31, 32, 37, 0.2); }
     .field-input:focus {
-      border-color: rgba(255,255,255,0.4);
-      box-shadow: 0 0 0 3px rgba(255,255,255,0.1);
+      border-color: rgba(31, 32, 37, 0.55);
+      box-shadow: 0 0 0 4px rgba(31, 32, 37, 0.07);
     }
 
     .toast {
@@ -60,67 +66,65 @@
     }
   </style>
 </head>
-<body class="text-white antialiased relative overflow-x-hidden">
-  <canvas id="signatureStarfield" class="absolute inset-0 w-full h-full z-0 pointer-events-none" aria-hidden="true"></canvas>
-  <div class="min-h-screen flex flex-col relative z-10">
-    <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/5 backdrop-blur-2xl backdrop-saturate-150 border-none">
-      <div class="max-w-5xl mx-auto px-5 sm:px-8 py-5 flex items-center gap-4">
-        <img src="logo-white.png" alt="Red Thread" class="h-4 w-auto object-contain" />
-        <div class="h-4 w-px bg-white/15" aria-hidden="true"></div>
-        <h1 class="text-sm sm:text-base font-semibold tracking-tight text-white">
-          Team Signature Generator
-        </h1>
-      </div>
+<body class="antialiased relative overflow-x-hidden">
+  <div class="min-h-screen flex flex-col relative">
+    <header class="fixed top-0 left-0 right-0 z-50 px-3 sm:px-6 pointer-events-none">
+      <nav class="pointer-events-auto relative max-w-5xl mx-auto mt-4 px-6 h-14 bg-white/80 backdrop-blur-md rounded-full border border-neutral-200/60 shadow-sm flex items-center justify-between gap-3 text-neutral-900" aria-label="Primary">
+        <div class="flex items-center gap-3 min-w-0">
+          <a href="index.html" class="flex items-center shrink-0"><img src="logo-black.png" alt="Red Thread" class="h-4 sm:h-5 w-auto object-contain" /></a>
+          <div class="hidden sm:block h-4 w-px bg-neutral-900/15 shrink-0" aria-hidden="true"></div>
+          <h1 class="hidden sm:block text-[15px] font-medium tracking-tight text-neutral-900 truncate">Signature generator</h1>
+        </div>
+        <span class="shrink-0 inline-flex items-center rounded-full bg-neutral-900/[0.06] px-3 py-1 text-[11px] font-medium tracking-wider text-neutral-500 uppercase">Internal</span>
+      </nav>
     </header>
 
-    <main class="flex-1 w-full px-5 sm:px-8 pt-24 pb-14">
-      <div class="mb-8 max-w-5xl mx-auto">
-        <span class="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-medium tracking-wider text-neutral-400 uppercase mb-3">
-          Internal tool
-        </span>
-        <p class="text-white/60 text-sm sm:text-base leading-relaxed max-w-xl">
-          Fill in your details, preview the Apple-style signature, then copy and paste it into Gmail Settings → Signature.
+    <main class="flex-1 w-full px-5 sm:px-8 pt-24 pb-16">
+      <div class="mb-10 sm:mb-12 max-w-5xl mx-auto pt-6 sm:pt-10">
+        <h2 class="text-[clamp(2.25rem,5vw,3.75rem)] font-semibold tracking-[-0.035em] leading-[1.02] text-[#1f2025]">Your email signature.</h2>
+        <p class="mt-4 text-[#1f2025]/60 text-base sm:text-lg leading-snug max-w-xl">
+          Fill in your details, preview the signature, then copy and paste it into Gmail Settings &rarr; Signature.
         </p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch max-w-5xl mx-auto">
         <!-- Left bento: Your Details -->
-        <section class="bg-white/5 backdrop-blur-2xl backdrop-saturate-150 border border-white/10 hover:border-white/20 shadow-2xl rounded-3xl p-8 h-full">
-          <h2 class="text-lg font-semibold text-white flex items-center gap-2 mb-4"><i class="ph-light ph-user-focus text-xl text-neutral-400"></i> Your Details</h2>
+        <section class="bg-[#F5F5F7] rounded-[28px] p-6 sm:p-8 h-full">
+          <h2 class="text-lg font-semibold tracking-[-0.02em] text-[#1f2025] flex items-center gap-2 mb-5"><i class="ph-light ph-user-focus text-xl text-[#1f2025]/45"></i> Your Details</h2>
           <form id="signatureForm" class="space-y-4" autocomplete="on" onsubmit="return false;">
             <div>
-              <label for="fullName" class="block text-xs font-medium text-white/50 mb-2">Full Name</label>
-              <input id="fullName" name="fullName" type="text" class="field-input bg-neutral-800/50 border border-white/10 text-white rounded-xl p-3" value="Sammy Albon" placeholder="Sammy Albon" autocomplete="name" />
+              <label for="fullName" class="block text-xs font-medium text-[#1f2025]/55 mb-2">Full Name</label>
+              <input id="fullName" name="fullName" type="text" class="field-input" value="Sammy Albon" placeholder="Sammy Albon" autocomplete="name" />
             </div>
             <div>
-              <label for="jobTitle" class="block text-xs font-medium text-white/50 mb-2">Job Title</label>
-              <input id="jobTitle" name="jobTitle" type="text" class="field-input bg-neutral-800/50 border border-white/10 text-white rounded-xl p-3" value="Co-Founder" placeholder="Co-Founder" autocomplete="organization-title" />
+              <label for="jobTitle" class="block text-xs font-medium text-[#1f2025]/55 mb-2">Job Title</label>
+              <input id="jobTitle" name="jobTitle" type="text" class="field-input" value="Co-Founder" placeholder="Co-Founder" autocomplete="organization-title" />
             </div>
             <div>
-              <label for="directEmail" class="block text-xs font-medium text-white/50 mb-2">Direct Email</label>
+              <label for="directEmail" class="block text-xs font-medium text-[#1f2025]/55 mb-2">Direct Email</label>
               <div class="relative">
-                <input id="directEmail" name="directEmail" type="email" class="field-input bg-neutral-800/50 border border-white/10 text-white rounded-xl p-3 pr-12" value="sammy@redthread.co" placeholder="you@redthread.co" autocomplete="email" />
-                <i id="emailValIcon" class="ph-light ph-check-circle absolute right-3.5 top-1/2 -translate-y-1/2 text-emerald-500/70 text-base opacity-0 transition-opacity duration-200"></i>
+                <input id="directEmail" name="directEmail" type="email" class="field-input pr-12" value="sammy@redthread.co" placeholder="you@redthread.co" autocomplete="email" />
+                <i id="emailValIcon" class="ph-light ph-check-circle absolute right-3.5 top-1/2 -translate-y-1/2 text-emerald-600/80 text-base opacity-0 transition-opacity duration-200"></i>
               </div>
             </div>
             <div>
-              <label for="directPhone" class="block text-xs font-medium text-white/50 mb-2">Direct Phone</label>
+              <label for="directPhone" class="block text-xs font-medium text-[#1f2025]/55 mb-2">Direct Phone</label>
               <div class="relative">
-                <input id="directPhone" name="directPhone" type="tel" class="field-input bg-neutral-800/50 border border-white/10 text-white rounded-xl p-3 pr-12" value="+44 7703 434 557" placeholder="+44 …" autocomplete="tel" />
-                <span id="phoneCounter" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-[10px] font-mono text-neutral-500 opacity-60">12</span>
+                <input id="directPhone" name="directPhone" type="tel" class="field-input pr-12" value="+44 7703 434 557" placeholder="+44 …" autocomplete="tel" />
+                <span id="phoneCounter" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-[10px] font-mono text-[#1f2025]/35">12</span>
               </div>
             </div>
           </form>
         </section>
 
         <!-- Right bento: Live Preview & Action -->
-        <section class="bg-white/5 backdrop-blur-2xl backdrop-saturate-150 border border-white/10 hover:border-white/20 shadow-2xl rounded-3xl p-8 flex flex-col h-full">
+        <section class="bg-[#F5F5F7] rounded-[28px] p-6 sm:p-8 flex flex-col h-full">
           <div class="flex items-center justify-between gap-3 mb-4">
-            <h2 class="text-lg font-semibold text-white flex items-center gap-2"><i class="ph-light ph-eye text-xl text-neutral-400"></i> Live Preview</h2>
+            <h2 class="text-lg font-semibold tracking-[-0.02em] text-[#1f2025] flex items-center gap-2"><i class="ph-light ph-eye text-xl text-[#1f2025]/45"></i> Live Preview</h2>
           </div>
 
-          <div class="relative bg-neutral-900 border border-white/10 rounded-2xl p-0.5 overflow-hidden shadow-2xl flex-1 min-h-[320px] mb-6">
-            <div class="bg-white p-6 h-full overflow-y-auto flex items-start rounded-2xl">
+          <div class="relative bg-white rounded-2xl overflow-hidden flex-1 min-h-[320px] mb-6 border border-black/[0.06]">
+            <div class="p-6 h-full overflow-y-auto flex items-start">
               <div id="signaturePreview" class="w-full"></div>
             </div>
           </div>
@@ -128,13 +132,13 @@
           <button
             type="button"
             id="copyBtn"
-            class="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 bg-white hover:bg-neutral-100 text-black font-semibold rounded-2xl active:scale-[0.98] transition-all duration-200 shadow-xl cursor-pointer w-full"
+            class="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 bg-[#1f2025] hover:bg-black text-white font-medium rounded-full active:scale-[0.98] transition-all duration-200 cursor-pointer w-full"
           >
             <span>Copy Signature</span>
             <i class="ph-light ph-copy text-base"></i>
           </button>
 
-          <p class="mt-3 text-[11px] text-white/40 leading-relaxed">
+          <p class="mt-3 text-[11px] text-[#1f2025]/45 leading-relaxed">
             Copies formatted HTML — paste directly into Gmail's signature editor.
           </p>
         </section>
@@ -144,7 +148,7 @@
 
   <div
     id="toast"
-    class="toast fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-full bg-white/10 backdrop-blur-2xl border border-white/20 shadow-2xl text-white text-sm font-semibold px-5 py-3 whitespace-nowrap"
+    class="toast fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-full bg-[#1f2025] shadow-xl text-white text-sm font-medium px-5 py-3 whitespace-nowrap"
     role="status"
     aria-live="polite"
   >
@@ -340,57 +344,5 @@
       updatePreview();
     })();
   </script>
-<script>
-  (function initSigStarfield() {
-    const canvas = document.getElementById('signatureStarfield');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    let w = 0, h = 0, dpr = 1, stars = [];
-
-    function makeStars() {
-      stars = Array.from({ length: 250 }, () => {
-        let radius = Math.random() * 1.05 + 0.25;
-        return {
-          x: Math.random() * w,
-          y: Math.random() * h,
-          r: radius,
-          a: 0.2 + Math.random() * 0.4,
-          v: radius * 0.12
-        };
-      });
-    }
-
-    function resize() {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      w = Math.max(1, window.innerWidth);
-      h = Math.max(1, window.innerHeight);
-      canvas.width = Math.round(w * dpr);
-      canvas.height = Math.round(h * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      makeStars();
-    }
-
-    function frame() {
-      ctx.fillStyle = '#0a0a0a';
-      ctx.fillRect(0, 0, w, h);
-      for (const star of stars) {
-        star.y -= star.v;
-        if (star.y < 0) {
-          star.y = h;
-          star.x = Math.random() * w;
-        }
-        ctx.fillStyle = `rgba(255,255,255,${star.a})`;
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      requestAnimationFrame(frame);
-    }
-
-    window.addEventListener('resize', resize);
-    resize();
-    requestAnimationFrame(frame);
-  })();
-</script>
 </body>
 </html>

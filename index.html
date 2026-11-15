@@ -359,29 +359,25 @@
       .animate-live-chat-seamless { animation: none; }
     }
 
-    /* Brand logos: even grid, no CSS filters (filters paint a white box around transparent PNGs) */
+    /* Brand logos: strict black & white. Rasters are pre-rendered black silhouettes (Content/Brand Logos/bw); SVGs are flattened to black with a filter. */
     #section-brands,
     #section-brands #logos-section { background-color: #ffffff; }
     #section-brands .brand-logo-img {
       display: block;
       width: auto;
       height: auto;
-      max-height: 1.75rem;
-      max-width: 5.25rem;
+      max-height: 1.5rem;
+      max-width: 4.75rem;
       object-fit: contain;
-      opacity: .78;
-      /* no CSS filter — filters paint a white plate behind transparent PNGs.
-         multiply alone dissolves any remaining white pads into the white section. */
-      filter: none !important;
-      mix-blend-mode: multiply;
-      background: transparent !important;
-      box-shadow: none !important;
+      opacity: .85;
+      background: transparent;
     }
+    #section-brands .brand-logo-svg { filter: brightness(0); }
     @media (min-width: 640px) {
-      #section-brands .brand-logo-img { max-height: 2rem; max-width: 6.5rem; }
+      #section-brands .brand-logo-img { max-height: 1.9rem; max-width: 6rem; }
     }
     @media (min-width: 768px) {
-      #section-brands .brand-logo-img { max-height: 2.25rem; max-width: 7.5rem; }
+      #section-brands .brand-logo-img { max-height: 2.25rem; max-width: 7rem; }
     }
 
     /* ==========================================
@@ -545,7 +541,7 @@
     /* Mobile: reserve stage height so lazy images can't shift the page */
     @media (max-width: 639px) {
       #imax-stage {
-        min-height: calc(min(72vw, 300px) * 4 / 3 + 4rem);
+        min-height: calc(min(36vw, 150px) * 4 / 3 + 4rem);
       }
     }
 
@@ -590,7 +586,7 @@
         flex: 0 0 auto !important;
         aspect-ratio: 4 / 5 !important;
         height: auto !important;
-        min-height: 520px !important;
+        min-height: 580px !important;
         flex-shrink: 0 !important;
         scroll-snap-align: center;
       }
@@ -622,7 +618,7 @@
         flex-direction: column;
         gap: 0.5rem;
         overflow: hidden;
-        background: linear-gradient(to top, rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.55) 70%, rgba(0, 0, 0, 0));
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.38) 70%, rgba(0, 0, 0, 0));
         transform: none;
         transition: max-height 0.32s cubic-bezier(0.16, 1, 0.3, 1);
         will-change: max-height;
@@ -641,20 +637,26 @@
         background: linear-gradient(
           to bottom,
           rgba(0, 0, 0, 0) 0%,
-          rgba(0, 0, 0, 0.5) 45%,
-          rgba(0, 0, 0, 0.85) 100%
+          rgba(0, 0, 0, 0.3) 45%,
+          rgba(0, 0, 0, 0.55) 100%
         );
         opacity: 1;
         transition: opacity 0.2s ease-out;
       }
       #deck-accordion .accordion-card.is-open .case-mobile-panel {
-        max-height: 100%;
-        overflow: hidden;
-        padding-top: 1rem;
-        padding-bottom: 1.5rem;
+        /* stop short of the brand logo (top-8 + h-12 = 5rem) so nothing ever overlaps it; scrolls inside if a card has a lot of copy */
+        max-height: calc(100% - 5.5rem);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding-top: 0.6rem;
+        padding-bottom: 1.1rem;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0.42) 2.25rem, rgba(0, 0, 0, 0.58) 100%);
         -webkit-mask-image: none;
         mask-image: none;
       }
+      #deck-accordion .accordion-card.is-open .case-mobile-panel::-webkit-scrollbar { display: none; }
       #deck-accordion .accordion-card.is-open .case-mobile-panel::after {
         opacity: 0;
         pointer-events: none;
@@ -676,11 +678,22 @@
         max-height: none !important;
         align-items: stretch !important;
       }
+      #deck-accordion .case-copy { padding: 0.95rem 1rem !important; }
+      /* one shared glass tint for the copy + metric boxes on every card (lighter than before) */
+      #deck-accordion .case-copy, #deck-accordion .case-metrics > div { background-color: rgba(0, 0, 0, 0.2) !important; }
+      #deck-accordion .case-copy p { font-size: 0.8125rem; line-height: 1.5; }
+      #deck-accordion .case-copy p.font-semibold { font-size: 0.9375rem; line-height: 1.35; margin-top: 0.35rem; }
       #deck-accordion .expanded-content h3 {
         font-size: 1.45rem !important;
         line-height: 1.15 !important;
       }
-      #deck-accordion .expanded-content p.line-clamp-2 {
+      #deck-accordion .accordion-card.is-open .expanded-content p.line-clamp-2 {
+        display: block !important;
+        overflow: visible;
+        -webkit-line-clamp: unset;
+        line-clamp: unset;
+      }
+      #deck-accordion .accordion-card:not(.is-open) .expanded-content p.line-clamp-2 {
         display: -webkit-box !important;
         -webkit-line-clamp: 2;
         line-clamp: 2;
@@ -702,15 +715,15 @@
       }
       #deck-accordion .expanded-content p.max-w-xl {
         display: block !important;
-        margin-top: 0.65rem;
+        margin-top: 0.5rem;
       }
       #deck-accordion .case-metrics {
         display: grid !important;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.75rem;
+        gap: 0.6rem;
         width: 100%;
-        padding-top: 1rem;
-        margin-top: 0.85rem;
+        padding-top: 0;
+        margin-top: 0.15rem;
         margin-left: 0 !important;
         border-top: none;
       }
@@ -1005,9 +1018,9 @@
         height: 58% !important;
       }
       #how-it-works .how-laptop-frame {
-        width: 112% !important;
-        left: -6% !important;
-        top: 0 !important;
+        width: 100% !important;
+        left: 0 !important;
+        top: 12% !important;
       }
       #how-it-works .how-copy {
         position: relative;
@@ -1023,6 +1036,36 @@
         -webkit-mask-image: linear-gradient(to right, transparent 0, #000 4%, #000 96%, transparent 100%);
         mask-image: linear-gradient(to right, transparent 0, #000 4%, #000 96%, transparent 100%);
       }
+    }
+
+    /* How it works - phones (JS): a swipeable row of step cards over ONE static laptop. As a card's left edge sweeps across the laptop,
+       that step's dashboard is revealed to the right of the edge - the same wipe as desktop, driven by the swipe. */
+    .how-static, .how-dots { display: none; }
+    @media (max-width: 767px) {
+      #how-it-works.how-h { --how-card-h: min(540px, 76svh) !important; }
+      #how-it-works.how-h .how-hwrap { position: relative; }
+      #how-it-works.how-h .how-stack {
+        display: flex !important; flex-direction: row; gap: 10px !important; position: relative;
+        max-width: none !important; margin: 0 !important; padding: 0 7vw 6px !important;
+        overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+        -webkit-overflow-scrolling: touch; scrollbar-width: none;
+      }
+      #how-it-works.how-h .how-stack::-webkit-scrollbar { display: none; }
+      #how-it-works.how-h .how-card,
+      #how-it-works.how-h .how-card:last-child {
+        position: relative !important; top: auto !important; z-index: auto !important; margin-bottom: 0 !important;
+        flex: 0 0 86vw; width: 86vw !important; height: var(--how-card-h);
+        scroll-snap-align: center; scroll-snap-stop: always;
+      }
+      #how-it-works.how-h .how-static {
+        display: block; position: absolute; top: 0; left: 7vw; width: 86vw; height: var(--how-card-h);
+        z-index: 5; pointer-events: none;
+      }
+      #how-it-works.how-h .how-static .how-device > div { padding-left: 0 !important; padding-right: 0 !important; }
+      #how-it-works.how-h .how-ui { will-change: clip-path; }
+      #how-it-works.how-h .how-dots { display: flex; justify-content: center; gap: 8px; margin-top: 18px; }
+      #how-it-works.how-h .how-dots button { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 999px; background: rgba(255,255,255,.28); transition: width .3s cubic-bezier(.16,1,.3,1), background .3s ease; cursor: pointer; }
+      #how-it-works.how-h .how-dots button.is-on { width: 22px; background: rgba(255,255,255,.9); }
     }
 
     /* Attention Engine: one 2D scene (fibre curves + comet pulses) feeding a WebGL glass lens; glass chips receive the output */
@@ -1066,7 +1109,7 @@
 
 
   <!-- Floating pill navigation -->
-  <header id="mainHeader" class="fixed top-0 left-0 right-0 z-50 pointer-events-none">
+  <header id="mainHeader" class="fixed top-0 left-0 right-0 z-50 px-3 sm:px-6 pointer-events-none">
     <nav class="pointer-events-auto relative max-w-4xl mx-auto mt-4 px-6 h-14 bg-white/80 backdrop-blur-md rounded-full border border-neutral-200/60 shadow-sm flex items-center justify-between gap-2 text-neutral-900">
       <a href="index.html" class="flex items-center shrink-0">
         <img id="navLogo" src="logo-black.png" alt="Red Thread" class="h-4 sm:h-5 w-auto object-contain">
@@ -1105,7 +1148,7 @@
     <div id="heroStage" class="relative w-full flex flex-col items-center" style="position:sticky;top:0">
       <!-- Backdrop. It rides inside the pinned stage, so the page scroll never moves it; script drifts it up slower than the scroll while the screen rises. A dawn: deep-space black at the very top, easing through dawn blues to transparent (the white page). It is sized in JS so the white lands about halfway down the laptop in its final position, i.e. the laptop sits inside the lower atmosphere. -->
       <div id="hero-backdrop" class="absolute top-0 z-0 pointer-events-none overflow-hidden will-change-transform" style="left:calc(50% - 50vw);width:100vw;height:150svh" aria-hidden="true">
-        <div id="hero-sky-grad" class="absolute inset-0" style="background:linear-gradient(to bottom,#000000 0%,#000000 14%,#04050B 24%,#0B0E1E 34%,#161D3C 45%,#2C3C6E 57%,#5D739F 68%,rgba(168,183,208,.72) 79%,rgba(220,227,238,.34) 90%,rgba(255,255,255,0) 100%)"></div>
+        <div id="hero-sky-grad" class="absolute inset-0" style="background:linear-gradient(to bottom,#000000 0%,#000000 14%,#050505 24%,#0D0D0D 34%,#1B1B1B 45%,#383838 57%,#727272 68%,rgba(186,186,186,.72) 79%,rgba(228,228,228,.34) 90%,rgba(255,255,255,0) 100%)"></div>
         <canvas id="hero-network" class="absolute inset-0 w-full h-full"></canvas>
       </div>
 
@@ -1115,7 +1158,7 @@
     <h1 class="text-5xl md:text-[72px] font-semibold tracking-tight leading-[1.05]" style="color:var(--hero-h1,#fff)">
       Creator-powered.<br>Commercial impact.
     </h1>
-    <h2 class="text-xl md:text-2xl font-medium mt-6" style="color:var(--hero-sub,rgba(255,255,255,.78));text-shadow:0 1px 20px rgba(6,8,36,.4)">
+    <h2 class="text-xl md:text-2xl font-medium mt-6" style="color:var(--hero-sub,rgba(255,255,255,.78));text-shadow:0 1px 20px rgba(0,0,0,.4)">
       Global Creator marketing agency powered by creator instinct.
     </h2>
     </div>
@@ -1151,23 +1194,23 @@
 
     <!-- Laurel badges -->
     <div class="reveal relative z-30 mt-4 mb-0">
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-16">
-      <div class="flex items-center gap-3">
-        <svg class="h-16 w-auto text-neutral-400 shrink-0" viewBox="-16 -8 66 112" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M38 98 C0 80 -6 30 30 2"/><path d="M0 0 C3.40 -3.89 10.54 -3.89 17.00 0.28 C10.88 4.83 3.74 5.06 0 0Z M2.04 0.10 L14.96 0.28" transform="translate(32.54 95.07) rotate(-184.8)"/><path d="M0 0 C3.06 -5.06 9.49 -5.06 15.30 -0.28 C9.79 3.22 3.37 3.44 0 0Z M1.84 -0.10 L13.46 -0.28" transform="translate(32.54 95.07) rotate(-110.8)"/><path d="M0 0 C3.27 -3.71 10.14 -3.71 16.35 0.28 C10.46 4.67 3.60 4.89 0 0Z M1.96 0.10 L14.39 0.28" transform="translate(24.12 88.86) rotate(-174.3)"/><path d="M0 0 C2.94 -4.89 9.12 -4.89 14.72 -0.28 C9.42 3.07 3.24 3.28 0 0Z M1.77 -0.10 L12.95 -0.28" transform="translate(24.12 88.86) rotate(-100.3)"/><path d="M0 0 C3.14 -3.54 9.73 -3.54 15.70 0.28 C10.05 4.52 3.45 4.73 0 0Z M1.88 0.10 L13.82 0.28" transform="translate(17.25 81.52) rotate(-163.8)"/><path d="M0 0 C2.83 -4.73 8.76 -4.73 14.13 -0.28 C9.04 2.92 3.11 3.13 0 0Z M1.70 -0.10 L12.43 -0.28" transform="translate(17.25 81.52) rotate(-89.8)"/><path d="M0 0 C3.01 -3.36 9.33 -3.36 15.05 0.28 C9.63 4.36 3.31 4.56 0 0Z M1.81 0.10 L13.24 0.28" transform="translate(11.98 73.25) rotate(-153.3)"/><path d="M0 0 C2.71 -4.56 8.40 -4.56 13.55 -0.28 C8.67 2.77 2.98 2.97 0 0Z M1.63 -0.10 L11.92 -0.28" transform="translate(11.98 73.25) rotate(-79.3)"/><path d="M0 0 C2.88 -3.19 8.93 -3.19 14.40 0.28 C9.22 4.20 3.17 4.39 0 0Z M1.73 0.10 L12.67 0.28" transform="translate(8.34 64.29) rotate(-142.9)"/><path d="M0 0 C2.59 -4.39 8.04 -4.39 12.96 -0.28 C8.29 2.62 2.85 2.81 0 0Z M1.56 -0.10 L11.40 -0.28" transform="translate(8.34 64.29) rotate(-68.9)"/><path d="M0 0 C2.75 -3.01 8.53 -3.01 13.75 0.28 C8.80 4.04 3.02 4.23 0 0Z M1.65 0.10 L12.10 0.28" transform="translate(6.37 54.84) rotate(-132.6)"/><path d="M0 0 C2.48 -4.23 7.67 -4.23 12.38 -0.28 C7.92 2.47 2.72 2.65 0 0Z M1.48 -0.10 L10.89 -0.28" transform="translate(6.37 54.84) rotate(-58.6)"/><path d="M0 0 C2.62 -2.84 8.12 -2.84 13.10 0.28 C8.38 3.88 2.88 4.06 0 0Z M1.57 0.10 L11.53 0.28" transform="translate(6.11 45.14) rotate(-122.4)"/><path d="M0 0 C2.36 -4.06 7.31 -4.06 11.79 -0.28 C7.55 2.32 2.59 2.49 0 0Z M1.41 -0.10 L10.38 -0.28" transform="translate(6.11 45.14) rotate(-48.4)"/><path d="M0 0 C2.49 -2.66 7.72 -2.66 12.45 0.28 C7.97 3.73 2.74 3.89 0 0Z M1.49 0.10 L10.96 0.28" transform="translate(7.61 35.41) rotate(-112.1)"/><path d="M0 0 C2.24 -3.89 6.95 -3.89 11.21 -0.28 C7.17 2.17 2.47 2.33 0 0Z M1.34 -0.10 L9.86 -0.28" transform="translate(7.61 35.41) rotate(-38.1)"/><path d="M0 0 C2.36 -2.49 7.32 -2.49 11.80 0.28 C7.55 3.57 2.60 3.73 0 0Z M1.42 0.10 L10.38 0.28" transform="translate(10.91 25.85) rotate(-101.9)"/><path d="M0 0 C2.12 -3.73 6.58 -3.73 10.62 -0.28 C6.80 2.02 2.34 2.18 0 0Z M1.27 -0.10 L9.35 -0.28" transform="translate(10.91 25.85) rotate(-27.9)"/><path d="M0 0 C2.23 -2.31 6.91 -2.31 11.15 0.28 C7.14 3.41 2.45 3.56 0 0Z M1.34 0.10 L9.81 0.28" transform="translate(16.04 16.71) rotate(-91.6)"/><path d="M0 0 C2.01 -3.56 6.22 -3.56 10.03 -0.28 C6.42 1.87 2.21 2.02 0 0Z M1.20 -0.10 L8.83 -0.28" transform="translate(16.04 16.71) rotate(-17.6)"/><path d="M0 0 C2.10 -2.13 6.51 -2.13 10.50 0.28 C6.72 3.25 2.31 3.39 0 0Z M1.26 0.10 L9.24 0.28" transform="translate(23.05 8.18) rotate(-81.6)"/><path d="M0 0 C1.89 -3.39 5.86 -3.39 9.45 -0.28 C6.05 1.72 2.08 1.86 0 0Z M1.13 -0.10 L8.32 -0.28" transform="translate(23.05 8.18) rotate(-7.6)"/><path d="M0 0 C2.20 -3.00 6.82 -3.00 11.00 0.00 C7.04 2.70 2.42 2.85 0 0Z M1.32 0.00 L9.68 0.00" transform="translate(30.00 2.00) rotate(-45.9)"/></svg>
+      <div class="flex flex-row items-center justify-center gap-3 sm:gap-16">
+      <div class="flex items-center gap-1.5 sm:gap-3">
+        <svg class="h-11 sm:h-16 w-auto text-neutral-400 shrink-0" viewBox="-16 -8 66 112" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M38 98 C0 80 -6 30 30 2"/><path d="M0 0 C3.40 -3.89 10.54 -3.89 17.00 0.28 C10.88 4.83 3.74 5.06 0 0Z M2.04 0.10 L14.96 0.28" transform="translate(32.54 95.07) rotate(-184.8)"/><path d="M0 0 C3.06 -5.06 9.49 -5.06 15.30 -0.28 C9.79 3.22 3.37 3.44 0 0Z M1.84 -0.10 L13.46 -0.28" transform="translate(32.54 95.07) rotate(-110.8)"/><path d="M0 0 C3.27 -3.71 10.14 -3.71 16.35 0.28 C10.46 4.67 3.60 4.89 0 0Z M1.96 0.10 L14.39 0.28" transform="translate(24.12 88.86) rotate(-174.3)"/><path d="M0 0 C2.94 -4.89 9.12 -4.89 14.72 -0.28 C9.42 3.07 3.24 3.28 0 0Z M1.77 -0.10 L12.95 -0.28" transform="translate(24.12 88.86) rotate(-100.3)"/><path d="M0 0 C3.14 -3.54 9.73 -3.54 15.70 0.28 C10.05 4.52 3.45 4.73 0 0Z M1.88 0.10 L13.82 0.28" transform="translate(17.25 81.52) rotate(-163.8)"/><path d="M0 0 C2.83 -4.73 8.76 -4.73 14.13 -0.28 C9.04 2.92 3.11 3.13 0 0Z M1.70 -0.10 L12.43 -0.28" transform="translate(17.25 81.52) rotate(-89.8)"/><path d="M0 0 C3.01 -3.36 9.33 -3.36 15.05 0.28 C9.63 4.36 3.31 4.56 0 0Z M1.81 0.10 L13.24 0.28" transform="translate(11.98 73.25) rotate(-153.3)"/><path d="M0 0 C2.71 -4.56 8.40 -4.56 13.55 -0.28 C8.67 2.77 2.98 2.97 0 0Z M1.63 -0.10 L11.92 -0.28" transform="translate(11.98 73.25) rotate(-79.3)"/><path d="M0 0 C2.88 -3.19 8.93 -3.19 14.40 0.28 C9.22 4.20 3.17 4.39 0 0Z M1.73 0.10 L12.67 0.28" transform="translate(8.34 64.29) rotate(-142.9)"/><path d="M0 0 C2.59 -4.39 8.04 -4.39 12.96 -0.28 C8.29 2.62 2.85 2.81 0 0Z M1.56 -0.10 L11.40 -0.28" transform="translate(8.34 64.29) rotate(-68.9)"/><path d="M0 0 C2.75 -3.01 8.53 -3.01 13.75 0.28 C8.80 4.04 3.02 4.23 0 0Z M1.65 0.10 L12.10 0.28" transform="translate(6.37 54.84) rotate(-132.6)"/><path d="M0 0 C2.48 -4.23 7.67 -4.23 12.38 -0.28 C7.92 2.47 2.72 2.65 0 0Z M1.48 -0.10 L10.89 -0.28" transform="translate(6.37 54.84) rotate(-58.6)"/><path d="M0 0 C2.62 -2.84 8.12 -2.84 13.10 0.28 C8.38 3.88 2.88 4.06 0 0Z M1.57 0.10 L11.53 0.28" transform="translate(6.11 45.14) rotate(-122.4)"/><path d="M0 0 C2.36 -4.06 7.31 -4.06 11.79 -0.28 C7.55 2.32 2.59 2.49 0 0Z M1.41 -0.10 L10.38 -0.28" transform="translate(6.11 45.14) rotate(-48.4)"/><path d="M0 0 C2.49 -2.66 7.72 -2.66 12.45 0.28 C7.97 3.73 2.74 3.89 0 0Z M1.49 0.10 L10.96 0.28" transform="translate(7.61 35.41) rotate(-112.1)"/><path d="M0 0 C2.24 -3.89 6.95 -3.89 11.21 -0.28 C7.17 2.17 2.47 2.33 0 0Z M1.34 -0.10 L9.86 -0.28" transform="translate(7.61 35.41) rotate(-38.1)"/><path d="M0 0 C2.36 -2.49 7.32 -2.49 11.80 0.28 C7.55 3.57 2.60 3.73 0 0Z M1.42 0.10 L10.38 0.28" transform="translate(10.91 25.85) rotate(-101.9)"/><path d="M0 0 C2.12 -3.73 6.58 -3.73 10.62 -0.28 C6.80 2.02 2.34 2.18 0 0Z M1.27 -0.10 L9.35 -0.28" transform="translate(10.91 25.85) rotate(-27.9)"/><path d="M0 0 C2.23 -2.31 6.91 -2.31 11.15 0.28 C7.14 3.41 2.45 3.56 0 0Z M1.34 0.10 L9.81 0.28" transform="translate(16.04 16.71) rotate(-91.6)"/><path d="M0 0 C2.01 -3.56 6.22 -3.56 10.03 -0.28 C6.42 1.87 2.21 2.02 0 0Z M1.20 -0.10 L8.83 -0.28" transform="translate(16.04 16.71) rotate(-17.6)"/><path d="M0 0 C2.10 -2.13 6.51 -2.13 10.50 0.28 C6.72 3.25 2.31 3.39 0 0Z M1.26 0.10 L9.24 0.28" transform="translate(23.05 8.18) rotate(-81.6)"/><path d="M0 0 C1.89 -3.39 5.86 -3.39 9.45 -0.28 C6.05 1.72 2.08 1.86 0 0Z M1.13 -0.10 L8.32 -0.28" transform="translate(23.05 8.18) rotate(-7.6)"/><path d="M0 0 C2.20 -3.00 6.82 -3.00 11.00 0.00 C7.04 2.70 2.42 2.85 0 0Z M1.32 0.00 L9.68 0.00" transform="translate(30.00 2.00) rotate(-45.9)"/></svg>
         <div class="flex flex-col items-center text-center">
-          <span class="text-[10px] uppercase tracking-widest font-bold text-neutral-400 mb-1">Data-Driven</span>
-          <span class="text-sm font-semibold text-neutral-400">Creator Agency</span>
+          <span class="text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-neutral-400 mb-0.5 sm:mb-1">Data-Driven</span>
+          <span class="text-[13px] sm:text-sm font-semibold text-neutral-400 whitespace-nowrap">Creator Agency</span>
         </div>
-        <svg class="h-16 w-auto text-neutral-400 shrink-0 scale-x-[-1]" viewBox="-16 -8 66 112" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M38 98 C0 80 -6 30 30 2"/><path d="M0 0 C3.40 -3.89 10.54 -3.89 17.00 0.28 C10.88 4.83 3.74 5.06 0 0Z M2.04 0.10 L14.96 0.28" transform="translate(32.54 95.07) rotate(-184.8)"/><path d="M0 0 C3.06 -5.06 9.49 -5.06 15.30 -0.28 C9.79 3.22 3.37 3.44 0 0Z M1.84 -0.10 L13.46 -0.28" transform="translate(32.54 95.07) rotate(-110.8)"/><path d="M0 0 C3.27 -3.71 10.14 -3.71 16.35 0.28 C10.46 4.67 3.60 4.89 0 0Z M1.96 0.10 L14.39 0.28" transform="translate(24.12 88.86) rotate(-174.3)"/><path d="M0 0 C2.94 -4.89 9.12 -4.89 14.72 -0.28 C9.42 3.07 3.24 3.28 0 0Z M1.77 -0.10 L12.95 -0.28" transform="translate(24.12 88.86) rotate(-100.3)"/><path d="M0 0 C3.14 -3.54 9.73 -3.54 15.70 0.28 C10.05 4.52 3.45 4.73 0 0Z M1.88 0.10 L13.82 0.28" transform="translate(17.25 81.52) rotate(-163.8)"/><path d="M0 0 C2.83 -4.73 8.76 -4.73 14.13 -0.28 C9.04 2.92 3.11 3.13 0 0Z M1.70 -0.10 L12.43 -0.28" transform="translate(17.25 81.52) rotate(-89.8)"/><path d="M0 0 C3.01 -3.36 9.33 -3.36 15.05 0.28 C9.63 4.36 3.31 4.56 0 0Z M1.81 0.10 L13.24 0.28" transform="translate(11.98 73.25) rotate(-153.3)"/><path d="M0 0 C2.71 -4.56 8.40 -4.56 13.55 -0.28 C8.67 2.77 2.98 2.97 0 0Z M1.63 -0.10 L11.92 -0.28" transform="translate(11.98 73.25) rotate(-79.3)"/><path d="M0 0 C2.88 -3.19 8.93 -3.19 14.40 0.28 C9.22 4.20 3.17 4.39 0 0Z M1.73 0.10 L12.67 0.28" transform="translate(8.34 64.29) rotate(-142.9)"/><path d="M0 0 C2.59 -4.39 8.04 -4.39 12.96 -0.28 C8.29 2.62 2.85 2.81 0 0Z M1.56 -0.10 L11.40 -0.28" transform="translate(8.34 64.29) rotate(-68.9)"/><path d="M0 0 C2.75 -3.01 8.53 -3.01 13.75 0.28 C8.80 4.04 3.02 4.23 0 0Z M1.65 0.10 L12.10 0.28" transform="translate(6.37 54.84) rotate(-132.6)"/><path d="M0 0 C2.48 -4.23 7.67 -4.23 12.38 -0.28 C7.92 2.47 2.72 2.65 0 0Z M1.48 -0.10 L10.89 -0.28" transform="translate(6.37 54.84) rotate(-58.6)"/><path d="M0 0 C2.62 -2.84 8.12 -2.84 13.10 0.28 C8.38 3.88 2.88 4.06 0 0Z M1.57 0.10 L11.53 0.28" transform="translate(6.11 45.14) rotate(-122.4)"/><path d="M0 0 C2.36 -4.06 7.31 -4.06 11.79 -0.28 C7.55 2.32 2.59 2.49 0 0Z M1.41 -0.10 L10.38 -0.28" transform="translate(6.11 45.14) rotate(-48.4)"/><path d="M0 0 C2.49 -2.66 7.72 -2.66 12.45 0.28 C7.97 3.73 2.74 3.89 0 0Z M1.49 0.10 L10.96 0.28" transform="translate(7.61 35.41) rotate(-112.1)"/><path d="M0 0 C2.24 -3.89 6.95 -3.89 11.21 -0.28 C7.17 2.17 2.47 2.33 0 0Z M1.34 -0.10 L9.86 -0.28" transform="translate(7.61 35.41) rotate(-38.1)"/><path d="M0 0 C2.36 -2.49 7.32 -2.49 11.80 0.28 C7.55 3.57 2.60 3.73 0 0Z M1.42 0.10 L10.38 0.28" transform="translate(10.91 25.85) rotate(-101.9)"/><path d="M0 0 C2.12 -3.73 6.58 -3.73 10.62 -0.28 C6.80 2.02 2.34 2.18 0 0Z M1.27 -0.10 L9.35 -0.28" transform="translate(10.91 25.85) rotate(-27.9)"/><path d="M0 0 C2.23 -2.31 6.91 -2.31 11.15 0.28 C7.14 3.41 2.45 3.56 0 0Z M1.34 0.10 L9.81 0.28" transform="translate(16.04 16.71) rotate(-91.6)"/><path d="M0 0 C2.01 -3.56 6.22 -3.56 10.03 -0.28 C6.42 1.87 2.21 2.02 0 0Z M1.20 -0.10 L8.83 -0.28" transform="translate(16.04 16.71) rotate(-17.6)"/><path d="M0 0 C2.10 -2.13 6.51 -2.13 10.50 0.28 C6.72 3.25 2.31 3.39 0 0Z M1.26 0.10 L9.24 0.28" transform="translate(23.05 8.18) rotate(-81.6)"/><path d="M0 0 C1.89 -3.39 5.86 -3.39 9.45 -0.28 C6.05 1.72 2.08 1.86 0 0Z M1.13 -0.10 L8.32 -0.28" transform="translate(23.05 8.18) rotate(-7.6)"/><path d="M0 0 C2.20 -3.00 6.82 -3.00 11.00 0.00 C7.04 2.70 2.42 2.85 0 0Z M1.32 0.00 L9.68 0.00" transform="translate(30.00 2.00) rotate(-45.9)"/></svg>
+        <svg class="h-11 sm:h-16 w-auto text-neutral-400 shrink-0 scale-x-[-1]" viewBox="-16 -8 66 112" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M38 98 C0 80 -6 30 30 2"/><path d="M0 0 C3.40 -3.89 10.54 -3.89 17.00 0.28 C10.88 4.83 3.74 5.06 0 0Z M2.04 0.10 L14.96 0.28" transform="translate(32.54 95.07) rotate(-184.8)"/><path d="M0 0 C3.06 -5.06 9.49 -5.06 15.30 -0.28 C9.79 3.22 3.37 3.44 0 0Z M1.84 -0.10 L13.46 -0.28" transform="translate(32.54 95.07) rotate(-110.8)"/><path d="M0 0 C3.27 -3.71 10.14 -3.71 16.35 0.28 C10.46 4.67 3.60 4.89 0 0Z M1.96 0.10 L14.39 0.28" transform="translate(24.12 88.86) rotate(-174.3)"/><path d="M0 0 C2.94 -4.89 9.12 -4.89 14.72 -0.28 C9.42 3.07 3.24 3.28 0 0Z M1.77 -0.10 L12.95 -0.28" transform="translate(24.12 88.86) rotate(-100.3)"/><path d="M0 0 C3.14 -3.54 9.73 -3.54 15.70 0.28 C10.05 4.52 3.45 4.73 0 0Z M1.88 0.10 L13.82 0.28" transform="translate(17.25 81.52) rotate(-163.8)"/><path d="M0 0 C2.83 -4.73 8.76 -4.73 14.13 -0.28 C9.04 2.92 3.11 3.13 0 0Z M1.70 -0.10 L12.43 -0.28" transform="translate(17.25 81.52) rotate(-89.8)"/><path d="M0 0 C3.01 -3.36 9.33 -3.36 15.05 0.28 C9.63 4.36 3.31 4.56 0 0Z M1.81 0.10 L13.24 0.28" transform="translate(11.98 73.25) rotate(-153.3)"/><path d="M0 0 C2.71 -4.56 8.40 -4.56 13.55 -0.28 C8.67 2.77 2.98 2.97 0 0Z M1.63 -0.10 L11.92 -0.28" transform="translate(11.98 73.25) rotate(-79.3)"/><path d="M0 0 C2.88 -3.19 8.93 -3.19 14.40 0.28 C9.22 4.20 3.17 4.39 0 0Z M1.73 0.10 L12.67 0.28" transform="translate(8.34 64.29) rotate(-142.9)"/><path d="M0 0 C2.59 -4.39 8.04 -4.39 12.96 -0.28 C8.29 2.62 2.85 2.81 0 0Z M1.56 -0.10 L11.40 -0.28" transform="translate(8.34 64.29) rotate(-68.9)"/><path d="M0 0 C2.75 -3.01 8.53 -3.01 13.75 0.28 C8.80 4.04 3.02 4.23 0 0Z M1.65 0.10 L12.10 0.28" transform="translate(6.37 54.84) rotate(-132.6)"/><path d="M0 0 C2.48 -4.23 7.67 -4.23 12.38 -0.28 C7.92 2.47 2.72 2.65 0 0Z M1.48 -0.10 L10.89 -0.28" transform="translate(6.37 54.84) rotate(-58.6)"/><path d="M0 0 C2.62 -2.84 8.12 -2.84 13.10 0.28 C8.38 3.88 2.88 4.06 0 0Z M1.57 0.10 L11.53 0.28" transform="translate(6.11 45.14) rotate(-122.4)"/><path d="M0 0 C2.36 -4.06 7.31 -4.06 11.79 -0.28 C7.55 2.32 2.59 2.49 0 0Z M1.41 -0.10 L10.38 -0.28" transform="translate(6.11 45.14) rotate(-48.4)"/><path d="M0 0 C2.49 -2.66 7.72 -2.66 12.45 0.28 C7.97 3.73 2.74 3.89 0 0Z M1.49 0.10 L10.96 0.28" transform="translate(7.61 35.41) rotate(-112.1)"/><path d="M0 0 C2.24 -3.89 6.95 -3.89 11.21 -0.28 C7.17 2.17 2.47 2.33 0 0Z M1.34 -0.10 L9.86 -0.28" transform="translate(7.61 35.41) rotate(-38.1)"/><path d="M0 0 C2.36 -2.49 7.32 -2.49 11.80 0.28 C7.55 3.57 2.60 3.73 0 0Z M1.42 0.10 L10.38 0.28" transform="translate(10.91 25.85) rotate(-101.9)"/><path d="M0 0 C2.12 -3.73 6.58 -3.73 10.62 -0.28 C6.80 2.02 2.34 2.18 0 0Z M1.27 -0.10 L9.35 -0.28" transform="translate(10.91 25.85) rotate(-27.9)"/><path d="M0 0 C2.23 -2.31 6.91 -2.31 11.15 0.28 C7.14 3.41 2.45 3.56 0 0Z M1.34 0.10 L9.81 0.28" transform="translate(16.04 16.71) rotate(-91.6)"/><path d="M0 0 C2.01 -3.56 6.22 -3.56 10.03 -0.28 C6.42 1.87 2.21 2.02 0 0Z M1.20 -0.10 L8.83 -0.28" transform="translate(16.04 16.71) rotate(-17.6)"/><path d="M0 0 C2.10 -2.13 6.51 -2.13 10.50 0.28 C6.72 3.25 2.31 3.39 0 0Z M1.26 0.10 L9.24 0.28" transform="translate(23.05 8.18) rotate(-81.6)"/><path d="M0 0 C1.89 -3.39 5.86 -3.39 9.45 -0.28 C6.05 1.72 2.08 1.86 0 0Z M1.13 -0.10 L8.32 -0.28" transform="translate(23.05 8.18) rotate(-7.6)"/><path d="M0 0 C2.20 -3.00 6.82 -3.00 11.00 0.00 C7.04 2.70 2.42 2.85 0 0Z M1.32 0.00 L9.68 0.00" transform="translate(30.00 2.00) rotate(-45.9)"/></svg>
       </div>
 
-      <div class="flex items-center gap-3">
-        <svg class="h-16 w-auto text-neutral-400 shrink-0" viewBox="-16 -8 66 112" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M38 98 C0 80 -6 30 30 2"/><path d="M0 0 C3.40 -3.89 10.54 -3.89 17.00 0.28 C10.88 4.83 3.74 5.06 0 0Z M2.04 0.10 L14.96 0.28" transform="translate(32.54 95.07) rotate(-184.8)"/><path d="M0 0 C3.06 -5.06 9.49 -5.06 15.30 -0.28 C9.79 3.22 3.37 3.44 0 0Z M1.84 -0.10 L13.46 -0.28" transform="translate(32.54 95.07) rotate(-110.8)"/><path d="M0 0 C3.27 -3.71 10.14 -3.71 16.35 0.28 C10.46 4.67 3.60 4.89 0 0Z M1.96 0.10 L14.39 0.28" transform="translate(24.12 88.86) rotate(-174.3)"/><path d="M0 0 C2.94 -4.89 9.12 -4.89 14.72 -0.28 C9.42 3.07 3.24 3.28 0 0Z M1.77 -0.10 L12.95 -0.28" transform="translate(24.12 88.86) rotate(-100.3)"/><path d="M0 0 C3.14 -3.54 9.73 -3.54 15.70 0.28 C10.05 4.52 3.45 4.73 0 0Z M1.88 0.10 L13.82 0.28" transform="translate(17.25 81.52) rotate(-163.8)"/><path d="M0 0 C2.83 -4.73 8.76 -4.73 14.13 -0.28 C9.04 2.92 3.11 3.13 0 0Z M1.70 -0.10 L12.43 -0.28" transform="translate(17.25 81.52) rotate(-89.8)"/><path d="M0 0 C3.01 -3.36 9.33 -3.36 15.05 0.28 C9.63 4.36 3.31 4.56 0 0Z M1.81 0.10 L13.24 0.28" transform="translate(11.98 73.25) rotate(-153.3)"/><path d="M0 0 C2.71 -4.56 8.40 -4.56 13.55 -0.28 C8.67 2.77 2.98 2.97 0 0Z M1.63 -0.10 L11.92 -0.28" transform="translate(11.98 73.25) rotate(-79.3)"/><path d="M0 0 C2.88 -3.19 8.93 -3.19 14.40 0.28 C9.22 4.20 3.17 4.39 0 0Z M1.73 0.10 L12.67 0.28" transform="translate(8.34 64.29) rotate(-142.9)"/><path d="M0 0 C2.59 -4.39 8.04 -4.39 12.96 -0.28 C8.29 2.62 2.85 2.81 0 0Z M1.56 -0.10 L11.40 -0.28" transform="translate(8.34 64.29) rotate(-68.9)"/><path d="M0 0 C2.75 -3.01 8.53 -3.01 13.75 0.28 C8.80 4.04 3.02 4.23 0 0Z M1.65 0.10 L12.10 0.28" transform="translate(6.37 54.84) rotate(-132.6)"/><path d="M0 0 C2.48 -4.23 7.67 -4.23 12.38 -0.28 C7.92 2.47 2.72 2.65 0 0Z M1.48 -0.10 L10.89 -0.28" transform="translate(6.37 54.84) rotate(-58.6)"/><path d="M0 0 C2.62 -2.84 8.12 -2.84 13.10 0.28 C8.38 3.88 2.88 4.06 0 0Z M1.57 0.10 L11.53 0.28" transform="translate(6.11 45.14) rotate(-122.4)"/><path d="M0 0 C2.36 -4.06 7.31 -4.06 11.79 -0.28 C7.55 2.32 2.59 2.49 0 0Z M1.41 -0.10 L10.38 -0.28" transform="translate(6.11 45.14) rotate(-48.4)"/><path d="M0 0 C2.49 -2.66 7.72 -2.66 12.45 0.28 C7.97 3.73 2.74 3.89 0 0Z M1.49 0.10 L10.96 0.28" transform="translate(7.61 35.41) rotate(-112.1)"/><path d="M0 0 C2.24 -3.89 6.95 -3.89 11.21 -0.28 C7.17 2.17 2.47 2.33 0 0Z M1.34 -0.10 L9.86 -0.28" transform="translate(7.61 35.41) rotate(-38.1)"/><path d="M0 0 C2.36 -2.49 7.32 -2.49 11.80 0.28 C7.55 3.57 2.60 3.73 0 0Z M1.42 0.10 L10.38 0.28" transform="translate(10.91 25.85) rotate(-101.9)"/><path d="M0 0 C2.12 -3.73 6.58 -3.73 10.62 -0.28 C6.80 2.02 2.34 2.18 0 0Z M1.27 -0.10 L9.35 -0.28" transform="translate(10.91 25.85) rotate(-27.9)"/><path d="M0 0 C2.23 -2.31 6.91 -2.31 11.15 0.28 C7.14 3.41 2.45 3.56 0 0Z M1.34 0.10 L9.81 0.28" transform="translate(16.04 16.71) rotate(-91.6)"/><path d="M0 0 C2.01 -3.56 6.22 -3.56 10.03 -0.28 C6.42 1.87 2.21 2.02 0 0Z M1.20 -0.10 L8.83 -0.28" transform="translate(16.04 16.71) rotate(-17.6)"/><path d="M0 0 C2.10 -2.13 6.51 -2.13 10.50 0.28 C6.72 3.25 2.31 3.39 0 0Z M1.26 0.10 L9.24 0.28" transform="translate(23.05 8.18) rotate(-81.6)"/><path d="M0 0 C1.89 -3.39 5.86 -3.39 9.45 -0.28 C6.05 1.72 2.08 1.86 0 0Z M1.13 -0.10 L8.32 -0.28" transform="translate(23.05 8.18) rotate(-7.6)"/><path d="M0 0 C2.20 -3.00 6.82 -3.00 11.00 0.00 C7.04 2.70 2.42 2.85 0 0Z M1.32 0.00 L9.68 0.00" transform="translate(30.00 2.00) rotate(-45.9)"/></svg>
+      <div class="flex items-center gap-1.5 sm:gap-3">
+        <svg class="h-11 sm:h-16 w-auto text-neutral-400 shrink-0" viewBox="-16 -8 66 112" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M38 98 C0 80 -6 30 30 2"/><path d="M0 0 C3.40 -3.89 10.54 -3.89 17.00 0.28 C10.88 4.83 3.74 5.06 0 0Z M2.04 0.10 L14.96 0.28" transform="translate(32.54 95.07) rotate(-184.8)"/><path d="M0 0 C3.06 -5.06 9.49 -5.06 15.30 -0.28 C9.79 3.22 3.37 3.44 0 0Z M1.84 -0.10 L13.46 -0.28" transform="translate(32.54 95.07) rotate(-110.8)"/><path d="M0 0 C3.27 -3.71 10.14 -3.71 16.35 0.28 C10.46 4.67 3.60 4.89 0 0Z M1.96 0.10 L14.39 0.28" transform="translate(24.12 88.86) rotate(-174.3)"/><path d="M0 0 C2.94 -4.89 9.12 -4.89 14.72 -0.28 C9.42 3.07 3.24 3.28 0 0Z M1.77 -0.10 L12.95 -0.28" transform="translate(24.12 88.86) rotate(-100.3)"/><path d="M0 0 C3.14 -3.54 9.73 -3.54 15.70 0.28 C10.05 4.52 3.45 4.73 0 0Z M1.88 0.10 L13.82 0.28" transform="translate(17.25 81.52) rotate(-163.8)"/><path d="M0 0 C2.83 -4.73 8.76 -4.73 14.13 -0.28 C9.04 2.92 3.11 3.13 0 0Z M1.70 -0.10 L12.43 -0.28" transform="translate(17.25 81.52) rotate(-89.8)"/><path d="M0 0 C3.01 -3.36 9.33 -3.36 15.05 0.28 C9.63 4.36 3.31 4.56 0 0Z M1.81 0.10 L13.24 0.28" transform="translate(11.98 73.25) rotate(-153.3)"/><path d="M0 0 C2.71 -4.56 8.40 -4.56 13.55 -0.28 C8.67 2.77 2.98 2.97 0 0Z M1.63 -0.10 L11.92 -0.28" transform="translate(11.98 73.25) rotate(-79.3)"/><path d="M0 0 C2.88 -3.19 8.93 -3.19 14.40 0.28 C9.22 4.20 3.17 4.39 0 0Z M1.73 0.10 L12.67 0.28" transform="translate(8.34 64.29) rotate(-142.9)"/><path d="M0 0 C2.59 -4.39 8.04 -4.39 12.96 -0.28 C8.29 2.62 2.85 2.81 0 0Z M1.56 -0.10 L11.40 -0.28" transform="translate(8.34 64.29) rotate(-68.9)"/><path d="M0 0 C2.75 -3.01 8.53 -3.01 13.75 0.28 C8.80 4.04 3.02 4.23 0 0Z M1.65 0.10 L12.10 0.28" transform="translate(6.37 54.84) rotate(-132.6)"/><path d="M0 0 C2.48 -4.23 7.67 -4.23 12.38 -0.28 C7.92 2.47 2.72 2.65 0 0Z M1.48 -0.10 L10.89 -0.28" transform="translate(6.37 54.84) rotate(-58.6)"/><path d="M0 0 C2.62 -2.84 8.12 -2.84 13.10 0.28 C8.38 3.88 2.88 4.06 0 0Z M1.57 0.10 L11.53 0.28" transform="translate(6.11 45.14) rotate(-122.4)"/><path d="M0 0 C2.36 -4.06 7.31 -4.06 11.79 -0.28 C7.55 2.32 2.59 2.49 0 0Z M1.41 -0.10 L10.38 -0.28" transform="translate(6.11 45.14) rotate(-48.4)"/><path d="M0 0 C2.49 -2.66 7.72 -2.66 12.45 0.28 C7.97 3.73 2.74 3.89 0 0Z M1.49 0.10 L10.96 0.28" transform="translate(7.61 35.41) rotate(-112.1)"/><path d="M0 0 C2.24 -3.89 6.95 -3.89 11.21 -0.28 C7.17 2.17 2.47 2.33 0 0Z M1.34 -0.10 L9.86 -0.28" transform="translate(7.61 35.41) rotate(-38.1)"/><path d="M0 0 C2.36 -2.49 7.32 -2.49 11.80 0.28 C7.55 3.57 2.60 3.73 0 0Z M1.42 0.10 L10.38 0.28" transform="translate(10.91 25.85) rotate(-101.9)"/><path d="M0 0 C2.12 -3.73 6.58 -3.73 10.62 -0.28 C6.80 2.02 2.34 2.18 0 0Z M1.27 -0.10 L9.35 -0.28" transform="translate(10.91 25.85) rotate(-27.9)"/><path d="M0 0 C2.23 -2.31 6.91 -2.31 11.15 0.28 C7.14 3.41 2.45 3.56 0 0Z M1.34 0.10 L9.81 0.28" transform="translate(16.04 16.71) rotate(-91.6)"/><path d="M0 0 C2.01 -3.56 6.22 -3.56 10.03 -0.28 C6.42 1.87 2.21 2.02 0 0Z M1.20 -0.10 L8.83 -0.28" transform="translate(16.04 16.71) rotate(-17.6)"/><path d="M0 0 C2.10 -2.13 6.51 -2.13 10.50 0.28 C6.72 3.25 2.31 3.39 0 0Z M1.26 0.10 L9.24 0.28" transform="translate(23.05 8.18) rotate(-81.6)"/><path d="M0 0 C1.89 -3.39 5.86 -3.39 9.45 -0.28 C6.05 1.72 2.08 1.86 0 0Z M1.13 -0.10 L8.32 -0.28" transform="translate(23.05 8.18) rotate(-7.6)"/><path d="M0 0 C2.20 -3.00 6.82 -3.00 11.00 0.00 C7.04 2.70 2.42 2.85 0 0Z M1.32 0.00 L9.68 0.00" transform="translate(30.00 2.00) rotate(-45.9)"/></svg>
         <div class="flex flex-col items-center text-center">
-          <span class="text-[10px] uppercase tracking-widest font-bold text-neutral-400 mb-1">Established</span>
-          <span class="text-sm font-semibold text-neutral-400">2025</span>
+          <span class="text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-neutral-400 mb-0.5 sm:mb-1">Established</span>
+          <span class="text-[13px] sm:text-sm font-semibold text-neutral-400 whitespace-nowrap">2025</span>
         </div>
-        <svg class="h-16 w-auto text-neutral-400 shrink-0 scale-x-[-1]" viewBox="-16 -8 66 112" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M38 98 C0 80 -6 30 30 2"/><path d="M0 0 C3.40 -3.89 10.54 -3.89 17.00 0.28 C10.88 4.83 3.74 5.06 0 0Z M2.04 0.10 L14.96 0.28" transform="translate(32.54 95.07) rotate(-184.8)"/><path d="M0 0 C3.06 -5.06 9.49 -5.06 15.30 -0.28 C9.79 3.22 3.37 3.44 0 0Z M1.84 -0.10 L13.46 -0.28" transform="translate(32.54 95.07) rotate(-110.8)"/><path d="M0 0 C3.27 -3.71 10.14 -3.71 16.35 0.28 C10.46 4.67 3.60 4.89 0 0Z M1.96 0.10 L14.39 0.28" transform="translate(24.12 88.86) rotate(-174.3)"/><path d="M0 0 C2.94 -4.89 9.12 -4.89 14.72 -0.28 C9.42 3.07 3.24 3.28 0 0Z M1.77 -0.10 L12.95 -0.28" transform="translate(24.12 88.86) rotate(-100.3)"/><path d="M0 0 C3.14 -3.54 9.73 -3.54 15.70 0.28 C10.05 4.52 3.45 4.73 0 0Z M1.88 0.10 L13.82 0.28" transform="translate(17.25 81.52) rotate(-163.8)"/><path d="M0 0 C2.83 -4.73 8.76 -4.73 14.13 -0.28 C9.04 2.92 3.11 3.13 0 0Z M1.70 -0.10 L12.43 -0.28" transform="translate(17.25 81.52) rotate(-89.8)"/><path d="M0 0 C3.01 -3.36 9.33 -3.36 15.05 0.28 C9.63 4.36 3.31 4.56 0 0Z M1.81 0.10 L13.24 0.28" transform="translate(11.98 73.25) rotate(-153.3)"/><path d="M0 0 C2.71 -4.56 8.40 -4.56 13.55 -0.28 C8.67 2.77 2.98 2.97 0 0Z M1.63 -0.10 L11.92 -0.28" transform="translate(11.98 73.25) rotate(-79.3)"/><path d="M0 0 C2.88 -3.19 8.93 -3.19 14.40 0.28 C9.22 4.20 3.17 4.39 0 0Z M1.73 0.10 L12.67 0.28" transform="translate(8.34 64.29) rotate(-142.9)"/><path d="M0 0 C2.59 -4.39 8.04 -4.39 12.96 -0.28 C8.29 2.62 2.85 2.81 0 0Z M1.56 -0.10 L11.40 -0.28" transform="translate(8.34 64.29) rotate(-68.9)"/><path d="M0 0 C2.75 -3.01 8.53 -3.01 13.75 0.28 C8.80 4.04 3.02 4.23 0 0Z M1.65 0.10 L12.10 0.28" transform="translate(6.37 54.84) rotate(-132.6)"/><path d="M0 0 C2.48 -4.23 7.67 -4.23 12.38 -0.28 C7.92 2.47 2.72 2.65 0 0Z M1.48 -0.10 L10.89 -0.28" transform="translate(6.37 54.84) rotate(-58.6)"/><path d="M0 0 C2.62 -2.84 8.12 -2.84 13.10 0.28 C8.38 3.88 2.88 4.06 0 0Z M1.57 0.10 L11.53 0.28" transform="translate(6.11 45.14) rotate(-122.4)"/><path d="M0 0 C2.36 -4.06 7.31 -4.06 11.79 -0.28 C7.55 2.32 2.59 2.49 0 0Z M1.41 -0.10 L10.38 -0.28" transform="translate(6.11 45.14) rotate(-48.4)"/><path d="M0 0 C2.49 -2.66 7.72 -2.66 12.45 0.28 C7.97 3.73 2.74 3.89 0 0Z M1.49 0.10 L10.96 0.28" transform="translate(7.61 35.41) rotate(-112.1)"/><path d="M0 0 C2.24 -3.89 6.95 -3.89 11.21 -0.28 C7.17 2.17 2.47 2.33 0 0Z M1.34 -0.10 L9.86 -0.28" transform="translate(7.61 35.41) rotate(-38.1)"/><path d="M0 0 C2.36 -2.49 7.32 -2.49 11.80 0.28 C7.55 3.57 2.60 3.73 0 0Z M1.42 0.10 L10.38 0.28" transform="translate(10.91 25.85) rotate(-101.9)"/><path d="M0 0 C2.12 -3.73 6.58 -3.73 10.62 -0.28 C6.80 2.02 2.34 2.18 0 0Z M1.27 -0.10 L9.35 -0.28" transform="translate(10.91 25.85) rotate(-27.9)"/><path d="M0 0 C2.23 -2.31 6.91 -2.31 11.15 0.28 C7.14 3.41 2.45 3.56 0 0Z M1.34 0.10 L9.81 0.28" transform="translate(16.04 16.71) rotate(-91.6)"/><path d="M0 0 C2.01 -3.56 6.22 -3.56 10.03 -0.28 C6.42 1.87 2.21 2.02 0 0Z M1.20 -0.10 L8.83 -0.28" transform="translate(16.04 16.71) rotate(-17.6)"/><path d="M0 0 C2.10 -2.13 6.51 -2.13 10.50 0.28 C6.72 3.25 2.31 3.39 0 0Z M1.26 0.10 L9.24 0.28" transform="translate(23.05 8.18) rotate(-81.6)"/><path d="M0 0 C1.89 -3.39 5.86 -3.39 9.45 -0.28 C6.05 1.72 2.08 1.86 0 0Z M1.13 -0.10 L8.32 -0.28" transform="translate(23.05 8.18) rotate(-7.6)"/><path d="M0 0 C2.20 -3.00 6.82 -3.00 11.00 0.00 C7.04 2.70 2.42 2.85 0 0Z M1.32 0.00 L9.68 0.00" transform="translate(30.00 2.00) rotate(-45.9)"/></svg>
+        <svg class="h-11 sm:h-16 w-auto text-neutral-400 shrink-0 scale-x-[-1]" viewBox="-16 -8 66 112" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M38 98 C0 80 -6 30 30 2"/><path d="M0 0 C3.40 -3.89 10.54 -3.89 17.00 0.28 C10.88 4.83 3.74 5.06 0 0Z M2.04 0.10 L14.96 0.28" transform="translate(32.54 95.07) rotate(-184.8)"/><path d="M0 0 C3.06 -5.06 9.49 -5.06 15.30 -0.28 C9.79 3.22 3.37 3.44 0 0Z M1.84 -0.10 L13.46 -0.28" transform="translate(32.54 95.07) rotate(-110.8)"/><path d="M0 0 C3.27 -3.71 10.14 -3.71 16.35 0.28 C10.46 4.67 3.60 4.89 0 0Z M1.96 0.10 L14.39 0.28" transform="translate(24.12 88.86) rotate(-174.3)"/><path d="M0 0 C2.94 -4.89 9.12 -4.89 14.72 -0.28 C9.42 3.07 3.24 3.28 0 0Z M1.77 -0.10 L12.95 -0.28" transform="translate(24.12 88.86) rotate(-100.3)"/><path d="M0 0 C3.14 -3.54 9.73 -3.54 15.70 0.28 C10.05 4.52 3.45 4.73 0 0Z M1.88 0.10 L13.82 0.28" transform="translate(17.25 81.52) rotate(-163.8)"/><path d="M0 0 C2.83 -4.73 8.76 -4.73 14.13 -0.28 C9.04 2.92 3.11 3.13 0 0Z M1.70 -0.10 L12.43 -0.28" transform="translate(17.25 81.52) rotate(-89.8)"/><path d="M0 0 C3.01 -3.36 9.33 -3.36 15.05 0.28 C9.63 4.36 3.31 4.56 0 0Z M1.81 0.10 L13.24 0.28" transform="translate(11.98 73.25) rotate(-153.3)"/><path d="M0 0 C2.71 -4.56 8.40 -4.56 13.55 -0.28 C8.67 2.77 2.98 2.97 0 0Z M1.63 -0.10 L11.92 -0.28" transform="translate(11.98 73.25) rotate(-79.3)"/><path d="M0 0 C2.88 -3.19 8.93 -3.19 14.40 0.28 C9.22 4.20 3.17 4.39 0 0Z M1.73 0.10 L12.67 0.28" transform="translate(8.34 64.29) rotate(-142.9)"/><path d="M0 0 C2.59 -4.39 8.04 -4.39 12.96 -0.28 C8.29 2.62 2.85 2.81 0 0Z M1.56 -0.10 L11.40 -0.28" transform="translate(8.34 64.29) rotate(-68.9)"/><path d="M0 0 C2.75 -3.01 8.53 -3.01 13.75 0.28 C8.80 4.04 3.02 4.23 0 0Z M1.65 0.10 L12.10 0.28" transform="translate(6.37 54.84) rotate(-132.6)"/><path d="M0 0 C2.48 -4.23 7.67 -4.23 12.38 -0.28 C7.92 2.47 2.72 2.65 0 0Z M1.48 -0.10 L10.89 -0.28" transform="translate(6.37 54.84) rotate(-58.6)"/><path d="M0 0 C2.62 -2.84 8.12 -2.84 13.10 0.28 C8.38 3.88 2.88 4.06 0 0Z M1.57 0.10 L11.53 0.28" transform="translate(6.11 45.14) rotate(-122.4)"/><path d="M0 0 C2.36 -4.06 7.31 -4.06 11.79 -0.28 C7.55 2.32 2.59 2.49 0 0Z M1.41 -0.10 L10.38 -0.28" transform="translate(6.11 45.14) rotate(-48.4)"/><path d="M0 0 C2.49 -2.66 7.72 -2.66 12.45 0.28 C7.97 3.73 2.74 3.89 0 0Z M1.49 0.10 L10.96 0.28" transform="translate(7.61 35.41) rotate(-112.1)"/><path d="M0 0 C2.24 -3.89 6.95 -3.89 11.21 -0.28 C7.17 2.17 2.47 2.33 0 0Z M1.34 -0.10 L9.86 -0.28" transform="translate(7.61 35.41) rotate(-38.1)"/><path d="M0 0 C2.36 -2.49 7.32 -2.49 11.80 0.28 C7.55 3.57 2.60 3.73 0 0Z M1.42 0.10 L10.38 0.28" transform="translate(10.91 25.85) rotate(-101.9)"/><path d="M0 0 C2.12 -3.73 6.58 -3.73 10.62 -0.28 C6.80 2.02 2.34 2.18 0 0Z M1.27 -0.10 L9.35 -0.28" transform="translate(10.91 25.85) rotate(-27.9)"/><path d="M0 0 C2.23 -2.31 6.91 -2.31 11.15 0.28 C7.14 3.41 2.45 3.56 0 0Z M1.34 0.10 L9.81 0.28" transform="translate(16.04 16.71) rotate(-91.6)"/><path d="M0 0 C2.01 -3.56 6.22 -3.56 10.03 -0.28 C6.42 1.87 2.21 2.02 0 0Z M1.20 -0.10 L8.83 -0.28" transform="translate(16.04 16.71) rotate(-17.6)"/><path d="M0 0 C2.10 -2.13 6.51 -2.13 10.50 0.28 C6.72 3.25 2.31 3.39 0 0Z M1.26 0.10 L9.24 0.28" transform="translate(23.05 8.18) rotate(-81.6)"/><path d="M0 0 C1.89 -3.39 5.86 -3.39 9.45 -0.28 C6.05 1.72 2.08 1.86 0 0Z M1.13 -0.10 L8.32 -0.28" transform="translate(23.05 8.18) rotate(-7.6)"/><path d="M0 0 C2.20 -3.00 6.82 -3.00 11.00 0.00 C7.04 2.70 2.42 2.85 0 0Z M1.32 0.00 L9.68 0.00" transform="translate(30.00 2.00) rotate(-45.9)"/></svg>
       </div>
       </div>
     </div>
@@ -1187,41 +1230,41 @@
 
   <!-- 03. PHONE WALL (7-column alternating parallax) -->
 
-<section id="phoneShowcaseSection" class="w-[calc(100%-1rem)] md:w-[calc(100%-2rem)] lg:w-[calc(100%-3rem)] mx-auto bg-[linear-gradient(to_bottom,#EDF0F9_0%,#E5EFF8_25%,#DDEEF5_60%,#C8EBEF_100%)] shadow-[inset_0_1px_4px_rgba(0,0,0,0.04)] rounded-[32px] md:rounded-[40px] relative z-20 h-[650px] md:h-[800px] overflow-hidden">
+<section id="phoneShowcaseSection" class="w-[calc(100%-1rem)] md:w-[calc(100%-2rem)] lg:w-[calc(100%-3rem)] mx-auto bg-[linear-gradient(to_bottom,#EDF0F9_0%,#E5EFF8_25%,#DDEEF5_60%,#C8EBEF_100%)] shadow-[inset_0_1px_4px_rgba(0,0,0,0.04)] rounded-[32px] md:rounded-[40px] relative z-20 h-[440px] md:h-[800px] overflow-hidden">
   <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] md:w-[80%] h-[50%] bg-gradient-to-r from-rose-400 via-emerald-300 to-sky-400 opacity-[0.06] blur-[100px] md:blur-[140px] pointer-events-none z-0 rounded-full"></div>
-    <div id="phoneWall" class="relative z-10 grid grid-cols-7 items-start min-w-[250%] md:min-w-[115%] -ml-[75%] md:-ml-[7.5%] -mt-[200px] gap-6 md:gap-10 will-change-transform">
+    <div id="phoneWall" class="relative z-10 grid grid-cols-7 items-start min-w-[172%] md:min-w-[115%] -ml-[36%] md:-ml-[7.5%] -mt-[120px] md:-mt-[200px] gap-2.5 md:gap-10 will-change-transform">
       <!-- Column 1 -->
       <div class="parallax-col will-change-transform" data-col="1">
       <div class="phone-track phone-track-up" style="animation-duration:88s;animation-delay:-0.0s">
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/screen1-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/screen1.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/screen2-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/screen2.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/screen3-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/screen3.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/Screen4-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/Screen4.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/screen1-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/screen1.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/screen2-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/screen2.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/screen3-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/screen3.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/Screen4-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/Screen4.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
@@ -1230,35 +1273,35 @@
       <!-- Column 2 -->
       <div class="parallax-col will-change-transform" data-col="2">
       <div class="phone-track phone-track-down" style="animation-duration:104s;animation-delay:-36.4s">
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/screen5-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/screen5.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video6-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video6.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video7-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video7.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video9-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video9.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/screen5-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/screen5.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video6-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video6.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video7-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video7.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video9-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video9.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
@@ -1267,35 +1310,35 @@
       <!-- Column 3 -->
       <div class="parallax-col will-change-transform" data-col="3">
       <div class="phone-track phone-track-up" style="animation-duration:96s;animation-delay:-59.5s">
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video10-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video10.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video11-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video11.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/screen1-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/screen1.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/screen2-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/screen2.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video10-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video10.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video11-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video11.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/screen1-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/screen1.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/screen2-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/screen2.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
@@ -1304,35 +1347,35 @@
       <!-- Column 4 -->
       <div class="parallax-col will-change-transform" data-col="4">
       <div class="phone-track phone-track-down" style="animation-duration:112s;animation-delay:-16.8s">
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/screen3-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/screen3.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/Screen4-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/Screen4.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/screen5-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/screen5.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video6-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video6.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/screen3-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/screen3.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/Screen4-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/Screen4.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/screen5-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/screen5.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video6-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video6.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
@@ -1341,35 +1384,35 @@
       <!-- Column 5 -->
       <div class="parallax-col will-change-transform" data-col="5">
       <div class="phone-track phone-track-up" style="animation-duration:92s;animation-delay:-73.6s">
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video7-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video7.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video9-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video9.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video10-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video10.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video11-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video11.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video7-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video7.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video9-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video9.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video10-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video10.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video11-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video11.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
@@ -1378,35 +1421,35 @@
       <!-- Column 6 -->
       <div class="parallax-col will-change-transform" data-col="6">
       <div class="phone-track phone-track-down" style="animation-duration:108s;animation-delay:-48.6s">
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/screen1-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/screen1.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/screen2-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/screen2.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/screen3-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/screen3.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/Screen4-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/Screen4.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/screen1-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/screen1.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/screen2-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/screen2.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/screen3-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/screen3.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/Screen4-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/Screen4.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
@@ -1415,35 +1458,35 @@
       <!-- Column 7 -->
       <div class="parallax-col will-change-transform" data-col="7">
       <div class="phone-track phone-track-up" style="animation-duration:100s;animation-delay:-27.0s">
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/screen5-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/screen5.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video6-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video6.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video7-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video7.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video9-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video9.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="iPhone" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/screen5-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/screen5.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video6-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video6.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video7-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video7.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
-        <div class="relative w-full aspect-[1350/2760] mb-10 md:mb-16" aria-hidden="true">
+        <div class="relative w-full aspect-[1350/2760] mb-3 md:mb-16" aria-hidden="true">
           <video muted loop playsinline preload="none" poster="Content/Phone%20mockups/Compressed/web/video9-poster.webp" data-phone-media class="absolute inset-[1.5%_5%] w-[90%] h-[97%] object-cover rounded-[14%/6.5%] z-0 pointer-events-none bg-neutral-900"><source src="Content/Phone%20mockups/Compressed/web/video9.mp4" type="video/mp4"></video>
           <img src="Content/Phone%20mockups/iphone-18-pro-black.png" alt="" class="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none drop-shadow-2xl">
         </div>
@@ -1466,26 +1509,26 @@
     </div>
 
     <div id="logos-section" class="mt-12 grid grid-cols-4 md:grid-cols-10 gap-x-3 gap-y-8 md:gap-x-8 md:gap-y-12 items-center justify-items-center w-full max-w-lg md:max-w-6xl mx-auto px-1 sm:px-2">
-          <img src="Content/Brand Logos/bbc.png" alt="BBC" loading="lazy" decoding="async" class="brand-logo-img" />
-          <img src="Content/Brand Logos/brit-awards.svg" alt="Brit Awards" loading="lazy" decoding="async" class="brand-logo-img" />
-          <img src="Content/Brand Logos/disney-t.png?v=2" alt="Disney" loading="lazy" decoding="async" class="brand-logo-img" />
-          <img src="Content/Brand Logos/dr-pepper.png" alt="Dr Pepper" loading="lazy" decoding="async" class="brand-logo-img" />
-          <img src="Content/Brand Logos/gamma-t.png?v=2" alt="Gamma" loading="lazy" decoding="async" class="brand-logo-img" />
-          <img src="Content/Brand Logos/google.png" alt="Google" loading="lazy" decoding="async" class="brand-logo-img" />
-          <img src="Content/Brand Logos/lego.png" alt="Lego" loading="lazy" decoding="async" class="brand-logo-img" />
-          <img src="Content/Brand Logos/lexus.png" alt="Lexus" loading="lazy" decoding="async" class="brand-logo-img" />
-          <img src="Content/Brand Logos/lynx.svg" alt="Lynx" loading="lazy" decoding="async" class="brand-logo-img" />
-          <img src="Content/Brand Logos/mcdonalds.png" alt="McDonalds" loading="lazy" decoding="async" class="brand-logo-img" />
-          <img src="Content/Brand Logos/major-league-baseball.png" alt="MLB" loading="lazy" decoding="async" class="brand-logo-img" />
-          <img src="Content/Brand Logos/movember.png" alt="Movember" loading="lazy" decoding="async" class="brand-logo-img" />
-          <img src="Content/Brand Logos/O2.png" alt="O2" loading="lazy" decoding="async" class="brand-logo-img" />
-          <img src="Content/Brand Logos/oracle_red_bull_racing-t.png?v=2" alt="Oracle Red Bull Racing" loading="lazy" decoding="async" class="brand-logo-img" />
-          <img src="Content/Brand Logos/paramount.svg" alt="Paramount" loading="lazy" decoding="async" class="brand-logo-img" />
-          <img src="Content/Brand Logos/Pfizer.svg" alt="Pfizer" loading="lazy" decoding="async" class="brand-logo-img" />
-          <img src="Content/Brand Logos/porsche.webp" alt="Porsche" loading="lazy" decoding="async" class="brand-logo-img" />
-          <img src="Content/Brand Logos/tourism-ireland.webp" alt="Tourism Ireland" loading="lazy" decoding="async" class="brand-logo-img" />
-          <img src="Content/Brand Logos/uefa-t.png?v=2" alt="UEFA" loading="lazy" decoding="async" class="brand-logo-img" />
-          <img src="Content/Brand Logos/Universal_Pictures_logo.svg" alt="Universal Pictures" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/bw/bbc.png" alt="BBC" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/brit-awards.svg" alt="Brit Awards" loading="lazy" decoding="async" class="brand-logo-img brand-logo-svg" />
+          <img src="Content/Brand Logos/bw/disney.png" alt="Disney" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/bw/dr-pepper.png" alt="Dr Pepper" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/bw/gamma.png" alt="Gamma" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/bw/google.png" alt="Google" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/bw/lego.png" alt="Lego" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/bw/lexus.png" alt="Lexus" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/lynx.svg" alt="Lynx" loading="lazy" decoding="async" class="brand-logo-img brand-logo-svg" />
+          <img src="Content/Brand Logos/bw/mcdonalds.png" alt="McDonalds" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/bw/mlb.png" alt="MLB" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/bw/movember.png" alt="Movember" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/bw/o2.png" alt="O2" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/bw/oracle-red-bull.png" alt="Oracle Red Bull Racing" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/paramount.svg" alt="Paramount" loading="lazy" decoding="async" class="brand-logo-img brand-logo-svg" />
+          <img src="Content/Brand Logos/Pfizer.svg" alt="Pfizer" loading="lazy" decoding="async" class="brand-logo-img brand-logo-svg" />
+          <img src="Content/Brand Logos/bw/porsche.png" alt="Porsche" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/bw/tourism-ireland.png" alt="Tourism Ireland" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/bw/uefa.png" alt="UEFA" loading="lazy" decoding="async" class="brand-logo-img" />
+          <img src="Content/Brand Logos/Universal_Pictures_logo.svg" alt="Universal Pictures" loading="lazy" decoding="async" class="brand-logo-img brand-logo-svg" />
     </div>
 
   </section>
@@ -1515,24 +1558,24 @@
     <div class="flex flex-col gap-5 relative z-10 max-w-7xl mx-auto px-5 md:px-8">
 
       <!-- Top Row: ThreadOS (Full Width with Waveform) -->
-      <div class="bento-card bg-[#F3F6FC] border border-white shadow-[0_10px_40px_rgba(40,90,140,0.10),0_1px_3px_rgba(40,90,140,0.06)] rounded-[32px] overflow-hidden transition-all duration-500 w-full p-8 md:p-12 flex flex-col md:flex-row gap-8 items-center min-h-[400px]">
+      <div class="bento-card bg-[#F3F6FC] border border-white shadow-[0_10px_40px_rgba(40,90,140,0.10),0_1px_3px_rgba(40,90,140,0.06)] rounded-[32px] overflow-hidden transition-all duration-500 w-full p-7 md:p-12 flex flex-col md:flex-row gap-6 md:gap-8 justify-between md:justify-start items-stretch md:items-center min-h-[380px] md:min-h-[400px]">
         <div class="w-full md:w-5/12 flex flex-col justify-center">
-          <i class="ph-light ph-intersect text-3xl sm:text-4xl text-neutral-900 mb-4 block"></i>
+          <i class="ph-light ph-intersect text-3xl md:text-4xl text-neutral-900 mb-4 block"></i>
           <span class="text-xs font-medium tracking-wider text-neutral-500 mb-1.5 block">Proprietary technology</span>
-          <h3 class="text-2xl md:text-4xl font-bold tracking-tight text-neutral-900 leading-snug mb-3 [text-wrap:balance]">
+          <h3 class="text-xl md:text-4xl font-bold tracking-tight text-neutral-900 leading-snug mb-2 md:mb-3 [text-wrap:balance]">
             The centralised campaign operating system.
           </h3>
-          <p class="text-sm md:text-base text-neutral-600 leading-relaxed [text-wrap:pretty]">
+          <p class="text-xs md:text-base text-neutral-600 leading-relaxed [text-wrap:pretty]">
             End-to-end execution. Shortlisting, vetting, contracting, and payments handled in one frictionless workspace.
           </p>
-          <div class="mt-8">
-            <a href="tech.html" class="inline-flex items-center gap-2 bg-neutral-900 hover:bg-neutral-800 text-white text-sm font-medium px-5 py-3 rounded-full transition-all duration-300">
+          <div class="mt-5 md:mt-8">
+            <a href="tech.html" class="inline-flex items-center gap-2 bg-neutral-900 hover:bg-neutral-800 text-white text-sm font-medium px-5 py-2.5 md:py-3 rounded-full transition-all duration-300">
               Explore our tech <span aria-hidden="true">&rarr;</span>
             </a>
           </div>
         </div>
-        <div class="glass-frame flex w-full md:w-7/12 md:self-stretch min-h-[300px]">
-          <div class="glass-inner relative flex-1 min-h-[286px]">
+        <div class="glass-frame flex w-full md:w-7/12 md:self-stretch md:min-h-[300px]">
+          <div class="glass-inner relative flex-1 h-32 md:h-auto md:min-h-[286px]">
             <canvas id="attentionWaveCanvas" class="absolute inset-0 w-full h-full" aria-hidden="true"></canvas>
           </div>
         </div>
@@ -1625,7 +1668,7 @@
 
   <!-- 05.1 HOW IT WORKS (dark stage; coloured bento cards scroll over a static laptop) -->
 
-  <section id="how-it-works" data-theme="dark" data-header-theme="dark" class="w-full rounded-t-[32px] md:rounded-t-[40px] bg-[#1f2025] pt-24 md:pt-40 pb-10 md:pb-20 relative z-20" style="--how-card-h:min(620px,calc(100svh - 8rem))">
+  <section id="how-it-works" data-theme="dark" data-header-theme="dark" class="w-full rounded-t-[32px] md:rounded-t-[40px] bg-[#1f2025] pt-24 md:pt-40 pb-10 md:pb-20 relative z-20" style="box-shadow:0 1px 0 #1f2025;--how-card-h:min(620px,calc(100svh - 8rem))">
     <div class="max-w-[1472px] mx-auto px-4 mb-6 md:mb-10 text-center">
       <h2 id="process-title" class="text-[clamp(2.5rem,5vw,4rem)] font-semibold tracking-[-0.03em] leading-none text-white [text-wrap:balance]">How it works.</h2>
       <p class="text-[clamp(1.125rem,1.4vw,1.5rem)] font-normal tracking-normal leading-[1.3] text-white/60 mt-4 max-w-2xl mx-auto [text-wrap:balance]">How we take a campaign from initial audience mapping through to launch, measurement, and ongoing refinement.</p>
@@ -1653,11 +1696,12 @@
       <p class="text-[clamp(1.0625rem,1.3vw,1.375rem)] font-normal tracking-normal leading-[1.35] text-white/60 mt-3 max-w-2xl mx-auto [text-wrap:balance]">We ingest scattered cultural signals and output concentrated commercial impact across every phase of your campaign.</p>
     </div>
 
-    <!-- Plain vertical flow: every card scrolls all the way off the screen as the next one arrives -->
+    <!-- Desktop: plain vertical flow, each card scrolls off while the laptop stays put. Phones (JS): a swipeable row of cards over one static laptop. -->
+    <div class="how-hwrap">
     <div class="how-stack max-w-[1472px] mx-auto px-4 flex flex-col gap-8">
 
       <!-- STEP 1 -->
-      <article class="how-card relative w-full h-[var(--how-card-h)] rounded-3xl">
+      <article class="how-card relative w-full h-[var(--how-card-h)] rounded-3xl" data-how-i="0">
         <!-- Everything inside is clipped to the card. The card scrolls normally and carries its text; the laptop inside never moves. -->
         <div class="how-clip absolute inset-0 flex flex-col md:flex-row" style="background:radial-gradient(circle at 75% 100%,rgba(120,150,255,.42),rgba(120,150,255,.2) 12%,rgba(120,150,255,0) 58%),#E6EDFC">
           <div class="how-copy relative z-10 w-full md:w-1/3 px-7 pt-9 md:py-[clamp(2rem,5.6vw,5rem)] md:pl-[clamp(2rem,5.6vw,5rem)] md:pr-0 flex flex-col md:justify-center md:h-full">
@@ -1673,9 +1717,9 @@
                 <div class="how-laptop-frame absolute w-[118%] left-[-9%] top-[52%] md:w-[64%] md:left-[40%] md:top-[5%]">
                   <img src="Content/macbook-mockup-black.png" alt="" class="relative w-full h-auto z-10 drop-shadow-2xl" draggable="false">
                   <!-- Screen: measured from the PNG cutout (+0.15% overscan under the bezel); container-query units keep the dashboard proportional -->
-                  <div class="absolute top-[2.4%] left-[10.1%] w-[79.8%] h-[85.6%] bg-white z-0 overflow-hidden [container-type:inline-size]">
+                  <div class="how-screen absolute top-[2.4%] left-[10.1%] w-[79.8%] h-[85.6%] bg-white z-0 overflow-hidden [container-type:inline-size]">
             <!-- UI 1 -->
-            <div class="absolute inset-0 overflow-hidden bg-white">
+            <div class="how-ui absolute inset-0 overflow-hidden bg-white">
             <div class="absolute left-[2cqw] top-[2cqw] bottom-[2cqw] w-[5.6cqw] rounded-[1.1cqw] bg-neutral-100/70 border border-neutral-200/70 flex flex-col items-center gap-[2.2cqw] pt-[2.2cqw]">
               <span class="block w-[2.3cqw] h-[2.3cqw] rounded-[0.6cqw]" style="background:#E5336D"></span>
               <span class="block w-[2cqw] h-[2cqw] rounded-[0.5cqw] bg-neutral-300"></span><span class="block w-[2cqw] h-[2cqw] rounded-[0.5cqw] bg-neutral-300"></span><span class="block w-[2cqw] h-[2cqw] rounded-[0.5cqw] bg-neutral-300"></span><span class="block w-[2cqw] h-[2cqw] rounded-[0.5cqw] bg-neutral-300"></span>
@@ -1701,7 +1745,7 @@
       </article>
 
       <!-- STEP 2 -->
-      <article class="how-card relative w-full h-[var(--how-card-h)] rounded-3xl">
+      <article class="how-card relative w-full h-[var(--how-card-h)] rounded-3xl" data-how-i="1">
         <!-- Everything inside is clipped to the card. The card scrolls normally and carries its text; the laptop inside never moves. -->
         <div class="how-clip absolute inset-0 flex flex-col md:flex-row" style="background:radial-gradient(circle at 75% 100%,rgba(80,160,235,.42),rgba(80,160,235,.2) 12%,rgba(80,160,235,0) 58%),#E3EEFB">
           <div class="how-copy relative z-10 w-full md:w-1/3 px-7 pt-9 md:py-[clamp(2rem,5.6vw,5rem)] md:pl-[clamp(2rem,5.6vw,5rem)] md:pr-0 flex flex-col md:justify-center md:h-full">
@@ -1717,9 +1761,9 @@
                 <div class="how-laptop-frame absolute w-[118%] left-[-9%] top-[52%] md:w-[64%] md:left-[40%] md:top-[5%]">
                   <img src="Content/macbook-mockup-black.png" alt="" class="relative w-full h-auto z-10 drop-shadow-2xl" draggable="false">
                   <!-- Screen: measured from the PNG cutout (+0.15% overscan under the bezel); container-query units keep the dashboard proportional -->
-                  <div class="absolute top-[2.4%] left-[10.1%] w-[79.8%] h-[85.6%] bg-white z-0 overflow-hidden [container-type:inline-size]">
+                  <div class="how-screen absolute top-[2.4%] left-[10.1%] w-[79.8%] h-[85.6%] bg-white z-0 overflow-hidden [container-type:inline-size]">
             <!-- UI 2 -->
-            <div class="absolute inset-0 overflow-hidden bg-white">
+            <div class="how-ui absolute inset-0 overflow-hidden bg-white">
             <div class="absolute left-[2cqw] top-[2cqw] bottom-[2cqw] w-[5.6cqw] rounded-[1.1cqw] bg-neutral-100/70 border border-neutral-200/70 flex flex-col items-center gap-[2.2cqw] pt-[2.2cqw]">
               <span class="block w-[2.3cqw] h-[2.3cqw] rounded-[0.6cqw]" style="background:#E5336D"></span>
               <span class="block w-[2cqw] h-[2cqw] rounded-[0.5cqw] bg-neutral-300"></span><span class="block w-[2cqw] h-[2cqw] rounded-[0.5cqw] bg-neutral-300"></span><span class="block w-[2cqw] h-[2cqw] rounded-[0.5cqw] bg-neutral-300"></span><span class="block w-[2cqw] h-[2cqw] rounded-[0.5cqw] bg-neutral-300"></span>
@@ -1746,7 +1790,7 @@
       </article>
 
       <!-- STEP 3 -->
-      <article class="how-card relative w-full h-[var(--how-card-h)] rounded-3xl">
+      <article class="how-card relative w-full h-[var(--how-card-h)] rounded-3xl" data-how-i="2">
         <!-- Everything inside is clipped to the card. The card scrolls normally and carries its text; the laptop inside never moves. -->
         <div class="how-clip absolute inset-0 flex flex-col md:flex-row" style="background:radial-gradient(circle at 75% 100%,rgba(120,125,245,.42),rgba(120,125,245,.2) 12%,rgba(120,125,245,0) 58%),#E8E9FB">
           <div class="how-copy relative z-10 w-full md:w-1/3 px-7 pt-9 md:py-[clamp(2rem,5.6vw,5rem)] md:pl-[clamp(2rem,5.6vw,5rem)] md:pr-0 flex flex-col md:justify-center md:h-full">
@@ -1762,9 +1806,9 @@
                 <div class="how-laptop-frame absolute w-[118%] left-[-9%] top-[52%] md:w-[64%] md:left-[40%] md:top-[5%]">
                   <img src="Content/macbook-mockup-black.png" alt="" class="relative w-full h-auto z-10 drop-shadow-2xl" draggable="false">
                   <!-- Screen: measured from the PNG cutout (+0.15% overscan under the bezel); container-query units keep the dashboard proportional -->
-                  <div class="absolute top-[2.4%] left-[10.1%] w-[79.8%] h-[85.6%] bg-white z-0 overflow-hidden [container-type:inline-size]">
+                  <div class="how-screen absolute top-[2.4%] left-[10.1%] w-[79.8%] h-[85.6%] bg-white z-0 overflow-hidden [container-type:inline-size]">
             <!-- UI 3 -->
-            <div class="absolute inset-0 overflow-hidden bg-white">
+            <div class="how-ui absolute inset-0 overflow-hidden bg-white">
             <div class="absolute left-[2cqw] top-[2cqw] bottom-[2cqw] w-[5.6cqw] rounded-[1.1cqw] bg-neutral-100/70 border border-neutral-200/70 flex flex-col items-center gap-[2.2cqw] pt-[2.2cqw]">
               <span class="block w-[2.3cqw] h-[2.3cqw] rounded-[0.6cqw]" style="background:#E5336D"></span>
               <span class="block w-[2cqw] h-[2cqw] rounded-[0.5cqw] bg-neutral-300"></span><span class="block w-[2cqw] h-[2cqw] rounded-[0.5cqw] bg-neutral-300"></span><span class="block w-[2cqw] h-[2cqw] rounded-[0.5cqw] bg-neutral-300"></span><span class="block w-[2cqw] h-[2cqw] rounded-[0.5cqw] bg-neutral-300"></span>
@@ -1800,7 +1844,7 @@
       </article>
 
       <!-- STEP 4 -->
-      <article class="how-card relative w-full h-[var(--how-card-h)] rounded-3xl">
+      <article class="how-card relative w-full h-[var(--how-card-h)] rounded-3xl" data-how-i="3">
         <!-- Everything inside is clipped to the card. The card scrolls normally and carries its text; the laptop inside never moves. -->
         <div class="how-clip absolute inset-0 flex flex-col md:flex-row" style="background:radial-gradient(circle at 75% 100%,rgba(150,130,245,.42),rgba(150,130,245,.2) 12%,rgba(150,130,245,0) 58%),#ECE8FB">
           <div class="how-copy relative z-10 w-full md:w-1/3 px-7 pt-9 md:py-[clamp(2rem,5.6vw,5rem)] md:pl-[clamp(2rem,5.6vw,5rem)] md:pr-0 flex flex-col md:justify-center md:h-full">
@@ -1816,9 +1860,9 @@
                 <div class="how-laptop-frame absolute w-[118%] left-[-9%] top-[52%] md:w-[64%] md:left-[40%] md:top-[5%]">
                   <img src="Content/macbook-mockup-black.png" alt="" class="relative w-full h-auto z-10 drop-shadow-2xl" draggable="false">
                   <!-- Screen: measured from the PNG cutout (+0.15% overscan under the bezel); container-query units keep the dashboard proportional -->
-                  <div class="absolute top-[2.4%] left-[10.1%] w-[79.8%] h-[85.6%] bg-white z-0 overflow-hidden [container-type:inline-size]">
+                  <div class="how-screen absolute top-[2.4%] left-[10.1%] w-[79.8%] h-[85.6%] bg-white z-0 overflow-hidden [container-type:inline-size]">
             <!-- UI 4 -->
-            <div class="absolute inset-0 overflow-hidden bg-white">
+            <div class="how-ui absolute inset-0 overflow-hidden bg-white">
             <div class="absolute left-[2cqw] top-[2cqw] bottom-[2cqw] w-[5.6cqw] rounded-[1.1cqw] bg-neutral-100/70 border border-neutral-200/70 flex flex-col items-center gap-[2.2cqw] pt-[2.2cqw]">
               <span class="block w-[2.3cqw] h-[2.3cqw] rounded-[0.6cqw]" style="background:#E5336D"></span>
               <span class="block w-[2cqw] h-[2cqw] rounded-[0.5cqw] bg-neutral-300"></span><span class="block w-[2cqw] h-[2cqw] rounded-[0.5cqw] bg-neutral-300"></span><span class="block w-[2cqw] h-[2cqw] rounded-[0.5cqw] bg-neutral-300"></span><span class="block w-[2cqw] h-[2cqw] rounded-[0.5cqw] bg-neutral-300"></span>
@@ -1845,7 +1889,7 @@
       </article>
 
       <!-- STEP 5 -->
-      <article class="how-card relative w-full h-[var(--how-card-h)] rounded-3xl">
+      <article class="how-card relative w-full h-[var(--how-card-h)] rounded-3xl" data-how-i="4">
         <!-- Everything inside is clipped to the card. The card scrolls normally and carries its text; the laptop inside never moves. -->
         <div class="how-clip absolute inset-0 flex flex-col md:flex-row" style="background:radial-gradient(circle at 75% 100%,rgba(175,125,240,.42),rgba(175,125,240,.2) 12%,rgba(175,125,240,0) 58%),#F0E8FA">
           <div class="how-copy relative z-10 w-full md:w-1/3 px-7 pt-9 md:py-[clamp(2rem,5.6vw,5rem)] md:pl-[clamp(2rem,5.6vw,5rem)] md:pr-0 flex flex-col md:justify-center md:h-full">
@@ -1861,9 +1905,9 @@
                 <div class="how-laptop-frame absolute w-[118%] left-[-9%] top-[52%] md:w-[64%] md:left-[40%] md:top-[5%]">
                   <img src="Content/macbook-mockup-black.png" alt="" class="relative w-full h-auto z-10 drop-shadow-2xl" draggable="false">
                   <!-- Screen: measured from the PNG cutout (+0.15% overscan under the bezel); container-query units keep the dashboard proportional -->
-                  <div class="absolute top-[2.4%] left-[10.1%] w-[79.8%] h-[85.6%] bg-white z-0 overflow-hidden [container-type:inline-size]">
+                  <div class="how-screen absolute top-[2.4%] left-[10.1%] w-[79.8%] h-[85.6%] bg-white z-0 overflow-hidden [container-type:inline-size]">
             <!-- UI 5 -->
-            <div class="absolute inset-0 overflow-hidden bg-white">
+            <div class="how-ui absolute inset-0 overflow-hidden bg-white">
             <div class="absolute left-[2cqw] top-[2cqw] bottom-[2cqw] w-[5.6cqw] rounded-[1.1cqw] bg-neutral-100/70 border border-neutral-200/70 flex flex-col items-center gap-[2.2cqw] pt-[2.2cqw]">
               <span class="block w-[2.3cqw] h-[2.3cqw] rounded-[0.6cqw]" style="background:#E5336D"></span>
               <span class="block w-[2cqw] h-[2cqw] rounded-[0.5cqw] bg-neutral-300"></span><span class="block w-[2cqw] h-[2cqw] rounded-[0.5cqw] bg-neutral-300"></span><span class="block w-[2cqw] h-[2cqw] rounded-[0.5cqw] bg-neutral-300"></span><span class="block w-[2cqw] h-[2cqw] rounded-[0.5cqw] bg-neutral-300"></span>
@@ -1894,12 +1938,15 @@
       </article>
 
     </div>
+    <div class="how-static" aria-hidden="true"></div>
+    <div class="how-dots" role="tablist" aria-label="How it works steps"></div>
+    </div>
   </section>
 
 
   <!-- 05.2 GLOBAL REACH (Clean Crisp Map) -->
 
-  <section id="global-section" data-theme="dark" data-header-theme="dark" class="w-full rounded-b-[32px] md:rounded-b-[40px] bg-[#1f2025] pt-10 md:pt-20 pb-24 md:pb-36 relative overflow-hidden text-center z-20 text-white">
+  <section id="global-section" data-theme="dark" data-header-theme="dark" class="-mt-px w-full rounded-b-[32px] md:rounded-b-[40px] bg-[#1f2025] pt-10 md:pt-20 pb-14 md:pb-36 relative overflow-hidden text-center z-20 text-white">
 
     <div class="max-w-4xl mx-auto px-4 sm:px-8 relative z-10 mb-12 sm:mb-16">
       <h2 class="text-[clamp(2.5rem,5vw,4rem)] font-semibold tracking-[-0.03em] leading-none text-white [text-wrap:balance]">
@@ -1927,8 +1974,9 @@
     </div>
 
     <!-- Percentage-locked map + pins (aspect matches SVG to avoid letterbox drift) -->
-    <div class="w-full px-4 sm:px-8 mb-16 relative z-10">
-      <div class="relative w-full max-w-7xl mx-auto mt-10 sm:mt-16 overflow-hidden select-none" style="aspect-ratio: 1404.7773 / 600.81262;">
+    <div class="w-full px-0 sm:px-8 mb-4 sm:mb-16 relative z-10 overflow-hidden">
+      <!-- Phones: full-bleed, the whole map always in frame (nothing cropped) -->
+      <div class="relative w-full max-w-none sm:max-w-7xl sm:mx-auto mt-8 sm:mt-16 overflow-hidden select-none" style="aspect-ratio: 1404.7773 / 600.81262;">
 
         <img
           src="assets/world-dot-matrix.svg"
@@ -1940,45 +1988,45 @@
         <!-- Pins: zero-size origin at artwork % (dot centered on origin; label floats right). -->
         <!-- Los Angeles -->
         <div class="absolute top-[36%] left-[13.2%] z-10 w-0 h-0">
-          <span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span></span>
+          <span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span></span>
           <span class="hidden sm:inline-block absolute left-0 top-0 -translate-y-1/2 ml-3 px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-semibold text-white shadow-lg whitespace-nowrap">LOS ANGELES</span>
         </div>
 
         <!-- New York -->
         <div class="absolute top-[29%] left-[24.3%] z-10 w-0 h-0">
-          <span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span></span>
+          <span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span></span>
           <span class="hidden sm:inline-block absolute left-0 top-0 -translate-y-1/2 ml-3 px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-semibold text-white shadow-lg whitespace-nowrap">NEW YORK</span>
         </div>
 
         <!-- London -->
         <div class="absolute top-[19%] left-[45.5%] z-10 w-0 h-0">
-          <span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span></span>
+          <span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span></span>
           <span class="hidden sm:inline-block absolute left-0 top-0 -translate-y-1/2 ml-3 px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-semibold text-white shadow-lg whitespace-nowrap">LONDON</span>
       </div>
 
         <!-- Lisbon -->
         <div class="absolute top-[29%] left-[43.5%] z-10 w-0 h-0">
-          <span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span></span>
+          <span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span></span>
           <span class="hidden sm:inline-block absolute left-0 top-0 -translate-y-1/2 ml-3 px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-semibold text-white shadow-lg whitespace-nowrap">LISBON</span>
       </div>
 
         <!-- Basel -->
         <div class="absolute top-[23.4%] left-[47.2%] z-10 w-0 h-0">
-          <span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span></span>
+          <span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span></span>
           <span class="hidden sm:inline-block absolute left-0 top-0 -translate-y-1/2 ml-3 px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-semibold text-white shadow-lg whitespace-nowrap">BASEL</span>
       </div>
 
         <!-- Singapore -->
         <div class="absolute top-[57.8%] left-[75.5%] z-10 w-0 h-0">
-          <span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span></span>
+          <span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span></span>
           <span class="hidden sm:inline-block absolute left-0 top-0 -translate-y-1/2 ml-3 px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-semibold text-white shadow-lg whitespace-nowrap">SINGAPORE</span>
       </div>
 
         <!-- Miami -->
-        <div class="absolute top-[38%] left-[23%] z-10 w-0 h-0"><span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span></span><span class="hidden sm:inline-block absolute left-0 top-0 -translate-y-1/2 ml-3 px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-semibold text-white shadow-lg whitespace-nowrap">MIAMI</span></div>
+        <div class="absolute top-[38%] left-[23%] z-10 w-0 h-0"><span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span></span><span class="hidden sm:inline-block absolute left-0 top-0 -translate-y-1/2 ml-3 px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-semibold text-white shadow-lg whitespace-nowrap">MIAMI</span></div>
 
         <!-- São Paulo -->
-        <div class="absolute top-[68%] left-[32%] z-10 w-0 h-0"><span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span></span><span class="hidden sm:inline-block absolute left-0 top-0 -translate-y-1/2 ml-3 px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-semibold text-white shadow-lg whitespace-nowrap">SÃO PAULO</span></div>
+        <div class="absolute top-[68%] left-[32%] z-10 w-0 h-0"><span class="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg"><span class="w-1.5 h-1.5 rounded-full bg-pink-500"></span></span><span class="hidden sm:inline-block absolute left-0 top-0 -translate-y-1/2 ml-3 px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-semibold text-white shadow-lg whitespace-nowrap">SÃO PAULO</span></div>
 
       </div>
 
@@ -2003,94 +2051,94 @@
   <div id="imax-stage" class="relative w-full overflow-hidden px-0 py-8 sm:px-8 sm:py-12 no-scrollbar">
     <div
       id="imax-track"
-      class="flex gap-4 sm:gap-8 items-center w-max select-none will-change-transform"
+      class="flex gap-2 sm:gap-8 items-center w-max select-none will-change-transform"
     >
 
       <!-- Card 01: Courtney -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
+      <div class="imax-card aspect-[3/4] w-[36vw] max-w-[150px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-xl sm:rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/courtney.webp" alt="Courtney Daniella Jesse" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/courtney.avif';"/>
-        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
-          <p class="text-xs font-semibold text-white whitespace-nowrap">Courtney Daniella Jesse</p>
+        <div class="absolute bottom-2 sm:bottom-6 left-1/2 -translate-x-1/2 px-2.5 sm:px-5 py-1 sm:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
+          <p class="text-[8px] sm:text-xs font-semibold text-white whitespace-nowrap">Courtney Daniella Jesse</p>
             </div>
           </div>
 
       <!-- Card 02: Josh -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
+      <div class="imax-card aspect-[3/4] w-[36vw] max-w-[150px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-xl sm:rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/josh.webp" alt="Josh Oyinsan" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/josh.jpg';"/>
-        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
-          <p class="text-xs font-semibold text-white whitespace-nowrap">Josh Oyinsan</p>
+        <div class="absolute bottom-2 sm:bottom-6 left-1/2 -translate-x-1/2 px-2.5 sm:px-5 py-1 sm:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
+          <p class="text-[8px] sm:text-xs font-semibold text-white whitespace-nowrap">Josh Oyinsan</p>
         </div>
             </div>
 
       <!-- Card 03: Helen -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
+      <div class="imax-card aspect-[3/4] w-[36vw] max-w-[150px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-xl sm:rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/helen.webp" alt="Helen Anderson" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/helen.jpeg';"/>
-        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
-          <p class="text-xs font-semibold text-white whitespace-nowrap">Helen Anderson</p>
+        <div class="absolute bottom-2 sm:bottom-6 left-1/2 -translate-x-1/2 px-2.5 sm:px-5 py-1 sm:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
+          <p class="text-[8px] sm:text-xs font-semibold text-white whitespace-nowrap">Helen Anderson</p>
           </div>
         </div>
 
       <!-- Card 04: Fu -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
+      <div class="imax-card aspect-[3/4] w-[36vw] max-w-[150px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-xl sm:rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/fu-izzy-resized.webp" alt="Fu Izzy" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/fu-izzy-resized.jpg';"/>
-        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
-          <p class="text-xs font-semibold text-white whitespace-nowrap">Fu Izzy</p>
+        <div class="absolute bottom-2 sm:bottom-6 left-1/2 -translate-x-1/2 px-2.5 sm:px-5 py-1 sm:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
+          <p class="text-[8px] sm:text-xs font-semibold text-white whitespace-nowrap">Fu Izzy</p>
             </div>
           </div>
 
       <!-- Card 05: Rose -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
+      <div class="imax-card aspect-[3/4] w-[36vw] max-w-[150px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-xl sm:rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/roseandrosie.webp" alt="Rose and Rosie" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/roseandrosie.jpg';"/>
-        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
-          <p class="text-xs font-semibold text-white whitespace-nowrap">Rose and Rosie</p>
+        <div class="absolute bottom-2 sm:bottom-6 left-1/2 -translate-x-1/2 px-2.5 sm:px-5 py-1 sm:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
+          <p class="text-[8px] sm:text-xs font-semibold text-white whitespace-nowrap">Rose and Rosie</p>
         </div>
             </div>
 
       <!-- Card 06: Charlessy -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
+      <div class="imax-card aspect-[3/4] w-[36vw] max-w-[150px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-xl sm:rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/charlessy.webp" alt="Charlessy" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/charlessy.jpg';"/>
-        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
-          <p class="text-xs font-semibold text-white whitespace-nowrap">Charlessy</p>
+        <div class="absolute bottom-2 sm:bottom-6 left-1/2 -translate-x-1/2 px-2.5 sm:px-5 py-1 sm:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
+          <p class="text-[8px] sm:text-xs font-semibold text-white whitespace-nowrap">Charlessy</p>
           </div>
         </div>
 
       <!-- Card 07: Hayls World -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
+      <div class="imax-card aspect-[3/4] w-[36vw] max-w-[150px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-xl sm:rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/hayls.webp" alt="Hayls World" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/hayls.jpg';"/>
-        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
-          <p class="text-xs font-semibold text-white whitespace-nowrap">Hayls World</p>
+        <div class="absolute bottom-2 sm:bottom-6 left-1/2 -translate-x-1/2 px-2.5 sm:px-5 py-1 sm:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
+          <p class="text-[8px] sm:text-xs font-semibold text-white whitespace-nowrap">Hayls World</p>
             </div>
           </div>
 
       <!-- Card 08: Craig & Aimee -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
+      <div class="imax-card aspect-[3/4] w-[36vw] max-w-[150px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-xl sm:rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/Craign-and-aimee.webp" alt="Craig & Aimee" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/Craign-and-aimee.jpg';"/>
-        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
-          <p class="text-xs font-semibold text-white whitespace-nowrap">Craig & Aimee</p>
+        <div class="absolute bottom-2 sm:bottom-6 left-1/2 -translate-x-1/2 px-2.5 sm:px-5 py-1 sm:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
+          <p class="text-[8px] sm:text-xs font-semibold text-white whitespace-nowrap">Craig & Aimee</p>
         </div>
       </div>
 
       <!-- Card 09: Hermione Chantal -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
+      <div class="imax-card aspect-[3/4] w-[36vw] max-w-[150px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-xl sm:rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/hermione.webp" alt="Hermione Chantal" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/hermione.jpg';"/>
-        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
-          <p class="text-xs font-semibold text-white whitespace-nowrap">Hermione Chantal</p>
+        <div class="absolute bottom-2 sm:bottom-6 left-1/2 -translate-x-1/2 px-2.5 sm:px-5 py-1 sm:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
+          <p class="text-[8px] sm:text-xs font-semibold text-white whitespace-nowrap">Hermione Chantal</p>
     </div>
           </div>
 
       <!-- Card 10: George Alexander -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
+      <div class="imax-card aspect-[3/4] w-[36vw] max-w-[150px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-xl sm:rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/george.webp" alt="George Alexander" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/george.jpg';"/>
-        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
-          <p class="text-xs font-semibold text-white whitespace-nowrap">George Alexander</p>
+        <div class="absolute bottom-2 sm:bottom-6 left-1/2 -translate-x-1/2 px-2.5 sm:px-5 py-1 sm:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
+          <p class="text-[8px] sm:text-xs font-semibold text-white whitespace-nowrap">George Alexander</p>
         </div>
       </div>
 
       <!-- Card 11: Taz Alam -->
-      <div class="imax-card aspect-[3/4] w-[72vw] max-w-[300px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
+      <div class="imax-card aspect-[3/4] w-[36vw] max-w-[150px] sm:w-[280px] sm:max-w-none md:w-[320px] flex-shrink-0 relative rounded-xl sm:rounded-3xl overflow-hidden bg-neutral-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]">
         <img class="creator-portrait absolute inset-0 w-full h-full object-cover" src="Content/Creator profiles/clickfortaz.webp" alt="Taz Alam" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='Content/Creator profiles/clickfortaz.jpg';"/>
-        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
-          <p class="text-xs font-semibold text-white whitespace-nowrap">Taz Alam</p>
+        <div class="absolute bottom-2 sm:bottom-6 left-1/2 -translate-x-1/2 px-2.5 sm:px-5 py-1 sm:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg z-20">
+          <p class="text-[8px] sm:text-xs font-semibold text-white whitespace-nowrap">Taz Alam</p>
         </div>
     </div>
 
@@ -2137,7 +2185,7 @@
               <div class="case-expanded-body w-full h-full flex flex-col md:flex-row justify-between items-end p-8 md:p-12 relative z-10">
                 <div class="case-copy max-w-xl md:w-[58%] flex flex-col justify-end bg-black/30 backdrop-blur-xl border border-white/15 shadow-[0_8px_32px_rgba(0,0,0,0.28)] rounded-3xl p-6">
                   <h3 class="text-2xl sm:text-3xl font-bold text-white mb-1.5 leading-snug [text-wrap:balance]">Overcoming legacy friction.</h3>
-                  <p class="text-base sm:text-lg font-semibold text-neutral-200 mt-2">Generating massive brand exposure and deep trust for AI presentation software.</p>
+                  <p class="text-base sm:text-lg font-semibold text-neutral-200 mt-2 line-clamp-2">Generating massive brand exposure and deep trust for AI presentation software.</p>
                   <p class="text-sm text-neutral-200 mt-3 leading-relaxed max-w-xl [text-wrap:pretty]">We deployed our Attention Engine™ framework to focus entirely on deep viewer retention. By integrating Gamma seamlessly into creators' existing workflows within the 'Personal Development' vertical, we delivered unscripted, real-world validation at scale.</p>
         </div>
                 <div class="case-metrics flex gap-3 items-stretch flex-shrink-0 md:ml-auto">
@@ -2327,9 +2375,9 @@
 
       <div class="lg:col-span-7 flex flex-col gap-6">
         <div class="relative bg-black/[0.05] p-1 rounded-full flex items-center justify-between gap-1 overflow-x-auto no-scrollbar">
-          <button type="button" class="form-tab-btn active flex-1 py-2.5 px-3 text-xs sm:text-sm font-medium rounded-full transition-all duration-200 text-center whitespace-nowrap bg-white shadow-sm text-neutral-900" data-tab="campaign">Campaign</button>
-          <button type="button" class="form-tab-btn flex-1 py-2.5 px-3 text-xs sm:text-sm font-medium rounded-full transition-all duration-200 text-center whitespace-nowrap text-neutral-500" data-tab="demo">ThreadOS™ demo</button>
-          <button type="button" class="form-tab-btn flex-1 py-2.5 px-3 text-xs sm:text-sm font-medium rounded-full transition-all duration-200 text-center whitespace-nowrap text-neutral-500" data-tab="audit">Performance audit</button>
+          <button type="button" class="form-tab-btn active flex-1 py-2.5 px-1.5 xs:px-3 text-[11px] xs:text-xs sm:text-sm font-medium rounded-full transition-all duration-200 text-center whitespace-nowrap bg-white shadow-sm text-neutral-900" data-tab="campaign">Campaign</button>
+          <button type="button" class="form-tab-btn flex-1 py-2.5 px-1.5 xs:px-3 text-[11px] xs:text-xs sm:text-sm font-medium rounded-full transition-all duration-200 text-center whitespace-nowrap text-neutral-500" data-tab="demo">ThreadOS™ demo</button>
+          <button type="button" class="form-tab-btn flex-1 py-2.5 px-1.5 xs:px-3 text-[11px] xs:text-xs sm:text-sm font-medium rounded-full transition-all duration-200 text-center whitespace-nowrap text-neutral-500" data-tab="audit">Performance audit</button>
         </div>
 
         <form action="https://formsubmit.co/hello@redthread.co" method="POST" class="flex flex-col gap-4 mt-2">
@@ -2654,12 +2702,12 @@
         else if (w >= 640) { m = 'row'; x0 = 150; vw = 1100; s = w / vw; viewH = H; }
         else {
           /* phones: tight window centred on the glass, slightly taller scale, hide the outcome pills */
-          m = 'phone'; vw = 400; x0 = CX - vw / 2 - 36; s = w / vw; viewH = 320; yOff = (H - viewH) / 2;   /* -36 shifts the orb right in the frame so left-side input fibres don't make it look off-centre */
+          m = 'phone'; vw = 680; x0 = CX - vw / 2; s = w / vw; viewH = 340; yOff = (H - viewH) / 2;   /* wide window = smaller glass (~170px on a 390 phone), orb dead-centre, beams run off both sides */
         }
         dpr = Math.min(window.devicePixelRatio || 1, 2);
         if (m !== mode) {
           mode = m;
-          buildOutputs(m === 'stage' ? 1108 : (m === 'phone' ? CX + 8 : 1400), m === 'stage');
+          buildOutputs(m === 'stage' ? 1108 : 1400, m === 'stage');
           if (m === 'phone') {
             chipsWrap.style.display = 'none';
             if (chipsRow) chipsRow.style.display = 'none';
@@ -4027,7 +4075,7 @@
       let lastMeasuredWidth = 0;
 
       const DESKTOP_PX_PER_SEC = 168;
-      const MOBILE_PX_PER_SEC = 126;
+      const MOBILE_PX_PER_SEC = 189;   // +50% on phones
 
       function isMobile() {
         return window.innerWidth < 640;
@@ -4409,7 +4457,7 @@
     }
 
     function updateHeader() {
-      header.className = 'fixed top-0 left-0 right-0 z-50 pointer-events-none';
+      header.className = 'fixed top-0 left-0 right-0 z-50 px-3 sm:px-6 pointer-events-none';
       logo.src = 'logo-black.png';
       links.forEach((l) => { l.className = linkClasses('light', l); });
       if (ctaDesktop) ctaDesktop.className = 'hidden sm:inline-flex items-center justify-center px-4 py-2 rounded-full bg-neutral-900 text-white font-medium text-[16px] leading-[1.4] tracking-normal hover:bg-neutral-800 transition-all';
@@ -4801,7 +4849,7 @@
     function rng(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
     const gauss = (r) => (r() + r() + r() - 1.5) / 1.5;
 
-    const WHITE = [255, 255, 255], PALE = [214, 222, 250];
+    const WHITE = [255, 255, 255], PALE = [220, 220, 220];
     const TINTS = [WHITE];
 
     function glowSprite(c, stops) {
@@ -4881,7 +4929,7 @@
         if (y < -4 || y > h + 4) continue;
         const a = n.a * (n.br ? .6 + .4 * Math.sin(t * 6.283 / n.per + n.ph) : 1) * vfade(y);
         if (a < .01) continue;
-        ctx.fillStyle = `rgba(240,244,255,${a.toFixed(3)})`;
+        ctx.fillStyle = `rgba(245,245,245,${a.toFixed(3)})`;
         if (n.r < .75) ctx.fillRect(x - n.r, y - n.r, n.r * 2, n.r * 2); else { ctx.beginPath(); ctx.arc(x, y, n.r, 0, 6.283); ctx.fill(); }
       }
 
@@ -4899,7 +4947,7 @@
         if (vf <= .01) continue;
         const a = (e.cross ? .04 : .07) + .05 * Math.min(e.a.z, e.b.z) + .07 * Math.max(e.a.p, e.b.p);
         const lt = smooth(h * .5, h * .78, (e.a.py + e.b.py) / 2);   // over the pale lower sky the lines shift to a soft blue-grey so they stay legible
-        ctx.strokeStyle = `rgba(${Math.round(206 - 90 * lt)},${Math.round(214 - 80 * lt)},${Math.round(255 - 40 * lt)},${(a * vf * (1 + .7 * lt)).toFixed(3)})`;
+        ctx.strokeStyle = `rgba(${Math.round(210 - 90 * lt)},${Math.round(210 - 90 * lt)},${Math.round(210 - 90 * lt)},${(a * vf * (1 + .7 * lt)).toFixed(3)})`;
         ctx.beginPath(); ctx.moveTo(e.a.px, e.a.py); ctx.lineTo(e.b.px, e.b.py); ctx.stroke();
       }
       for (let i = 0; i < mid.length; i++) {
@@ -4930,6 +4978,78 @@
   })();
 </script>
 
+  <script>
+    /* How it works (phones): swipe through the five steps; the laptop stays put and its screen swaps as each card sweeps across it. */
+    (function initHowSwipe() {
+      const sec = document.getElementById('how-it-works');
+      const wrap = sec && sec.querySelector('.how-hwrap');
+      const stack = wrap && wrap.querySelector('.how-stack');
+      const stat = wrap && wrap.querySelector('.how-static');
+      const dotsEl = wrap && wrap.querySelector('.how-dots');
+      if (!stack || !stat) return;
+      const cards = Array.from(stack.querySelectorAll('.how-card'));
+      const mq = window.matchMedia('(max-width: 767px)');
+      let on = false, devs = [], uis = [], screen0 = null, screenL = 0, screenW = 0, dots = [];
+
+      function enable() {
+        devs = cards.map((c) => c.querySelector('.how-device'));
+        uis = devs.map((d) => d.querySelector('.how-ui'));
+        stat.appendChild(devs[0]);
+        screen0 = devs[0].querySelector('.how-screen');
+        for (let i = 1; i < cards.length; i++) { screen0.appendChild(uis[i]); devs[i].remove(); }
+        dotsEl.innerHTML = '';
+        dots = cards.map((_, i) => {
+          const b = document.createElement('button');
+          b.type = 'button'; b.setAttribute('aria-label', 'Step ' + (i + 1));
+          b.addEventListener('click', () => stack.scrollTo({ left: cards[i].offsetLeft - (stack.clientWidth - cards[i].offsetWidth) / 2, behavior: 'smooth' }));
+          dotsEl.appendChild(b); return b;
+        });
+        sec.classList.add('how-h'); on = true;
+        measure(); update();
+      }
+      function disable() {
+        on = false; sec.classList.remove('how-h'); stat.style.clipPath = ''; stat.style.webkitClipPath = '';
+        for (let i = 1; i < cards.length; i++) {
+          uis[i].style.clipPath = '';
+          devs[i].querySelector('.how-screen').appendChild(uis[i]);
+          cards[i].querySelector('.how-clip').appendChild(devs[i]);
+        }
+        cards[0].querySelector('.how-clip').appendChild(devs[0]);
+        dotsEl.innerHTML = '';
+      }
+      function measure() {
+        if (!on) return;
+        const wr = wrap.getBoundingClientRect(), sr = screen0.getBoundingClientRect();
+        screenL = sr.left - wr.left; screenW = sr.width;
+      }
+      function update() {
+        if (!on) return;
+        const sc = stack.scrollLeft;
+        for (let i = 1; i < cards.length; i++) {
+          const c = Math.min(screenW, Math.max(0, cards[i].offsetLeft - sc - screenL));
+          uis[i].style.clipPath = c <= 0.5 ? '' : 'inset(0 0 0 ' + c.toFixed(1) + 'px)';
+        }
+        /* the laptop lives only inside the cards: clip it to the union of the (rounded) card shapes as they slide past */
+        const bl = stat.offsetLeft, bw = stat.offsetWidth, bh = stat.offsetHeight, R = 24;
+        let d = '';
+        for (let i = 0; i < cards.length; i++) {
+          const x = cards[i].offsetLeft - sc - bl, w = cards[i].offsetWidth;
+          if (x > bw + 2 || x + w < -2) continue;
+          d += 'M' + (x + R) + ' 0H' + (x + w - R) + 'A' + R + ' ' + R + ' 0 0 1 ' + (x + w) + ' ' + R + 'V' + (bh - R) + 'A' + R + ' ' + R + ' 0 0 1 ' + (x + w - R) + ' ' + bh +
+               'H' + (x + R) + 'A' + R + ' ' + R + ' 0 0 1 ' + x + ' ' + (bh - R) + 'V' + R + 'A' + R + ' ' + R + ' 0 0 1 ' + (x + R) + ' 0Z';
+        }
+        const cp = d ? 'path("' + d + '")' : 'inset(100%)';
+        stat.style.clipPath = cp; stat.style.webkitClipPath = cp;
+        const step = cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : 1;
+        const idx = Math.min(cards.length - 1, Math.max(0, Math.round(sc / step)));
+        dots.forEach((d, i) => d.classList.toggle('is-on', i === idx));
+      }
+      function sync() { if (mq.matches) { if (!on) enable(); else { measure(); update(); } } else if (on) disable(); }
+      stack.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', sync, { passive: true });
+      sync();
+    })();
+  </script>
 </body>
 
 </html>

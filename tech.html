@@ -250,7 +250,7 @@
 <body class="font-sans bg-neutral-950 text-neutral-950 antialiased overflow-x-clip">
 
   <!-- Floating pill navigation (matches index) -->
-  <header id="mainHeader" class="fixed top-0 left-0 right-0 z-40 pointer-events-none">
+  <header id="mainHeader" class="fixed top-0 left-0 right-0 z-40 px-3 sm:px-6 pointer-events-none">
     <nav class="pointer-events-auto relative max-w-4xl mx-auto mt-4 px-6 h-14 bg-white/80 backdrop-blur-md rounded-full border border-neutral-200/60 shadow-sm flex items-center justify-between gap-2 text-neutral-900">
       <a href="index.html" class="flex items-center shrink-0">
         <img id="navLogo" src="logo-black.png" alt="Red Thread" class="h-4 sm:h-5 w-auto object-contain">
@@ -334,12 +334,7 @@
             <div id="orbitOrbFb" class="orbit-orb-fb" aria-hidden="true"></div>
             <canvas id="orbitGL" aria-hidden="true"></canvas>
             <canvas id="orbitFront" aria-hidden="true"></canvas>
-            <div id="orbitChips" aria-hidden="true">
-              <div class="orbit-chip" style="--rgb:255,104,134"><i class="ph-light ph-intersect"></i><span>ThreadOS&trade;</span></div>
-              <div class="orbit-chip" style="--rgb:222,122,236"><i class="ph-light ph-cpu"></i><span>Fred AI</span></div>
-              <div class="orbit-chip" style="--rgb:152,128,255"><i class="ph-light ph-waveform"></i><span>Attention Engine&trade;</span></div>
-              <div class="orbit-chip" style="--rgb:104,166,255"><i class="ph-light ph-arrows-clockwise"></i><span class="sm:hidden">Optimisation</span><span class="hidden sm:inline">Continuous Optimisation</span></div>
-            </div>
+            <div id="orbitChips" aria-hidden="true"></div>
           </div>
         </div>
 
@@ -454,10 +449,7 @@
           </div>
           </div>
 
-            <div class="mt-6 pr-4 pl-4 max-w-7xl mx-auto flex items-center justify-end gap-3 md:hidden">
-              <button id="prevStackBtn" type="button" aria-label="Previous" class="w-11 h-11 rounded-full border border-white/10 bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-all">&larr;</button>
-              <button id="nextStackBtn" type="button" aria-label="Next" class="w-11 h-11 rounded-full border border-white/10 bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-all">&rarr;</button>
-            </div>
+            
         </div>
       </div>
     </section>
