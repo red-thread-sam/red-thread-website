@@ -501,15 +501,11 @@
       scroll-snap-align: center;
       background-color: #e8e8ea;
       box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15);
-      transform: scale(0.85);
-      opacity: 0.4;
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+      /* Scale / tilt are driven per frame by initCreatorMarquee (IMAX curve) */
+      transform-origin: 50% 50%;
+      transition: none;
       backface-visibility: hidden;
-    }
-
-    .imax-card.is-active {
-      transform: scale(1);
-      opacity: 1;
+      will-change: transform;
     }
 
     .imax-card img.creator-portrait {
@@ -527,11 +523,13 @@
       will-change: transform;
       transition: none !important;
       transform: translate3d(0, 0, 0);
+      transform-style: preserve-3d;
     }
 
     #imax-stage {
-      overflow: hidden;
-      contain: layout paint;
+      overflow-x: clip;
+      overflow-y: visible;
+      contain: layout;
     }
 
     #creators-section {
@@ -2038,7 +2036,7 @@
 
   <!-- 05.5 CREATOR THEATRE -->
 
-<section id="creators-section" data-theme="light" data-header-theme="light" class="pt-24 sm:pt-32 pb-12 sm:pb-16 bg-white text-neutral-900 relative overflow-x-hidden z-20">
+<section id="creators-section" data-theme="light" data-header-theme="light" class="pt-24 sm:pt-32 pb-12 sm:pb-16 bg-white text-neutral-900 relative overflow-x-hidden z-30">
   <div class="max-w-4xl mx-auto px-4 sm:px-8 text-center mb-12 sm:mb-16 relative z-10">
     <h2 class="text-[clamp(2.5rem,5vw,4rem)] font-semibold tracking-[-0.03em] leading-none text-[#1f2025]">
       <span class="block">Whoever they are.</span><span class="block">Wherever they are.</span>
@@ -4049,11 +4047,14 @@
       const stage = document.getElementById('imax-stage');
       if (!track || !stage) return;
 
-      // Duplicate once for seamless loop (2 sets — not 3)
+      // Three identical sets so the curved ribbon always has cards on BOTH sides of the centre.
+      // We loop inside the middle set, so nothing is ever missing left/right when the track wraps.
       if (!track.dataset.cloned) {
         const originals = Array.from(track.children);
-        originals.forEach((card) => track.appendChild(card.cloneNode(true)));
+        for (let k = 0; k < 2; k++) originals.forEach((card) => track.appendChild(card.cloneNode(true)));
         track.dataset.cloned = 'true';
+        // Make sure far-away portraits are never held back by lazy loading (they'd pop in blank)
+        track.querySelectorAll('img.creator-portrait').forEach((img) => { img.loading = 'eager'; });
 
         // Fade-in listeners for any newly cloned portraits
         track.querySelectorAll('img.creator-portrait').forEach((img) => {
@@ -4074,11 +4075,63 @@
       let inView = false;
       let lastMeasuredWidth = 0;
 
-      const DESKTOP_PX_PER_SEC = 168;
-      const MOBILE_PX_PER_SEC = 189;   // +50% on phones
+      // Ribbon shape. Relative to half the stage width so it scales with the viewport.
+      // Soft path through the middle; roll/drop/recede build toward the edges. Spacing is
+      // expanded just enough that neighbouring cards never share pixels after they tip.
+      const RIBBON_DEPTH = 2.4;
+      const DROP_K = 0.11, DROP_E = 2.15;
+      const DEPTH_K = 0.07, DEPTH_E = 2.05;
+      const ROLL = 0.62;
+      const TURN = 0.85;
+      const GAP_PX = 18;            // minimum clear air between neighbouring card edges
+      const N_MAX = 2.6;
+      const TAB_STEP = 0.0025;
+
+      const DESKTOP_PX_PER_SEC = 150;
+      const MOBILE_PX_PER_SEC = 168;
 
       function isMobile() {
         return window.innerWidth < 640;
+      }
+
+      // Cached geometry (so the per-frame loop never touches layout)
+      let G = null;                 // { half, mid, base, centers[], widths[], heights[], tab: Float32Array }
+      let hidden = [];              // per-card visibility state, to avoid redundant style writes
+      let activeCard = null;
+
+      function buildGeometry() {
+        const cards = track.children;
+        const rect = stage.getBoundingClientRect();
+        const half = Math.max(1, rect.width / 2);
+        const centers = [], widths = [], heights = [];
+        for (let i = 0; i < cards.length; i++) {
+          centers.push(cards[i].offsetLeft + cards[i].offsetWidth / 2);
+          widths.push(cards[i].offsetWidth);
+          heights.push(cards[i].offsetHeight);
+        }
+        // Flat pitch between centres (half-stage units). Expand world-x vs flat-u wherever a
+        // rolled card's lower corner would otherwise swing into its neighbour.
+        const wN = (widths[0] || 0) / half;
+        const H = (heights[0] || 0) / half;
+        const P = Math.max(0.05, ((centers[1] || 0) - (centers[0] || 0)) / half);
+        const gmin = GAP_PX / half;
+        const nSteps = Math.ceil(N_MAX / TAB_STEP);
+        const tab = new Float32Array(nSteps + 2);
+        let x = 0;
+        for (let i = 1; i < tab.length; i++) {
+          const dY = DROP_K * DROP_E * Math.pow(Math.max(x, 1e-6), DROP_E - 1);
+          const roll = Math.atan(dY) * ROLL;
+          const cr = Math.cos(roll), sr = Math.abs(Math.sin(roll));
+          // Horizontal half-extent of a rolled card (corners, not just the centre line)
+          const reach = (wN / 2) * cr + (H / 2) * sr;
+          const need = 2 * reach + gmin;
+          // Smooth expansion: never compress, never jump
+          const s = need > P ? need / P : 1;
+          x += TAB_STEP * s;
+          tab[i] = x;
+        }
+        G = { half, mid: rect.left + half, base: rect.left + track.offsetLeft, centers, widths, heights, tab, nSteps };
+        hidden = new Array(cards.length).fill(null);
       }
 
       function measure() {
@@ -4087,13 +4140,19 @@
         lastMeasuredWidth = widthProbe;
 
         const cards = track.children;
-        const half = Math.floor(cards.length / 2);
-        if (half < 1) return;
+        const per = Math.floor(cards.length / 3);
+        if (per < 1) return;
 
-        // Width of one original set = distance from card[0] to card[half]
+        // Width of one original set = distance from card[0] to card[per]
         const a = cards[0].offsetLeft;
-        const b = cards[half].offsetLeft;
+        const b = cards[per].offsetLeft;
+        const prev = setWidth;
         setWidth = Math.max(1, b - a);
+        // Keep our phase through the loop, but always live in the middle set
+        const frac = prev > 0 ? (((scrollPos % prev) + prev) % prev) / prev : 0;
+        scrollPos = setWidth * (1 + frac);
+        buildGeometry();
+        stage.style.perspective = Math.round(G.half * RIBBON_DEPTH) + 'px';
       }
 
       function paint() {
@@ -4104,13 +4163,13 @@
         rafId = 0;
         if (!running || !inView) return;
 
-        const dt = Math.min(0.05, (now - lastTime) / 1000);
+        const dt = Math.min(0.1, (now - lastTime) / 1000);
         lastTime = now;
 
         if (setWidth > 0) {
           const speed = isMobile() ? MOBILE_PX_PER_SEC : DESKTOP_PX_PER_SEC;
           scrollPos += speed * dt;
-          if (scrollPos >= setWidth) scrollPos -= setWidth;
+          if (scrollPos >= setWidth * 2) scrollPos -= setWidth;
           paint();
         }
 
@@ -4119,21 +4178,51 @@
       }
 
       function updateCenteredCard() {
-        const stageRect = stage.getBoundingClientRect();
-        const mid = stageRect.left + stageRect.width / 2;
+        if (!G) return;
+        const { half, mid, base, centers, widths, heights, tab, nSteps } = G;
+        const D = half * RIBBON_DEPTH;
         const cards = track.children;
-        let best = null;
-        let bestDist = Infinity;
+        const off = base - scrollPos - mid;
+        let best = -1, bestDist = Infinity;
         for (let i = 0; i < cards.length; i++) {
-          const rect = cards[i].getBoundingClientRect();
-          const dist = Math.abs(rect.left + rect.width / 2 - mid);
-          if (dist < bestDist) {
-            bestDist = dist;
-            best = cards[i];
+          const u = off + centers[i];
+          const au = Math.abs(u);
+          const nu = au / half;
+          if (au < bestDist) { bestDist = au; best = i; }
+          let show = false;
+          if (nu <= N_MAX) {
+            const f = nu / TAB_STEP;
+            const i0 = Math.min(nSteps, f | 0);
+            const t = f - i0;
+            const xw = tab[i0] + (tab[i0 + 1] - tab[i0]) * t;
+            const sgn = u < 0 ? -1 : 1;
+            const xSafe = Math.max(xw, 1e-6);
+            const Y = DROP_K * Math.pow(xSafe, DROP_E);
+            const dY = DROP_K * DROP_E * Math.pow(xSafe, DROP_E - 1);
+            const Z = DEPTH_K * Math.pow(xSafe, DEPTH_E);
+            const dZ = DEPTH_K * DEPTH_E * Math.pow(xSafe, DEPTH_E - 1);
+            const roll = Math.atan(dY) * ROLL;
+            const turn = Math.atan(dZ) * TURN;
+            const sc = D / (D + Z * half);
+            const reach = (widths[i] / 2) * Math.cos(turn) * Math.cos(roll) + (heights[i] / 2) * Math.sin(Math.abs(roll));
+            const inner = xw * half * sc - reach * sc * 1.05;
+            if (inner <= half * 1.02) {
+              show = true;
+              // Closer cards paint above farther ones if edges ever brush
+              cards[i].style.zIndex = String(1000 - (nu * 200 | 0));
+              cards[i].style.transform = 'translate3d(' + (sgn * xw * half - u).toFixed(2) + 'px,' + (Y * half).toFixed(2) + 'px,' + (-Z * half).toFixed(2) + 'px) rotateZ(' + (sgn * roll * 57.29578).toFixed(2) + 'deg) rotateY(' + (sgn * turn * 57.29578).toFixed(2) + 'deg)';
+            }
+          }
+          if (hidden[i] !== !show) {
+            hidden[i] = !show;
+            cards[i].style.visibility = show ? '' : 'hidden';
+            if (!show) cards[i].style.zIndex = '';
           }
         }
-        for (let i = 0; i < cards.length; i++) {
-          cards[i].classList.toggle('is-active', cards[i] === best);
+        if (best !== activeCard) {
+          if (activeCard !== null && cards[activeCard]) cards[activeCard].classList.remove('is-active');
+          if (best >= 0) cards[best].classList.add('is-active');
+          activeCard = best;
         }
       }
 
@@ -4172,13 +4261,6 @@
           },
           { threshold: [0, 0.15, 0.35], rootMargin: '0px' }
         ).observe(stage);
-
-        const centeredCardObserver = new IntersectionObserver(() => updateCenteredCard(), {
-          root: stage,
-          rootMargin: '0px -35% 0px -35%',
-          threshold: [0.4, 0.6, 0.8]
-        });
-        Array.from(track.children).forEach((card) => centeredCardObserver.observe(card));
       } else {
         inView = true;
         start();
